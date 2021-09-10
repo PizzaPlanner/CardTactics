@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0cf603a9a0bda45b5718ed41db56ff, type: 3}
+  m_Name: Card Sans
+  m_EditorClassIdentifier: 
+  Skills:
+  - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
+  - {fileID: 11400000, guid: 2d262de7389bfd94b82c92d110302b5d, type: 2}
+  fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+  turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
+  UnitReference: {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
