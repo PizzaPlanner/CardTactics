@@ -1,24 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-public enum TurnType
-{
-    Preparation,
-    ExecuteRound,
-    PlaceUnit,
-    PrepareTurn,
-}
 
 public class Board : MonoBehaviour
 {
     public GameObject TilePrefab;
     public int Width, Height;
 
-    public int UnitsPerTeam;
     public Deck[] Decks;
 
     public Tile[] TilePrefabs;
@@ -27,12 +16,9 @@ public class Board : MonoBehaviour
 
     public TurnPlate TurnPanel;
 
-    static Board instance;
-
     // Start is called before the first frame update
     void Awake()
     {
-        instance = this;
         Tiles = new Tile[Width, Height];
         for (int w = 0; w < Width; w++)
         {
@@ -58,27 +44,26 @@ public class Board : MonoBehaviour
         foreach (var deck in Decks)
         {
             deck.Initialize();
-            deck.Show();
-            TurnPanel.RegisterPlayer(deck.Player);
+            TurnPanel.Register(deck);
         }
         TurnPanel.StartTurn();
     }
 
-    void ResetSelection()
+    Skill currentSkill => currentCard.Skills[cardSkillProgress];
+    Skill currentDependency
     {
-        selection = null;
-        // ShowOptions(null);
+        get
+        {
+            var dep = cardSkillProgress - currentCard.Dependencies[cardSkillProgress];
+            return dep < 0 || dep == cardSkillProgress ? null : currentCard.Skills[dep];
+        }
     }
 
-    Tile selection;
-    Skill currentSkill => currentCard.Skills[cardSkillProgress];
     Card currentCard;
     int currentPlayer;
     int cardSkillProgress;
 
-    [SerializeField] Button confirmButton;
-    [SerializeField] RectTransform skillDisplay;
-    [SerializeField] Image skillDisplayPrefab;
+    [SerializeField] SkillProgressBar skillProgressBar;
 
     void Update()
     {
@@ -86,52 +71,59 @@ public class Board : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                selection = Tile.Hovered;
-                if (selection.CurrentIndicator == TargetIndicator.Valid || selection.CurrentIndicator == TargetIndicator.Path)
+                if (Tile.Hovered == null) return;
+                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
                 {
-                    currentSkill.Preview(selection);
-                    skillDisplay.GetChild(cardSkillProgress).GetComponent<Image>().color = Color.green;
-                    cardSkillProgress++;
-                    HideTileSelectionPreview();
-                    if (cardSkillProgress >= currentCard.Skills.Length)
-                    {
-                        confirmButton.interactable = true;
-                    }
-                    else
-                    {
-                        PlayNextSkill();
-                    }
+                    currentSkill.Preview(Tile.Hovered);
+                    skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Queued);
+                    TryNextSkill();
                 }
             }
             if (Input.GetMouseButtonDown(1))
             {
                 Reset();
-                PlayNextSkill();
+                PlayNextSkill(true);
             }
+        }
+    }
+
+    private void TryNextSkill()
+    {
+        cardSkillProgress++;
+        if (cardSkillProgress < currentCard.Skills.Length)
+        {
+            PlayNextSkill();
+        }
+        else
+        {
+            HideTileSelectionPreview();
         }
     }
 
     public void Confirm()
     {
-        foreach (var skill in currentCard.Skills)
-            skill.OnUse();
+        for (int i = 0; i < currentCard.Skills.Length; i++)
+        {
+            if (skillProgressBar.Get(i).State == SkillProgressBarItem.Progress.Queued)
+                currentCard.Skills[i].OnUse();
+        }
+
         Next();
     }
 
     public void Reset()
     {
         if (cardSkillProgress <= 0) return;
+        if (cardSkillProgress < currentCard.Skills.Length)
+            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Pending);
         cardSkillProgress--;
-        var previousTile = currentCard?.Skills[cardSkillProgress].Reset();
-        skillDisplay.GetChild(cardSkillProgress).GetComponent<Image>().color = Color.white;
-        confirmButton.interactable = false;
-        Debug.Log("Previous tile was: " + previousTile);
-        selection = previousTile;
+        currentCard?.Skills[cardSkillProgress].Reset();
+        skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Pending);
     }
 
     public void Skip()
     {
-        while (cardSkillProgress >= 0)
+        while (cardSkillProgress > 0)
             Reset();
         Next();
     }
@@ -139,10 +131,8 @@ public class Board : MonoBehaviour
     void Next()
     {
         currentCard = null;
-        ResetSelection();
         HideTileSelectionPreview();
-        foreach (Transform child in skillDisplay)
-            GameObject.Destroy(child.gameObject);
+        skillProgressBar.Clear();
         TurnPanel.Next();
     }
 
@@ -152,29 +142,47 @@ public class Board : MonoBehaviour
         currentCard = card;
         currentPlayer = player;
         cardSkillProgress = 0;
-        confirmButton.interactable = false;
-        foreach (var skill in currentCard.Skills)
-        {
-            var icon = GameObject.Instantiate(skillDisplayPrefab);
-            icon.sprite = skill.Icon;
-            icon.transform.SetParent(skillDisplay);
-        }
+        foreach (var skill in card.Skills)
+            skill.Init(card);
+        skillProgressBar.SetSkills(card.Skills, TryNextSkill);
         PlayNextSkill();
     }
 
-    void PlayNextSkill()
+    void PlayNextSkill(bool tryResetOnFail = false)
     {
-        Debug.Log("Selection is " + selection);
-        if (!currentSkill?.Activate(currentPlayer, currentCard, selection) ?? false)
+        HideTileSelectionPreview();
+        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency) ?? false)
+        {
             Debug.LogError("Failed to activate Skill #" + currentSkill);
+            if (tryResetOnFail && cardSkillProgress > 0 && (
+                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||
+                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Queued ||
+                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Failed
+                ))
+            {
+                Reset();
+                PlayNextSkill(true);
+                return;
+            }
+
+            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Failed);
+            if (currentSkill.IsOptional)
+                TryNextSkill();
+        }
+        else
+        {
+            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Now);
+        }
     }
 
-    public void ShowPlacementTiles(TargetType filter)
+    public int ShowPlacementTiles(TargetType filter)
     {
+        int count = 0;
         foreach (var tile in Tiles)
         {
-            TileMatches(tile, filter);
+            count += TileMatches(tile, filter) ? 1 : 0;
         }
+        return count;
     }
 
     public void HideTileSelectionPreview()
@@ -200,8 +208,9 @@ public class Board : MonoBehaviour
         return validTarget;
     }
 
-    public void ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type)
+    public int ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type)
     {
+        int matches = 0;
         List<Tile> rangeTiles = new List<Tile>();
         foreach (var tile in Tiles)
         {
@@ -215,16 +224,23 @@ public class Board : MonoBehaviour
             // Check TargetType
 
             if (TileMatches(tile, filter))
+            {
+                matches++;
                 rangeTiles.Add(tile);
+            }
         }
         if (type == RangeType.Pathfinding)
         {
             foreach (var tile in rangeTiles)
             {
                 if (!Tile.FindPath(origin, tile, maxRange, rangeTiles))
+                {
                     tile.SetIndicator(TargetIndicator.Hidden);
+                    matches--;
+                }
             }
         }
+        return matches;
     }
 
     public static int GetTeam(int player) => player % 2;

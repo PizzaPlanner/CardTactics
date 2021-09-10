@@ -6,14 +6,13 @@ public class PlaceSkill : Skill
 {
     Unit unit;
 
-    protected override bool OnActivate(int player, Card card, Tile _)
+    protected override bool OnActivate(int player, Card card)
     {
         if (card is not UnitCard) return false;
         unit = GameObject.Instantiate((card as UnitCard).UnitReference);
         unit.Player = player;
         unit.gameObject.SetActive(false);
-        FindObjectOfType<Board>().ShowPlacementTiles(TargetType.Empty);
-        return true;
+        return FindObjectOfType<Board>().ShowPlacementTiles(TargetType.Empty) > 0;
     }
 
     protected override void OnPreview()

@@ -9,22 +9,19 @@ public class MoveSkill : Skill
 
     Unit unit;
     Facing rotation;
-    Tile origin;
 
-    protected override bool OnActivate(int player, Card card, Tile selection)
+    protected override bool OnActivate(int player, Card card)
     {
-        if (selection?.Unit == null)
+        if (OriginTile?.Unit == null)
             return false;
-        origin = selection;
-        unit = selection.Unit;
-        rotation = selection.Facing;
-        FindObjectOfType<Board>().ShowRange(selection, 0, Range, TargetType.Empty, RangeType);
-        return true;
+        unit = OriginTile.Unit;
+        rotation = OriginTile.Facing;
+        return FindObjectOfType<Board>().ShowRange(OriginTile, 0, Range, TargetType.Empty, RangeType) > 0;
     }
 
     protected override void OnPreview()
     {
-        unit.Move(origin, PreviewTile);
+        unit.Move(OriginTile, PreviewTile);
     }
 
     public override void OnUse()
@@ -33,7 +30,7 @@ public class MoveSkill : Skill
 
     protected override void OnCancel()
     {
-        unit.Move(PreviewTile, origin);
-        origin.RotateUnit(rotation);
+        unit.Move(PreviewTile, OriginTile);
+        OriginTile.RotateUnit(rotation);
     }
 }

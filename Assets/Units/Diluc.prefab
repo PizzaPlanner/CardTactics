@@ -46,14 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de134bb9fa8e2bc47859a03eb129a265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: 0
   Level: 0
   Rank: 0
   Name: Diluc
   Icon: {fileID: 2800000, guid: df7e8639cbf988a4ba57d4c0bf1c1fb3, type: 3}
-  Cards:
-  - {fileID: 11400000, guid: 92fd2c70933d41448a94ac96b4230aa6, type: 2}
-  - {fileID: 11400000, guid: 24c77ae992fd2f1479092269250509e7, type: 2}
+  MaxLife: 15
 --- !u!114 &-5004799524395137141
 MonoBehaviour:
   m_ObjectHideFlags: 0

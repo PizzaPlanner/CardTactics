@@ -9,34 +9,31 @@ public class FaceSkill : Skill
     public int minRange;
     public int maxRange;
 
-    Tile originalTile;
     Facing originalFacing;
     Facing targetFacing;
 
-    protected override bool OnActivate(int player, Card card, Tile selection)
+    protected override bool OnActivate(int player, Card card)
     {
-        var unit = selection?.Unit;
+        var unit = OriginTile?.Unit;
         if (unit == null)
             return false;
-        originalTile = selection;
-        originalFacing = selection.Facing;
-        FindObjectOfType<Board>().ShowRange(selection, minRange, maxRange, TargetFilter, RangeFilter);
-        return true;
+        originalFacing = OriginTile.Facing;
+        return FindObjectOfType<Board>().ShowRange(OriginTile, minRange, maxRange, TargetFilter, RangeFilter) > 0;
     }
 
     protected override void OnPreview()
     {
         targetFacing = Tile.GetFacing(OriginTile, PreviewTile);
-        originalTile.RotateUnit(targetFacing);
+        OriginTile.RotateUnit(targetFacing);
     }
 
     public override void OnUse()
     {
-        originalTile.RotateUnit(targetFacing);
+        OriginTile.RotateUnit(targetFacing);
     }
 
     protected override void OnCancel()
     {
-        originalTile.RotateUnit(originalFacing);
+        OriginTile.RotateUnit(originalFacing);
     }
 }

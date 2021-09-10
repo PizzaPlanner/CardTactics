@@ -214,6 +214,7 @@ public class Tile : MonoBehaviour
     internal void ClearPathingInfo()
     {
         Pathing = default;
+        Pathing.LastCalculatedPath = null;
     }
 
     int FaceToRot(Facing face)

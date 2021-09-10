@@ -8,4 +8,6 @@ public class UnitCard : Card
     public override string Name => UnitReference.Name;
     public override int Speed => 0;
     public Unit UnitReference;
+    public override int Cost => 5;
+    public override bool Once => true;
 }

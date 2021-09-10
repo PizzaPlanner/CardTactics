@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
+  m_Name: Quick Attack
+  m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  Skills:
+  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
+  - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
+  - {fileID: 11400000, guid: c13e6466756201d44abad4fe4e5e08d5, type: 2}
+  Dependencies: 000000000100000002000000
+  fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+  turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
+  icon: {fileID: 2800000, guid: 2663966faa5210646b09c3cf37c31dac, type: 3}
+  name: Quickattack
+  speed: 2
+  cost: 4

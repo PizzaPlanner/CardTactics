@@ -10,6 +10,12 @@ public class ActionCard : Card
     [Range(1, 100)]
     [SerializeField] int speed;
 
+    [Range(0, 10)]
+    [SerializeField] int cost;
+
+
+    public override int Cost => cost;
+    public override bool Once => false;
     public override Texture2D Icon => icon;
 
     public override string Name => name;

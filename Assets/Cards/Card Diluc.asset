@@ -15,6 +15,7 @@ MonoBehaviour:
   Skills:
   - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
   - {fileID: 11400000, guid: 2d262de7389bfd94b82c92d110302b5d, type: 2}
+  Dependencies: 0000000001000000
   fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
   turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
   UnitReference: {fileID: -776819737043778027, guid: d110e092fe8b15142a7e558c1e4e1ff9, type: 3}

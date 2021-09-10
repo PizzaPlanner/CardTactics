@@ -15,8 +15,14 @@ MonoBehaviour:
   Skills:
   - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
   - {fileID: 11400000, guid: 617abb6e63985ad439712b21703357f9, type: 2}
+  - {fileID: 11400000, guid: 617abb6e63985ad439712b21703357f9, type: 2}
+  - {fileID: 11400000, guid: 617abb6e63985ad439712b21703357f9, type: 2}
+  - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
+  - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
+  Dependencies: 000000000100000001000000010000000200000003000000
   fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
   turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
   icon: {fileID: 2800000, guid: daa1f8557456e414f8f030d62cc1fcea, type: 3}
   name: Megalovania
   speed: 5
+  cost: 5

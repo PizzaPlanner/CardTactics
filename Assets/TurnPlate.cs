@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class TurnPlate : MonoBehaviour
 {
     enum TurnState
@@ -16,25 +15,28 @@ public class TurnPlate : MonoBehaviour
     [SerializeField] RectTransform actionsPanel;
     [SerializeField] RectTransform currentActionPanel;
 
-    int playersTotal, playersReadyMask;
     private TurnState state;
-
-    public bool TurnComplete(int player) => 0 != (playersReadyMask & (1 << player));
-
-    public static TurnPlate Current { get; private set; }
 
     List<(int, Card)> cardsThisRound;
     Queue<(int, Card)> cardsToPlay;
     (int, Card) currentAction;
 
-    [SerializeField] RectTransform playerUnreadyBadgePrefab;
+    [SerializeField] PlayerPendingBadge playerUnreadyBadgePrefab;
 
-    public void RegisterPlayer(int player)
+    public void Register(Deck deck)
     {
+        var player = deck.Player;
         var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
-        badge.GetComponentInChildren<Image>().color = Board.PlayerColor(player);
-        badge.SetParent(readyPanel);
-        badge.SetSiblingIndex(player);
+        badge.Deck = deck;
+        badge.transform.SetParent(readyPanel);
+    }
+
+    public bool NextPlayerPrepareTurn()
+    {
+        var next = GetComponentInChildren<PlayerPendingBadge>(false);
+        if (!next) return false;
+        next.Deck.Show();
+        return true;
     }
 
     public void SetPlayerReady(int player, Card[] cards)
@@ -49,11 +51,9 @@ public class TurnPlate : MonoBehaviour
         {
             cardsThisRound.Add((player, card));
         }
-        foreach (Transform badge in readyPanel)
-        {
-            if (badge.gameObject.activeSelf)
-                return;
-        }
+
+        if (NextPlayerPrepareTurn())
+            return;
         Progress();
     }
 
@@ -68,7 +68,6 @@ public class TurnPlate : MonoBehaviour
                 cardsToPlay.Enqueue(item);
                 var indicator = item.Item2.TurnIndicator(Board.PlayerColor(item.Item1));
                 indicator.SetParent(actionsPanel);
-                indicator.sizeDelta = new Vector2(80, 75);
             }
             actionsPanel.parent.gameObject.SetActive(true);
             cardsThisRound.Clear();
@@ -91,7 +90,6 @@ public class TurnPlate : MonoBehaviour
 
     internal void StartTurn()
     {
-        Current = this;
         state = TurnState.Planning;
         cardsThisRound = new List<(int, Card)>();
         cardsToPlay = new Queue<(int, Card)>();
@@ -102,6 +100,8 @@ public class TurnPlate : MonoBehaviour
         {
             child.gameObject.SetActive(true);
         }
+
+        NextPlayerPrepareTurn();
     }
 
     public void Next()

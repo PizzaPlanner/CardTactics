@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Skill
   Name: Move
   Icon: {fileID: 21300000, guid: 266477eb906763d46b37ac632564ac06, type: 3}
+  SkippableWithInput: 1
   Range: 4
   RangeType: 0

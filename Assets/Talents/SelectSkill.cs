@@ -6,10 +6,9 @@ public class SelectSkill : Skill
 {
     public TargetType TargetFilter;
 
-    protected override bool OnActivate(int player, Card card, Tile selection)
+    protected override bool OnActivate(int player, Card card)
     {
-        FindObjectOfType<Board>().ShowPlacementTiles(TargetFilter);
-        return true;
+        return FindObjectOfType<Board>().ShowPlacementTiles(TargetFilter) > 0;
     }
 
     protected override void OnPreview()
