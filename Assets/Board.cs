@@ -79,7 +79,7 @@ public class Board : MonoBehaviour
                     TryNextSkill();
                 }
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && cardSkillProgress > 0)
             {
                 Reset();
                 PlayNextSkill(true);

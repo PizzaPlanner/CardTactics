@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49388f5c34328b64db46c7d3053427b5, type: 3}
   m_Name: SelectAlly
   m_EditorClassIdentifier: 
-  Name: Select
+  Name: Select Ally
   Icon: {fileID: 21300000, guid: 9eebccca1db475a499cebb4b3051d964, type: 3}
+  SkippableWithInput: 0
   TargetFilter: 4

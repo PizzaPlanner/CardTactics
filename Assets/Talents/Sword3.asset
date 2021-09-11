@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eca1fbe3c4fc174dab91a3a0e781531, type: 3}
   m_Name: Sword3
   m_EditorClassIdentifier: Assembly-CSharp::Skill
-  Name: Sword
+  Name: Damage 3
   Icon: {fileID: 21300000, guid: 84c4156cf9f90cc4a8132105e90aa39c, type: 3}
-  SkippableWithInput: 1
+  SkippableWithInput: 0
   Filter: 2
   MinRange: 1
   MaxRange: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac574066f03c39b488aa6bd6a32ee6c9, type: 3}
   m_Name: FaceAny
   m_EditorClassIdentifier: 
-  Name: Face
+  Name: Look at
   Icon: {fileID: 21300000, guid: a98dbc77a453f6d4eb9c67c2ba711dcb, type: 3}
   SkippableWithInput: 1
   TargetFilter: 2147483647

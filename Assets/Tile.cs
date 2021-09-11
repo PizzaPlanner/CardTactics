@@ -85,7 +85,7 @@ public class Tile : MonoBehaviour
     {
         Hovered = this;
         transform.position += new Vector3(0, 0.2f, 0);
-        InfoPanel.Show(this);
+        // InfoPanel.Show(this);
         if (Pathing.LastCalculatedPath != null)
             foreach (var tile in Pathing.LastCalculatedPath)
                 tile.SetIndicator(TargetIndicator.Path);
@@ -97,7 +97,7 @@ public class Tile : MonoBehaviour
         Hovered = null;
         transform.position -= new Vector3(0, 0.2f, 0);
         // ClearGhost();
-        InfoPanel.Hide();
+        // InfoPanel.Hide();
         if (Pathing.LastCalculatedPath != null)
             foreach (var tile in Pathing.LastCalculatedPath)
                 tile.SetIndicator(TargetIndicator.Valid);

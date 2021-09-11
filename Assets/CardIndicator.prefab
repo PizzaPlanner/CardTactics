@@ -141,6 +141,7 @@ MonoBehaviour:
   Name: {fileID: 0}
   Cost: {fileID: 0}
   Speed: {fileID: 0}
+  ShowTooltipOnHover: 1
 --- !u!1 &5700368293238001184
 GameObject:
   m_ObjectHideFlags: 0

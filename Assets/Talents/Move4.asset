@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4c939e445402c42b51ea5e0ed1dcba, type: 3}
   m_Name: Move4
   m_EditorClassIdentifier: Assembly-CSharp::Skill
-  Name: Move
+  Name: Move 4
   Icon: {fileID: 21300000, guid: 266477eb906763d46b37ac632564ac06, type: 3}
   SkippableWithInput: 1
   Range: 4

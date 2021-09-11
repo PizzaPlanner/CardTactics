@@ -708,6 +708,7 @@ MonoBehaviour:
   Name: {fileID: 8234453658721896202}
   Cost: {fileID: 1093273034629520948}
   Speed: {fileID: 3457406641278097469}
+  ShowTooltipOnHover: 1
 --- !u!95 &7253167755595225657
 Animator:
   serializedVersion: 4

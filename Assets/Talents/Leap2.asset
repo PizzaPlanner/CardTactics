@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4c939e445402c42b51ea5e0ed1dcba, type: 3}
   m_Name: Leap2
   m_EditorClassIdentifier: Assembly-CSharp::Skill
-  Name: Move
-  Icon: {fileID: 21300000, guid: 996551402e368dc4e859e23c9f8d6b60, type: 3}
+  Name: Jump 2
+  Icon: {fileID: 21300000, guid: 39ac7601d5a3e894fbb2fe7722402f4c, type: 3}
   SkippableWithInput: 1
   Range: 2
   RangeType: 1

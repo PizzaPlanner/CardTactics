@@ -53,7 +53,6 @@
      <Compile Include="Assets\3rdParty\RPG Character Animation Pack FREE\Elements\ImageEffects\Scripts\Bloom.cs" />
      <Compile Include="Assets\3rdParty\ConsolePro\ConsoleProDebug.cs" />
      <Compile Include="Assets\3rdParty\ConsolePro\Remote\LiteNetLib\NetSerializer.cs" />
-     <Compile Include="Assets\InfoPanel.cs" />
      <Compile Include="Assets\3rdParty\RPG Character Animation Pack FREE\SuperCharacterController\SuperCharacterController\Math3d.cs" />
      <Compile Include="Assets\3rdParty\ConsolePro\Remote\LiteNetLib\NetDataWriter.cs" />
      <Compile Include="Assets\Tile.cs" />
@@ -109,6 +108,9 @@
      <Compile Include="Assets\SkillProgressBar.cs" />
      <Compile Include="Assets\PlayerPendingBadge.cs" />
      <Compile Include="Assets\PlanningPanel.cs" />
+     <Compile Include="Assets\SkillItem.cs" />
+     <Compile Include="Assets\SkillDisplay.cs" />
+     <Compile Include="Assets\UnitStatusBar.cs" />
      <None Include="Assets\3rdParty\RPG Character Animation Pack FREE\Elements\ImageEffects\Shaders\Tonemapper.shader" />
      <None Include="Assets\3rdParty\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\3rdParty\RPG Character Animation Pack FREE\Elements\ImageEffects\Shaders\GlobalFog.shader" />

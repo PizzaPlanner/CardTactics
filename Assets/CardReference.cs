@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardReference : MonoBehaviour
+public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeReference] public Card Reference;
 
@@ -10,8 +11,12 @@ public class CardReference : MonoBehaviour
     public Text Cost;
     public Text Speed;
 
-    void Start()
+    [SerializeField] bool ShowTooltipOnHover;
+
+    void OnEnable()
     {
+        if (Reference == null)
+            return;
         Icon.sprite = Sprite.Create(Reference.Icon, new Rect(0, 0, Reference.Icon.width, Reference.Icon.height), Vector2.zero);
         if (Name != null)
             Name.text = Reference.Name;
@@ -19,5 +24,28 @@ public class CardReference : MonoBehaviour
             Cost.text = Reference.Cost.ToString();
         if (Speed != null)
             Speed.text = Reference.Speed.ToString();
+    }
+
+
+    bool didInit;
+    void Update()
+    {
+        if (Reference != null)
+        {
+            didInit = true;
+            OnEnable();
+        }
+
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (ShowTooltipOnHover && Reference != null)
+            SkillDisplay.Show(Reference);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SkillDisplay.Hide();
     }
 }

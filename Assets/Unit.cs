@@ -14,10 +14,15 @@ public class Unit : MonoBehaviour
 
     public void Damage(float dmg, bool isPreview = false)
     {
-        if (isPreview)
-            LifePreview -= dmg;
-        else
+        if (!isPreview)
+        {
             Life -= dmg;
+            LifePreview = Life;
+        }
+        else
+        {
+            LifePreview -= dmg;
+        }
     }
 
     void Start()

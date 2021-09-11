@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49388f5c34328b64db46c7d3053427b5, type: 3}
   m_Name: SelectEmpty
   m_EditorClassIdentifier: 
-  Name: Select
+  Name: Select Empty Tile
   Icon: {fileID: 21300000, guid: 85c95b94d6a76c04ba1912631e157d34, type: 3}
+  SkippableWithInput: 0
   TargetFilter: 1
