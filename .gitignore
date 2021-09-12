@@ -4,3 +4,7 @@
 /Library
 /obj
 /UserSettings/Layouts
+/Build
+
+/*.sln
+/*.csproj
