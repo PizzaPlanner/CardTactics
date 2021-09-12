@@ -12,4 +12,15 @@ public class UnitCard : Card
     public override bool Once => true;
     public override string Category => "Unit";
     public Passive Passive;
+    protected override void OnInit()
+    {
+        Passive = Passive.Instantiate(Passive);
+        Passive.Source = this;
+    }
+
+    public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
+    {
+        State = CardState.Active;
+        Passive?.OnActivate(settings, player);
+    }
 }

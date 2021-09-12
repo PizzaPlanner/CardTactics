@@ -39,6 +39,15 @@ public class Board : MonoBehaviour
         }
     }
 
+    Skill currentCondition
+    {
+        get
+        {
+            var dep = cardSkillProgress - currentCard.Conditions[cardSkillProgress];
+            return dep < 0 || dep == cardSkillProgress ? null : currentCard.Skills[dep];
+        }
+    }
+
     Card currentCard;
     GameSettings.PlayerInfo currentPlayer;
     int cardSkillProgress;
@@ -88,6 +97,8 @@ public class Board : MonoBehaviour
                 currentCard.Skills[i].OnUse();
         }
 
+        currentCard.Play(Settings, currentPlayer);
+
         Next();
     }
 
@@ -105,6 +116,7 @@ public class Board : MonoBehaviour
     {
         while (cardSkillProgress > 0)
             Reset();
+        currentCard.Skip(Settings, currentPlayer);
         Next();
     }
 
@@ -120,7 +132,6 @@ public class Board : MonoBehaviour
 
     internal void SetTurn(GameSettings.PlayerInfo player, Card card)
     {
-        Debug.Log("New Turn with Card " + card.Name);
         currentCard = card;
         currentPlayer = player;
         cardSkillProgress = 0;
@@ -130,17 +141,11 @@ public class Board : MonoBehaviour
         PlayNextSkill();
     }
 
-    public void InsertBonusSkill(Skill skill)
-    {
-
-    }
-
     void PlayNextSkill(bool tryResetOnFail = false)
     {
         Settings.Map.HideTileSelectionPreview();
-        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency) ?? false)
+        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false)
         {
-            Debug.LogError("Failed to activate Skill #" + currentSkill);
             if (tryResetOnFail && cardSkillProgress > 0 && (
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Queued ||

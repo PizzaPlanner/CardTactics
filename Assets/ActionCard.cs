@@ -22,4 +22,11 @@ public class ActionCard : Card
 
     public override int Speed => speed;
     public override string Category => "Action";
+
+    protected override void OnInit() { }
+
+    public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
+    {
+        State = CardState.Played;
+    }
 }

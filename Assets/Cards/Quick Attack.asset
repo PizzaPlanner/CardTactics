@@ -17,6 +17,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
   - {fileID: 11400000, guid: c13e6466756201d44abad4fe4e5e08d5, type: 2}
   Dependencies: 000000000100000002000000
+  Conditions: 000000000000000000000000
   fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
   turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
   icon: {fileID: 2800000, guid: 2663966faa5210646b09c3cf37c31dac, type: 3}

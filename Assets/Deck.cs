@@ -16,10 +16,30 @@ public class Deck : ScriptableObject
         {
             var cardInst = Card.Instantiate(prefab.Cards[i]);
             for (int j = 0; j < cardInst.Skills.Length; j++)
-                cardInst.Skills[j] = Skill.Instantiate(cardInst.Skills[j]);
-            cardInst.State = Card.CardState.Unplayed;
+            {
+                cardInst.Init();
+            }
             deck.Cards[i] = cardInst;
         }
         return deck;
+    }
+
+    public void ShuffleIfNeccessary()
+    {
+        foreach (var card in Cards)
+        {
+            if (card.State == Card.CardState.Unplayed)
+                return;
+        }
+
+        Shuffle();
+    }
+
+    void Shuffle()
+    {
+        foreach (var card in Cards)
+        {
+            card.Reshuffle();
+        }
     }
 }

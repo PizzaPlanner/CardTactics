@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -97,6 +95,8 @@ public class TurnPlate : MonoBehaviour
         currentAction = (default, null);
         actionsPanel.gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
+        foreach (var player in GameObject.FindObjectOfType<Board>().Settings.Players)
+            player.Deck.ShuffleIfNeccessary();
         foreach (Transform child in readyPanel)
         {
             child.gameObject.SetActive(true);

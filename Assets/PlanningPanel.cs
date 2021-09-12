@@ -38,17 +38,10 @@ public class PlanningPanel : MonoBehaviour
                     cardsDestroyed.Add(card); break;
             }
         }
+        cardsToPlay.Sort((x, y) => x.Speed.CompareTo(y.Speed));
         RoundPointsSpent = 0;
         costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
         confirm.interactable = false;
-        if (cardsToPlay.Count == 0)
-        {
-            cardsToPlay.AddRange(cardsPlayed);
-            foreach (var card in cardsPlayed)
-                card.State = Card.CardState.Unplayed;
-            cardsPlayed.Clear();
-        }
-        cardsToPlay.Sort((x, y) => x.Speed.CompareTo(y.Speed));
 
         CardsLeft.text = cardsToPlay.Count.ToString();
         CardsPlayed.text = cardsPlayed.Count.ToString();
@@ -59,13 +52,6 @@ public class PlanningPanel : MonoBehaviour
         {
             Hide();
             GameObject.FindObjectOfType<TurnPlate>().SetPlayerReady(player, selection.ToArray());
-            foreach (var card in selection)
-            {
-                if (card.Once)
-                    card.State = Card.CardState.Destroyed;
-                else
-                    card.State = Card.CardState.Played;
-            }
         });
 
         foreach (Transform child in cardsPanel)

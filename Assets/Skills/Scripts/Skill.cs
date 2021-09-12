@@ -23,6 +23,8 @@ public abstract class Skill : ScriptableObject
     public string Name;
     public Sprite Icon;
 
+    public Card Source;
+
     protected Tile TargetTile { get; private set; }
     public Tile SourceTile { get; private set; }
     protected Passive TargetPassive => TargetTile.Unit?.Card.Passive;
@@ -48,8 +50,9 @@ public abstract class Skill : ScriptableObject
         }
     }
 
-    public bool Activate(GameSettings.PlayerInfo player, Card card, Skill dependency)
+    public bool Activate(GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
+        if (condition != null && condition.TargetTile == null) return false;
         SourceTile = dependency?.TargetTile;
         if ((dependency?.SkippableWithInput ?? false) && SourceTile == null)
         {
