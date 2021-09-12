@@ -19,3 +19,4 @@ MonoBehaviour:
   fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
   turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
   UnitReference: {fileID: 5882492422521109190, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
+  Passive: {fileID: 11400000, guid: a158d345f4bf68e4e9f1a23a7332b16a, type: 2}

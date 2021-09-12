@@ -10,10 +10,10 @@ public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Text Name;
     public Text Cost;
     public Text Speed;
-
+    public Text Category;
     [SerializeField] bool ShowTooltipOnHover;
 
-    void OnEnable()
+    public void UpdateVisuals()
     {
         if (Reference == null)
             return;
@@ -24,18 +24,13 @@ public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             Cost.text = Reference.Cost.ToString();
         if (Speed != null)
             Speed.text = Reference.Speed.ToString();
+        if (Category != null)
+            Category.text = Reference.Category;
     }
 
-
-    bool didInit;
-    void Update()
+    void Start()
     {
-        if (Reference != null)
-        {
-            didInit = true;
-            OnEnable();
-        }
-
+        UpdateVisuals();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

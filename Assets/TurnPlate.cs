@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,22 +13,22 @@ public class TurnPlate : MonoBehaviour
         Acting
     }
     [SerializeField] RectTransform readyPanel;
+    [SerializeField] RectTransform nextActionsPanel;
     [SerializeField] RectTransform actionsPanel;
     [SerializeField] RectTransform currentActionPanel;
 
     private TurnState state;
 
-    List<(int, Card)> cardsThisRound;
-    Queue<(int, Card)> cardsToPlay;
-    (int, Card) currentAction;
+    List<(GameSettings.PlayerInfo, Card)> cardsThisRound;
+    Queue<(GameSettings.PlayerInfo, Card)> cardsToPlay;
+    (GameSettings.PlayerInfo, Card) currentAction;
 
     [SerializeField] PlayerPendingBadge playerUnreadyBadgePrefab;
 
-    public void Register(Deck deck)
+    public void Register(GameSettings.PlayerInfo player)
     {
-        var player = deck.Player;
         var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
-        badge.Deck = deck;
+        badge.Player = player;
         badge.transform.SetParent(readyPanel);
     }
 
@@ -35,15 +36,15 @@ public class TurnPlate : MonoBehaviour
     {
         var next = GetComponentInChildren<PlayerPendingBadge>(false);
         if (!next) return false;
-        next.Deck.Show();
+        GameObject.FindObjectOfType<PlanningPanel>(true).Show(next.Player);
         return true;
     }
 
-    public void SetPlayerReady(int player, Card[] cards)
+    public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
     {
         foreach (Transform badge in readyPanel)
         {
-            if (badge.GetComponentInChildren<Image>().color == Board.PlayerColor(player))
+            if (badge.GetComponentInChildren<Image>().color == player.Color)
                 badge.gameObject.SetActive(false);
         }
 
@@ -66,10 +67,10 @@ public class TurnPlate : MonoBehaviour
             foreach (var item in cardsThisRound)
             {
                 cardsToPlay.Enqueue(item);
-                var indicator = item.Item2.TurnIndicator(Board.PlayerColor(item.Item1));
-                indicator.SetParent(actionsPanel);
+                var indicator = item.Item2.TurnIndicator(item.Item1.Color);
+                indicator.SetParent(nextActionsPanel);
             }
-            actionsPanel.parent.gameObject.SetActive(true);
+            actionsPanel.gameObject.SetActive(true);
             cardsThisRound.Clear();
         }
 
@@ -78,7 +79,7 @@ public class TurnPlate : MonoBehaviour
             currentAction = cardsToPlay.Dequeue();
             if (currentActionPanel.childCount > 0)
                 Destroy(currentActionPanel.GetChild(0).gameObject);
-            actionsPanel.GetChild(0).SetParent(currentActionPanel);
+            nextActionsPanel.GetChild(0).SetParent(currentActionPanel);
             GameObject.FindObjectOfType<Board>().SetTurn(currentAction.Item1, currentAction.Item2);
             state = TurnState.Acting;
         }
@@ -91,10 +92,10 @@ public class TurnPlate : MonoBehaviour
     internal void StartTurn()
     {
         state = TurnState.Planning;
-        cardsThisRound = new List<(int, Card)>();
-        cardsToPlay = new Queue<(int, Card)>();
-        currentAction = (0, null);
-        actionsPanel.parent.gameObject.SetActive(false);
+        cardsThisRound = new List<(GameSettings.PlayerInfo, Card)>();
+        cardsToPlay = new Queue<(GameSettings.PlayerInfo, Card)>();
+        currentAction = (default, null);
+        actionsPanel.gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
         foreach (Transform child in readyPanel)
         {

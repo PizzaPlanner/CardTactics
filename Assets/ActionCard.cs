@@ -21,4 +21,5 @@ public class ActionCard : Card
     public override string Name => name;
 
     public override int Speed => speed;
+    public override string Category => "Action";
 }

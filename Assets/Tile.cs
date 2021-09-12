@@ -30,6 +30,10 @@ public enum Facing
 
 public class Tile : MonoBehaviour
 {
+
+#if UNITY_EDITOR
+    public Texture2D EditorImage;
+#endif
     public struct PathingData
     {
         public int G, H;

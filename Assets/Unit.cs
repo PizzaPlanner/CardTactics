@@ -1,12 +1,14 @@
 using UnityEngine;
 public class Unit : MonoBehaviour
 {
-    public int Player { get => player; set { player = value; GetComponent<Outline>().OutlineColor = Board.PlayerColor(value); } }
-    int player;
+    public GameSettings.PlayerInfo Player { get => player; set { player = value; GetComponent<Outline>().OutlineColor = value.Color; } }
+    GameSettings.PlayerInfo player;
     public int Level;
     public int Rank;
     public string Name;
     public Texture2D Icon;
+
+    public UnitCard Card;
 
     public float MaxLife;
     public float Life { get; private set; }
@@ -17,11 +19,15 @@ public class Unit : MonoBehaviour
         if (!isPreview)
         {
             Life -= dmg;
+            if (Life > MaxLife)
+                Life = MaxLife;
             LifePreview = Life;
         }
         else
         {
             LifePreview -= dmg;
+            if (LifePreview > MaxLife)
+                LifePreview = MaxLife;
         }
     }
 

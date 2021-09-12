@@ -22,6 +22,14 @@ public class SkillDisplay : MonoBehaviour
     {
         instance.Reference = card;
         instance.GetComponent<CardReference>().Reference = card;
+        instance.GetComponent<CardReference>().UpdateVisuals();
+        if (card is UnitCard unitCard)
+        {
+            instance.GetComponent<UnitDisplay>().Reference = unitCard;
+        }
+        foreach (var filter in instance.GetComponentsInChildren<UICategoryFilter>(true))
+            filter.gameObject.SetActive(filter.RequiredCategory == card.Category);
+
         instance.gameObject.SetActive(true);
     }
 

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a7684169160f644af9eae8288a841c, type: 3}
+  m_Name: Test Game Settings
+  m_EditorClassIdentifier: 
+  Map: {fileID: 11400000, guid: 29ff7ac5ad31f294395c7a984259b415, type: 2}
+  Players:
+  - Deck: {fileID: 11400000, guid: eb46f61de492c5e47b8f29d0de62b2ed, type: 2}
+    Team: 0
+    IsAI: 0
+    Color: {r: 1, g: 0.3234423, b: 0.2980392, a: 1}
+  - Deck: {fileID: 11400000, guid: a9e5b9c6efd370a428a1ac2b6d0a46ba, type: 2}
+    Team: 1
+    IsAI: 0
+    Color: {r: 0, g: 0.4862745, b: 1, a: 1}

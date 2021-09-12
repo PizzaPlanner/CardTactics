@@ -4,11 +4,22 @@ using UnityEngine.UI;
 
 public abstract class Card : ScriptableObject
 {
+    public enum CardState
+    {
+        Unplayed,
+        Played,
+        Active,
+        Destroyed
+    }
+
+    public CardState State;
+
     public abstract Texture2D Icon { get; }
     public abstract string Name { get; }
     public abstract int Speed { get; }
     public abstract int Cost { get; }
     public abstract bool Once { get; }
+    public abstract string Category { get; }
 
     public Skill[] Skills;
     public int[] Dependencies;

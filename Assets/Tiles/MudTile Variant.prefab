@@ -8,6 +8,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -20,6 +24,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -29,14 +37,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198310788336134634, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
@@ -63,5 +63,9 @@ PrefabInstance:
       propertyPath: Type
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+      propertyPath: EditorImage
+      value: 
+      objectReference: {fileID: 2800000, guid: b9f60ba94a46eaa4f9dfba22cbb3f002, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}

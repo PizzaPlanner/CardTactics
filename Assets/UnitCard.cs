@@ -10,4 +10,6 @@ public class UnitCard : Card
     public Unit UnitReference;
     public override int Cost => 5;
     public override bool Once => true;
+    public override string Category => "Unit";
+    public Passive Passive;
 }

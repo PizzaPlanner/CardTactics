@@ -1,0 +1,36 @@
+using System;
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "Skills/Move")]
+public class MoveSkill : Skill
+{
+    public int Range;
+    public RangeType RangeType;
+
+    Unit unit;
+    Facing rotation;
+
+    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    {
+        if (SourceTile?.Unit == null)
+            return false;
+        unit = SourceTile.Unit;
+        rotation = SourceTile.Facing;
+        return Settings.Map.ShowRange(SourceTile, 0, Range, TargetType.Empty, RangeType, player) > 0;
+    }
+
+    protected override void OnPreview()
+    {
+        unit.Move(SourceTile, TargetTile);
+    }
+
+    public override void OnUse()
+    {
+    }
+
+    protected override void OnCancel()
+    {
+        unit.Move(TargetTile, SourceTile);
+        SourceTile.RotateUnit(rotation);
+    }
+}
