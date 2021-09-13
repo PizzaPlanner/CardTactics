@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ActionCard : Card
 {
     [SerializeField] Sprite icon;
-    [SerializeField] string name;
+    [SerializeField] new string name;
     [Range(1, 100)]
     [SerializeField] int speed;
 

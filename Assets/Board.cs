@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
@@ -22,6 +18,7 @@ public class Board : MonoBehaviour
     {
         Settings = GameSettings.Create(settingsPrefab);
         Settings.Map.Create();
+        Settings.Map.RevealArea(0);
         foreach (var player in Settings.Players)
         {
             TurnPanel.Register(player);
@@ -58,21 +55,25 @@ public class Board : MonoBehaviour
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
-                if (Tile.Hovered == null) return;
-                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
-                {
-                    currentSkill.Preview(Tile.Hovered);
-                    skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Queued);
-                    TryNextSkill();
-                }
+                SelectTile(Tile.Hovered);
             }
             if (Input.GetMouseButtonDown(1) && cardSkillProgress > 0)
             {
                 Reset();
                 PlayNextSkill(true);
             }
+        }
+    }
+
+    void SelectTile(Tile tile)
+    {
+        if (tile.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
+        {
+            currentSkill.Preview(tile);
+            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Queued);
+            TryNextSkill();
         }
     }
 

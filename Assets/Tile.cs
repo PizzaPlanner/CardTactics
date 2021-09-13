@@ -62,6 +62,8 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
+    public int Area;
+
     public TileType Type;
 
     public Unit Unit;

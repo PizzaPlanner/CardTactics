@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c065a5e75158df546b2e7e8a6c04d716, type: 3}
+  m_Script: {fileID: 11500000, guid: 205914ceb9c9c54459d385e5c628c85b, type: 3}
   m_Name: BadTime
   m_EditorClassIdentifier: 
   Name: Bad Time
@@ -17,4 +17,6 @@ MonoBehaviour:
     have one.
   Icon: {fileID: 21300000, guid: daa1f8557456e414f8f030d62cc1fcea, type: 3}
   Source: {fileID: 0}
-  Skill: {fileID: 11400000, guid: 2a8e5cb09f85af8498135e09ae4f5ffa, type: 2}
+  Skill: {fileID: 11400000, guid: 8a5555d0550b6c74fb5f94e95053f23e, type: 2}
+  OneCardPerPassive: 1
+  InitialState: 2

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class Passive : ScriptableObject
@@ -6,7 +7,7 @@ public abstract class Passive : ScriptableObject
     public string Description;
     public Sprite Icon;
 
-    public Card Source;
+    [NonSerialized] public Card Source;
 
     public abstract void OnRoundStart(GameSettings settings, GameSettings.PlayerInfo player);
 }

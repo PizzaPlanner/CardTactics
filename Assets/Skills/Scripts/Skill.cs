@@ -23,7 +23,7 @@ public abstract class Skill : ScriptableObject
     public string Name;
     public Sprite Icon;
 
-    public Card Source;
+    [NonSerialized] public Card Source;
 
     protected Tile TargetTile { get; private set; }
     public Tile SourceTile { get; private set; }

@@ -4,18 +4,10 @@ using UnityEngine.UI;
 
 public class TurnPlate : MonoBehaviour
 {
-    enum TurnState
-    {
-        Planning,
-        Started,
-        Acting
-    }
     [SerializeField] RectTransform readyPanel;
     [SerializeField] RectTransform nextActionsPanel;
     [SerializeField] RectTransform actionsPanel;
     [SerializeField] RectTransform currentActionPanel;
-
-    private TurnState state;
 
     List<(GameSettings.PlayerInfo, Card)> cardsThisRound;
     Queue<(GameSettings.PlayerInfo, Card)> cardsToPlay;
@@ -60,6 +52,8 @@ public class TurnPlate : MonoBehaviour
 
     void Progress()
     {
+        var board = GameObject.FindObjectOfType<Board>();
+        board.Settings.Map.CheckTriggers(board.Settings);
         if (cardsThisRound.Count > 0)
         {
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
@@ -81,8 +75,7 @@ public class TurnPlate : MonoBehaviour
             if (currentActionPanel.childCount > 0)
                 Destroy(currentActionPanel.GetChild(0).gameObject);
             nextActionsPanel.GetChild(0).SetParent(currentActionPanel);
-            GameObject.FindObjectOfType<Board>().SetTurn(currentAction.Item1, currentAction.Item2);
-            state = TurnState.Acting;
+            board.SetTurn(currentAction.Item1, currentAction.Item2);
         }
         else
         {
@@ -92,7 +85,6 @@ public class TurnPlate : MonoBehaviour
 
     internal void StartTurn()
     {
-        state = TurnState.Planning;
         cardsThisRound = new List<(GameSettings.PlayerInfo, Card)>();
         cardsToPlay = new Queue<(GameSettings.PlayerInfo, Card)>();
         currentAction = (default, null);
@@ -120,7 +112,6 @@ public class TurnPlate : MonoBehaviour
                 }
             }
         }
-
 
         NextPlayerPrepareTurn();
     }
