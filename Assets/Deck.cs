@@ -65,9 +65,9 @@ public class Deck : ScriptableObject
         }
     }
 
-    public void ExtendWith(Card card, Card source, Card.CardState initialState)
+    public void ExtendWith(Card cardPrefab, Card source, Card.CardState initialState)
     {
-        var newCard = Instantiate(card);
+        var newCard = Instantiate(cardPrefab);
         newCard.Init(source, initialState);
 
         var listC = Cards.ToList();

@@ -9,6 +9,8 @@ public class GainCardSkill : Skill
     [SerializeField] Card NewCardPrefab;
     [SerializeField] Card.CardState NewCardInitialState;
 
+    public Card CardPrefab => NewCardPrefab;
+
     protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
     {
         Player = player;

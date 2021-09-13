@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e0cf603a9a0bda45b5718ed41db56ff, type: 3}
   m_Name: Sans
   m_EditorClassIdentifier: 
+  IsVirtual: 0
   Class: {fileID: 11400000, guid: 9f30c883e3920954e997db4f39820a2f, type: 2}
   Skills:
   - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
   - {fileID: 11400000, guid: 2d262de7389bfd94b82c92d110302b5d, type: 2}
   Dependencies: 0000000001000000
   Conditions: 0000000000000000
-  fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
-  turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
   UnitReference: {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
-  Passive: {fileID: 0}
+  Passive: {fileID: 11400000, guid: 625052d911d767e4e856a00a96f2d9c9, type: 2}
   Capacities:
   - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     MaxNumber: 12

@@ -392,6 +392,7 @@ MonoBehaviour:
   actionsPanel: {fileID: 7932604248579767107}
   currentActionPanel: {fileID: 8409519954689538013}
   playerUnreadyBadgePrefab: {fileID: -8869639201410996745, guid: e88d822a2bb4f7e44b6b60f7a15e6098, type: 3}
+  turnIndicatorPrefab: {fileID: 519444780935583591, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
 --- !u!1 &5185950597631948062
 GameObject:
   m_ObjectHideFlags: 0

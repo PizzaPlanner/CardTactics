@@ -13,6 +13,7 @@ public class PlanningPanel : MonoBehaviour
 
     [SerializeField] RectTransform passivePanel;
     [SerializeField] PassiveIndicator passiveIndicatorPrefab;
+    [SerializeField] CardDisplay cardPrefab;
 
     int RoundPointsSpent;
 
@@ -30,10 +31,10 @@ public class PlanningPanel : MonoBehaviour
         foreach (var card in player.Deck.Cards)
         {
             if (card.State != Card.CardState.Active) continue;
-            if (card is UnitCard commander && commander.Passive?.State == Card.CardState.Active)
+            if (card is PassiveCard pcard && pcard.State == Card.CardState.Active)
             {
                 var item = Instantiate(passiveIndicatorPrefab);
-                item.Passive = commander.Passive.Passive;
+                item.Passive = pcard.Passive;
                 item.transform.SetParent(passivePanel);
                 hasItems = true;
             }
@@ -78,26 +79,27 @@ public class PlanningPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (var cardPrefab in cardsToPlay)
+        foreach (var card in cardsToPlay)
         {
-            var card = cardPrefab.FullCard();
-            card.SetParent(cardsPanel);
-            card.GetComponent<Button>().onClick.AddListener(() =>
+            var visual = Instantiate(cardPrefab);
+            visual.SetCard(card);
+            visual.transform.SetParent(cardsPanel);
+            visual.GetComponent<Button>().onClick.AddListener(() =>
             {
-                if (selection.Contains(cardPrefab))
+                if (selection.Contains(card))
                 {
-                    selection.Remove(cardPrefab);
-                    RoundPointsSpent -= cardPrefab.Cost;
+                    selection.Remove(card);
+                    RoundPointsSpent -= card.Cost;
                 }
                 else
                 {
-                    RoundPointsSpent += cardPrefab.Cost;
-                    selection.Add(cardPrefab);
+                    RoundPointsSpent += card.Cost;
+                    selection.Add(card);
                 }
-                card.GetComponent<Button>().animator.SetBool("IsActive", selection.Contains(cardPrefab));
+                visual.GetComponent<Button>().animator.SetBool("IsActive", selection.Contains(card));
                 confirm.interactable = selection.Count != 0 && RoundPointsSpent <= deck.RoundPointsFree;
                 costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
-                foreach (var otherCard in cardsPanel.GetComponentsInChildren<CardReference>(false))
+                foreach (var otherCard in cardsPanel.GetComponentsInChildren<CardDisplay>(false))
                 {
                     if (selection.Contains(otherCard.Reference) || RoundPointsSpent + otherCard.Reference.Cost <= deck.RoundPointsFree)
                     {

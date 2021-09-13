@@ -1,20 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(CardDisplay))]
 public class UnitDisplay : MonoBehaviour
 {
-    public UnitCard Reference;
-
     [SerializeField] Text Life, MaxLife, Passive;
     [SerializeField] RectTransform CapacityPanel;
 
     [SerializeField] Image CapacityIconPrefab;
 
-    void OnEnable()
+    public void UpdateVisuals()
     {
+        var Reference = GetComponent<CardDisplay>().Reference as UnitCard;
         if (Reference == null) return;
 
         if (Life != null)

@@ -17,11 +17,14 @@ public class PassiveIndicator : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (Passive.Source != null)
-            SkillDisplay.Show(Passive.Source);
+        {
+            CardDisplay.Tooltip.SetCard(Passive.Source);
+            CardDisplay.Tooltip.gameObject.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        SkillDisplay.Hide();
+        CardDisplay.Tooltip.gameObject.SetActive(false);
     }
 }

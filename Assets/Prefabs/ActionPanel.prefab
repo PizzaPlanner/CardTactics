@@ -498,6 +498,7 @@ MonoBehaviour:
   confirm: {fileID: 3749071442529867730}
   passivePanel: {fileID: 3259601858514485196}
   passiveIndicatorPrefab: {fileID: 3197912709111493316, guid: fa9bb8bd108b96f46b10fd2863621918, type: 3}
+  cardPrefab: {fileID: -3313291656261730026, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
 --- !u!1 &5357591012680158114
 GameObject:
   m_ObjectHideFlags: 0

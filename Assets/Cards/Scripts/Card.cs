@@ -20,6 +20,8 @@ public abstract class Card : ScriptableObject
 
     public virtual void Play(GameSettings settings, GameSettings.PlayerInfo player) { State = CardState.Played; }
 
+    public void Destroy() { State = CardState.Destroyed; }
+
     public virtual void Skip(GameSettings settings, GameSettings.PlayerInfo player)
     {
         State = CardState.Skipped;
@@ -57,24 +59,6 @@ public abstract class Card : ScriptableObject
     public Skill[] Skills;
     public int[] Dependencies;
     public int[] Conditions;
-
-    [SerializeField] protected RectTransform fullCardPrefab;
-    [SerializeField] protected RectTransform turnIndicatorPrefab;
-
-    public RectTransform FullCard()
-    {
-        var item = GameObject.Instantiate(fullCardPrefab);
-        item.GetComponent<CardReference>().Reference = this;
-        return item;
-    }
-
-    public RectTransform TurnIndicator(Color playerColor)
-    {
-        var item = GameObject.Instantiate(turnIndicatorPrefab);
-        item.GetComponent<CardReference>().Reference = this;
-        item.GetChild(1).GetComponent<Image>().color = playerColor;
-        return item;
-    }
 
     public void ExtendWith(Skill newSkillPrefab, Card source, int index, int dependency, int condition)
     {

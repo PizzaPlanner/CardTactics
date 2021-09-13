@@ -23,6 +23,8 @@ public class TurnPlate : MonoBehaviour
 
     [SerializeField] PlayerPendingBadge playerUnreadyBadgePrefab;
 
+    [SerializeField] CardDisplay turnIndicatorPrefab;
+
     public void Register(GameSettings.PlayerInfo player)
     {
         var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
@@ -65,8 +67,9 @@ public class TurnPlate : MonoBehaviour
             foreach (var item in cardsThisRound)
             {
                 cardsToPlay.Enqueue(item);
-                var indicator = item.Item2.TurnIndicator(item.Item1.Color);
-                indicator.SetParent(nextActionsPanel);
+                var indicator = Instantiate(turnIndicatorPrefab);
+                indicator.SetCard(item.Item2);
+                indicator.transform.SetParent(nextActionsPanel);
             }
             actionsPanel.gameObject.SetActive(true);
             cardsThisRound.Clear();
@@ -95,12 +98,29 @@ public class TurnPlate : MonoBehaviour
         currentAction = (default, null);
         actionsPanel.gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
-        foreach (var player in GameObject.FindObjectOfType<Board>().Settings.Players)
-            player.Deck.ShuffleIfNeccessary();
         foreach (Transform child in readyPanel)
         {
             child.gameObject.SetActive(true);
         }
+
+        var settings = GameObject.FindObjectOfType<Board>().Settings;
+        foreach (var player in settings.Players)
+        {
+            foreach (Card card in player.Deck.Cards)
+            {
+                if (card is ActionCard acard && acard.Temporary && acard.State == Card.CardState.Unplayed) acard.Destroy();
+            }
+            player.Deck.ShuffleIfNeccessary();
+            foreach (Card card in player.Deck.Cards)
+            {
+                if (card is not PassiveCard pcard) continue;
+                if (pcard.State == Card.CardState.Active)
+                {
+                    pcard.Passive.OnRoundStart(settings, player);
+                }
+            }
+        }
+
 
         NextPlayerPrepareTurn();
     }

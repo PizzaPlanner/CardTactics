@@ -12,7 +12,9 @@ public class ActionCard : Card
 
     [Range(0, 10)]
     [SerializeField] int cost;
+
     public bool Once;
+    public bool Temporary;
 
 
     public override int Cost => cost;
@@ -26,6 +28,11 @@ public class ActionCard : Card
 
     public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
     {
-        State = Once ? CardState.Destroyed : CardState.Played;
+        State = Once || Temporary ? CardState.Destroyed : CardState.Played;
+    }
+
+    public override void Skip(GameSettings settings, GameSettings.PlayerInfo player)
+    {
+        State = Temporary ? CardState.Destroyed : CardState.Played;
     }
 }

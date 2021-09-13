@@ -19,6 +19,5 @@ public class PassiveCard : Card
     public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
     {
         State = CardState.Active;
-        Passive.OnActivate(settings, player);
     }
 }

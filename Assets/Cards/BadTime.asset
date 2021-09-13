@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f9381ee10975244f84265183a265f63, type: 3}
+  m_Name: BadTime
+  m_EditorClassIdentifier: 
+  IsVirtual: 1
+  Class: {fileID: 11400000, guid: bce54789696c1ff4a92d46de62a40aba, type: 2}
+  Skills: []
+  Dependencies: 
+  Conditions: 
+  fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+  turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
+  Passive: {fileID: 11400000, guid: 9fc15d308b191a243b6c27f15676e91d, type: 2}

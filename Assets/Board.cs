@@ -144,7 +144,8 @@ public class Board : MonoBehaviour
     void PlayNextSkill(bool tryResetOnFail = false)
     {
         Settings.Map.HideTileSelectionPreview();
-        if (currentCard.Skills.Length > 0 && (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false))
+        if (currentCard.Skills.Length == 0) return;
+        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false)
         {
             if (tryResetOnFail && cardSkillProgress > 0 && (
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||

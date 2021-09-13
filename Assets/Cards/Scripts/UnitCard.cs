@@ -13,18 +13,12 @@ public class UnitCard : Card
 
     public Deck.Capacity[] Capacities;
 
-    protected override void OnInit()
-    {
-        if (Passive != null)
-        {
-            Passive = PassiveCard.Instantiate(Passive);
-            Passive.Init(this);
-        }
-    }
+    protected override void OnInit() { }
 
     public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
     {
         State = CardState.Active;
-        Passive?.Play(settings, player);
+        if (Passive != null)
+            player.Deck.ExtendWith(Passive, this, Card.CardState.Active);
     }
 }

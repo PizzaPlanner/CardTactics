@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeReference] public Card Reference;
 
@@ -13,6 +13,19 @@ public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Text ClassName;
     public Image ClassIcon;
     [SerializeField] bool ShowTooltipOnHover;
+    [SerializeField] bool IsTooltip;
+
+    public static CardDisplay Tooltip { get; private set; }
+
+    void Awake()
+    {
+        if (IsTooltip)
+        {
+            Tooltip = this;
+            ShowTooltipOnHover = false;
+            gameObject.SetActive(false);
+        }
+    }
 
     public void UpdateVisuals()
     {
@@ -29,24 +42,33 @@ public class CardReference : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             ClassName.text = Reference.Class.Name;
         if (ClassIcon != null)
             ClassIcon.sprite = Reference.Class.Icon;
+    }
+
+    public void SetCard(Card card)
+    {
+        Reference = card;
 
         foreach (var filter in GetComponentsInChildren<UICategoryFilter>(true))
             filter.gameObject.SetActive(filter.RequiredCategory == Reference.Class);
-    }
 
-    void Start()
-    {
+        if (GetComponent<UnitDisplay>() != null && card is UnitCard)
+            GetComponent<UnitDisplay>().UpdateVisuals();
+        if (GetComponent<ActionDisplay>() != null && card is ActionCard)
+            GetComponent<ActionDisplay>().UpdateVisuals();
         UpdateVisuals();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (ShowTooltipOnHover && Reference != null)
-            SkillDisplay.Show(Reference);
+        {
+            CardDisplay.Tooltip.SetCard(Reference);
+            CardDisplay.Tooltip.gameObject.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        SkillDisplay.Hide();
+        CardDisplay.Tooltip.gameObject.SetActive(false);
     }
 }
