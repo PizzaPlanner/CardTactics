@@ -6,7 +6,7 @@ public class Unit : MonoBehaviour
     public int Level;
     public int Rank;
     public string Name;
-    public Texture2D Icon;
+    public Sprite Icon;
 
     public UnitCard Card;
 

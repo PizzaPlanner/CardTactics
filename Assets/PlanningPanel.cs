@@ -11,6 +11,9 @@ public class PlanningPanel : MonoBehaviour
     [SerializeField] RectTransform cardsPanel;
     [SerializeField] Button confirm;
 
+    [SerializeField] RectTransform passivePanel;
+    [SerializeField] PassiveIndicator passiveIndicatorPrefab;
+
     int RoundPointsSpent;
 
     public void Show(GameSettings.PlayerInfo player)
@@ -20,6 +23,22 @@ public class PlanningPanel : MonoBehaviour
 
         Name.text = deck.name;
         Name.color = player.Color;
+
+        foreach (Transform t in passivePanel)
+            GameObject.Destroy(t.gameObject);
+        bool hasItems = false;
+        foreach (var card in player.Deck.Cards)
+        {
+            if (card.State != Card.CardState.Active) continue;
+            if (card is UnitCard commander && commander.Passive?.State == Card.CardState.Active)
+            {
+                var item = Instantiate(passiveIndicatorPrefab);
+                item.Passive = commander.Passive.Passive;
+                item.transform.SetParent(passivePanel);
+                hasItems = true;
+            }
+        }
+        passivePanel.gameObject.SetActive(hasItems);
 
         var selection = new List<Card>();
         var cardsToPlay = new List<Card>();

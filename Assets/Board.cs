@@ -136,7 +136,7 @@ public class Board : MonoBehaviour
         currentPlayer = player;
         cardSkillProgress = 0;
         foreach (var skill in card.Skills)
-            skill.Init(Settings, card);
+            skill.Init(Settings);
         skillProgressBar.SetSkills(card.Skills, TryNextSkill);
         PlayNextSkill();
     }
@@ -144,7 +144,7 @@ public class Board : MonoBehaviour
     void PlayNextSkill(bool tryResetOnFail = false)
     {
         Settings.Map.HideTileSelectionPreview();
-        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false)
+        if (currentCard.Skills.Length > 0 && (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false))
         {
             if (tryResetOnFail && cardSkillProgress > 0 && (
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||

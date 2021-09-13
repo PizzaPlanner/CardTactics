@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Skill
   Name: 3
   Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
-  SkippableWithInput: 0
+  Source: {fileID: 0}
+  SkippableWithInput: 1
   Filter: 2
   MinRange: 1
   MaxRange: 1

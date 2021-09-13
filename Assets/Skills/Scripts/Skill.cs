@@ -27,36 +27,29 @@ public abstract class Skill : ScriptableObject
 
     protected Tile TargetTile { get; private set; }
     public Tile SourceTile { get; private set; }
-    protected Passive TargetPassive => TargetTile.Unit?.Card.Passive;
-    protected Passive SourcePassive => SourceTile.Unit?.Card.Passive;
-    public bool IsOptional => SkippableWithInput || dependents.Count == 0;
+    public bool IsOptional => SkippableWithInput;
     public bool IsPreviewed { get; private set; }
 
     protected GameSettings Settings { get; private set; }
 
     [SerializeField] bool SkippableWithInput;
 
-    List<Skill> dependents;
-
-    public void Init(GameSettings settings, Card card)
+    public void Init(GameSettings settings)
     {
         Settings = settings;
-        dependents = new List<Skill>();
-        for (int i = 0; i < card.Dependencies.Length; i++)
-        {
-            var dep = card.Skills[i - card.Dependencies[i]];
-            if (dep == this && card.Skills[i] != this)
-                dependents.Add(dep);
-        }
     }
 
     public bool Activate(GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
-        if (condition != null && condition.TargetTile == null) return false;
-        SourceTile = dependency?.TargetTile;
-        if ((dependency?.SkippableWithInput ?? false) && SourceTile == null)
+        if (condition?.IsPreviewed == false) return false;
+        if (dependency != null)
         {
-            SourceTile = dependency.SourceTile;
+            if (!dependency.IsPreviewed && !dependency.SkippableWithInput)
+                return false;
+            if (dependency.IsPreviewed)
+                SourceTile = dependency.TargetTile;
+            else
+                SourceTile = dependency.SourceTile;
         }
         return OnActivate(player, card);
     }

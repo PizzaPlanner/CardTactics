@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Coward
   Description: If an Action ends with a Melee Attack, the Attacker may move 1 afterwards.
+  Icon: {fileID: 21300000, guid: 80e381430f4019a439a1af7b26a98eb2, type: 3}
+  Source: {fileID: 0}
   Skill: {fileID: 11400000, guid: 61466e25f7b2e384689beb594372f7b6, type: 2}

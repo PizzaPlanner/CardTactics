@@ -18,7 +18,8 @@ public abstract class Card : ScriptableObject
     public CardState State { get => state; protected set { OnStateChange(state, value); state = value; } }
     CardState state;
 
-    public abstract void Play(GameSettings settings, GameSettings.PlayerInfo player);
+    public virtual void Play(GameSettings settings, GameSettings.PlayerInfo player) { State = CardState.Played; }
+
     public virtual void Skip(GameSettings settings, GameSettings.PlayerInfo player)
     {
         State = CardState.Skipped;
@@ -31,22 +32,26 @@ public abstract class Card : ScriptableObject
 
     protected virtual void OnStateChange(CardState oldState, CardState newState) { }
 
-    public abstract Texture2D Icon { get; }
+    public bool IsVirtual;
+
+    public abstract Sprite Icon { get; }
     public abstract string Name { get; }
     public abstract int Speed { get; }
     public abstract int Cost { get; }
-    public abstract bool Once { get; }
-    public abstract string Category { get; }
+    public CardClass Class;
+    public Card Source { get; private set; }
 
     protected abstract void OnInit();
-    public void Init()
+    public void Init(Card source = null, CardState initialState = CardState.Unplayed)
     {
-        State = CardState.Unplayed;
+        State = initialState;
+        Source = source;
         for (int i = 0; i < Skills.Length; i++)
         {
             Skills[i] = Skill.Instantiate(Skills[i]);
             Skills[i].Source = this;
         }
+        OnInit();
     }
 
     public Skill[] Skills;

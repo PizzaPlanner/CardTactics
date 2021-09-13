@@ -5,5 +5,5 @@ using UnityEngine.UI;
 
 public class UICategoryFilter : MonoBehaviour
 {
-    public string RequiredCategory;
+    public CardClass RequiredCategory;
 }
