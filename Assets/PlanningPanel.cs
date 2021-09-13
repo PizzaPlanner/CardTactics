@@ -17,6 +17,11 @@ public class PlanningPanel : MonoBehaviour
 
     int RoundPointsSpent;
 
+    void Awake()
+    {
+        Hide();
+    }
+
     public void Show(GameSettings.PlayerInfo player)
     {
         var deck = player.Deck;

@@ -5,7 +5,7 @@ public class RevealAreaTrigger : Trigger
 {
     public int Area;
 
-    public override void Execute(GameSettings settings)
+    public override void Execute(GameSettings settings, Tile tile)
     {
         settings.Map.RevealArea(Area);
     }

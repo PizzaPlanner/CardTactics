@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96a7684169160f644af9eae8288a841c, type: 3}
   m_Name: Tutorial Game Settings
   m_EditorClassIdentifier: 
-  Map: {fileID: 11400000, guid: 29ff7ac5ad31f294395c7a984259b415, type: 2}
+  Map: {fileID: 11400000, guid: dbf23382e8a150e4b98ce33ec190c0da, type: 2}
   Players:
-  - Deck: {fileID: 11400000, guid: a9e5b9c6efd370a428a1ac2b6d0a46ba, type: 2}
+  - Deck: {fileID: 11400000, guid: 00576620d4b687b4a880abe846a1523b, type: 2}
     Team: 0
     IsAI: 0
     Color: {r: 0.2980392, g: 0.76480496, b: 1, a: 1}
+    RegisterLater: 0
   - Deck: {fileID: 11400000, guid: a9e5b9c6efd370a428a1ac2b6d0a46ba, type: 2}
     Team: 1
     IsAI: 1
     Color: {r: 0.26415092, g: 0, b: 0, a: 1}
+    RegisterLater: 1

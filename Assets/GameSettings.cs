@@ -1,4 +1,5 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu]
@@ -11,6 +12,9 @@ public class GameSettings : ScriptableObject
         public int Team;
         public bool IsAI;
         public Color Color;
+
+        [ShowIf("IsAI")]
+        public bool RegisterLater;
     }
 
     public Map Map;
@@ -29,7 +33,8 @@ public class GameSettings : ScriptableObject
                 Deck = Deck.Create(prefab.Players[i].Deck),
                 Color = prefab.Players[i].Color,
                 Team = prefab.Players[i].Team,
-                IsAI = prefab.Players[i].IsAI
+                IsAI = prefab.Players[i].IsAI,
+                RegisterLater = prefab.Players[i].RegisterLater
             };
         }
 

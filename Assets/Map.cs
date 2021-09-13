@@ -135,11 +135,11 @@ public class Map : SerializedScriptableObject
             if (tile == null) continue;
             var trigger = TilePrefabs[tile.Position.x, tile.Position.y].Trigger;
             if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(tile))
-                Trigger(settings, trigger);
+                Trigger(settings, trigger, tile);
         }
     }
 
-    public void Trigger(GameSettings settings, int id)
+    public void Trigger(GameSettings settings, int id, Tile tile)
     {
         if (ActivatedTriggers.Contains(id))
             return;
@@ -151,7 +151,7 @@ public class Map : SerializedScriptableObject
             return;
         }
 
-        Triggers[id - 1].Execute(settings);
+        Triggers[id - 1].Execute(settings, tile);
     }
 
     public void RevealArea(int area)

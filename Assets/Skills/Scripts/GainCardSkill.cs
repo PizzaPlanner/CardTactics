@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skills/Gain Card")]
 public class GainCardSkill : Skill
 {
-    GameSettings.PlayerInfo Player;
+    [NonSerialized] public GameSettings.PlayerInfo Player;
 
     [SerializeField] Card NewCardPrefab;
     [SerializeField] Card.CardState NewCardInitialState;

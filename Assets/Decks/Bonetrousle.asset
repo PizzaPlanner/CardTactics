@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Bonetrousle
   m_EditorClassIdentifier: 
   Cards:
-  - {fileID: 11400000, guid: 0a4bb3ddb23a19046afa6c26cfce2359, type: 2}
   - {fileID: 11400000, guid: 24c77ae992fd2f1479092269250509e7, type: 2}
   - {fileID: 11400000, guid: 24c77ae992fd2f1479092269250509e7, type: 2}
   - {fileID: 11400000, guid: c02447a7d2480554f92f8440272e58d8, type: 2}

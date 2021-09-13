@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnPanel: {fileID: 1871533224}
-  settingsPrefab: {fileID: 11400000, guid: f3cb2b4d9de79624e9462692fcfd0495, type: 2}
+  settingsPrefab: {fileID: 11400000, guid: b49776d8251c79c40bc28152d9a212ec, type: 2}
   Settings: {fileID: 0}
   skillProgressBar: {fileID: 722798963}
 --- !u!4 &78512298

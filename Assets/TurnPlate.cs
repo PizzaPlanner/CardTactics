@@ -19,25 +19,47 @@ public class TurnPlate : MonoBehaviour
 
     public void Register(GameSettings.PlayerInfo player)
     {
+        foreach (var pendingBadge in GetComponentsInChildren<PlayerPendingBadge>(true))
+        {
+            if (pendingBadge.Player == player)
+                return;
+        }
+
+        Debug.Log("Here is a badge for " + player);
         var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
         badge.Player = player;
         badge.transform.SetParent(readyPanel);
     }
 
+    void AIPrepare(GameSettings.PlayerInfo aiPlayer)
+    {
+        SetPlayerReady(aiPlayer, new Card[0] { });
+        Debug.Log("TODO: Init AI");
+    }
+
     public bool NextPlayerPrepareTurn()
     {
         var next = GetComponentInChildren<PlayerPendingBadge>(false);
-        if (!next) return false;
+        if (!next || next.IsReady) return false;
+        if (next.Player.IsAI)
+        {
+            AIPrepare(next.Player);
+            return true;
+        }
+
         GameObject.FindObjectOfType<PlanningPanel>(true).Show(next.Player);
         return true;
     }
 
     public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
     {
-        foreach (Transform badge in readyPanel)
+        foreach (var pendingBadge in GetComponentsInChildren<PlayerPendingBadge>())
         {
-            if (badge.GetComponentInChildren<Image>().color == player.Color)
-                badge.gameObject.SetActive(false);
+            if (pendingBadge.Player == player)
+            {
+                pendingBadge.IsReady = true;
+                pendingBadge.gameObject.SetActive(false);
+            }
         }
 
         foreach (var card in cards)
@@ -93,6 +115,7 @@ public class TurnPlate : MonoBehaviour
         foreach (Transform child in readyPanel)
         {
             child.gameObject.SetActive(true);
+            child.GetComponent<PlayerPendingBadge>().IsReady = false;
         }
 
         var settings = GameObject.FindObjectOfType<Board>().Settings;

@@ -21,7 +21,8 @@ public class Board : MonoBehaviour
         Settings.Map.RevealArea(0);
         foreach (var player in Settings.Players)
         {
-            TurnPanel.Register(player);
+            if (!player.RegisterLater)
+                TurnPanel.Register(player);
         }
         TurnPanel.StartTurn();
     }
@@ -138,7 +139,7 @@ public class Board : MonoBehaviour
         cardSkillProgress = 0;
         foreach (var skill in card.Skills)
             skill.Init(Settings);
-        skillProgressBar.SetSkills(card.Skills, TryNextSkill);
+        skillProgressBar.SetSkills(card.Skills, TryNextSkill, card is not UnitCard);
         PlayNextSkill();
     }
 

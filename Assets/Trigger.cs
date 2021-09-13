@@ -5,5 +5,5 @@ public abstract class Trigger : ScriptableObject
 {
     public bool ShouldTrigger(Tile tile) => tile.Unit != null;
 
-    public abstract void Execute(GameSettings settings);
+    public abstract void Execute(GameSettings settings, Tile tile);
 }

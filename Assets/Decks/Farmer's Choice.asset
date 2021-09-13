@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Farmer's Choice
   m_EditorClassIdentifier: 
   Cards:
-  - {fileID: 11400000, guid: 4c4ea01eba07aab489889840dbda2633, type: 2}
   - {fileID: 11400000, guid: 067f3a80c7e0d744bacf2d37da18b13c, type: 2}
   - {fileID: 11400000, guid: 067f3a80c7e0d744bacf2d37da18b13c, type: 2}
   - {fileID: 11400000, guid: 24c77ae992fd2f1479092269250509e7, type: 2}
@@ -21,3 +20,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 92fd2c70933d41448a94ac96b4230aa6, type: 2}
   - {fileID: 11400000, guid: 4a11e22061ffa0247874d360d2e636ca, type: 2}
   - {fileID: 11400000, guid: 4a11e22061ffa0247874d360d2e636ca, type: 2}
+  Commander: {fileID: 11400000, guid: 4c4ea01eba07aab489889840dbda2633, type: 2}

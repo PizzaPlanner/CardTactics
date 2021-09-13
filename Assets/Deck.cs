@@ -30,17 +30,11 @@ public class Deck : ScriptableObject
     public static Deck Create(Deck prefab)
     {
         var deck = Deck.Instantiate(prefab);
-        deck.Cards = new Card[prefab.Cards.Length];
         deck.RoundPointsFree = POINTS_PER_ROUND_BASE;
-        for (int i = 0; i < prefab.Cards.Length; i++)
-        {
-            var cardInst = Card.Instantiate(prefab.Cards[i]);
-            for (int j = 0; j < cardInst.Skills.Length; j++)
-            {
-                cardInst.Init();
-            }
-            deck.Cards[i] = cardInst;
-        }
+        deck.Cards = new Card[0];
+        foreach (var card in prefab.Cards)
+            deck.ExtendWith(card, null, Card.CardState.Skipped);
+        deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
         return deck;
     }
 
