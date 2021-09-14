@@ -12,7 +12,8 @@ public partial class Map : SerializedScriptableObject
         Area,
         Trigger,
         Height,
-        Spawn
+        Spawn,
+        Marker
     }
 
     [EnumToggleButtons]
@@ -75,6 +76,8 @@ public partial class Map : SerializedScriptableObject
                 value.Height += Event.current.button == 0 ? 1 : -1;
             else if (editMode == MapEditMode.Spawn && Event.current.type == EventType.MouseDown)
                 value.SpawnId += Event.current.button == 0 ? 1 : -1;
+            else if (editMode == MapEditMode.Marker && Event.current.type == EventType.MouseDown)
+                value.MarkerId += Event.current.button == 0 ? 1 : -1;
 
             GUI.changed = true;
             Event.current.Use();
@@ -84,13 +87,15 @@ public partial class Map : SerializedScriptableObject
         {
             GUI.DrawTexture(rect, value.Prefab.EditorImage);
             if (editMode == MapEditMode.Area)
-                GUI.Label(rect, value.Area.ToString());
+                GUI.Label(rect, value.Area.ToString(), EditorStyles.centeredGreyMiniLabel);
             if (editMode == MapEditMode.Height)
-                GUI.Label(rect, value.Height.ToString());
+                GUI.Label(rect, value.Height.ToString(), EditorStyles.centeredGreyMiniLabel);
             if (editMode == MapEditMode.Trigger && value.Trigger > 0)
-                GUI.Label(rect, value.Trigger.ToString());
+                GUI.Label(rect, value.Trigger.ToString(), EditorStyles.centeredGreyMiniLabel);
             if (editMode == MapEditMode.Spawn && value.SpawnId > 0)
-                GUI.Label(rect, value.SpawnId.ToString());
+                GUI.Label(rect, value.SpawnId.ToString(), EditorStyles.centeredGreyMiniLabel);
+            if (editMode == MapEditMode.Marker && value.MarkerId > 0)
+                GUI.Label(rect, value.MarkerId.ToString(), EditorStyles.centeredGreyMiniLabel);
         }
         return value;
     }

@@ -44,6 +44,26 @@ public partial class Map : SerializedScriptableObject
         }
     }
 
+    public void ShowMarker(int id)
+    {
+        foreach (var tile in Tiles)
+        {
+            if (tile == null) continue;
+            if (TilePrefabs[tile.Position.x, tile.Position.y].MarkerId == id)
+                tile.SetMarker(true);
+        }
+    }
+
+    public void HideMarker(int id)
+    {
+        foreach (var tile in Tiles)
+        {
+            if (tile == null) continue;
+            if (TilePrefabs[tile.Position.x, tile.Position.y].MarkerId == id)
+                tile.SetMarker(false);
+        }
+    }
+
     public void Trigger(GameSettings settings, int id, Tile tile)
     {
         if (ActivatedTriggers.Contains(id))

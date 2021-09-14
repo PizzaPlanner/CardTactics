@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -68,7 +69,6 @@ public class Tile : MonoBehaviour
 
     public Unit Unit;
 
-    Renderer render;
 
     public (int x, int y) Position;
 
@@ -77,9 +77,12 @@ public class Tile : MonoBehaviour
 
     public PathingData Pathing;
 
+    [SerializeField]
+    [ChildGameObjectsOnly]
+    GameObject Marker;
+
     void Start()
     {
-        render = GetComponent<Renderer>();
         if (Unit != null)
         {
             Unit = Instantiate(Unit);
@@ -117,6 +120,11 @@ public class Tile : MonoBehaviour
         {
             OnClickedValidTarget?.Invoke(this);
         }
+    }
+
+    public void SetMarker(bool active)
+    {
+        Marker.gameObject.SetActive(active);
     }
 
     public static int Distance(Tile start, Tile end) => Mathf.Abs(start.Position.x - end.Position.x) + Mathf.Abs(start.Position.y - end.Position.y);
