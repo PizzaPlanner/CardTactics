@@ -15,6 +15,8 @@ public class GameSettings : ScriptableObject
 
         [ShowIf("IsAI")]
         public bool RegisterLater;
+
+        public LooseCondition LooseCondition;
     }
 
     public Map Map;
@@ -34,7 +36,8 @@ public class GameSettings : ScriptableObject
                 Color = prefab.Players[i].Color,
                 Team = prefab.Players[i].Team,
                 IsAI = prefab.Players[i].IsAI,
-                RegisterLater = prefab.Players[i].RegisterLater
+                RegisterLater = prefab.Players[i].RegisterLater,
+                LooseCondition = prefab.Players[i].LooseCondition
             };
         }
 

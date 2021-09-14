@@ -130,10 +130,8 @@ public class TurnPlate : MonoBehaviour
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
-            Debug.Log(player.Deck.Commander.State);
-            if (player.Deck.Commander.State == Card.CardState.Destroyed)
+            if (player.LooseCondition.Check(settings, player))
             {
-                Debug.Log("Bye");
                 deadPlayers.Add(player);
                 continue;
             }
@@ -164,7 +162,7 @@ public class TurnPlate : MonoBehaviour
 
         if (!NextPlayerPrepareTurn())
         {
-            Debug.Log("No Player left! Defeat!");
+            Debug.Log("No Player left! Game ended!");
             LoadingScreen.GoToMenu();
         }
     }
