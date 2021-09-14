@@ -5,14 +5,9 @@ using UnityEngine.UI;
 
 public class PlanningPanel : MonoBehaviour
 {
-    [SerializeField] Text Name, CardsLeft, CardsPlayed, CardsRemoved;
-
     [SerializeField] Text costText;
     [SerializeField] RectTransform cardsPanel;
     [SerializeField] Button confirm;
-
-    [SerializeField] RectTransform passivePanel;
-    [SerializeField] PassiveIndicator passiveIndicatorPrefab;
     [SerializeField] CardDisplay cardPrefab;
 
     int RoundPointsSpent;
@@ -26,25 +21,6 @@ public class PlanningPanel : MonoBehaviour
     {
         var deck = player.Deck;
         gameObject.SetActive(true);
-
-        Name.text = deck.name;
-        Name.color = player.Color;
-
-        foreach (Transform t in passivePanel)
-            GameObject.Destroy(t.gameObject);
-        bool hasItems = false;
-        foreach (var card in player.Deck.Cards)
-        {
-            if (card.State != Card.CardState.Active) continue;
-            if (card is PassiveCard pcard && pcard.State == Card.CardState.Active)
-            {
-                var item = Instantiate(passiveIndicatorPrefab);
-                item.Passive = pcard.Passive;
-                item.transform.SetParent(passivePanel);
-                hasItems = true;
-            }
-        }
-        passivePanel.gameObject.SetActive(hasItems);
 
         var selection = new List<Card>();
         var cardsToPlay = new List<Card>();
@@ -67,10 +43,6 @@ public class PlanningPanel : MonoBehaviour
         RoundPointsSpent = 0;
         costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
         confirm.interactable = false;
-
-        CardsLeft.text = cardsToPlay.Count.ToString();
-        CardsPlayed.text = cardsPlayed.Count.ToString();
-        CardsRemoved.text = cardsDestroyed.Count.ToString();
 
         confirm.onClick.RemoveAllListeners();
         confirm.onClick.AddListener(() =>

@@ -13,20 +13,20 @@ public class TurnPlate : MonoBehaviour
     Queue<(GameSettings.PlayerInfo, Card)> cardsToPlay;
     (GameSettings.PlayerInfo, Card) currentAction;
 
-    [SerializeField] PlayerPendingBadge playerUnreadyBadgePrefab;
+    [SerializeField] PlayerInfoPanel playerInfoPanelPrefab;
 
     [SerializeField] CardDisplay turnIndicatorPrefab;
 
-    Dictionary<GameSettings.PlayerInfo, PlayerPendingBadge> registeredPlayers;
+    Dictionary<GameSettings.PlayerInfo, PlayerInfoPanel> registeredPlayers;
 
     public void Register(GameSettings.PlayerInfo player)
     {
         if (registeredPlayers == null)
-            registeredPlayers = new Dictionary<GameSettings.PlayerInfo, PlayerPendingBadge>();
+            registeredPlayers = new Dictionary<GameSettings.PlayerInfo, PlayerInfoPanel>();
 
         if (registeredPlayers.ContainsKey(player)) return;
 
-        var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
+        var badge = GameObject.Instantiate(playerInfoPanelPrefab);
         badge.Player = player;
         badge.transform.SetParent(readyPanel);
 
@@ -61,14 +61,7 @@ public class TurnPlate : MonoBehaviour
 
     public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
     {
-        foreach (var pendingBadge in GetComponentsInChildren<PlayerPendingBadge>())
-        {
-            if (pendingBadge.Player == player)
-            {
-                pendingBadge.IsReady = true;
-                pendingBadge.gameObject.SetActive(false);
-            }
-        }
+        registeredPlayers[player].IsReady = true;
 
         foreach (var card in cards)
         {
@@ -152,11 +145,14 @@ public class TurnPlate : MonoBehaviour
                     pcard.Passive.OnRoundStart(settings, player);
                 }
             }
+
+            kvp.Value.UpdateValues();
         }
 
         foreach (var player in deadPlayers)
         {
             Debug.Log("A player died!");
+            Destroy(registeredPlayers[player].gameObject);
             registeredPlayers.Remove(player);
         }
 

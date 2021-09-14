@@ -31,6 +31,12 @@ public class Board : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        if (Settings == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
+            LoadingScreen.GoToMenu();
+    }
+
     Card currentCard;
 
     [SerializeField] SkillProgressBar skillProgressBar;

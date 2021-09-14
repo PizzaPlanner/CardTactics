@@ -11,7 +11,7 @@ public class PassiveIndicator : MonoBehaviour, IPointerEnterHandler, IPointerExi
     void Start()
     {
         GetComponentInChildren<Image>().sprite = Passive.Icon;
-        GetComponentInChildren<Text>().text = Passive.Name;
+        // GetComponentInChildren<Text>().text = Passive.Name;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
