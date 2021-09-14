@@ -6,9 +6,9 @@ public class SelectSkill : Skill
 {
     public TargetType TargetFilter;
 
-    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
     {
-        return Settings.Map.ShowPlacementTiles(TargetFilter, player) > 0;
+        return Settings.Map.ShowPlacementTiles(TargetFilter, player);
     }
 
     protected override void OnPreview()

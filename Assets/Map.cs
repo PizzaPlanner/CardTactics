@@ -118,7 +118,7 @@ public partial class Map : SerializedScriptableObject
         }
     }
 
-    public int ShowSpawnTiles(TargetType filter, GameSettings settings, GameSettings.PlayerInfo player)
+    public Tile[] ShowSpawnTiles(TargetType filter, GameSettings settings, GameSettings.PlayerInfo player)
     {
         var id = 0;
         for (int i = 0; i < settings.Players.Length; i++)
@@ -130,24 +130,26 @@ public partial class Map : SerializedScriptableObject
             }
         }
 
-        int count = 0;
+        List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
         {
             if (tile == null || TilePrefabs[tile.Position.x, tile.Position.y].SpawnId != id) continue;
-            count += TileMatches(tile, filter, player) ? 1 : 0;
+            if (TileMatches(tile, filter, player))
+                valid.Add(tile);
         }
-        return count;
+        return valid.ToArray();
     }
 
-    public int ShowPlacementTiles(TargetType filter, GameSettings.PlayerInfo player)
+    public Tile[] ShowPlacementTiles(TargetType filter, GameSettings.PlayerInfo player)
     {
-        int count = 0;
+        List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
-            count += TileMatches(tile, filter, player) ? 1 : 0;
+            if (TileMatches(tile, filter, player))
+                valid.Add(tile);
         }
-        return count;
+        return valid.ToArray();
     }
 
     public void HideTileSelectionPreview()
@@ -162,6 +164,8 @@ public partial class Map : SerializedScriptableObject
 
     public bool TileMatches(Tile tile, TargetType filter, GameSettings.PlayerInfo player)
     {
+        if (!tile.gameObject.activeSelf)
+            return false;
         var validTarget = ((filter & TargetType.Empty) > 0) && (tile.Unit == null);
         if (tile.Unit != null)
         {
@@ -175,9 +179,10 @@ public partial class Map : SerializedScriptableObject
         return validTarget;
     }
 
-    public int ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, GameSettings.PlayerInfo player)
+    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, GameSettings.PlayerInfo player)
     {
-        int matches = 0;
+
+        List<Tile> valid = new List<Tile>();
         List<Tile> rangeTiles = new List<Tile>();
         foreach (var tile in Tiles)
         {
@@ -193,7 +198,7 @@ public partial class Map : SerializedScriptableObject
             // Check TargetType
             if (TileMatches(tile, filter, player))
             {
-                matches++;
+                valid.Add(tile);
                 rangeTiles.Add(tile);
             }
         }
@@ -204,10 +209,10 @@ public partial class Map : SerializedScriptableObject
                 if (!Tile.FindPath(origin, tile, maxRange, rangeTiles))
                 {
                     tile.SetIndicator(TargetIndicator.Hidden);
-                    matches--;
+                    valid.Remove(tile);
                 }
             }
         }
-        return matches;
+        return valid.ToArray();
     }
 }

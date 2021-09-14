@@ -111,6 +111,7 @@ public abstract class Card : ScriptableObject
                 Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
                 if (Skills[i].Activate(player, this, dependency, condition))
                 {
+                    Debug.Log("We have ST");
                     yield return new WaitUntil(() => SkillTarget != null || WantCardSkip || WantReset || (WantSkillSkip && Skills[i].IsOptional));
 
                     if (SkillTarget != null)

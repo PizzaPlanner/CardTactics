@@ -11,10 +11,10 @@ public class GainCardSkill : Skill
 
     public Card CardPrefab => NewCardPrefab;
 
-    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
     {
         Player = player;
-        return Settings.Map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player) > 0;
+        return Settings.Map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);
     }
 
     protected override void OnPreview()

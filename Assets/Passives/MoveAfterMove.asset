@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MoveAfterMove
   m_EditorClassIdentifier: 
   Name: Traveller
-  Description: After each Move Action, Move 2 more.
+  Description: Each Movement Skill has 3 more Range
   Icon: {fileID: 21300000, guid: 3be71d7fcfe309d44b06c0dcb6e98414, type: 3}
   RangeFilter: 0
   Modifier: 3

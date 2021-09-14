@@ -8,7 +8,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CardDisplay))]
 public class UnitDisplay : MonoBehaviour
 {
-    [SerializeField] Text Life, MaxLife, Passive;
+    [SerializeField] Text Life, MaxLife, PassiveText;
+    [SerializeField] Image PassiveIcon;
     [SerializeField] RectTransform CapacityPanel;
 
     [SerializeField] Image CapacityIconPrefab;
@@ -22,8 +23,10 @@ public class UnitDisplay : MonoBehaviour
             Life.text = Reference.UnitReference.LifePreview.ToString();
         if (MaxLife != null)
             MaxLife.text = Reference.UnitReference.MaxLife.ToString();
-        if (Passive != null)
-            Passive.text = Reference.Passive != null ? Reference.Passive.Passive.Description : "";
+        if (PassiveText != null)
+            PassiveText.text = Reference.Passive != null ? Reference.Passive.Passive.Description : "";
+        if (PassiveIcon != null)
+            PassiveIcon.sprite = Reference.Passive?.Icon;
         if (CapacityPanel != null)
         {
             foreach (Transform t in CapacityPanel)

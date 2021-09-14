@@ -9,13 +9,12 @@ public class PlaceSkill : Skill
 
     public bool Success { get; private set; }
 
-    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
     {
-        if (card is not UnitCard unitCard) return false;
+        if (card is not UnitCard unitCard) return new Tile[0];
         this.card = unitCard;
         this.player = player;
-        Debug.Log("I activate!");
-        return Settings.Map.ShowSpawnTiles(TargetType.Empty, Settings, player) > 0;
+        return Settings.Map.ShowSpawnTiles(TargetType.Empty, Settings, player);
     }
 
     protected override void OnPreview()

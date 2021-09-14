@@ -15,4 +15,6 @@ MonoBehaviour:
   Name: Ally
   Icon: {fileID: 21300000, guid: 13dbe3e19f5da6849a01f0f4678e8f01, type: 3}
   SkippableWithInput: 0
+  AutoSelectOnOnePossibleTile: 1
+  PlayProgress: 0
   TargetFilter: 4

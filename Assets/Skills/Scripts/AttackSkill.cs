@@ -13,10 +13,10 @@ public class AttackSkill : Skill
 
     Unit previewUnit;
 
-    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
     {
-        if ((Filter & TargetType.Empty) > 0) return false;
-        return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player) > 0;
+        if ((Filter & TargetType.Empty) > 0) return new Tile[0];
+        return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
     }
 
     protected override void OnPreview()

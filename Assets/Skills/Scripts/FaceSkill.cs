@@ -12,13 +12,13 @@ public class FaceSkill : Skill
     Facing originalFacing;
     Facing targetFacing;
 
-    protected override bool OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
     {
         var unit = SourceTile?.Unit;
         if (unit == null)
-            return false;
+            return new Tile[0];
         originalFacing = SourceTile.Facing;
-        return Settings.Map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player) > 0;
+        return Settings.Map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player);
     }
 
     protected override void OnPreview()
