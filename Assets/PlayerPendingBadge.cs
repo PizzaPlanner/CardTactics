@@ -5,6 +5,7 @@ public class PlayerPendingBadge : MonoBehaviour
 {
     public GameSettings.PlayerInfo Player;
     public bool IsReady;
+    public bool IsDead;
 
     void Start()
     {

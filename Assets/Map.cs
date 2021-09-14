@@ -1,111 +1,14 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class Map : SerializedScriptableObject
+public partial class Map : SerializedScriptableObject
 {
     public int Width => Tiles.GetLength(0);
     public int Height => Tiles.GetLength(1);
 
     Tile[,] Tiles;
-
-#if UNITY_EDITOR
-    enum MapEditMode
-    {
-        Tile,
-        Area,
-        Trigger
-    }
-
-    [EnumToggleButtons]
-    [ShowInInspector]
-    static MapEditMode editMode;
-
-    [ShowInInspector]
-    [ShowIf("editMode", MapEditMode.Tile)]
-    [AssetList]
-    static Tile drawSelected;
-
-    [ShowInInspector]
-    [ShowIf("editMode", MapEditMode.Area)]
-    [Range(0, 25)]
-    static int drawArea;
-
-    [ShowInInspector]
-    [ShowIf("editMode", MapEditMode.Trigger)]
-    [Range(1, 25)]
-    static int drawTrigger;
-
-    Trigger DrawTriggers(Trigger value)
-    {
-        var x = -1;
-        EditorGUILayout.BeginHorizontal();
-        for (int i = 0; i < Triggers.Length; i++)
-        {
-            if (Triggers[i] == value)
-            {
-                if (x != -1)
-                {
-                    Debug.LogError("The same trigger is referenced multiple Times!");
-                }
-                else
-                {
-                    x = i;
-                }
-            }
-
-        }
-        EditorGUILayout.LabelField((x + 1).ToString(), GUILayout.Width(25));
-
-        var trigger = (Trigger)EditorGUILayout.ObjectField(value, typeof(Trigger), false);
-        EditorGUILayout.EndHorizontal();
-        return trigger;
-    }
-
-    static TilePrefabWithInfo DrawCell(Rect rect, TilePrefabWithInfo value)
-    {
-        if ((Event.current.type == EventType.MouseDrag || Event.current.type == EventType.MouseDown) && rect.Contains(Event.current.mousePosition))
-        {
-            if (value == null)
-                value = new TilePrefabWithInfo();
-            if (editMode == MapEditMode.Tile)
-            {
-                if (Event.current.button == 0)
-                    value.Prefab = drawSelected;
-                else
-                    value.Prefab = null;
-            }
-            else if (editMode == MapEditMode.Area)
-            {
-                if (Event.current.button == 0)
-                    value.Area = drawArea;
-                else
-                    value.Area = 0;
-            }
-            else if (editMode == MapEditMode.Trigger)
-            {
-                if (Event.current.button == 0)
-                    value.Trigger = drawTrigger;
-                else
-                    value.Trigger = 0;
-            }
-            GUI.changed = true;
-            Event.current.Use();
-        }
-
-        if (value?.Prefab != null)
-        {
-            GUI.DrawTexture(rect, value.Prefab.EditorImage);
-            if (editMode == MapEditMode.Area)
-                GUI.Label(rect, value.Area.ToString());
-            if (editMode == MapEditMode.Trigger && value.Trigger > 0)
-                GUI.Label(rect, value.Trigger.ToString());
-        }
-        return value;
-    }
-#endif
 
     [System.Serializable]
     class TilePrefabWithInfo
@@ -113,6 +16,9 @@ public class Map : SerializedScriptableObject
         public Tile Prefab;
         public int Area;
         public int Trigger;
+        public int Height;
+        public int MarkerId;
+        public int SpawnId;
     }
 
     [TitleGroup("Map")]
@@ -129,7 +35,6 @@ public class Map : SerializedScriptableObject
 
     public void CheckTriggers(GameSettings settings)
     {
-        Debug.Log("Check trigger matches");
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
@@ -172,17 +77,19 @@ public class Map : SerializedScriptableObject
             for (int h = 0; h < Height; h++)
             {
                 if (TilePrefabs[w, h]?.Prefab == null) continue;
-                var tile = Instantiate(TilePrefabs[w, h].Prefab, new Vector3(w - Width / 2, 0, h - Height / 2), Quaternion.identity).GetComponent<Tile>();
-                tile.Area = TilePrefabs[w, h].Area;
+                var data = TilePrefabs[w, h];
+                var tile = Instantiate(TilePrefabs[w, h].Prefab, new Vector3(w - Width / 2, data.Height * 0.25f, h - Height / 2), Quaternion.identity).GetComponent<Tile>();
+                tile.Area = data.Area;
                 Tiles[w, h] = tile;
                 tile.Position = (w, h);
                 tile.Neighbours = new List<Tile>();
-                if (w > 0 && Tiles[w - 1, h] != null)
+                if (w > 0 && Tiles[w - 1, h] != null && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w - 1, h].Height) < 2)
                 {
                     Tiles[w, h].Neighbours.Add(Tiles[w - 1, h]);
                     Tiles[w - 1, h].Neighbours.Add(Tiles[w, h]);
                 }
-                if (h > 0 && Tiles[w, h - 1] != null)
+                if (h > 0 && Tiles[w, h - 1] != null
+                && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w, h - 1].Height) < 2)
                 {
                     Tiles[w, h].Neighbours.Add(Tiles[w, h - 1]);
                     Tiles[w, h - 1].Neighbours.Add(Tiles[w, h]);
@@ -190,6 +97,27 @@ public class Map : SerializedScriptableObject
                 tile.gameObject.SetActive(false);
             }
         }
+    }
+
+    public int ShowSpawnTiles(TargetType filter, GameSettings settings, GameSettings.PlayerInfo player)
+    {
+        var id = 0;
+        for (int i = 0; i < settings.Players.Length; i++)
+        {
+            if (settings.Players[i] == player)
+            {
+                id = i + 1;
+                break;
+            }
+        }
+
+        int count = 0;
+        foreach (var tile in Tiles)
+        {
+            if (tile == null || TilePrefabs[tile.Position.x, tile.Position.y].SpawnId != id) continue;
+            count += TileMatches(tile, filter, player) ? 1 : 0;
+        }
+        return count;
     }
 
     public int ShowPlacementTiles(TargetType filter, GameSettings.PlayerInfo player)

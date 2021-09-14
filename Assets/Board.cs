@@ -147,7 +147,8 @@ public class Board : MonoBehaviour
     {
         Settings.Map.HideTileSelectionPreview();
         if (currentCard.Skills.Length == 0) return;
-        if (!currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false)
+        Debug.Log("Play " + currentSkill?.Name);
+        if (!(currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false))
         {
             if (tryResetOnFail && cardSkillProgress > 0 && (
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||
@@ -155,6 +156,7 @@ public class Board : MonoBehaviour
                 skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Failed
                 ))
             {
+                Debug.Log("Try skill reset");
                 Reset();
                 PlayNextSkill(true);
                 return;
@@ -163,6 +165,8 @@ public class Board : MonoBehaviour
             skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Failed);
             if (currentSkill.IsOptional)
                 TryNextSkill();
+            else
+                Skip();
         }
         else
         {

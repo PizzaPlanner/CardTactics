@@ -18,7 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
   - {fileID: 11400000, guid: 2d262de7389bfd94b82c92d110302b5d, type: 2}
   Dependencies: 0000000001000000
-  Conditions: 0000000000000000
+  Conditions: 0000000001000000
   UnitReference: {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
   Passive: {fileID: 11400000, guid: 625052d911d767e4e856a00a96f2d9c9, type: 2}
   Capacities:

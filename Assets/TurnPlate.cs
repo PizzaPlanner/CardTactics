@@ -17,18 +17,20 @@ public class TurnPlate : MonoBehaviour
 
     [SerializeField] CardDisplay turnIndicatorPrefab;
 
+    Dictionary<GameSettings.PlayerInfo, PlayerPendingBadge> registeredPlayers;
+
     public void Register(GameSettings.PlayerInfo player)
     {
-        foreach (var pendingBadge in GetComponentsInChildren<PlayerPendingBadge>(true))
-        {
-            if (pendingBadge.Player == player)
-                return;
-        }
+        if (registeredPlayers == null)
+            registeredPlayers = new Dictionary<GameSettings.PlayerInfo, PlayerPendingBadge>();
 
-        Debug.Log("Here is a badge for " + player);
+        if (registeredPlayers.ContainsKey(player)) return;
+
         var badge = GameObject.Instantiate(playerUnreadyBadgePrefab);
         badge.Player = player;
         badge.transform.SetParent(readyPanel);
+
+        registeredPlayers.Add(player, badge);
     }
 
     void AIPrepare(GameSettings.PlayerInfo aiPlayer)
@@ -36,19 +38,25 @@ public class TurnPlate : MonoBehaviour
         SetPlayerReady(aiPlayer, new Card[0] { });
         Debug.Log("TODO: Init AI");
     }
+    void PlayerPrepare(GameSettings.PlayerInfo player)
+    {
+        GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
+    }
 
     public bool NextPlayerPrepareTurn()
     {
-        var next = GetComponentInChildren<PlayerPendingBadge>(false);
-        if (!next || next.IsReady) return false;
-        if (next.Player.IsAI)
+        foreach (var kvp in registeredPlayers)
         {
-            AIPrepare(next.Player);
-            return true;
+            if (!kvp.Value.IsReady)
+            {
+                if (kvp.Key.IsAI)
+                    AIPrepare(kvp.Key);
+                else
+                    PlayerPrepare(kvp.Key);
+                return true;
+            }
         }
-
-        GameObject.FindObjectOfType<PlanningPanel>(true).Show(next.Player);
-        return true;
+        return false;
     }
 
     public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
@@ -112,15 +120,22 @@ public class TurnPlate : MonoBehaviour
         currentAction = (default, null);
         actionsPanel.gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
-        foreach (Transform child in readyPanel)
-        {
-            child.gameObject.SetActive(true);
-            child.GetComponent<PlayerPendingBadge>().IsReady = false;
-        }
+
+        List<GameSettings.PlayerInfo> deadPlayers = new List<GameSettings.PlayerInfo>();
 
         var settings = GameObject.FindObjectOfType<Board>().Settings;
-        foreach (var player in settings.Players)
+        foreach (var kvp in registeredPlayers)
         {
+            var player = kvp.Key;
+            if (player.Deck.Commander.State == Card.CardState.Destroyed)
+            {
+                deadPlayers.Add(player);
+                continue;
+            }
+
+            kvp.Value.gameObject.SetActive(true);
+            kvp.Value.IsReady = false;
+
             foreach (Card card in player.Deck.Cards)
             {
                 if (card is ActionCard acard && acard.Temporary && acard.State == Card.CardState.Unplayed) acard.Destroy();
@@ -136,7 +151,16 @@ public class TurnPlate : MonoBehaviour
             }
         }
 
-        NextPlayerPrepareTurn();
+        foreach (var player in deadPlayers)
+        {
+            Debug.Log("A player died!");
+            registeredPlayers.Remove(player);
+        }
+
+        if (!NextPlayerPrepareTurn())
+        {
+            Debug.Log("No Player left! Defeat!");
+        }
     }
 
     public void Next()

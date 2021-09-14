@@ -22,6 +22,11 @@ public class Unit : MonoBehaviour
             if (Life > MaxLife)
                 Life = MaxLife;
             LifePreview = Life;
+            if (Life <= 0)
+            {
+                Card?.Destroy();
+                Destroy(gameObject);
+            }
         }
         else
         {
@@ -29,6 +34,7 @@ public class Unit : MonoBehaviour
             if (LifePreview > MaxLife)
                 LifePreview = MaxLife;
         }
+
     }
 
     void Start()

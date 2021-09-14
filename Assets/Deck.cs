@@ -34,7 +34,7 @@ public class Deck : ScriptableObject
         deck.Cards = new Card[0];
         foreach (var card in prefab.Cards)
             deck.ExtendWith(card, null, Card.CardState.Skipped);
-        deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
+        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
         return deck;
     }
 
@@ -58,7 +58,7 @@ public class Deck : ScriptableObject
         }
     }
 
-    public void ExtendWith(Card cardPrefab, Card source, Card.CardState initialState)
+    public T ExtendWith<T>(T cardPrefab, Card source, Card.CardState initialState) where T : Card
     {
         var newCard = Instantiate(cardPrefab);
         newCard.Init(source, initialState);
@@ -66,5 +66,7 @@ public class Deck : ScriptableObject
         var listC = Cards.ToList();
         listC.Add(newCard);
         Cards = listC.ToArray();
+
+        return newCard;
     }
 }

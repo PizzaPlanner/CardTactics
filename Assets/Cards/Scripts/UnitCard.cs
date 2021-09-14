@@ -15,10 +15,21 @@ public class UnitCard : Card
 
     protected override void OnInit() { }
 
+    public override void Skip(GameSettings settings, GameSettings.PlayerInfo player)
+    {
+        State = CardState.Destroyed;
+    }
+
     public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
     {
-        State = CardState.Active;
-        if (Passive != null)
+        State = CardState.Destroyed;
+        foreach (var skill in Skills)
+        {
+            if (skill is PlaceSkill place && place.Success)
+                State = CardState.Active;
+        }
+
+        if (State == CardState.Active && Passive != null)
             player.Deck.ExtendWith(Passive, this, Card.CardState.Active);
     }
 }

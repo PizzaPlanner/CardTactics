@@ -33,10 +33,6 @@ public class AttackSkill : Skill
     public override void OnUse()
     {
         previewUnit.Damage(Damage, false);
-        if (previewUnit.Life <= 0)
-        {
-            Destroy(previewUnit.gameObject);
-        }
     }
 
     protected override void OnCancel()
