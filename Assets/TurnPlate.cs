@@ -82,10 +82,6 @@ public class TurnPlate : MonoBehaviour
 
     void Progress()
     {
-        var board = GameObject.FindObjectOfType<Board>();
-        board.Settings.Map.CheckTriggers(board.Settings);
-        if (board.Paused)
-            return;
         if (cardsThisRound.Count > 0)
         {
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
@@ -100,6 +96,11 @@ public class TurnPlate : MonoBehaviour
             actionsPanel.gameObject.SetActive(true);
             cardsThisRound.Clear();
         }
+
+        var board = GameObject.FindObjectOfType<Board>();
+        board.Settings.Map.CheckTriggers(board.Settings);
+        if (board.Paused)
+            return;
 
         if (cardsToPlay.Count > 0)
         {
@@ -162,6 +163,7 @@ public class TurnPlate : MonoBehaviour
         if (!NextPlayerPrepareTurn())
         {
             Debug.Log("No Player left! Defeat!");
+            LoadingScreen.GoToMenu();
         }
     }
 

@@ -16,11 +16,6 @@ public class DialogueUI : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    void Awake()
-    {
-        gameObject.SetActive(false);
-    }
-
     void Update()
     {
         if (Input.GetMouseButtonDown(0))

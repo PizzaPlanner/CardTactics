@@ -16,7 +16,7 @@ public class Board : MonoBehaviour
     public bool Paused;
 
     // Start is called before the first frame update
-    void Start()
+    public void Initialize(GameSettings settingsPrefab)
     {
         Settings = GameSettings.Create(settingsPrefab);
         Settings.Map.Create();
@@ -25,9 +25,12 @@ public class Board : MonoBehaviour
         foreach (var player in Settings.Players)
         {
             if (!player.RegisterLater)
+            {
                 TurnPanel.Register(player);
+                // if (player.Deck.Commander != null)
+                //     player.Deck.Commander.Play(Settings, player);
+            }
         }
-        TurnPanel.StartTurn();
     }
 
     Skill currentSkill => currentCard.Skills[cardSkillProgress];
