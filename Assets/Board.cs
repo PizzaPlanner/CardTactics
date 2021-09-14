@@ -7,7 +7,6 @@ public class Board : MonoBehaviour
     public TurnPlate TurnPanel;
 
     [HideIf("Settings")]
-    [SerializeField] GameSettings settingsPrefab;
 
     [ShowIf("Settings")]
     [InlineEditor]
@@ -27,112 +26,44 @@ public class Board : MonoBehaviour
             if (!player.RegisterLater)
             {
                 TurnPanel.Register(player);
-                // if (player.Deck.Commander != null)
-                //     player.Deck.Commander.Play(Settings, player);
+                player.Deck.Commander?.Play(Settings, player, null);
             }
         }
     }
 
-    Skill currentSkill => currentCard.Skills[cardSkillProgress];
-    Skill currentDependency
-    {
-        get
-        {
-            var dep = cardSkillProgress - currentCard.Dependencies[cardSkillProgress];
-            return dep < 0 || dep == cardSkillProgress ? null : currentCard.Skills[dep];
-        }
-    }
-
-    Skill currentCondition
-    {
-        get
-        {
-            var dep = cardSkillProgress - currentCard.Conditions[cardSkillProgress];
-            return dep < 0 || dep == cardSkillProgress ? null : currentCard.Skills[dep];
-        }
-    }
-
     Card currentCard;
-    GameSettings.PlayerInfo currentPlayer;
-    int cardSkillProgress;
 
     [SerializeField] SkillProgressBar skillProgressBar;
 
     void Update()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject() && currentCard != null)
         {
             if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
-                SelectTile(Tile.Hovered);
+                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
+                    currentCard.SkillTarget = Tile.Hovered;
             }
-            if (Input.GetMouseButtonDown(1) && cardSkillProgress > 0)
+            if (Input.GetMouseButtonDown(1))
             {
-                Reset();
-                PlayNextSkill(true);
+                currentCard.WantReset = true;
             }
-        }
-    }
-
-    void SelectTile(Tile tile)
-    {
-        if (tile.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
-        {
-            currentSkill.Preview(tile);
-            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Queued);
-            TryNextSkill();
-        }
-    }
-
-    private void TryNextSkill()
-    {
-        cardSkillProgress++;
-        if (cardSkillProgress < currentCard.Skills.Length)
-        {
-            PlayNextSkill();
-        }
-        else
-        {
-            Settings.Map.HideTileSelectionPreview();
         }
     }
 
     public void Confirm()
     {
-        for (int i = 0; i < currentCard.Skills.Length; i++)
-        {
-            if (skillProgressBar.Get(i).State == SkillProgressBarItem.Progress.Queued)
-                currentCard.Skills[i].OnUse();
-        }
-
-        currentCard.Play(Settings, currentPlayer);
-
-        Next();
-    }
-
-    public void Reset()
-    {
-        if (cardSkillProgress <= 0) return;
-        if (cardSkillProgress < currentCard.Skills.Length)
-            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Pending);
-        cardSkillProgress--;
-        currentCard?.Skills[cardSkillProgress].Reset();
-        skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Pending);
+        currentCard.WantComplete = true;
     }
 
     public void Skip()
     {
-        while (cardSkillProgress > 0)
-            Reset();
-        currentCard.Skip(Settings, currentPlayer);
-        Next();
+        currentCard.WantCardSkip = true;
     }
 
     void Next()
     {
         currentCard = null;
-        currentPlayer = null;
-        cardSkillProgress = 0;
         Settings.Map.HideTileSelectionPreview();
         skillProgressBar.Clear();
         TurnPanel.Next();
@@ -141,42 +72,9 @@ public class Board : MonoBehaviour
     internal void SetTurn(GameSettings.PlayerInfo player, Card card)
     {
         currentCard = card;
-        currentPlayer = player;
-        cardSkillProgress = 0;
         foreach (var skill in card.Skills)
             skill.Init(Settings);
-        skillProgressBar.SetSkills(card.Skills, TryNextSkill, card is not UnitCard);
-        PlayNextSkill();
-    }
-
-    void PlayNextSkill(bool tryResetOnFail = false)
-    {
-        Settings.Map.HideTileSelectionPreview();
-        if (currentCard.Skills.Length == 0) return;
-        Debug.Log("Play " + currentSkill?.Name);
-        if (!(currentSkill?.Activate(currentPlayer, currentCard, currentDependency, currentCondition) ?? false))
-        {
-            if (tryResetOnFail && cardSkillProgress > 0 && (
-                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Skipped ||
-                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Queued ||
-                skillProgressBar.Get(cardSkillProgress - 1).State == SkillProgressBarItem.Progress.Failed
-                ))
-            {
-                Debug.Log("Try skill reset");
-                Reset();
-                PlayNextSkill(true);
-                return;
-            }
-
-            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Failed);
-            if (currentSkill.IsOptional)
-                TryNextSkill();
-            else
-                Skip();
-        }
-        else
-        {
-            skillProgressBar.Get(cardSkillProgress).SetProgress(SkillProgressBarItem.Progress.Now);
-        }
+        skillProgressBar.SetSkills(card.Skills, () => currentCard.WantSkillSkip = true, card is not UnitCard);
+        var cr = StartCoroutine(currentCard.Play(Settings, player, Next));
     }
 }

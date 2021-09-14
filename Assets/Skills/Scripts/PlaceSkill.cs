@@ -14,6 +14,7 @@ public class PlaceSkill : Skill
         if (card is not UnitCard unitCard) return false;
         this.card = unitCard;
         this.player = player;
+        Debug.Log("I activate!");
         return Settings.Map.ShowSpawnTiles(TargetType.Empty, Settings, player) > 0;
     }
 
@@ -33,7 +34,7 @@ public class PlaceSkill : Skill
 
     protected override void OnCancel()
     {
-        GameObject.Destroy(TargetTile.Unit);
+        GameObject.Destroy(TargetTile.Unit.gameObject);
         TargetTile.Unit = null;
     }
 }

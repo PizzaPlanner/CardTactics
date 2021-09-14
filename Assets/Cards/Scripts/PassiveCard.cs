@@ -16,8 +16,6 @@ public class PassiveCard : Card
         Passive.Source = this;
     }
 
-    public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
-    {
-        State = CardState.Active;
-    }
+    protected override CardState StateOnPlayed => CardState.Active;
+    protected override CardState StateOnSkipped => CardState.Skipped;
 }

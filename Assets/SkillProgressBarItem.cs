@@ -6,14 +6,8 @@ using UnityEngine.UI;
 
 public class SkillProgressBarItem : MonoBehaviour
 {
-    public enum Progress
-    {
-        Pending,
-        Queued,
-        Skipped,
-        Failed,
-        Now
-    }
+
+    public Skill.Progress State => skill.PlayProgress;
 
     public Button skipButton;
 
@@ -30,26 +24,22 @@ public class SkillProgressBarItem : MonoBehaviour
     public void SetSkill(Skill skill, Action OnSkip)
     {
         this.skill = skill;
-        SetProgress(Progress.Pending);
         Icon.sprite = skill.Icon;
         skipButton.onClick.RemoveAllListeners();
         if (skill.IsOptional)
-            skipButton.onClick.AddListener(() => { SetProgress(Progress.Skipped); OnSkip(); });
+            skipButton.onClick.AddListener(() => OnSkip());
     }
 
-    public Progress State { get; private set; }
-
-    internal void SetProgress(Progress progress)
+    void Update()
     {
-        GetComponent<Image>().sprite = progress switch
+        GetComponent<Image>().sprite = skill.PlayProgress switch
         {
-            Progress.Pending => Pending,
-            Progress.Queued => Queued,
-            Progress.Skipped => Skipped,
-            Progress.Failed => Failed,
-            Progress.Now => Now,
+            Skill.Progress.Pending => Pending,
+            Skill.Progress.Queued => Queued,
+            Skill.Progress.Skipped => Skipped,
+            Skill.Progress.Failed => Failed,
+            Skill.Progress.Now => Now,
         };
-        skipButton.gameObject.SetActive(skill.IsOptional && progress == Progress.Now);
-        State = progress;
+        skipButton.gameObject.SetActive(skill.IsOptional && skill.PlayProgress == Skill.Progress.Now);
     }
 }

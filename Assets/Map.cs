@@ -68,7 +68,6 @@ public partial class Map : SerializedScriptableObject
     {
         if (ActivatedTriggers.Contains(id))
             return;
-        Debug.Log("Triggering " + id);
         ActivatedTriggers.Add(id);
         if (Triggers.Length <= id - 1)
         {

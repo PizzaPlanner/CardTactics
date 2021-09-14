@@ -19,7 +19,7 @@ public class SkillProgressBar : MonoBehaviour
     {
         foreach (var item in GetComponentsInChildren<SkillProgressBarItem>(false))
         {
-            if (item.State == SkillProgressBarItem.Progress.Pending || item.State == SkillProgressBarItem.Progress.Now)
+            if (item.State == Skill.Progress.Pending || item.State == Skill.Progress.Now)
             {
                 confirmButton.interactable = false;
                 return;

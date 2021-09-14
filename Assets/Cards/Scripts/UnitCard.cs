@@ -1,5 +1,6 @@
+using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 [CreateAssetMenu(menuName = "Card/Commander")]
 public class UnitCard : Card
@@ -15,21 +16,19 @@ public class UnitCard : Card
 
     protected override void OnInit() { }
 
-    public override void Skip(GameSettings settings, GameSettings.PlayerInfo player)
-    {
-        State = CardState.Destroyed;
-    }
+    protected override CardState StateOnPlayed => CardState.Active;
+    protected override CardState StateOnSkipped => CardState.Destroyed;
 
-    public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
+    public override IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, Action onComplete)
     {
-        State = CardState.Destroyed;
-        foreach (var skill in Skills)
-        {
-            if (skill is PlaceSkill place && place.Success)
-                State = CardState.Active;
-        }
+        yield return PlaySkills(settings, player);
+        State = CardState.Active;
+        if (Skills[0] is not PlaceSkill place || place.PlayProgress != Skill.Progress.Queued)
+            State = CardState.Destroyed;
 
         if (State == CardState.Active && Passive != null)
             player.Deck.ExtendWith(Passive, this, Card.CardState.Active);
+
+        onComplete?.Invoke();
     }
 }

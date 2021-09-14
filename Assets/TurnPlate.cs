@@ -130,8 +130,10 @@ public class TurnPlate : MonoBehaviour
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
+            Debug.Log(player.Deck.Commander.State);
             if (player.Deck.Commander.State == Card.CardState.Destroyed)
             {
+                Debug.Log("Bye");
                 deadPlayers.Add(player);
                 continue;
             }

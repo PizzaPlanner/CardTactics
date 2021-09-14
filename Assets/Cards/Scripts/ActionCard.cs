@@ -26,13 +26,6 @@ public class ActionCard : Card
 
     protected override void OnInit() { }
 
-    public override void Play(GameSettings settings, GameSettings.PlayerInfo player)
-    {
-        State = Once || Temporary ? CardState.Destroyed : CardState.Played;
-    }
-
-    public override void Skip(GameSettings settings, GameSettings.PlayerInfo player)
-    {
-        State = Temporary ? CardState.Destroyed : CardState.Played;
-    }
+    protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;
+    protected override CardState StateOnSkipped => Temporary ? CardState.Destroyed : CardState.Skipped;
 }

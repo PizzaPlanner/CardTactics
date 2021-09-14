@@ -20,6 +20,15 @@ public enum RangeType
 
 public abstract class Skill : ScriptableObject
 {
+    public enum Progress
+    {
+        Pending,
+        Queued,
+        Skipped,
+        Failed,
+        Now
+    }
+
     public string Name;
     public Sprite Icon;
 
@@ -34,6 +43,8 @@ public abstract class Skill : ScriptableObject
 
     [SerializeField] bool SkippableWithInput;
 
+    public Progress PlayProgress;
+
     public void Init(GameSettings settings)
     {
         Settings = settings;
@@ -41,17 +52,20 @@ public abstract class Skill : ScriptableObject
 
     public bool Activate(GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
-        if (condition?.IsPreviewed == false) return false;
+        PlayProgress = Progress.Failed;
+        if (condition != null && condition.PlayProgress != Progress.Queued) return false;
         if (dependency != null)
         {
-            if (!dependency.IsPreviewed && !dependency.SkippableWithInput)
+            if (dependency.PlayProgress != Progress.Queued && !dependency.SkippableWithInput)
                 return false;
-            if (dependency.IsPreviewed)
+            if (dependency.PlayProgress == Progress.Queued)
                 SourceTile = dependency.TargetTile;
             else
                 SourceTile = dependency.SourceTile;
         }
-        return OnActivate(player, card);
+        var result = OnActivate(player, card);
+        PlayProgress = result ? Progress.Now : Progress.Failed;
+        return result;
     }
 
     protected abstract bool OnActivate(GameSettings.PlayerInfo player, Card card);
@@ -60,6 +74,7 @@ public abstract class Skill : ScriptableObject
         TargetTile = target;
         IsPreviewed = true;
         OnPreview();
+        PlayProgress = Progress.Queued;
     }
 
     public void Reset()
@@ -68,9 +83,15 @@ public abstract class Skill : ScriptableObject
             OnCancel();
         IsPreviewed = false;
         TargetTile = null;
+        PlayProgress = Progress.Pending;
     }
 
     protected abstract void OnPreview();
     public abstract void OnUse();
     protected abstract void OnCancel();
+
+    internal void Skip()
+    {
+        PlayProgress = Progress.Skipped;
+    }
 }
