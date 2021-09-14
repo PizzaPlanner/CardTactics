@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "Passives/Additional Action")]
-public class AdditionalActionPassive : Passive
+public class AdditionalActionOnLastMeleePassive : Passive
 {
     public Skill Skill;
     public int Dependency;

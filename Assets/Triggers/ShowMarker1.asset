@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67618f011b4628e46bfd6bf40a439a07, type: 3}
   m_Name: ShowMarker1
   m_EditorClassIdentifier: 
-  Marker: 0
-  Revealed: 0
+  Marker: 1
+  Revealed: 1

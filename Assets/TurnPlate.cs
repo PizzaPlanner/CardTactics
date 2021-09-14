@@ -84,6 +84,8 @@ public class TurnPlate : MonoBehaviour
     {
         var board = GameObject.FindObjectOfType<Board>();
         board.Settings.Map.CheckTriggers(board.Settings);
+        if (board.Paused)
+            return;
         if (cardsThisRound.Count > 0)
         {
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f9381ee10975244f84265183a265f63, type: 3}
+  m_Name: Traveller
+  m_EditorClassIdentifier: 
+  IsVirtual: 1
+  Class: {fileID: 11400000, guid: bce54789696c1ff4a92d46de62a40aba, type: 2}
+  Skills: []
+  Dependencies: 
+  Conditions: 
+  Passive: {fileID: 11400000, guid: fa8306dd515e46e4fbb19545b027d567, type: 2}
