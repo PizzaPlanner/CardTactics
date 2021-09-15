@@ -13,29 +13,29 @@ public class FaceSkill : Skill
     Facing originalFacing;
     Facing targetFacing;
 
-    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
     {
         var unit = SourceTile?.Unit;
         if (unit == null)
             return new Tile[0];
         originalFacing = SourceTile.Facing;
-        return Settings.Map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player);
+        return settings.Map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player);
     }
 
     protected override IEnumerator OnPreview()
     {
         targetFacing = Tile.GetFacing(SourceTile, TargetTile);
-        SourceTile.RotateUnit(targetFacing);
+        SourceTile.Face(targetFacing);
         yield return null;
     }
 
     public override void OnUse()
     {
-        SourceTile.RotateUnit(targetFacing);
+        SourceTile.Face(targetFacing);
     }
 
     protected override void OnCancel()
     {
-        SourceTile.RotateUnit(originalFacing);
+        SourceTile.Face(originalFacing);
     }
 }

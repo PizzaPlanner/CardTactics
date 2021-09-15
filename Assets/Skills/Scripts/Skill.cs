@@ -42,20 +42,13 @@ public abstract class Skill : ScriptableObject
 
     public Tile[] ValidTiles { get; protected set; }
 
-    protected GameSettings Settings { get; private set; }
-
     [SerializeField] bool SkippableWithInput;
     [SerializeField] bool AutoSelectOnOnePossibleTile;
     bool autoSelectIgnored;
 
     public Progress PlayProgress;
 
-    public void Init(GameSettings settings)
-    {
-        Settings = settings;
-    }
-
-    public bool Activate(GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
+    public bool Activate(GameSettings settings, GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
         PlayProgress = Progress.Failed;
         if (condition != null && condition.PlayProgress != Progress.Queued) return false;
@@ -68,8 +61,8 @@ public abstract class Skill : ScriptableObject
             else
                 SourceTile = dependency.SourceTile;
         }
-        var validTiles = OnActivate(player, card);
-        if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
+        var validTiles = OnActivate(settings, player, card);
+        if (validTiles.Length == 1 && (AutoSelectOnOnePossibleTile || player.IsAI) && !autoSelectIgnored && card != null)
         {
             card.SkillTarget = validTiles[0];
         }
@@ -78,7 +71,7 @@ public abstract class Skill : ScriptableObject
         return validTiles.Length > 0;
     }
 
-    protected abstract Tile[] OnActivate(GameSettings.PlayerInfo player, Card card);
+    protected abstract Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card);
     public IEnumerator Preview(Tile target)
     {
         TargetTile = target;

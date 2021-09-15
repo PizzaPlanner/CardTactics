@@ -14,21 +14,28 @@ public class AttackSkill : Skill
     public float Damage;
 
     Unit previewUnit;
+    Facing previewFacing;
 
-    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
     {
         if ((Filter & TargetType.Empty) > 0) return new Tile[0];
-        return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
+        return settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
     }
 
     protected override IEnumerator OnPreview()
     {
-        SourceTile.Unit.GetComponent<Animator>().SetTrigger("Attack");
-        yield return new WaitForSeconds(1);
+        previewFacing = SourceTile.Facing;
+        SourceTile.Face(Tile.GetFacing(SourceTile, TargetTile));
+        SourceTile.Unit.GetComponentInChildren<Animator>().SetInteger("Action", 1);
+        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("AttackTrigger");
+        yield return new WaitForSeconds(0.3f);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(Damage, true);
+        previewUnit.GetComponentInChildren<Animator>().SetInteger("Action", 1);
+        previewUnit.GetComponentInChildren<Animator>().SetTrigger("GetHitTrigger");
         if (previewUnit.LifePreview <= 0)
         {
+            yield return new WaitForSeconds(0.5f);
             previewUnit.gameObject.SetActive(false);
             TargetTile.Unit = null;
         }
@@ -47,5 +54,6 @@ public class AttackSkill : Skill
             TargetTile.Unit = previewUnit;
         }
         TargetTile.Unit.Damage(-Damage, true);
+        SourceTile.Face(previewFacing);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -26,9 +27,13 @@ public class Board : MonoBehaviour
             if (!player.RegisterLater)
             {
                 TurnPanel.Register(player);
-                player.Deck.Commander?.Play(Settings, player, null);
             }
         }
+    }
+
+    public void StartGame()
+    {
+        TurnPanel.StartTurn();
     }
 
     void Start()
@@ -78,9 +83,7 @@ public class Board : MonoBehaviour
     internal void SetTurn(GameSettings.PlayerInfo player, Card card)
     {
         currentCard = card;
-        foreach (var skill in card.Skills)
-            skill.Init(Settings);
         skillProgressBar.SetSkills(card, player, () => currentCard.WantSkillSkip = true, card is not UnitCard);
-        var cr = StartCoroutine(currentCard.Play(Settings, player, Next));
+        var cr = StartCoroutine(currentCard.Play(Settings, player, onComplete: Next));
     }
 }

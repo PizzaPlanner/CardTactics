@@ -8,14 +8,12 @@ public class PlaceSkill : Skill
     UnitCard card;
     GameSettings.PlayerInfo player;
 
-    public bool Success { get; private set; }
-
-    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
     {
         if (card is not UnitCard unitCard) return new Tile[0];
         this.card = unitCard;
         this.player = player;
-        return Settings.Map.ShowSpawnTiles(TargetType.Empty, Settings, player);
+        return settings.Map.ShowSpawnTiles(TargetType.Empty, settings, player);
     }
 
     protected override IEnumerator OnPreview()
@@ -30,7 +28,6 @@ public class PlaceSkill : Skill
 
     public override void OnUse()
     {
-        Success = TargetTile.Unit != null;
     }
 
     protected override void OnCancel()

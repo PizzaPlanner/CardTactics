@@ -261,7 +261,7 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
-    public void RotateUnit(Facing targetFacing)
+    public void Face(Facing targetFacing)
     {
         if (Unit == null) return;
         PlaceUnitNoCheck(Unit, targetFacing);

@@ -14,10 +14,10 @@ public class HealSkill : Skill
 
     Unit previewUnit;
 
-    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
     {
         if ((Filter & TargetType.Empty) > 0) return new Tile[0];
-        return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
+        return settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
     }
 
     protected override IEnumerator OnPreview()

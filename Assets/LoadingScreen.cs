@@ -48,7 +48,7 @@ public class LoadingScreen : MonoBehaviour
 
         SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>
         {
-            GameObject.FindObjectOfType<TurnPlate>().StartTurn();
+            GameObject.FindObjectOfType<Board>().StartGame();
             Destroy(loader);
         };
     }

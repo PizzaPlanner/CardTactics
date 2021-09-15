@@ -11,13 +11,13 @@ public class MoveSkill : Skill
     Unit unit;
     Facing rotation;
 
-    protected override Tile[] OnActivate(GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
     {
         if (SourceTile?.Unit == null)
             return new Tile[0];
         unit = SourceTile.Unit;
         rotation = SourceTile.Facing;
-        return Settings.Map.ShowRange(SourceTile, 0, Range, TargetType.Empty, RangeType, player);
+        return settings.Map.ShowRange(SourceTile, 0, Range, TargetType.Empty, RangeType, player);
     }
 
     protected override IEnumerator OnPreview()
@@ -32,6 +32,6 @@ public class MoveSkill : Skill
     protected override void OnCancel()
     {
         unit.MoveInstant(TargetTile, SourceTile);
-        SourceTile.RotateUnit(rotation);
+        SourceTile.Face(rotation);
     }
 }

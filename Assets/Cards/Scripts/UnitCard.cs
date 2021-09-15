@@ -19,9 +19,9 @@ public class UnitCard : Card
     protected override CardState StateOnPlayed => CardState.Active;
     protected override CardState StateOnSkipped => CardState.Destroyed;
 
-    public override IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, Action onComplete)
+    public override IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool unused = false, Action onComplete = null)
     {
-        yield return PlaySkills(settings, player);
+        yield return PlaySkills(settings, player, true);
         State = CardState.Active;
         if (Skills[0] is not PlaceSkill place || place.PlayProgress != Skill.Progress.Queued)
             State = CardState.Destroyed;

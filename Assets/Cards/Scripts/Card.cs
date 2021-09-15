@@ -20,9 +20,9 @@ public abstract class Card : ScriptableObject
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, Action onComplete)
+    public virtual IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible = false, Action onComplete = null)
     {
-        yield return PlaySkills(settings, player);
+        yield return PlaySkills(settings, player, autocompleteIfPossible);
         State = StateOnPlayed;
         onComplete?.Invoke();
     }
@@ -99,7 +99,7 @@ public abstract class Card : ScriptableObject
     public bool WantComplete;
     public bool WantReset;
 
-    protected IEnumerator PlaySkills(GameSettings settings, GameSettings.PlayerInfo player)
+    protected IEnumerator PlaySkills(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible)
     {
         WantCardSkip = false;
         for (int i = 0; i <= Skills.Length; i++)
@@ -108,11 +108,11 @@ public abstract class Card : ScriptableObject
             {
                 SkillTarget = null;
                 WantSkillSkip = false;
-                WantComplete = false;
+                WantComplete = autocompleteIfPossible;
                 WantReset = false;
                 Skill dependency = Dependencies[i] > 0 ? Skills[i - Dependencies[i]] : null;
                 Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
-                if (Skills[i].Activate(player, this, dependency, condition))
+                if (Skills[i].Activate(settings, player, this, dependency, condition))
                 {
                     if (!player.IsAI && SkillTarget == null)
                         settings.Map.ShowTileIndicators();

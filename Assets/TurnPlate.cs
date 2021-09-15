@@ -45,7 +45,10 @@ public class TurnPlate : MonoBehaviour
     }
     void PlayerPrepare(GameSettings.PlayerInfo player)
     {
-        GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
+        if (player.Deck.Commander?.State == Card.CardState.Unplayed)
+            SetPlayerReady(player, new Card[1] { player.Deck.Commander });
+        else
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
     }
 
     public bool NextPlayerPrepareTurn()
@@ -62,6 +65,11 @@ public class TurnPlate : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void Awake()
+    {
+        actionsPanel.gameObject.SetActive(false);
     }
 
     public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
