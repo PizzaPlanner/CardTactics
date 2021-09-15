@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -33,15 +35,16 @@ public partial class Map : SerializedScriptableObject
 
     List<int> ActivatedTriggers;
 
-    public void CheckTriggers(GameSettings settings)
+    public IEnumerator CheckTriggers(GameSettings settings, Action onFinish)
     {
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
             var trigger = TilePrefabs[tile.Position.x, tile.Position.y].Trigger;
             if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(tile))
-                Trigger(settings, trigger, tile);
+                yield return Trigger(settings, trigger, tile);
         }
+        onFinish();
     }
 
     public void ShowMarker(int id)
@@ -64,18 +67,18 @@ public partial class Map : SerializedScriptableObject
         }
     }
 
-    public void Trigger(GameSettings settings, int id, Tile tile)
+    public IEnumerator Trigger(GameSettings settings, int id, Tile tile)
     {
         if (ActivatedTriggers.Contains(id))
-            return;
+            yield break;
         ActivatedTriggers.Add(id);
         if (Triggers.Length <= id - 1)
         {
             Debug.LogError("Trigger " + id + " is not defined!");
-            return;
+            yield break;
         }
 
-        Triggers[id - 1].Execute(settings, tile);
+        yield return Triggers[id - 1].Execute(settings, tile);
     }
 
     public void RevealArea(int area)
@@ -116,6 +119,12 @@ public partial class Map : SerializedScriptableObject
                 tile.gameObject.SetActive(false);
             }
         }
+    }
+
+    public void ShowTileIndicators()
+    {
+        foreach (var tile in Tiles)
+            tile?.SetIndicatorVisible(true);
     }
 
     public Tile[] ShowSpawnTiles(TargetType filter, GameSettings settings, GameSettings.PlayerInfo player)
@@ -159,6 +168,7 @@ public partial class Map : SerializedScriptableObject
             if (tile == null) continue;
             tile.SetIndicator(TargetIndicator.Hidden);
             tile.ClearPathingInfo();
+            tile.SetIndicatorVisible(false);
         }
     }
 

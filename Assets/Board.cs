@@ -80,7 +80,7 @@ public class Board : MonoBehaviour
         currentCard = card;
         foreach (var skill in card.Skills)
             skill.Init(Settings);
-        skillProgressBar.SetSkills(card.Skills, () => currentCard.WantSkillSkip = true, card is not UnitCard);
+        skillProgressBar.SetSkills(card, player, () => currentCard.WantSkillSkip = true, card is not UnitCard);
         var cr = StartCoroutine(currentCard.Play(Settings, player, Next));
     }
 }

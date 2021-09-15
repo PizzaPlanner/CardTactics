@@ -24,7 +24,7 @@ public class ActionDisplay : MonoBehaviour
             {
                 var item = GameObject.Instantiate(SkillPrefab);
                 item.Skill = skill;
-                item.FromOtherSource = skill.Source != Reference;
+                item.FromOtherSource = skill.Source != Reference && skill.Source != null;
                 item.transform.SetParent(SkillPanel);
             }
         }

@@ -7,7 +7,6 @@ public class TurnPlate : MonoBehaviour
     [SerializeField] RectTransform readyPanel;
     [SerializeField] RectTransform nextActionsPanel;
     [SerializeField] RectTransform actionsPanel;
-    [SerializeField] RectTransform currentActionPanel;
 
     List<(GameSettings.PlayerInfo, Card)> cardsThisRound;
     Queue<(GameSettings.PlayerInfo, Card)> cardsToPlay;
@@ -90,29 +89,30 @@ public class TurnPlate : MonoBehaviour
                 cardsToPlay.Enqueue(item);
                 var indicator = Instantiate(turnIndicatorPrefab);
                 indicator.SetCard(item.Item2);
+                indicator.PlayerColorBorder.color = item.Item1.Color;
                 indicator.transform.SetParent(nextActionsPanel);
             }
-            actionsPanel.gameObject.SetActive(true);
             cardsThisRound.Clear();
         }
 
+        actionsPanel.gameObject.SetActive(false);
         var board = GameObject.FindObjectOfType<Board>();
-        board.Settings.Map.CheckTriggers(board.Settings);
-        if (board.Paused)
-            return;
-
-        if (cardsToPlay.Count > 0)
+        board.Paused = true;
+        StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, () =>
         {
-            currentAction = cardsToPlay.Dequeue();
-            if (currentActionPanel.childCount > 0)
-                Destroy(currentActionPanel.GetChild(0).gameObject);
-            nextActionsPanel.GetChild(0).SetParent(currentActionPanel);
-            board.SetTurn(currentAction.Item1, currentAction.Item2);
-        }
-        else
-        {
-            StartTurn();
-        }
+            board.Paused = false;
+            if (cardsToPlay.Count > 0)
+            {
+                currentAction = cardsToPlay.Dequeue();
+                Destroy(nextActionsPanel.GetChild(0).gameObject);
+                board.SetTurn(currentAction.Item1, currentAction.Item2);
+                actionsPanel.gameObject.SetActive(true);
+            }
+            else
+            {
+                StartTurn();
+            }
+        }));
     }
 
     internal void StartTurn()

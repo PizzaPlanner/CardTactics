@@ -7,12 +7,13 @@ public class SkillProgressBar : MonoBehaviour
 {
 
     [SerializeField] SkillProgressBarItem itemPrefab;
+    [SerializeField] CardDisplay cardItem;
 
     [SerializeField] Button confirmButton, skipButton;
 
     public SkillProgressBarItem Get(int i)
     {
-        return transform.GetChild(transform.childCount - i - 1).GetComponent<SkillProgressBarItem>();
+        return transform.GetChild(transform.childCount - i - 2).GetComponent<SkillProgressBarItem>();
     }
 
     void Update()
@@ -28,14 +29,17 @@ public class SkillProgressBar : MonoBehaviour
         confirmButton.interactable = true;
     }
 
-    public void SetSkills(Skill[] skills, Action onSkip, bool allowSkipCard)
+    public void SetSkills(Card card, GameSettings.PlayerInfo player, Action onSkip, bool allowSkipCard)
     {
-        foreach (var skill in skills.Reverse())
+        foreach (var skill in card.Skills.Reverse())
         {
             var item = GameObject.Instantiate(itemPrefab);
             item.transform.SetParent(GetComponent<RectTransform>());
             item.SetSkill(skill, onSkip);
         }
+        cardItem.SetCard(card);
+        cardItem.transform.SetAsLastSibling();
+        cardItem.PlayerColorBorder.color = player.Color;
         skipButton.gameObject.SetActive(allowSkipCard);
     }
 

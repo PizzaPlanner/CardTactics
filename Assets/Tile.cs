@@ -90,8 +90,11 @@ public class Tile : MonoBehaviour
         }
         CurrentIndicator = TargetIndicator.Hidden;
     }
-    void OnMouseEnter()
+
+    void OnMouseOver()
     {
+        if (Hovered != null || EventSystem.current.IsPointerOverGameObject())
+            return;
         Hovered = this;
         transform.position += new Vector3(0, 0.2f, 0);
         // InfoPanel.Show(this);
@@ -103,6 +106,8 @@ public class Tile : MonoBehaviour
     // ...and the mesh finally turns white when the mouse moves away.
     void OnMouseExit()
     {
+        if (Hovered != this)
+            return;
         Hovered = null;
         transform.position -= new Vector3(0, 0.2f, 0);
         // ClearGhost();
@@ -188,25 +193,23 @@ public class Tile : MonoBehaviour
     }
 
     public TargetIndicator CurrentIndicator { get; private set; }
+
+    public void SetIndicatorVisible(bool visible)
+    {
+        transform.GetChild(0).gameObject.SetActive(visible);
+    }
+
     public void SetIndicator(TargetIndicator state)
     {
-        if (state == TargetIndicator.Hidden)
+        var color = Color.black;
+        switch (state)
         {
-            transform.GetChild(0).gameObject.SetActive(false);
-            Pathing = new PathingData();
+            case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.8f); break;
+            case TargetIndicator.Path: color = new Color(0, 1, 0, 0.8f); break;
+            case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.8f); break;
+            case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
         }
-        else
-        {
-            transform.GetChild(0).gameObject.SetActive(true);
-            var color = Color.black;
-            switch (state)
-            {
-                case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.8f); break;
-                case TargetIndicator.Path: color = new Color(0, 1, 0, 0.8f); break;
-                case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.8f); break;
-            }
-            transform.GetChild(0).GetComponent<Renderer>().material.color = color;
-        }
+        transform.GetChild(0).GetComponent<Renderer>().material.color = color;
         CurrentIndicator = state;
     }
 

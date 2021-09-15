@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Security.Policy;
 using UnityEngine;
 
@@ -7,11 +8,12 @@ public class MarkerTrigger : Trigger
     public int Marker;
     public bool Revealed;
 
-    public override void Execute(GameSettings settings, Tile tile)
+    public override IEnumerator Execute(GameSettings settings, Tile tile)
     {
         if (Revealed)
             settings.Map.ShowMarker(Marker);
         else
             settings.Map.HideMarker(Marker);
+        yield return new WaitForSeconds(1);
     }
 }

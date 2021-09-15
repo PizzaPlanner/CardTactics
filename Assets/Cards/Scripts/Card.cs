@@ -114,6 +114,9 @@ public abstract class Card : ScriptableObject
                 Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
                 if (Skills[i].Activate(player, this, dependency, condition))
                 {
+                    if (!player.IsAI && SkillTarget == null)
+                        settings.Map.ShowTileIndicators();
+
                     yield return new WaitUntil(() => SkillTarget != null || WantCardSkip || WantReset || (WantSkillSkip && Skills[i].IsOptional));
 
                     if (SkillTarget != null)

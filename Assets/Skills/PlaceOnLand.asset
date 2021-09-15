@@ -15,3 +15,5 @@ MonoBehaviour:
   Name: Place Unit
   Icon: {fileID: 21300000, guid: cdc6dff623db6dd4d9cb39553726d4fa, type: 3}
   SkippableWithInput: 0
+  AutoSelectOnOnePossibleTile: 1
+  PlayProgress: 0

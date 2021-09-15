@@ -12,6 +12,7 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public Text Speed;
     public Text ClassName;
     public Image ClassIcon;
+    public Image PlayerColorBorder;
     [SerializeField] bool ShowTooltipOnHover;
     [SerializeField] bool IsTooltip;
 
@@ -47,7 +48,6 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void SetCard(Card card)
     {
         Reference = card;
-
         foreach (var filter in GetComponentsInChildren<UICategoryFilter>(true))
             filter.gameObject.SetActive(filter.RequiredCategory == Reference.Class);
 

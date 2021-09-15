@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,21 +8,13 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] Image Icon;
     [SerializeField] Text Text;
 
-    Action OnClose;
-    public void Set(Unit unit, string text, Action onClose)
+    public IEnumerator Set(Unit unit, string text)
     {
         Icon.sprite = unit.Icon;
         Text.text = text;
-        OnClose = onClose;
         gameObject.SetActive(true);
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            gameObject.SetActive(false);
-            OnClose?.Invoke();
-        }
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        yield return new WaitForEndOfFrame();
+        gameObject.SetActive(false);
     }
 }
