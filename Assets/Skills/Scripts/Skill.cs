@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,6 +46,7 @@ public abstract class Skill : ScriptableObject
 
     [SerializeField] bool SkippableWithInput;
     [SerializeField] bool AutoSelectOnOnePossibleTile;
+    bool autoSelectIgnored;
 
     public Progress PlayProgress;
 
@@ -67,11 +69,9 @@ public abstract class Skill : ScriptableObject
                 SourceTile = dependency.SourceTile;
         }
         var validTiles = OnActivate(player, card);
-        Debug.Log("VT: " + validTiles.Length + "; ASOOPT: " + AutoSelectOnOnePossibleTile + "; Card: " + card);
-        if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && card != null)
+        if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
         {
             card.SkillTarget = validTiles[0];
-            Debug.Log("Yo: " + card.SkillTarget);
         }
 
         PlayProgress = validTiles.Length > 0 ? Progress.Now : Progress.Failed;
@@ -79,12 +79,13 @@ public abstract class Skill : ScriptableObject
     }
 
     protected abstract Tile[] OnActivate(GameSettings.PlayerInfo player, Card card);
-    public void Preview(Tile target)
+    public IEnumerator Preview(Tile target)
     {
         TargetTile = target;
         IsPreviewed = true;
-        OnPreview();
+        yield return OnPreview();
         PlayProgress = Progress.Queued;
+        autoSelectIgnored = false;
     }
 
     public void Reset()
@@ -94,14 +95,16 @@ public abstract class Skill : ScriptableObject
         IsPreviewed = false;
         TargetTile = null;
         PlayProgress = Progress.Pending;
+        autoSelectIgnored = true;
     }
 
-    protected abstract void OnPreview();
+    protected abstract IEnumerator OnPreview();
     public abstract void OnUse();
     protected abstract void OnCancel();
 
     internal void Skip()
     {
         PlayProgress = Progress.Skipped;
+        autoSelectIgnored = false;
     }
 }

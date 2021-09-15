@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Face")]
@@ -21,10 +22,11 @@ public class FaceSkill : Skill
         return Settings.Map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
         targetFacing = Tile.GetFacing(SourceTile, TargetTile);
         SourceTile.RotateUnit(targetFacing);
+        yield return null;
     }
 
     public override void OnUse()

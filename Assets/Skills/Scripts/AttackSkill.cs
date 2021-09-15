@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 [CreateAssetMenu(menuName = "Skills/Attack")]
 public class AttackSkill : Skill
@@ -19,8 +21,10 @@ public class AttackSkill : Skill
         return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
+        SourceTile.Unit.GetComponent<Animator>().SetTrigger("Attack");
+        yield return new WaitForSeconds(1);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(Damage, true);
         if (previewUnit.LifePreview <= 0)

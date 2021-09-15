@@ -35,8 +35,14 @@ public class TurnPlate : MonoBehaviour
 
     void AIPrepare(GameSettings.PlayerInfo aiPlayer)
     {
-        SetPlayerReady(aiPlayer, new Card[0] { });
-        Debug.Log("TODO: Init AI");
+        foreach (var card in aiPlayer.Deck.Cards)
+        {
+            if (card.State == Card.CardState.Unplayed)
+            {
+                SetPlayerReady(aiPlayer, new Card[1] { card });
+                return;
+            }
+        }
     }
     void PlayerPrepare(GameSettings.PlayerInfo player)
     {

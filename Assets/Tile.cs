@@ -231,7 +231,7 @@ public class Tile : MonoBehaviour
         Pathing.LastCalculatedPath = null;
     }
 
-    int FaceToRot(Facing face)
+    public int FaceToRot(Facing face)
     {
         if (face == Facing.Left)
             return 90;
@@ -244,7 +244,7 @@ public class Tile : MonoBehaviour
         return (int)(Unit?.transform.rotation.eulerAngles.y ?? 0);
     }
 
-    Facing RotToFace(float rot)
+    public Facing RotToFace(float rot)
     {
         rot %= 360;
         if (rot >= 225 && rot < 315)

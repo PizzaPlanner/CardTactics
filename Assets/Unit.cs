@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 public class Unit : MonoBehaviour
 {
@@ -34,7 +35,6 @@ public class Unit : MonoBehaviour
             if (LifePreview > MaxLife)
                 LifePreview = MaxLife;
         }
-
     }
 
     void Start()
@@ -43,7 +43,7 @@ public class Unit : MonoBehaviour
         LifePreview = MaxLife;
     }
 
-    public void Move(Tile from, Tile to)
+    public void MoveInstant(Tile from, Tile to)
     {
         if (from.Unit != this || to.Unit != null)
             return;
@@ -52,5 +52,37 @@ public class Unit : MonoBehaviour
         if (facing == Facing.Preserve)
             facing = Tile.GetFacing(from, to);
         to.Place(this, facing);
+    }
+
+    public IEnumerator Move(Tile from, Tile to, RangeType type)
+    {
+        if (from.Unit != this || to.Unit != null)
+            yield break;
+        if (type == RangeType.Pathfinding)
+        {
+            foreach (var tile in to.Pathing.LastCalculatedPath)
+            {
+                transform.position = tile.transform.position + Vector3.up * 0.5f;
+                transform.rotation = Quaternion.Euler(0, tile.FaceToRot(tile.GetPathFacing()), 0);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        else if (type == RangeType.Any)
+        {
+            while (transform.position.y < 5)
+            {
+                transform.position += Vector3.up * 50 * Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            transform.position = to.transform.position + Vector3.up * 5;
+            transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
+            while (transform.position.y > 0)
+            {
+                transform.position -= Vector3.up * 50 * Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        MoveInstant(from, to);
+        yield return new WaitForEndOfFrame();
     }
 }

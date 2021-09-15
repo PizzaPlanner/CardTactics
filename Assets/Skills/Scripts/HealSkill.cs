@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Heal")]
@@ -19,8 +20,10 @@ public class HealSkill : Skill
         return Settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
+        SourceTile.Unit.GetComponent<Animator>().SetTrigger("Attack");
+        yield return new WaitForSeconds(1);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(-Heal, true);
     }

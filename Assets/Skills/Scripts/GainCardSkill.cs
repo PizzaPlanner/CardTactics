@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Gain Card")]
@@ -17,9 +18,13 @@ public class GainCardSkill : Skill
         return Settings.Map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
-
+        yield return new WaitForEndOfFrame();
+        CardDisplay.Tooltip.SetCard(NewCardPrefab);
+        CardDisplay.Tooltip.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        CardDisplay.Tooltip.gameObject.SetActive(false);
     }
 
     public override void OnUse()

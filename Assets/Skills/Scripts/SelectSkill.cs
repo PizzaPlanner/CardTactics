@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Select")]
@@ -11,8 +12,9 @@ public class SelectSkill : Skill
         return Settings.Map.ShowPlacementTiles(TargetFilter, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
+        yield return null;
     }
 
     public override void OnUse()

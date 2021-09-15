@@ -34,7 +34,10 @@ public abstract class Card : ScriptableObject
         for (int i = Skills.Length - 1; i >= 0; i--)
         {
             if (Skills[i].PlayProgress == Skill.Progress.Queued)
+            {
                 Skills[i].Reset();
+            }
+            Skills[i].Skip();
         }
 
         State = StateOnSkipped;
@@ -111,12 +114,13 @@ public abstract class Card : ScriptableObject
                 Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
                 if (Skills[i].Activate(player, this, dependency, condition))
                 {
-                    Debug.Log("We have ST");
                     yield return new WaitUntil(() => SkillTarget != null || WantCardSkip || WantReset || (WantSkillSkip && Skills[i].IsOptional));
 
                     if (SkillTarget != null)
                     {
-                        Skills[i].Preview(SkillTarget);
+                        yield return Skills[i].Preview(SkillTarget);
+                        if (player.IsAI)
+                            WantComplete = true;
                     }
                     else if (WantSkillSkip)
                     {
@@ -126,7 +130,7 @@ public abstract class Card : ScriptableObject
                     {
                         i = PartialReset();
                     }
-                    if (WantCardSkip)
+                    else if (WantCardSkip)
                     {
                         i = Skills.Length - 1;
                     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Move")]
@@ -19,9 +20,9 @@ public class MoveSkill : Skill
         return Settings.Map.ShowRange(SourceTile, 0, Range, TargetType.Empty, RangeType, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
-        unit.Move(SourceTile, TargetTile);
+        yield return unit.Move(SourceTile, TargetTile, RangeType);
     }
 
     public override void OnUse()
@@ -30,7 +31,7 @@ public class MoveSkill : Skill
 
     protected override void OnCancel()
     {
-        unit.Move(TargetTile, SourceTile);
+        unit.MoveInstant(TargetTile, SourceTile);
         SourceTile.RotateUnit(rotation);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Place")]
@@ -17,13 +18,14 @@ public class PlaceSkill : Skill
         return Settings.Map.ShowSpawnTiles(TargetType.Empty, Settings, player);
     }
 
-    protected override void OnPreview()
+    protected override IEnumerator OnPreview()
     {
         var unit = GameObject.Instantiate(card.UnitReference);
         unit.Card = card;
         unit.Player = player;
         unit.gameObject.SetActive(false);
         TargetTile.Place(unit, 0);
+        yield return null;
     }
 
     public override void OnUse()
