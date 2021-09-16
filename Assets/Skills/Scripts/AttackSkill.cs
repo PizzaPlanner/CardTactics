@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 
 [CreateAssetMenu(menuName = "Skills/Attack")]
 public class AttackSkill : Skill
@@ -10,7 +8,7 @@ public class AttackSkill : Skill
     public int MinRange;
     public int MaxRange;
     public RangeType Type;
-
+    [SerializeField] AudioClip Sound;
     public float Damage;
 
     Unit previewUnit;
@@ -24,15 +22,19 @@ public class AttackSkill : Skill
 
     protected override IEnumerator OnPreview()
     {
+        Animator sourceAnimator = SourceTile.Unit.GetComponentInChildren<Animator>();
+        Animator targetAnimator = TargetTile.Unit.GetComponentInChildren<Animator>();
         previewFacing = SourceTile.Facing;
         SourceTile.Face(Tile.GetFacing(SourceTile, TargetTile));
-        SourceTile.Unit.GetComponentInChildren<Animator>().SetInteger("Action", 1);
-        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("AttackTrigger");
+        sourceAnimator.SetInteger("Action", 1);
+        sourceAnimator.SetTrigger("AttackTrigger");
+        if (Sound != null)
+            SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
         yield return new WaitForSeconds(0.3f);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(Damage, true);
-        previewUnit.GetComponentInChildren<Animator>().SetInteger("Action", 1);
-        previewUnit.GetComponentInChildren<Animator>().SetTrigger("GetHitTrigger");
+        targetAnimator.SetInteger("Action", 1);
+        targetAnimator.SetTrigger("GetHitTrigger");
         if (previewUnit.LifePreview <= 0)
         {
             yield return new WaitForSeconds(0.5f);

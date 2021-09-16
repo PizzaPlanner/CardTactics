@@ -13,9 +13,5 @@ MonoBehaviour:
   m_Name: TutorialDialogue2
   m_EditorClassIdentifier: 
   Lines:
-  - Text: Finally. It should be somewhere around here.
-    Speaker: {fileID: 0}
-  - Text: I should just have a look around the area.
-    Speaker: {fileID: 0}
-  - Text: ... Oh. That looks like a cave entrance. Maybe I can find it in there.
+  - Text: Hm. This does not look very promising. I should be ready for attacks.
     Speaker: {fileID: 0}

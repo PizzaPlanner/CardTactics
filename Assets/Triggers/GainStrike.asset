@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6766ff56488f86d4ea42b0f2338b29e2, type: 3}
   m_Name: GainStrike
   m_EditorClassIdentifier: Assembly-CSharp::GainCardTrigger
-  Skill: {fileID: 11400000, guid: bda226a06c5f4bd46ad510ca988b7597, type: 2}
+  Skill: {fileID: 11400000, guid: 86040aff29db0ae4b9f340892e131408, type: 2}

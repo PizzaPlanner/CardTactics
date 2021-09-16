@@ -20,9 +20,11 @@ MonoBehaviour:
     Color: {r: 0.2980392, g: 0.76480496, b: 1, a: 1}
     RegisterLater: 0
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
-  - Deck: {fileID: 11400000, guid: a9e5b9c6efd370a428a1ac2b6d0a46ba, type: 2}
+    OnLooseTrigger: {fileID: 0}
+  - Deck: {fileID: 11400000, guid: 60c42eb91d14854449a63e9abc3b72d8, type: 2}
     Team: 1
     IsAI: 1
     Color: {r: 0.86157453, g: 0.9056604, b: 0.2691349, a: 1}
     RegisterLater: 1
-    LooseCondition: {fileID: 11400000, guid: b97c738ae7d03f340be0b8f6c37ede84, type: 2}
+    LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
+    OnLooseTrigger: {fileID: 0}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class PlanningPanel : MonoBehaviour
 {
     [SerializeField] Text costText;
@@ -10,10 +11,15 @@ public class PlanningPanel : MonoBehaviour
     [SerializeField] Button confirm;
     [SerializeField] CardDisplay cardPrefab;
 
+    [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
+
     int RoundPointsSpent;
+
+    AudioSource audio;
 
     void Awake()
     {
+        audio = GetComponent<AudioSource>();
         Hide();
     }
 
@@ -47,6 +53,7 @@ public class PlanningPanel : MonoBehaviour
         confirm.onClick.RemoveAllListeners();
         confirm.onClick.AddListener(() =>
         {
+            audio.PlayOneShot(ReadySound);
             Hide();
             GameObject.FindObjectOfType<TurnPlate>().SetPlayerReady(player, selection.ToArray());
         });
@@ -73,6 +80,7 @@ public class PlanningPanel : MonoBehaviour
                     RoundPointsSpent += card.Cost;
                     selection.Add(card);
                 }
+                audio.PlayOneShot(selection.Contains(card) ? UnselectSound : SelectSound);
                 visual.GetComponent<Button>().animator.SetBool("IsActive", selection.Contains(card));
                 confirm.interactable = selection.Count != 0 && RoundPointsSpent <= deck.RoundPointsFree;
                 costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";

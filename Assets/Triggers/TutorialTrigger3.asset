@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: TutorialTrigger3
   m_EditorClassIdentifier: 
   Triggers:
-  - {fileID: 11400000, guid: 9aa5a92e624f03149bcada5b2bc07bce, type: 2}
   - {fileID: 11400000, guid: e109ae5fd839d804486373dc3c78994e, type: 2}

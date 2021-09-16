@@ -172,6 +172,9 @@ MonoBehaviour:
   cardsPanel: {fileID: 965778951401202899}
   confirm: {fileID: 3749071442529867730}
   cardPrefab: {fileID: -3313291656261730026, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+  SelectSound: {fileID: 8300000, guid: e978cf7567ededc4cbac4fffbe072afb, type: 3}
+  UnselectSound: {fileID: 8300000, guid: 623e8d2f237eccd4b9c3c9545695c15f, type: 3}
+  ReadySound: {fileID: 8300000, guid: ec966655d5e585c48b343f0369bd39ef, type: 3}
 --- !u!1 &7883970557670205324
 GameObject:
   m_ObjectHideFlags: 0

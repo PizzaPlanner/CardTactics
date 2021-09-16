@@ -15,4 +15,6 @@ MonoBehaviour:
   Triggers:
   - {fileID: 11400000, guid: 5084dc66fed640e4b88712dc4e88fe70, type: 2}
   - {fileID: 11400000, guid: 026c253c6f5fe184b9578ecedf852fee, type: 2}
-  - {fileID: 11400000, guid: e109ae5fd839d804486373dc3c78994e, type: 2}
+  - {fileID: 11400000, guid: 9aa5a92e624f03149bcada5b2bc07bce, type: 2}
+  - {fileID: 11400000, guid: dd59dd5c12b54fd4f89b1d63c6bc4b56, type: 2}
+  - {fileID: 11400000, guid: 1b892d30b03be22479a94371cb8e5cd7, type: 2}

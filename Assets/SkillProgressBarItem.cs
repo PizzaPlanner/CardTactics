@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class SkillProgressBarItem : MonoBehaviour
 {
 
@@ -21,6 +22,8 @@ public class SkillProgressBarItem : MonoBehaviour
 
     public Image Icon;
 
+    [SerializeField] AudioClip OkSound, SkipSound, FailSound;
+
     public void SetSkill(Skill skill, Action OnSkip)
     {
         this.skill = skill;
@@ -30,8 +33,14 @@ public class SkillProgressBarItem : MonoBehaviour
             skipButton.onClick.AddListener(() => OnSkip());
     }
 
+    Skill.Progress prevProgress = Skill.Progress.Pending;
+
     void Update()
     {
+        if (skill.PlayProgress == prevProgress)
+            return;
+
+        prevProgress = skill.PlayProgress;
         GetComponent<Image>().sprite = skill.PlayProgress switch
         {
             Skill.Progress.Pending => Pending,
@@ -41,5 +50,11 @@ public class SkillProgressBarItem : MonoBehaviour
             Skill.Progress.Now => Now,
         };
         skipButton.gameObject.SetActive(skill.IsOptional && skill.PlayProgress == Skill.Progress.Now);
+        if (skill.PlayProgress == Skill.Progress.Queued)
+            GetComponent<AudioSource>().PlayOneShot(OkSound);
+        else if (skill.PlayProgress == Skill.Progress.Skipped)
+            GetComponent<AudioSource>().PlayOneShot(SkipSound);
+        else if (skill.PlayProgress == Skill.Progress.Failed)
+            GetComponent<AudioSource>().PlayOneShot(FailSound);
     }
 }

@@ -2921,7 +2921,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -2945,7 +2945,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -3
@@ -2969,7 +2969,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -3176,7 +3176,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -3200,7 +3200,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -1
@@ -3224,7 +3224,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -3248,7 +3248,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -3427,11 +3427,32 @@ MonoBehaviour:
       Entry: 6
       Data: 
     - Name: 
+      Entry: 7
+      Data: 130|Map+TilePrefabWithInfo, Assembly-CSharp
+    - Name: Prefab
       Entry: 6
+      Data: 
+    - Name: Area
+      Entry: 3
+      Data: 0
+    - Name: Trigger
+      Entry: 3
+      Data: 0
+    - Name: Height
+      Entry: 3
+      Data: 0
+    - Name: MarkerId
+      Entry: 3
+      Data: 0
+    - Name: SpawnId
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 7
-      Data: 130|Map+TilePrefabWithInfo, Assembly-CSharp
+      Data: 131|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
       Data: 2
@@ -3455,30 +3476,6 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 131|Map+TilePrefabWithInfo, Assembly-CSharp
-    - Name: Prefab
-      Entry: 10
-      Data: 1
-    - Name: Area
-      Entry: 3
-      Data: 1
-    - Name: Trigger
-      Entry: 3
-      Data: 3
-    - Name: Height
-      Entry: 3
-      Data: -2
-    - Name: MarkerId
-      Entry: 3
-      Data: 0
-    - Name: SpawnId
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
       Data: 132|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
@@ -3488,7 +3485,7 @@ MonoBehaviour:
       Data: 1
     - Name: Trigger
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: Height
       Entry: 3
       Data: -2
@@ -3506,7 +3503,7 @@ MonoBehaviour:
       Data: 133|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
-      Data: 0
+      Data: 1
     - Name: Area
       Entry: 3
       Data: 1
@@ -3515,7 +3512,7 @@ MonoBehaviour:
       Data: 0
     - Name: Height
       Entry: 3
-      Data: -1
+      Data: -2
     - Name: MarkerId
       Entry: 3
       Data: 0
@@ -3578,6 +3575,30 @@ MonoBehaviour:
       Data: 136|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
+      Data: 0
+    - Name: Area
+      Entry: 3
+      Data: 1
+    - Name: Trigger
+      Entry: 3
+      Data: 0
+    - Name: Height
+      Entry: 3
+      Data: -1
+    - Name: MarkerId
+      Entry: 3
+      Data: 0
+    - Name: SpawnId
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 137|Map+TilePrefabWithInfo, Assembly-CSharp
+    - Name: Prefab
+      Entry: 10
       Data: 1
     - Name: Area
       Entry: 3
@@ -3629,7 +3650,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 137|Map+TilePrefabWithInfo, Assembly-CSharp
+      Data: 138|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
       Data: 2
@@ -3653,7 +3674,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 138|Map+TilePrefabWithInfo, Assembly-CSharp
+      Data: 139|Map+TilePrefabWithInfo, Assembly-CSharp
     - Name: Prefab
       Entry: 10
       Data: 2

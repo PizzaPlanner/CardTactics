@@ -993,6 +993,7 @@ MonoBehaviour:
   Speed: {fileID: 3457406641278097469}
   ClassName: {fileID: 0}
   ClassIcon: {fileID: 3738717698337280768}
+  PlayerColorBorder: {fileID: 0}
   ShowTooltipOnHover: 1
   IsTooltip: 0
 --- !u!95 &7253167755595225657
@@ -1029,7 +1030,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Life: {fileID: 0}
   MaxLife: {fileID: 9124140373162122990}
-  Passive: {fileID: 0}
+  PassiveText: {fileID: 0}
+  PassiveIcon: {fileID: 0}
   CapacityPanel: {fileID: 0}
   CapacityIconPrefab: {fileID: 0}
 --- !u!114 &1115517817172640539

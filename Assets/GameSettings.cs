@@ -17,6 +17,7 @@ public class GameSettings : ScriptableObject
         public bool RegisterLater;
 
         public LooseCondition LooseCondition;
+        public Trigger OnLooseTrigger;
     }
 
     public Map Map;
@@ -37,7 +38,8 @@ public class GameSettings : ScriptableObject
                 Team = prefab.Players[i].Team,
                 IsAI = prefab.Players[i].IsAI,
                 RegisterLater = prefab.Players[i].RegisterLater,
-                LooseCondition = prefab.Players[i].LooseCondition
+                LooseCondition = prefab.Players[i].LooseCondition,
+                OnLooseTrigger = prefab.Players[i].OnLooseTrigger
             };
         }
 
