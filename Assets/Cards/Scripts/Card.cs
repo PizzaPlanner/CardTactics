@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -49,6 +50,19 @@ public abstract class Card : ScriptableObject
     }
 
     public bool IsVirtual;
+
+    public virtual List<Card> GetRelatedCards()
+    {
+        var list = new List<Card>();
+        if (Source != null)
+            list.Add(Source);
+        foreach (var skill in Skills)
+        {
+            if (skill.Source != null && skill.Source != this)
+                list.Add(skill.Source);
+        }
+        return list;
+    }
 
     protected abstract CardState StateOnPlayed { get; }
     protected abstract CardState StateOnSkipped { get; }

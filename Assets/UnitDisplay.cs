@@ -24,7 +24,7 @@ public class UnitDisplay : MonoBehaviour
         if (MaxLife != null)
             MaxLife.text = Reference.UnitReference.MaxLife.ToString();
         if (PassiveText != null)
-            PassiveText.text = Reference.Passive != null ? Reference.Passive.Passive.Description : "";
+            PassiveText.text = Reference.Passive != null ? Reference.Passive.Name : "";
         if (PassiveIcon != null)
             PassiveIcon.sprite = Reference.Passive?.Icon;
         if (CapacityPanel != null)

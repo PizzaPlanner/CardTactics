@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Card/Commander")]
@@ -18,6 +19,14 @@ public class UnitCard : Card
 
     protected override CardState StateOnPlayed => CardState.Active;
     protected override CardState StateOnSkipped => CardState.Destroyed;
+
+    public override List<Card> GetRelatedCards()
+    {
+        var list = base.GetRelatedCards();
+        if (Passive != null)
+            list.Add(Passive);
+        return list;
+    }
 
     public override IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool unused = false, Action onComplete = null)
     {

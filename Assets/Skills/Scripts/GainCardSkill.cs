@@ -21,10 +21,9 @@ public class GainCardSkill : Skill
     protected override IEnumerator OnPreview()
     {
         yield return new WaitForEndOfFrame();
-        CardDisplay.Tooltip.SetCard(NewCardPrefab);
-        CardDisplay.Tooltip.gameObject.SetActive(true);
+        CardTooltip.Show(NewCardPrefab);
         yield return new WaitForSeconds(2);
-        CardDisplay.Tooltip.gameObject.SetActive(false);
+        CardTooltip.Hide();
     }
 
     public override void OnUse()

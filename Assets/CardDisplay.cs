@@ -14,19 +14,6 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public Image ClassIcon;
     public Image PlayerColorBorder;
     [SerializeField] bool ShowTooltipOnHover;
-    [SerializeField] bool IsTooltip;
-
-    public static CardDisplay Tooltip { get; private set; }
-
-    void Awake()
-    {
-        if (IsTooltip)
-        {
-            Tooltip = this;
-            ShowTooltipOnHover = false;
-            gameObject.SetActive(false);
-        }
-    }
 
     public void UpdateVisuals()
     {
@@ -55,6 +42,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             GetComponent<UnitDisplay>().UpdateVisuals();
         if (GetComponent<ActionDisplay>() != null && card is ActionCard)
             GetComponent<ActionDisplay>().UpdateVisuals();
+        if (GetComponent<PassiveDisplay>() != null && card is PassiveCard)
+            GetComponent<PassiveDisplay>().UpdateVisuals();
         UpdateVisuals();
     }
 
@@ -62,13 +51,12 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (ShowTooltipOnHover && Reference != null)
         {
-            CardDisplay.Tooltip.SetCard(Reference);
-            CardDisplay.Tooltip.gameObject.SetActive(true);
+            CardTooltip.Show(Reference);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        CardDisplay.Tooltip.gameObject.SetActive(false);
+        CardTooltip.Hide();
     }
 }
