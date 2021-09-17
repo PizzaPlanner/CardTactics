@@ -8,7 +8,7 @@ public class AdditionalCardPassive : Passive
     public bool OneCardPerPassive;
     public Card.CardState InitialState;
 
-    public override void OnRoundStart(GameSettings settings, GameSettings.PlayerInfo player)
+    public override void OnRoundStart(GameSettings settings, PlayerInfo player)
     {
         if (OneCardPerPassive)
         {

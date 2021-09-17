@@ -22,7 +22,7 @@ public abstract class Card : ScriptableObject
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
+    public virtual IEnumerator Play(GameSettings settings, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);
@@ -34,26 +34,10 @@ public abstract class Card : ScriptableObject
 
     public void Destroy() { State = CardState.Destroyed; }
 
-    public virtual void Skip(GameSettings settings, GameSettings.PlayerInfo player)
-    {
-        for (int i = Skills.Length - 1; i >= 0; i--)
-        {
-            if (Skills[i].PlayProgress == Skill.Progress.Queued)
-            {
-                Skills[i].Reset();
-            }
-            Skills[i].Skip();
-        }
-
-        State = StateOnSkipped;
-    }
-
     public virtual void Reshuffle()
     {
         State = CardState.Unplayed;
     }
-
-    public bool IsVirtual;
 
     public virtual List<Card> GetRelatedCards()
     {
@@ -69,7 +53,6 @@ public abstract class Card : ScriptableObject
     }
 
     protected abstract CardState StateOnPlayed { get; }
-    protected abstract CardState StateOnSkipped { get; }
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }
     public abstract int Speed { get; }
@@ -116,7 +99,7 @@ public abstract class Card : ScriptableObject
     public bool WantComplete;
     public bool WantReset;
 
-    protected IEnumerator PlaySkills(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible)
+    protected IEnumerator PlaySkills(GameSettings settings, PlayerInfo player, bool autocompleteIfPossible)
     {
         if (Skills.Length == 0)
             WantComplete = true;

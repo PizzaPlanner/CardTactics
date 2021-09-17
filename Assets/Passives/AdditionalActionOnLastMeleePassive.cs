@@ -11,7 +11,7 @@ public class AdditionalActionOnLastMeleePassive : Passive
     public int Dependency;
     public int Condition;
 
-    public override void OnRoundStart(GameSettings settings, GameSettings.PlayerInfo player)
+    public override void OnRoundStart(GameSettings settings, PlayerInfo player)
     {
         foreach (var card in player.Deck.Cards)
         {

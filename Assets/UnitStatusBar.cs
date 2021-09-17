@@ -13,6 +13,7 @@ public class UnitStatusBar : MonoBehaviour
     {
         bar = Instantiate(barPrefab);
         bar.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
+        bar.transform.SetAsFirstSibling();
         Life = bar.gameObject.GetComponentInChildren<Text>();
     }
 

@@ -48,7 +48,7 @@ public abstract class Skill : ScriptableObject
 
     public Progress PlayProgress;
 
-    public bool Activate(GameSettings settings, GameSettings.PlayerInfo player, Card card, Skill dependency, Skill condition)
+    public bool Activate(GameSettings settings, PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
         PlayProgress = Progress.Failed;
         if (condition != null && condition.PlayProgress != Progress.Queued) return false;
@@ -71,7 +71,7 @@ public abstract class Skill : ScriptableObject
         return validTiles.Length > 0;
     }
 
-    protected abstract Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card);
+    protected abstract Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card);
     public IEnumerator Preview(Tile target)
     {
         TargetTile = target;

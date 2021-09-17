@@ -10,6 +10,7 @@ public class PlanningPanel : MonoBehaviour
     [SerializeField] RectTransform cardsPanel;
     [SerializeField] Button confirm;
     [SerializeField] CardDisplay cardPrefab;
+    [SerializeField] TurnPlate turnPlate;
 
     [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
 
@@ -23,10 +24,9 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    public void Show(GameSettings.PlayerInfo player)
+    public void Show(PlayerInfo player)
     {
         var deck = player.Deck;
-        gameObject.SetActive(true);
 
         var selection = new List<Card>();
         var cardsToPlay = new List<Card>();
@@ -55,7 +55,7 @@ public class PlanningPanel : MonoBehaviour
         {
             audio.PlayOneShot(ReadySound);
             Hide();
-            GameObject.FindObjectOfType<TurnPlate>().SetPlayerReady(player, selection.ToArray());
+            turnPlate.SetPlayerReady(player, selection.ToArray());
         });
 
         foreach (Transform child in cardsPanel)
@@ -99,6 +99,16 @@ public class PlanningPanel : MonoBehaviour
                 }
             });
         }
+
+        gameObject.SetActive(true);
+        StartCoroutine(FixLayoutBug());
+    }
+
+    // https://issuetracker.unity3d.com/issues/horizontallayoutgroup-fails-to-position-children-when-entering-slash-leaving-play-mode-if-controlchildsize-dot-height-is-enabled?_ga=2.205791891.1245712443.1631889840-1271266292.1625017527
+    IEnumerator FixLayoutBug()
+    {
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.MarkLayoutForRebuild(cardsPanel);
     }
 
     public void Hide()

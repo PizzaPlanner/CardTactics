@@ -17,5 +17,4 @@ public class PassiveCard : Card
     }
 
     protected override CardState StateOnPlayed => CardState.Active;
-    protected override CardState StateOnSkipped => CardState.Skipped;
 }

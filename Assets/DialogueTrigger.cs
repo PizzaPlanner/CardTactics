@@ -17,7 +17,6 @@ public class DialogueTrigger : Trigger
     {
         foreach (var line in Lines)
         {
-            GameObject.FindObjectOfType<Board>().Paused = true;
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
             yield return ui.Set(line.Speaker ?? tile.Unit, line.Text);
         }

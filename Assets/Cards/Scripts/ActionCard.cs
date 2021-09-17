@@ -27,5 +27,4 @@ public class ActionCard : Card
     protected override void OnInit() { }
 
     protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;
-    protected override CardState StateOnSkipped => Temporary ? CardState.Destroyed : CardState.Skipped;
 }

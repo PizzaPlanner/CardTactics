@@ -11,7 +11,7 @@ public class MoveSkill : Skill
     Unit unit;
     Facing rotation;
 
-    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
     {
         if (SourceTile?.Unit == null)
             return new Tile[0];

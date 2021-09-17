@@ -5,14 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skills/Gain Card")]
 public class GainCardSkill : Skill
 {
-    [NonSerialized] public GameSettings.PlayerInfo Player;
+    [NonSerialized] public PlayerInfo Player;
 
     [SerializeField] Card NewCardPrefab;
     [SerializeField] Card.CardState NewCardInitialState;
 
     public Card CardPrefab => NewCardPrefab;
 
-    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
     {
         Player = player;
         return settings.Map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);

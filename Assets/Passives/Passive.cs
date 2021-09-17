@@ -9,5 +9,5 @@ public abstract class Passive : ScriptableObject
 
     [NonSerialized] public Card Source;
 
-    public abstract void OnRoundStart(GameSettings settings, GameSettings.PlayerInfo player);
+    public abstract void OnRoundStart(GameSettings settings, PlayerInfo player);
 }

@@ -6,9 +6,9 @@ using UnityEngine;
 public class PlaceSkill : Skill
 {
     UnitCard card;
-    GameSettings.PlayerInfo player;
+    PlayerInfo player;
 
-    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
     {
         if (card is not UnitCard unitCard) return new Tile[0];
         this.card = unitCard;

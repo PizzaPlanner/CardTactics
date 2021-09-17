@@ -13,15 +13,12 @@ public class Board : MonoBehaviour
     [InlineEditor]
     public GameSettings Settings;
 
-    public bool Paused;
-
     // Start is called before the first frame update
     public void Initialize(GameSettings settingsPrefab)
     {
         Settings = GameSettings.Create(settingsPrefab);
         Settings.Map.Create();
         Settings.Map.RevealArea(0);
-        Paused = false;
         foreach (var player in Settings.Players)
         {
             if (!player.RegisterLater)
@@ -67,7 +64,7 @@ public class Board : MonoBehaviour
         TurnPanel.Next();
     }
 
-    internal void SetTurn(GameSettings.PlayerInfo player, Card card)
+    internal void SetTurn(PlayerInfo player, Card card)
     {
         currentCard = card;
         var cr = StartCoroutine(currentCard.Play(Settings, player, onComplete: Next));

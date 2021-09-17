@@ -2,8 +2,8 @@ using System.Collections;
 using UnityEngine;
 public class Unit : MonoBehaviour
 {
-    public GameSettings.PlayerInfo Player { get => player; set { player = value; GetComponent<Outline>().OutlineColor = value.Color; } }
-    GameSettings.PlayerInfo player;
+    public PlayerInfo Player { get => player; set { player = value; GetComponent<Outline>().OutlineColor = value.Color; } }
+    PlayerInfo player;
     public int Level;
     public int Rank;
     public string Name;

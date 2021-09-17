@@ -18,7 +18,6 @@ public class UnitCard : Card
     protected override void OnInit() { }
 
     protected override CardState StateOnPlayed => CardState.Active;
-    protected override CardState StateOnSkipped => CardState.Destroyed;
 
     public override List<Card> GetRelatedCards()
     {
@@ -28,7 +27,7 @@ public class UnitCard : Card
         return list;
     }
 
-    public override IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool unused = false, Action onComplete = null)
+    public override IEnumerator Play(GameSettings settings, PlayerInfo player, bool unused = false, Action onComplete = null)
     {
         yield return PlaySkills(settings, player, true);
         State = CardState.Active;

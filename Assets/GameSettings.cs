@@ -1,24 +1,9 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class GameSettings : ScriptableObject
 {
-    [System.Serializable]
-    public class PlayerInfo
-    {
-        public Deck Deck;
-        public int Team;
-        public bool IsAI;
-        public Color Color;
-
-        [ShowIf("IsAI")]
-        public bool RegisterLater;
-
-        public LooseCondition LooseCondition;
-        public ExternalTrigger OnLooseTrigger;
-    }
 
     public Map Map;
 

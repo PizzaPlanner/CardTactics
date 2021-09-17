@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerInfoPanel : MonoBehaviour
 {
-    public GameSettings.PlayerInfo Player;
+    public PlayerInfo Player;
     [SerializeField] Text Name, CardsLeft, CardsPlayed, CardsRemoved;
 
     [SerializeField] RectTransform readyBadge;

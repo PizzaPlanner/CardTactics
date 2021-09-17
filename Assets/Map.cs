@@ -132,7 +132,7 @@ public partial class Map : SerializedScriptableObject
             tile?.SetIndicatorVisible(true);
     }
 
-    public Tile[] ShowSpawnTiles(TargetType filter, GameSettings settings, GameSettings.PlayerInfo player)
+    public Tile[] ShowSpawnTiles(TargetType filter, GameSettings settings, PlayerInfo player)
     {
         var id = 0;
         for (int i = 0; i < settings.Players.Length; i++)
@@ -154,7 +154,7 @@ public partial class Map : SerializedScriptableObject
         return valid.ToArray();
     }
 
-    public Tile[] ShowPlacementTiles(TargetType filter, GameSettings.PlayerInfo player)
+    public Tile[] ShowPlacementTiles(TargetType filter, PlayerInfo player)
     {
         List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
@@ -177,7 +177,7 @@ public partial class Map : SerializedScriptableObject
         }
     }
 
-    public bool TileMatches(Tile tile, TargetType filter, GameSettings.PlayerInfo player)
+    public bool TileMatches(Tile tile, TargetType filter, PlayerInfo player)
     {
         if (!tile.gameObject.activeSelf)
             return false;
@@ -194,7 +194,7 @@ public partial class Map : SerializedScriptableObject
         return validTarget;
     }
 
-    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, GameSettings.PlayerInfo player)
+    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, PlayerInfo player)
     {
 
         List<Tile> valid = new List<Tile>();

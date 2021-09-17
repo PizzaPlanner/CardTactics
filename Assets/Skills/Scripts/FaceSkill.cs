@@ -13,7 +13,7 @@ public class FaceSkill : Skill
     Facing originalFacing;
     Facing targetFacing;
 
-    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
     {
         var unit = SourceTile?.Unit;
         if (unit == null)

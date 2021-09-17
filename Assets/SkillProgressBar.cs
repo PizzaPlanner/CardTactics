@@ -22,7 +22,7 @@ public class SkillProgressBar : MonoBehaviour
         }
     }
 
-    public void SetSkills(Card card, GameSettings.PlayerInfo player)
+    public void SetSkills(Card card, PlayerInfo player)
     {
         this.card = card;
         foreach (var skill in card.Skills.Reverse())

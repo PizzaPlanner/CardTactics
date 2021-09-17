@@ -17,7 +17,7 @@ MonoBehaviour:
   SkippableWithInput: 1
   AutoSelectOnOnePossibleTile: 1
   PlayProgress: 0
-  Filter: 2
+  Filter: 6
   MinRange: 0
   MaxRange: 0
   Type: 1

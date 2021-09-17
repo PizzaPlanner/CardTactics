@@ -14,7 +14,7 @@ public class AttackSkill : Skill
     Unit previewUnit;
     Facing previewFacing;
 
-    protected override Tile[] OnActivate(GameSettings settings, GameSettings.PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
     {
         if ((Filter & TargetType.Empty) > 0) return new Tile[0];
         return settings.Map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);

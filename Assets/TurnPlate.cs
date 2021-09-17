@@ -6,22 +6,21 @@ public class TurnPlate : MonoBehaviour
 {
     [SerializeField] RectTransform readyPanel;
     [SerializeField] RectTransform nextActionsPanel;
-    [SerializeField] RectTransform actionsPanel;
 
-    List<(GameSettings.PlayerInfo, Card)> cardsThisRound;
-    Queue<(GameSettings.PlayerInfo, Card)> cardsToPlay;
-    (GameSettings.PlayerInfo, Card) currentAction;
+    List<(PlayerInfo, Card)> cardsThisRound;
+    Queue<(PlayerInfo, Card)> cardsToPlay;
+    (PlayerInfo, Card) currentAction;
 
     [SerializeField] PlayerInfoPanel playerInfoPanelPrefab;
 
     [SerializeField] CardDisplay turnIndicatorPrefab;
 
-    Dictionary<GameSettings.PlayerInfo, PlayerInfoPanel> registeredPlayers;
+    Dictionary<PlayerInfo, PlayerInfoPanel> registeredPlayers;
 
-    public void Register(GameSettings.PlayerInfo player)
+    public void Register(PlayerInfo player)
     {
         if (registeredPlayers == null)
-            registeredPlayers = new Dictionary<GameSettings.PlayerInfo, PlayerInfoPanel>();
+            registeredPlayers = new Dictionary<PlayerInfo, PlayerInfoPanel>();
 
         if (registeredPlayers.ContainsKey(player)) return;
 
@@ -32,7 +31,7 @@ public class TurnPlate : MonoBehaviour
         registeredPlayers.Add(player, badge);
     }
 
-    void AIPrepare(GameSettings.PlayerInfo aiPlayer)
+    void AIPrepare(PlayerInfo aiPlayer)
     {
         foreach (var card in aiPlayer.Deck.Cards)
         {
@@ -43,7 +42,7 @@ public class TurnPlate : MonoBehaviour
             }
         }
     }
-    void PlayerPrepare(GameSettings.PlayerInfo player)
+    void PlayerPrepare(PlayerInfo player)
     {
         if (player.Deck.Commander?.State == Card.CardState.Unplayed)
             SetPlayerReady(player, new Card[1] { player.Deck.Commander });
@@ -69,10 +68,10 @@ public class TurnPlate : MonoBehaviour
 
     void Awake()
     {
-        actionsPanel.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
-    public void SetPlayerReady(GameSettings.PlayerInfo player, Card[] cards)
+    public void SetPlayerReady(PlayerInfo player, Card[] cards)
     {
         registeredPlayers[player].IsReady = true;
 
@@ -92,6 +91,7 @@ public class TurnPlate : MonoBehaviour
         {
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
             readyPanel.gameObject.SetActive(false);
+            gameObject.SetActive(true);
             foreach (Transform t in nextActionsPanel)
                 Destroy(t.gameObject);
 
@@ -109,20 +109,16 @@ public class TurnPlate : MonoBehaviour
             cardsThisRound.Clear();
         }
 
-        actionsPanel.gameObject.SetActive(false);
         var board = GameObject.FindObjectOfType<Board>();
-        board.Paused = true;
 
         CheckDeath(board.Settings);
 
-        StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, () =>
+        board.StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, () =>
         {
-            board.Paused = false;
             if (cardsToPlay.Count > 0)
             {
                 currentAction = cardsToPlay.Dequeue();
                 board.SetTurn(currentAction.Item1, currentAction.Item2);
-                actionsPanel.gameObject.SetActive(true);
             }
             else
             {
@@ -133,7 +129,7 @@ public class TurnPlate : MonoBehaviour
 
     void CheckDeath(GameSettings settings)
     {
-        List<GameSettings.PlayerInfo> deadPlayers = new List<GameSettings.PlayerInfo>();
+        List<PlayerInfo> deadPlayers = new List<PlayerInfo>();
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
@@ -154,10 +150,10 @@ public class TurnPlate : MonoBehaviour
 
     internal void StartTurn()
     {
-        cardsThisRound = new List<(GameSettings.PlayerInfo, Card)>();
-        cardsToPlay = new Queue<(GameSettings.PlayerInfo, Card)>();
+        cardsThisRound = new List<(PlayerInfo, Card)>();
+        cardsToPlay = new Queue<(PlayerInfo, Card)>();
         currentAction = (default, null);
-        actionsPanel.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
 
         var settings = GameObject.FindObjectOfType<Board>().Settings;
