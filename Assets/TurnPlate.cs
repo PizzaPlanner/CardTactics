@@ -92,10 +92,16 @@ public class TurnPlate : MonoBehaviour
         {
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
             readyPanel.gameObject.SetActive(false);
+            foreach (Transform t in nextActionsPanel)
+                Destroy(t.gameObject);
+
             foreach (var item in cardsThisRound)
             {
+                // foreach (var skill in item.Item2.Skills)
+                //     skill.Reset();
                 cardsToPlay.Enqueue(item);
                 var indicator = Instantiate(turnIndicatorPrefab);
+                indicator.GetComponent<SkillProgressBar>().SetSkills(item.Item2, item.Item1);
                 indicator.SetCard(item.Item2);
                 indicator.PlayerColorBorder.color = item.Item1.Color;
                 indicator.transform.SetParent(nextActionsPanel);
@@ -106,13 +112,15 @@ public class TurnPlate : MonoBehaviour
         actionsPanel.gameObject.SetActive(false);
         var board = GameObject.FindObjectOfType<Board>();
         board.Paused = true;
+
+        CheckDeath(board.Settings);
+
         StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, () =>
         {
             board.Paused = false;
             if (cardsToPlay.Count > 0)
             {
                 currentAction = cardsToPlay.Dequeue();
-                Destroy(nextActionsPanel.GetChild(0).gameObject);
                 board.SetTurn(currentAction.Item1, currentAction.Item2);
                 actionsPanel.gameObject.SetActive(true);
             }
@@ -123,6 +131,27 @@ public class TurnPlate : MonoBehaviour
         }));
     }
 
+    void CheckDeath(GameSettings settings)
+    {
+        List<GameSettings.PlayerInfo> deadPlayers = new List<GameSettings.PlayerInfo>();
+        foreach (var kvp in registeredPlayers)
+        {
+            var player = kvp.Key;
+            if (player.LooseCondition.Check(settings, player))
+            {
+                deadPlayers.Add(player);
+                if (player.OnLooseTrigger != null)
+                    player.OnLooseTrigger.ConditionMet = true;
+            }
+        }
+        foreach (var player in deadPlayers)
+        {
+            Debug.Log("A player died!");
+            Destroy(registeredPlayers[player].gameObject);
+            registeredPlayers.Remove(player);
+        }
+    }
+
     internal void StartTurn()
     {
         cardsThisRound = new List<(GameSettings.PlayerInfo, Card)>();
@@ -131,17 +160,10 @@ public class TurnPlate : MonoBehaviour
         actionsPanel.gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
 
-        List<GameSettings.PlayerInfo> deadPlayers = new List<GameSettings.PlayerInfo>();
-
         var settings = GameObject.FindObjectOfType<Board>().Settings;
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
-            if (player.LooseCondition.Check(settings, player))
-            {
-                deadPlayers.Add(player);
-                continue;
-            }
 
             kvp.Value.gameObject.SetActive(true);
             kvp.Value.IsReady = false;
@@ -161,13 +183,6 @@ public class TurnPlate : MonoBehaviour
             }
 
             kvp.Value.UpdateValues();
-        }
-
-        foreach (var player in deadPlayers)
-        {
-            Debug.Log("A player died!");
-            Destroy(registeredPlayers[player].gameObject);
-            registeredPlayers.Remove(player);
         }
 
         if (!NextPlayerPrepareTurn())

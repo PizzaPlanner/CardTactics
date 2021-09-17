@@ -11,6 +11,7 @@ public abstract class Card : ScriptableObject
     public enum CardState
     {
         Unplayed,
+        Current,
         Played,
         Skipped,
         Active,
@@ -21,10 +22,13 @@ public abstract class Card : ScriptableObject
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible = false, Action onComplete = null)
+    public virtual IEnumerator Play(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
     {
+        State = CardState.Current;
+        yield return new WaitForSeconds(0.2f);
         yield return PlaySkills(settings, player, autocompleteIfPossible);
         State = StateOnPlayed;
+        yield return new WaitForSeconds(0.2f);
         onComplete?.Invoke();
     }
 
@@ -109,13 +113,13 @@ public abstract class Card : ScriptableObject
 
     public Tile SkillTarget;
     public bool WantSkillSkip;
-    public bool WantCardSkip;
     public bool WantComplete;
     public bool WantReset;
 
     protected IEnumerator PlaySkills(GameSettings settings, GameSettings.PlayerInfo player, bool autocompleteIfPossible)
     {
-        WantCardSkip = false;
+        if (Skills.Length == 0)
+            WantComplete = true;
         for (int i = 0; i <= Skills.Length; i++)
         {
             if (i < Skills.Length)
@@ -131,7 +135,7 @@ public abstract class Card : ScriptableObject
                     if (!player.IsAI && SkillTarget == null)
                         settings.Map.ShowTileIndicators();
 
-                    yield return new WaitUntil(() => SkillTarget != null || WantCardSkip || WantReset || (WantSkillSkip && Skills[i].IsOptional));
+                    yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills[i].IsOptional));
 
                     if (SkillTarget != null)
                     {
@@ -147,26 +151,18 @@ public abstract class Card : ScriptableObject
                     {
                         i = PartialReset();
                     }
-                    else if (WantCardSkip)
-                    {
-                        i = Skills.Length - 1;
-                    }
                 }
                 settings.Map.HideTileSelectionPreview();
             }
             else
             {
-                yield return new WaitUntil(() => WantCardSkip || WantComplete || WantReset);
-                if (WantCardSkip)
-                {
-                    Skip(settings, player);
-                }
-                else if (WantComplete)
+                yield return new WaitUntil(() => WantComplete || WantReset);
+                if (WantComplete)
                 {
                     foreach (var skill in Skills)
                     {
                         if (skill.PlayProgress == Skill.Progress.Queued)
-                            skill.OnUse();
+                            skill.Use();
                     }
                 }
                 else if (WantReset)

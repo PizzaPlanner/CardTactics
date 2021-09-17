@@ -25,7 +25,7 @@ public class MoveSkill : Skill
         yield return unit.Move(SourceTile, TargetTile, RangeType);
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
     }
 

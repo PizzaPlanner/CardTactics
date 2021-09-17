@@ -20,9 +20,11 @@ public class SkillProgressBarItem : MonoBehaviour
 
     Skill skill;
 
+    public Func<bool> ShouldUpdate;
+
     public Image Icon;
 
-    [SerializeField] AudioClip OkSound, SkipSound, FailSound;
+    [SerializeField] AudioClip SkipSound, FailSound;
 
     public void SetSkill(Skill skill, Action OnSkip)
     {
@@ -31,13 +33,14 @@ public class SkillProgressBarItem : MonoBehaviour
         skipButton.onClick.RemoveAllListeners();
         if (skill.IsOptional)
             skipButton.onClick.AddListener(() => OnSkip());
+        GetComponent<Image>().sprite = Pending;
     }
 
     Skill.Progress prevProgress = Skill.Progress.Pending;
 
     void Update()
     {
-        if (skill.PlayProgress == prevProgress)
+        if (skill.PlayProgress == prevProgress || !ShouldUpdate())
             return;
 
         prevProgress = skill.PlayProgress;
@@ -50,9 +53,7 @@ public class SkillProgressBarItem : MonoBehaviour
             Skill.Progress.Now => Now,
         };
         skipButton.gameObject.SetActive(skill.IsOptional && skill.PlayProgress == Skill.Progress.Now);
-        if (skill.PlayProgress == Skill.Progress.Queued)
-            GetComponent<AudioSource>().PlayOneShot(OkSound);
-        else if (skill.PlayProgress == Skill.Progress.Skipped)
+        if (skill.PlayProgress == Skill.Progress.Skipped)
             GetComponent<AudioSource>().PlayOneShot(SkipSound);
         else if (skill.PlayProgress == Skill.Progress.Failed)
             GetComponent<AudioSource>().PlayOneShot(FailSound);

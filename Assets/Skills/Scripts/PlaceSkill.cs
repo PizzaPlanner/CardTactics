@@ -26,7 +26,7 @@ public class PlaceSkill : Skill
         yield return null;
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
     }
 

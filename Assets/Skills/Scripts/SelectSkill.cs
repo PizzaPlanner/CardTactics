@@ -17,7 +17,7 @@ public class SelectSkill : Skill
         yield return null;
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
     }
 

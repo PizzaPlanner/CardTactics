@@ -17,7 +17,7 @@ public class GameSettings : ScriptableObject
         public bool RegisterLater;
 
         public LooseCondition LooseCondition;
-        public Trigger OnLooseTrigger;
+        public ExternalTrigger OnLooseTrigger;
     }
 
     public Map Map;

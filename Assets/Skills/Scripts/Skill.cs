@@ -92,12 +92,19 @@ public abstract class Skill : ScriptableObject
     }
 
     protected abstract IEnumerator OnPreview();
-    public abstract void OnUse();
+    protected abstract void OnUse();
     protected abstract void OnCancel();
+
+    public void Use()
+    {
+        OnUse();
+        IsPreviewed = false;
+    }
 
     internal void Skip()
     {
         PlayProgress = Progress.Skipped;
         autoSelectIgnored = false;
+        IsPreviewed = false;
     }
 }

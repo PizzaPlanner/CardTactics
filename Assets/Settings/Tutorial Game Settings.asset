@@ -27,4 +27,4 @@ MonoBehaviour:
     Color: {r: 0.86157453, g: 0.9056604, b: 0.2691349, a: 1}
     RegisterLater: 1
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
-    OnLooseTrigger: {fileID: 0}
+    OnLooseTrigger: {fileID: 11400000, guid: cbc6ae6869c2f5f4da9a544f25227769, type: 2}

@@ -26,7 +26,7 @@ public class GainCardSkill : Skill
         CardTooltip.Hide();
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
         Player.Deck.ExtendWith(NewCardPrefab, Source, NewCardInitialState);
     }

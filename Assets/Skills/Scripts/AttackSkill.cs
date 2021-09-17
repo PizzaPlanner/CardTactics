@@ -43,7 +43,7 @@ public class AttackSkill : Skill
         }
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
         previewUnit.Damage(Damage, false);
     }

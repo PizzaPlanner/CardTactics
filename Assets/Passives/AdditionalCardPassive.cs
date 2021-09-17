@@ -14,7 +14,7 @@ public class AdditionalCardPassive : Passive
         {
             foreach (var card in player.Deck.Cards)
             {
-                if (card.Source == this && card.State != Card.CardState.Destroyed) return;
+                if (card.Source == Source && card.State != Card.CardState.Destroyed) return;
             }
         }
         player.Deck.ExtendWith(Skill.CardPrefab, Source, Card.CardState.Skipped);

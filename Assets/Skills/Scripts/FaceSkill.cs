@@ -29,7 +29,7 @@ public class FaceSkill : Skill
         yield return null;
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
         SourceTile.Face(targetFacing);
     }

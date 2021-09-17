@@ -41,8 +41,13 @@ public partial class Map : SerializedScriptableObject
         {
             if (tile == null) continue;
             var trigger = TilePrefabs[tile.Position.x, tile.Position.y].Trigger;
-            if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(tile))
+            if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(settings, tile))
                 yield return Trigger(settings, trigger, tile);
+        }
+        foreach (var player in settings.Players)
+        {
+            if (player.OnLooseTrigger?.ShouldTrigger(settings, null) == true)
+                yield return player.OnLooseTrigger.Execute(settings, null);
         }
         onFinish();
     }

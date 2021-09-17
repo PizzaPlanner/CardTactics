@@ -22,13 +22,13 @@ public class HealSkill : Skill
 
     protected override IEnumerator OnPreview()
     {
-        SourceTile.Unit.GetComponent<Animator>().SetTrigger("Attack");
+        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Attack");
         yield return new WaitForSeconds(1);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(-Heal, true);
     }
 
-    public override void OnUse()
+    protected override void OnUse()
     {
         previewUnit.Damage(-Heal, false);
     }

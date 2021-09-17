@@ -44,8 +44,6 @@ public class Board : MonoBehaviour
 
     Card currentCard;
 
-    [SerializeField] SkillProgressBar skillProgressBar;
-
     void Update()
     {
         if (!EventSystem.current.IsPointerOverGameObject() && currentCard != null)
@@ -62,28 +60,16 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void Confirm()
-    {
-        currentCard.WantComplete = true;
-    }
-
-    public void Skip()
-    {
-        currentCard.WantCardSkip = true;
-    }
-
     void Next()
     {
         currentCard = null;
         Settings.Map.HideTileSelectionPreview();
-        skillProgressBar.Clear();
         TurnPanel.Next();
     }
 
     internal void SetTurn(GameSettings.PlayerInfo player, Card card)
     {
         currentCard = card;
-        skillProgressBar.SetSkills(card, player, () => currentCard.WantSkillSkip = true, card is not UnitCard);
         var cr = StartCoroutine(currentCard.Play(Settings, player, onComplete: Next));
     }
 }

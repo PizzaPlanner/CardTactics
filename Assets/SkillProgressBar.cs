@@ -5,47 +5,36 @@ using UnityEngine.UI;
 
 public class SkillProgressBar : MonoBehaviour
 {
-
     [SerializeField] SkillProgressBarItem itemPrefab;
-    [SerializeField] CardDisplay cardItem;
+    [SerializeField] RectTransform skillPanel;
 
-    [SerializeField] Button confirmButton, skipButton;
-
-    public SkillProgressBarItem Get(int i)
-    {
-        return transform.GetChild(transform.childCount - i - 2).GetComponent<SkillProgressBarItem>();
-    }
+    Card card;
 
     void Update()
     {
-        foreach (var item in GetComponentsInChildren<SkillProgressBarItem>(false))
+        if (card.State == Card.CardState.Current)
         {
-            if (item.State == Skill.Progress.Pending || item.State == Skill.Progress.Now)
-            {
-                confirmButton.interactable = false;
-                return;
-            }
+            transform.localScale = Vector3.one * 1.15f;
         }
-        confirmButton.interactable = true;
+        else
+        {
+            transform.localScale = Vector3.one;
+        }
     }
 
-    public void SetSkills(Card card, GameSettings.PlayerInfo player, Action onSkip, bool allowSkipCard)
+    public void SetSkills(Card card, GameSettings.PlayerInfo player)
     {
+        this.card = card;
         foreach (var skill in card.Skills.Reverse())
         {
             var item = GameObject.Instantiate(itemPrefab);
-            item.transform.SetParent(GetComponent<RectTransform>());
-            item.SetSkill(skill, onSkip);
+            item.transform.SetParent(skillPanel);
+            item.SetSkill(skill, () => card.WantSkillSkip = true);
+            item.ShouldUpdate = () => card.State == Card.CardState.Current;
         }
+        var cardItem = GetComponent<CardDisplay>();
         cardItem.SetCard(card);
-        cardItem.transform.SetAsLastSibling();
         cardItem.PlayerColorBorder.color = player.Color;
-        skipButton.gameObject.SetActive(allowSkipCard);
-    }
-
-    internal void Clear()
-    {
-        foreach (var item in GetComponentsInChildren<SkillProgressBarItem>(true))
-            Destroy(item.gameObject);
+        // skipButton.gameObject.SetActive(false);
     }
 }

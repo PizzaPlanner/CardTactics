@@ -10,6 +10,6 @@ public class GainCardTrigger : Trigger
     {
         Skill.Player = tile.Unit.Player;
         yield return Skill.Preview(tile);
-        Skill.OnUse();
+        Skill.Use();
     }
 }
