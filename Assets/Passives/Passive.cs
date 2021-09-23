@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Passive : ScriptableObject
@@ -8,6 +9,14 @@ public abstract class Passive : ScriptableObject
     public Sprite Icon;
 
     [NonSerialized] public Card Source;
+
+    public virtual List<Card> GetRelatedCards()
+    {
+        var list = new List<Card>();
+        if (Source != null)
+            list.Add(Source);
+        return list;
+    }
 
     public abstract void OnRoundStart(GameSettings settings, PlayerInfo player);
 }

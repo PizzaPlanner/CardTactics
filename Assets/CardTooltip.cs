@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(CardDisplay))]
@@ -32,8 +34,9 @@ public class CardTooltip : MonoBehaviour
         foreach (Transform t in RelatedCardsDisplay)
             Destroy(t.gameObject);
 
-        foreach (var related in card.GetRelatedCards())
+        foreach (var related in card.GetRelatedCards().Distinct(new CardComparer()))
         {
+            if (related.Name.Equals(card.Name)) continue;
             var c = Instantiate(RelatedCardPrefab);
             c.transform.SetParent(RelatedCardsDisplay);
             c.SetCard(related);
@@ -41,4 +44,11 @@ public class CardTooltip : MonoBehaviour
 
         RelatedCardsDisplay.gameObject.SetActive(RelatedCardsDisplay.childCount > 0);
     }
+}
+
+public class CardComparer : IEqualityComparer<Card>
+{
+    public bool Equals(Card x, Card y) => x.Name.Equals(y.Name);
+
+    public int GetHashCode(Card obj) => obj.GetHashCode();
 }

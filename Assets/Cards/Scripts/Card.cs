@@ -46,8 +46,7 @@ public abstract class Card : ScriptableObject
             list.Add(Source);
         foreach (var skill in Skills)
         {
-            if (skill.Source != null && skill.Source != this)
-                list.Add(skill.Source);
+            list.AddRange(skill.GetRelatedCards());
         }
         return list;
     }

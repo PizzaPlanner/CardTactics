@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,14 @@ public class PassiveCard : Card
     {
         Passive = Passive.Instantiate(Passive);
         Passive.Source = this;
+    }
+
+    public override List<Card> GetRelatedCards()
+    {
+        var list = base.GetRelatedCards();
+        if (Passive != null)
+            list.AddRange(Passive.GetRelatedCards());
+        return list;
     }
 
     protected override CardState StateOnPlayed => CardState.Active;

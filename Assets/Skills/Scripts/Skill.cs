@@ -107,4 +107,12 @@ public abstract class Skill : ScriptableObject
         autoSelectIgnored = false;
         IsPreviewed = false;
     }
+
+    public virtual List<Card> GetRelatedCards()
+    {
+        var list = new List<Card>();
+        if (Source != null)
+            list.Add(Source);
+        return list;
+    }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -7,6 +8,13 @@ public class AdditionalCardPassive : Passive
     public GainCardSkill Skill;
     public bool OneCardPerPassive;
     public Card.CardState InitialState;
+
+    public override List<Card> GetRelatedCards()
+    {
+        var list = base.GetRelatedCards();
+        list.AddRange(Skill.GetRelatedCards());
+        return list;
+    }
 
     public override void OnRoundStart(GameSettings settings, PlayerInfo player)
     {

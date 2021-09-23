@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Gain Card")]
@@ -34,5 +35,12 @@ public class GainCardSkill : Skill
     protected override void OnCancel()
     {
 
+    }
+
+    public override List<Card> GetRelatedCards()
+    {
+        var list = base.GetRelatedCards();
+        list.Add(CardPrefab);
+        return list;
     }
 }
