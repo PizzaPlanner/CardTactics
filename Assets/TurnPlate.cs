@@ -111,9 +111,9 @@ public class TurnPlate : MonoBehaviour
 
         var board = GameObject.FindObjectOfType<Board>();
 
-        CheckDeath(board.Settings);
+        var died = CheckDeath(board.Settings);
 
-        board.StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, () =>
+        board.StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, died, () =>
         {
             if (cardsToPlay.Count > 0)
             {
@@ -127,7 +127,7 @@ public class TurnPlate : MonoBehaviour
         }));
     }
 
-    void CheckDeath(GameSettings settings)
+    List<PlayerInfo> CheckDeath(GameSettings settings)
     {
         List<PlayerInfo> deadPlayers = new List<PlayerInfo>();
         foreach (var kvp in registeredPlayers)
@@ -136,8 +136,6 @@ public class TurnPlate : MonoBehaviour
             if (player.LooseCondition.Check(settings, player))
             {
                 deadPlayers.Add(player);
-                if (player.OnLooseTrigger != null)
-                    player.OnLooseTrigger.ConditionMet = true;
             }
         }
         foreach (var player in deadPlayers)
@@ -146,6 +144,7 @@ public class TurnPlate : MonoBehaviour
             Destroy(registeredPlayers[player].gameObject);
             registeredPlayers.Remove(player);
         }
+        return deadPlayers;
     }
 
     internal void StartTurn()

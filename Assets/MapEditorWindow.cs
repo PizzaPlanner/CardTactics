@@ -66,7 +66,6 @@ public class TileGridDrawer : PropertyDrawer
         Spawn,
         Marker
     }
-
     EnumField mapEditMode;
     ObjectField drawSelected;
     IntegerField drawArea;
@@ -119,6 +118,13 @@ public class TileGridDrawer : PropertyDrawer
             DrawMap();
         })
         { text = "+ y" });
+        bottom.Add(new Button(() =>
+        {
+            property.serializedObject.Update();
+            property.managedReferenceValue = data;
+            property.serializedObject.ApplyModifiedProperties();
+        })
+        { text = "Save" });
         bottom.Add(new Button(() =>
         {
             data.Size += new Vector2Int(1, 0);

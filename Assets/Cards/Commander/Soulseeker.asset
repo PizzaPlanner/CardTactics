@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e0cf603a9a0bda45b5718ed41db56ff, type: 3}
   m_Name: Soulseeker
   m_EditorClassIdentifier: 
-  IsVirtual: 0
   Class: {fileID: 11400000, guid: 9f30c883e3920954e997db4f39820a2f, type: 2}
   Skills:
   - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
@@ -20,11 +19,10 @@ MonoBehaviour:
   Conditions: 00000000
   SkillTarget: {fileID: 0}
   WantSkillSkip: 0
-  WantCardSkip: 0
   WantComplete: 0
   WantReset: 0
   UnitReference: {fileID: 5882492422521109190, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
-  Passive: {fileID: 11400000, guid: 1909befbcd60b904eb331d9d4c641aa2, type: 2}
+  Passive: {fileID: 0}
   Capacities:
   - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     MaxNumber: 8

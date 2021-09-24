@@ -27,6 +27,7 @@ public class PlayerInfoPanel : MonoBehaviour
         Name.color = Player.Color;
         Name.text = Player.Deck.Commander.Name;
         commanderCard.SetCard(Player.Deck.Commander);
+        commanderCard.GetComponent<Button>().interactable = false;
 
         foreach (Transform t in passivePanel)
             GameObject.Destroy(t.gameObject);

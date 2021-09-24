@@ -1289,6 +1289,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3558027064745310067}
     m_Modifications:
+    - target: {fileID: 1878406807213188480, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3133890599841966768, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1299,7 +1303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6492185814200564605, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_Pivot.x
@@ -1389,7 +1393,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Commander
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8331722881698984491, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8680365520757254293, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4134251295744747476, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+    - {fileID: 5329541883323843051, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
+    - {fileID: 3886264323942017706, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
 --- !u!224 &777788083758242853 stripped
 RectTransform:

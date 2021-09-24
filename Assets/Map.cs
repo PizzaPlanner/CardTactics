@@ -67,7 +67,7 @@ public partial class Map : ScriptableObject
 
     List<int> ActivatedTriggers;
 
-    public IEnumerator CheckTriggers(GameSettings settings, Action onFinish)
+    public IEnumerator CheckTriggers(GameSettings settings, List<PlayerInfo> playersDiedThisTurn, Action onFinish)
     {
         foreach (var tile in Tiles)
         {
@@ -76,10 +76,12 @@ public partial class Map : ScriptableObject
             if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(settings, tile))
                 yield return Trigger(settings, trigger, tile);
         }
-        foreach (var player in settings.Players)
+        foreach (var player in playersDiedThisTurn)
         {
-            if (player.OnLooseTrigger?.ShouldTrigger(settings, null) == true)
-                yield return player.OnLooseTrigger.Execute(settings, null);
+            if (player.OnLooseTrigger > 0 && player.OnLooseTrigger <= Triggers.Length)
+            {
+                yield return Triggers[player.OnLooseTrigger - 1].Execute(settings, null);
+            }
         }
         onFinish();
     }

@@ -8,7 +8,7 @@ public class GainCardTrigger : Trigger
 
     public override IEnumerator Execute(GameSettings settings, Tile tile)
     {
-        Skill.Player = tile.Unit.Player;
+        Skill.Player = tile?.Unit.Player ?? settings.Players[0];
         yield return Skill.Preview(tile);
         Skill.Use();
     }

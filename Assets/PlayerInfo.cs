@@ -13,5 +13,5 @@ public class PlayerInfo
     public bool RegisterLater;
 
     public LooseCondition LooseCondition;
-    public ExternalTrigger OnLooseTrigger;
+    public int OnLooseTrigger;
 }

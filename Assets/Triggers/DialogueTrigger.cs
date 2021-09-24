@@ -8,7 +8,7 @@ public class DialogueTrigger : Trigger
     class DialogueLine
     {
         public string Text;
-        public Unit Speaker;
+        public int Speaker;
     }
 
     [SerializeField] DialogueLine[] Lines;
@@ -18,7 +18,7 @@ public class DialogueTrigger : Trigger
         foreach (var line in Lines)
         {
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
-            yield return ui.Set(line.Speaker ?? tile.Unit, line.Text);
+            yield return ui.Set(settings.Players[line.Speaker].Deck.Commander.UnitReference, line.Text);
         }
     }
 }
