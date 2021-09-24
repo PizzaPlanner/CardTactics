@@ -5,15 +5,11 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu]
-public partial class Map : SerializedScriptableObject
+public partial class Map : ScriptableObject
 {
-    public int Width => Tiles.GetLength(0);
-    public int Height => Tiles.GetLength(1);
-
-    Tile[,] Tiles;
 
     [System.Serializable]
-    class TilePrefabWithInfo
+    internal class TilePrefabWithInfo
     {
         public Tile Prefab;
         public int Area;
@@ -23,15 +19,51 @@ public partial class Map : SerializedScriptableObject
         public int SpawnId;
     }
 
-    [TitleGroup("Map")]
-    [TableMatrix(SquareCells = true, DrawElementMethod = "DrawCell", Transpose = true)]
-    [SerializeField]
-    readonly TilePrefabWithInfo[,] TilePrefabs;
+    [System.Serializable]
+    internal class MapInfo
+    {
+        internal Vector2Int Size
+        {
+            get => size; set
+            {
+                var data = new List<TilePrefabWithInfo>();
+                for (int yOld = 0; yOld < size.y; yOld++)
+                {
+                    for (int xOld = 0; xOld < size.x; xOld++)
+                    {
+                        data.Add(this[xOld, yOld]);
+                    }
+                    for (int xNew = size.x; xNew < value.x; xNew++)
+                    {
+                        data.Add(new TilePrefabWithInfo());
+                    }
+                }
+                for (int yNew = size.y; yNew < value.y; yNew++)
+                {
+                    for (int xNew = 0; xNew < value.x; xNew++)
+                    {
+                        data.Add(new TilePrefabWithInfo());
+                    }
+                }
+                size = value;
+                Data = data;
+            }
+        }
+        [SerializeField] Vector2Int size;
+        [SerializeReference] internal List<TilePrefabWithInfo> Data;
 
-    [ListDrawerSettings(ShowIndexLabels = true, Expanded = true)]
+        internal TilePrefabWithInfo this[int x, int y]
+        {
+            get => Data[x + Size.x * y];
+            set { Data[x + Size.x * y] = value; }
+        }
+    }
 
-    [CustomValueDrawer("DrawTriggers")]
-    [SerializeField] Trigger[] Triggers;
+    [SerializeReference] MapInfo TilePrefabs;
+
+    [SerializeReference] Trigger[] Triggers;
+
+    Tile[,] Tiles;
 
     List<int> ActivatedTriggers;
 
@@ -98,25 +130,26 @@ public partial class Map : SerializedScriptableObject
     public void Create()
     {
         ActivatedTriggers = new List<int>();
-        Tiles = new Tile[TilePrefabs.GetLength(0), TilePrefabs.GetLength(1)];
-        for (int w = 0; w < Width; w++)
+        Tiles = new Tile[TilePrefabs.Size.x, TilePrefabs.Size.y];
+        for (int w = 0; w < TilePrefabs.Size.x; w++)
         {
-            for (int h = 0; h < Height; h++)
+            for (int h = 0; h < TilePrefabs.Size.y; h++)
             {
-                if (TilePrefabs[w, h]?.Prefab == null) continue;
+                if (TilePrefabs[w, h].Prefab == null) continue;
                 var data = TilePrefabs[w, h];
-                var tile = Instantiate(TilePrefabs[w, h].Prefab, new Vector3(w - Width / 2, data.Height * 0.25f, h - Height / 2), Quaternion.identity).GetComponent<Tile>();
+                var tile = Instantiate(data.Prefab, new Vector3(w - TilePrefabs.Size.x / 2, data.Height * 0.25f, h - TilePrefabs.Size.y / 2), Quaternion.identity).GetComponent<Tile>();
                 tile.Area = data.Area;
                 Tiles[w, h] = tile;
                 tile.Position = (w, h);
                 tile.Neighbours = new List<Tile>();
-                if (w > 0 && Tiles[w - 1, h] != null && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w - 1, h].Height) < 2)
+                if (w > 0 && Tiles[w - 1, h] != null
+                    && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w - 1, h].Height) < 2)
                 {
                     Tiles[w, h].Neighbours.Add(Tiles[w - 1, h]);
                     Tiles[w - 1, h].Neighbours.Add(Tiles[w, h]);
                 }
                 if (h > 0 && Tiles[w, h - 1] != null
-                && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w, h - 1].Height) < 2)
+                    && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w, h - 1].Height) < 2)
                 {
                     Tiles[w, h].Neighbours.Add(Tiles[w, h - 1]);
                     Tiles[w, h - 1].Neighbours.Add(Tiles[w, h]);
@@ -196,7 +229,6 @@ public partial class Map : SerializedScriptableObject
 
     public Tile[] ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, PlayerInfo player)
     {
-
         List<Tile> valid = new List<Tile>();
         List<Tile> rangeTiles = new List<Tile>();
         foreach (var tile in Tiles)

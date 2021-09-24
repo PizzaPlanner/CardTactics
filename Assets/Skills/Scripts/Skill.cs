@@ -46,7 +46,7 @@ public abstract class Skill : ScriptableObject
     [SerializeField] bool AutoSelectOnOnePossibleTile;
     bool autoSelectIgnored;
 
-    public Progress PlayProgress;
+    public Progress PlayProgress { get; private set; }
 
     public bool Activate(GameSettings settings, PlayerInfo player, Card card, Skill dependency, Skill condition)
     {

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Register Player")]
+[System.Serializable]
 public class RegisterPlayerTrigger : Trigger
 {
     public int Player;

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Reveal Area")]
+[System.Serializable]
 public class RevealAreaTrigger : Trigger
 {
     public int Area;

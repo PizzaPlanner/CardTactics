@@ -1,14 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Multiple")]
+[System.Serializable]
 public class MultiTrigger : Trigger
 {
-    public Trigger[] Triggers;
+    [SerializeReference] Trigger[] SubTriggers;
 
     public override IEnumerator Execute(GameSettings settings, Tile tile)
     {
-        foreach (var trigger in Triggers)
+        foreach (var trigger in SubTriggers)
             yield return trigger.Execute(settings, tile);
     }
 }

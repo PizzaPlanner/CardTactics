@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Use Skill")]
+[System.Serializable]
 public class GainCardTrigger : Trigger
 {
     public GainCardSkill Skill;

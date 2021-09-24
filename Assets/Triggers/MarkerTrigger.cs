@@ -2,7 +2,7 @@ using System.Collections;
 using System.Security.Policy;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Marker")]
+[System.Serializable]
 public class MarkerTrigger : Trigger
 {
     public int Marker;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96a7684169160f644af9eae8288a841c, type: 3}
   m_Name: Tutorial Game Settings
   m_EditorClassIdentifier: 
-  Map: {fileID: 11400000, guid: dbf23382e8a150e4b98ce33ec190c0da, type: 2}
+  Map: {fileID: 11400000, guid: d05d87e147f989845b08e89bcac48169, type: 2}
   Players:
   - Deck: {fileID: 11400000, guid: 00576620d4b687b4a880abe846a1523b, type: 2}
     Team: 0
@@ -20,11 +20,16 @@ MonoBehaviour:
     Color: {r: 0.2980392, g: 0.76480496, b: 1, a: 1}
     RegisterLater: 0
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
-    OnLooseTrigger: {fileID: 0}
+    OnLooseTrigger:
+      SubTriggers: []
   - Deck: {fileID: 11400000, guid: 60c42eb91d14854449a63e9abc3b72d8, type: 2}
     Team: 1
     IsAI: 1
     Color: {r: 0.86157453, g: 0.9056604, b: 0.2691349, a: 1}
     RegisterLater: 1
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
-    OnLooseTrigger: {fileID: 11400000, guid: cbc6ae6869c2f5f4da9a544f25227769, type: 2}
+    OnLooseTrigger:
+      SubTriggers: []
+  references:
+    version: 2
+    RefIds: []

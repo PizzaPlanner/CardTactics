@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Victory")]
+[System.Serializable]
 public class VictoryTrigger : Trigger
 {
     public override IEnumerator Execute(GameSettings settings, Tile tile)

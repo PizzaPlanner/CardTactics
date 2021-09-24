@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/External")]
+[System.Serializable]
 public class ExternalTrigger : MultiTrigger
 {
     [NonSerialized] public bool ConditionMet = false;

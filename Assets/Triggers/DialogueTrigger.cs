@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Triggers/Dialogue")]
+[System.Serializable]
 public class DialogueTrigger : Trigger
 {
     [System.Serializable]

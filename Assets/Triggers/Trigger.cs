@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class Trigger : ScriptableObject
+[System.Serializable]
+public abstract class Trigger
 {
     public virtual bool ShouldTrigger(GameSettings settings, Tile tile) => tile.Unit != null;
 

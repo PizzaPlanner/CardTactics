@@ -10,6 +10,7 @@ public class PlayerInfoPanel : MonoBehaviour
     [SerializeField] RectTransform readyBadge;
     [SerializeField] RectTransform passivePanel;
     [SerializeField] PassiveIndicator passiveIndicatorPrefab;
+    [SerializeField] CardDisplay commanderCard;
 
     public bool IsReady
     {
@@ -24,7 +25,8 @@ public class PlayerInfoPanel : MonoBehaviour
     public void UpdateValues()
     {
         Name.color = Player.Color;
-        Name.text = Player.Deck.Commander?.Name ?? "AI Player";
+        Name.text = Player.Deck.Commander.Name;
+        commanderCard.SetCard(Player.Deck.Commander);
 
         foreach (Transform t in passivePanel)
             GameObject.Destroy(t.gameObject);
