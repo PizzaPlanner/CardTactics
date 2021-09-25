@@ -14,16 +14,81 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilePrefabs:
     rid: 4790068048880992304
-  Triggers: []
+  Triggers:
+  - rid: 4790068074149053158
+  - rid: 4790068074149053157
+  Players:
+  - Deck: {fileID: 11400000, guid: eb46f61de492c5e47b8f29d0de62b2ed, type: 2}
+    Team: 0
+    IsAI: 0
+    Color: {r: 0.9150943, g: 0.22877358, b: 0.22877358, a: 1}
+    RegisterLater: 0
+    LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
+    OnLooseTrigger: 1
+  - Deck: {fileID: 11400000, guid: a9e5b9c6efd370a428a1ac2b6d0a46ba, type: 2}
+    Team: 1
+    IsAI: 0
+    Color: {r: 0.22467959, g: 0.55771816, b: 0.9339623, a: 1}
+    RegisterLater: 0
+    LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
+    OnLooseTrigger: 2
   references:
     version: 2
     RefIds:
     - rid: 4790068048880992304
       type: {class: Map/MapInfo, ns: , asm: Assembly-CSharp}
       data:
-        size: {x: 1, y: 1}
+        size: {x: 7, y: 7}
         Data:
         - rid: 4790068048880992305
+        - rid: 4790068074149053114
+        - rid: 4790068074149053120
+        - rid: 4790068074149053126
+        - rid: 4790068074149053132
+        - rid: 4790068074149053138
+        - rid: 4790068074149053144
+        - rid: 4790068074149053109
+        - rid: 4790068074149053115
+        - rid: 4790068074149053121
+        - rid: 4790068074149053127
+        - rid: 4790068074149053133
+        - rid: 4790068074149053139
+        - rid: 4790068074149053145
+        - rid: 4790068074149053110
+        - rid: 4790068074149053116
+        - rid: 4790068074149053122
+        - rid: 4790068074149053128
+        - rid: 4790068074149053134
+        - rid: 4790068074149053140
+        - rid: 4790068074149053146
+        - rid: 4790068074149053111
+        - rid: 4790068074149053117
+        - rid: 4790068074149053123
+        - rid: 4790068074149053129
+        - rid: 4790068074149053135
+        - rid: 4790068074149053141
+        - rid: 4790068074149053147
+        - rid: 4790068074149053112
+        - rid: 4790068074149053118
+        - rid: 4790068074149053124
+        - rid: 4790068074149053130
+        - rid: 4790068074149053136
+        - rid: 4790068074149053142
+        - rid: 4790068074149053148
+        - rid: 4790068074149053113
+        - rid: 4790068074149053119
+        - rid: 4790068074149053125
+        - rid: 4790068074149053131
+        - rid: 4790068074149053137
+        - rid: 4790068074149053143
+        - rid: 4790068074149053149
+        - rid: 4790068074149053150
+        - rid: 4790068074149053151
+        - rid: 4790068074149053152
+        - rid: 4790068074149053153
+        - rid: 4790068074149053154
+        - rid: 4790068074149053155
+        - rid: 4790068074149053156
     - rid: 4790068048880992305
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -32,4 +97,513 @@ MonoBehaviour:
         Trigger: 0
         Height: 0
         MarkerId: 0
-        SpawnId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053109
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053110
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053111
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053112
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053113
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053114
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053115
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053116
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053117
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 1
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053118
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053119
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053120
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053121
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053122
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+    - rid: 4790068074149053123
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053124
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+    - rid: 4790068074149053125
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053126
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053127
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053128
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053129
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+    - rid: 4790068074149053130
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053131
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053132
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053133
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053134
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+    - rid: 4790068074149053135
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053136
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+    - rid: 4790068074149053137
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053138
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053139
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053140
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053141
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 2
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053142
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053143
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053144
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053145
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053146
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053147
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053148
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053149
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053150
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053151
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053152
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053153
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053154
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053155
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053156
+      type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 0}
+        Area: 0
+        Trigger: 0
+        Height: 0
+        MarkerId: 0
+        Owner: 0
+        UnitPrefab: {fileID: 0}
+    - rid: 4790068074149053157
+      type: {class: MultiTrigger, ns: , asm: Assembly-CSharp}
+      data:
+        SubTriggers:
+        - rid: 4790068074149053162
+        - rid: 4790068074149053161
+    - rid: 4790068074149053158
+      type: {class: MultiTrigger, ns: , asm: Assembly-CSharp}
+      data:
+        SubTriggers:
+        - rid: 4790068074149053159
+        - rid: 4790068074149053160
+    - rid: 4790068074149053159
+      type: {class: DialogueTrigger, ns: , asm: Assembly-CSharp}
+      data:
+        Lines:
+        - Text: Heh. That was easy.
+          Speaker: 0
+    - rid: 4790068074149053160
+      type: {class: VictoryTrigger, ns: , asm: Assembly-CSharp}
+    - rid: 4790068074149053161
+      type: {class: VictoryTrigger, ns: , asm: Assembly-CSharp}
+    - rid: 4790068074149053162
+      type: {class: DialogueTrigger, ns: , asm: Assembly-CSharp}
+      data:
+        Lines:
+        - Text: What a strange dude. However, I won. Phew...
+          Speaker: 1

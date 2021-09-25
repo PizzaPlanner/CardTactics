@@ -53,7 +53,7 @@ MonoBehaviour:
   Name: Apparition
   Icon: {fileID: 21300000, guid: 5c0bfb21105c497409f09f8ad9df8adc, type: 3}
   Card: {fileID: 0}
-  MaxLife: 12
+  MaxLife: 5
 --- !u!114 &7827538069635411841
 MonoBehaviour:
   m_ObjectHideFlags: 0

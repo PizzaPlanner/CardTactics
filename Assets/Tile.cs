@@ -69,7 +69,6 @@ public class Tile : MonoBehaviour
 
     public Unit Unit;
 
-
     public (int x, int y) Position;
 
     public static Tile Hovered { get; private set; }
@@ -83,11 +82,6 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        if (Unit != null)
-        {
-            Unit = Instantiate(Unit);
-            PlaceUnitNoCheck(Unit, 0);
-        }
         CurrentIndicator = TargetIndicator.Hidden;
     }
 

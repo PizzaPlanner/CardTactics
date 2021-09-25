@@ -120,8 +120,15 @@ public class Map : ScriptableObject
             if (tile != null && tile.Area == area)
             {
                 tile.gameObject.SetActive(true);
-                if (TilePrefabs[tile.Position.x, tile.Position.y].UnitPrefab != null)
-                    tile.Place(Instantiate(TilePrefabs[tile.Position.x, tile.Position.y].UnitPrefab), Facing.Preserve);
+                var info = TilePrefabs[tile.Position.x, tile.Position.y];
+                if (info.UnitPrefab != null && tile.Unit == null)
+                {
+                    var unit = Instantiate(info.UnitPrefab);
+                    Debug.Log(unit);
+                    if (info.Owner > 0 && info.Owner <= Players.Length)
+                        unit.Player = Players[info.Owner - 1];
+                    tile.Place(unit, Facing.Preserve);
+                }
             }
         }
     }
@@ -225,6 +232,17 @@ public class Map : ScriptableObject
             tile.ClearPathingInfo();
             tile.SetIndicatorVisible(false);
         }
+    }
+
+    public Tile[] GetPlayerTiles(PlayerInfo player)
+    {
+        List<Tile> valid = new List<Tile>();
+        foreach (var tile in Tiles)
+        {
+            if (tile == null || tile.Unit == null || tile.Unit.Player != player) continue;
+            valid.Add(tile);
+        }
+        return valid.ToArray();
     }
 
     public bool TileMatches(Tile tile, TargetType filter, PlayerInfo player)
