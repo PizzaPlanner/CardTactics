@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,15 +10,14 @@ public class Board : MonoBehaviour
 
     [ShowIf("Settings")]
     [InlineEditor]
-    public GameSettings Settings;
+    public Map Map;
 
     // Start is called before the first frame update
-    public void Initialize(GameSettings settingsPrefab)
+    public void Initialize(Map mapPrefab)
     {
-        Settings = GameSettings.Create(settingsPrefab);
-        Settings.Map.Create();
-        Settings.Map.RevealArea(0);
-        foreach (var player in Settings.Players)
+        Map = Map.Create(mapPrefab);
+        Map.RevealArea(0);
+        foreach (var player in Map.Players)
         {
             if (!player.RegisterLater)
             {
@@ -35,7 +33,7 @@ public class Board : MonoBehaviour
 
     void Start()
     {
-        if (Settings == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
+        if (Map == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
             LoadingScreen.GoToMenu();
     }
 
@@ -60,13 +58,13 @@ public class Board : MonoBehaviour
     void Next()
     {
         currentCard = null;
-        Settings.Map.HideTileSelectionPreview();
+        Map.HideTileSelectionPreview();
         TurnPanel.Next();
     }
 
     internal void SetTurn(PlayerInfo player, Card card)
     {
         currentCard = card;
-        var cr = StartCoroutine(currentCard.Play(Settings, player, onComplete: Next));
+        var cr = StartCoroutine(currentCard.Play(Map, player, onComplete: Next));
     }
 }

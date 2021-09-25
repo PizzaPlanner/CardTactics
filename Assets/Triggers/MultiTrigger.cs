@@ -6,9 +6,9 @@ public class MultiTrigger : Trigger
 {
     [SerializeReference] Trigger[] SubTriggers;
 
-    public override IEnumerator Execute(GameSettings settings, Tile tile)
+    public override IEnumerator Execute(Map map, Tile tile)
     {
         foreach (var trigger in SubTriggers)
-            yield return trigger.Execute(settings, tile);
+            yield return trigger.Execute(map, tile);
     }
 }

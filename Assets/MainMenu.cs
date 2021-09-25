@@ -17,8 +17,8 @@ public class MainMenu : MonoBehaviour
     }
 
 
-    public void Load(GameSettings settings)
+    public void Load(Map map)
     {
-        LoadingScreen.CreateGame(settings);
+        LoadingScreen.CreateGame(map);
     }
 }

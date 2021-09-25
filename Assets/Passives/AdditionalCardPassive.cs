@@ -16,7 +16,7 @@ public class AdditionalCardPassive : Passive
         return list;
     }
 
-    public override void OnRoundStart(GameSettings settings, PlayerInfo player)
+    public override void OnRoundStart(Map map, PlayerInfo player)
     {
         if (OneCardPerPassive)
         {

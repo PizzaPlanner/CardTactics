@@ -21,13 +21,13 @@ public class LoadingScreen : MonoBehaviour
     }
     float progress = 0;
 
-    public static void CreateGame(GameSettings settings)
+    public static void CreateGame(Map map)
     {
         var loader = new GameObject();
-        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, settings));
+        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map));
     }
 
-    static IEnumerator LoadMap(GameObject loader, GameSettings settings)
+    static IEnumerator LoadMap(GameObject loader, Map map)
     {
         DontDestroyOnLoad(loader);
         yield return null;
@@ -44,7 +44,7 @@ public class LoadingScreen : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("Board"));
-        GameObject.FindObjectOfType<Board>().Initialize(settings);
+        GameObject.FindObjectOfType<Board>().Initialize(map);
 
         SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>
         {

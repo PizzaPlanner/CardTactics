@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Trigger
 {
-    public virtual bool ShouldTrigger(GameSettings settings, Tile tile) => tile.Unit != null;
+    public virtual bool ShouldTrigger(Map map, Tile tile) => tile.Unit != null;
 
-    public abstract IEnumerator Execute(GameSettings settings, Tile tile);
+    public abstract IEnumerator Execute(Map map, Tile tile);
 }

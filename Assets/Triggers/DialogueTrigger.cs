@@ -13,12 +13,12 @@ public class DialogueTrigger : Trigger
 
     [SerializeField] DialogueLine[] Lines;
 
-    public override IEnumerator Execute(GameSettings settings, Tile tile)
+    public override IEnumerator Execute(Map map, Tile tile)
     {
         foreach (var line in Lines)
         {
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
-            yield return ui.Set(settings.Players[line.Speaker].Deck.Commander.UnitReference, line.Text);
+            yield return ui.Set(map.Players[line.Speaker].Deck.Commander.UnitReference, line.Text);
         }
     }
 }

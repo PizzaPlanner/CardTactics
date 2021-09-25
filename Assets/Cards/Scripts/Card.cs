@@ -22,11 +22,11 @@ public abstract class Card : ScriptableObject
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(GameSettings settings, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
+    public virtual IEnumerator Play(Map map, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);
-        yield return PlaySkills(settings, player, autocompleteIfPossible);
+        yield return PlaySkills(map, player, autocompleteIfPossible);
         State = StateOnPlayed;
         yield return new WaitForSeconds(0.2f);
         onComplete?.Invoke();
@@ -98,7 +98,7 @@ public abstract class Card : ScriptableObject
     public bool WantComplete;
     public bool WantReset;
 
-    protected IEnumerator PlaySkills(GameSettings settings, PlayerInfo player, bool autocompleteIfPossible)
+    protected IEnumerator PlaySkills(Map map, PlayerInfo player, bool autocompleteIfPossible)
     {
         if (Skills.Length == 0)
             WantComplete = true;
@@ -112,10 +112,10 @@ public abstract class Card : ScriptableObject
                 WantReset = false;
                 Skill dependency = Dependencies[i] > 0 ? Skills[i - Dependencies[i]] : null;
                 Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
-                if (Skills[i].Activate(settings, player, this, dependency, condition))
+                if (Skills[i].Activate(map, player, this, dependency, condition))
                 {
                     if (!player.IsAI && SkillTarget == null)
-                        settings.Map.ShowTileIndicators();
+                        map.ShowTileIndicators();
 
                     yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills[i].IsOptional));
 
@@ -134,7 +134,7 @@ public abstract class Card : ScriptableObject
                         i = PartialReset();
                     }
                 }
-                settings.Map.HideTileSelectionPreview();
+                map.HideTileSelectionPreview();
             }
             else
             {

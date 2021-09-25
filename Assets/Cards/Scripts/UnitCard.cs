@@ -27,9 +27,9 @@ public class UnitCard : Card
         return list;
     }
 
-    public override IEnumerator Play(GameSettings settings, PlayerInfo player, bool unused = false, Action onComplete = null)
+    public override IEnumerator Play(Map map, PlayerInfo player, bool unused = false, Action onComplete = null)
     {
-        yield return PlaySkills(settings, player, true);
+        yield return PlaySkills(map, player, true);
         State = CardState.Active;
         if (Skills[0] is not PlaceSkill place || place.PlayProgress != Skill.Progress.Queued)
             State = CardState.Destroyed;

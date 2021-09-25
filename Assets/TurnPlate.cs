@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -87,8 +88,10 @@ public class TurnPlate : MonoBehaviour
 
     void Progress()
     {
+        var board = GameObject.FindObjectOfType<Board>();
         if (cardsThisRound.Count > 0)
         {
+            // Round started
             cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
             readyPanel.gameObject.SetActive(false);
             gameObject.SetActive(true);
@@ -97,8 +100,6 @@ public class TurnPlate : MonoBehaviour
 
             foreach (var item in cardsThisRound)
             {
-                // foreach (var skill in item.Item2.Skills)
-                //     skill.Reset();
                 cardsToPlay.Enqueue(item);
                 var indicator = Instantiate(turnIndicatorPrefab);
                 indicator.GetComponent<SkillProgressBar>().SetSkills(item.Item2, item.Item1);
@@ -108,32 +109,42 @@ public class TurnPlate : MonoBehaviour
             }
             cardsThisRound.Clear();
         }
-
-        var board = GameObject.FindObjectOfType<Board>();
-
-        var died = CheckDeath(board.Settings);
-
-        board.StartCoroutine(board.Settings.Map.CheckTriggers(board.Settings, died, () =>
+        else
         {
-            if (cardsToPlay.Count > 0)
+            // Mid round
+            var triggers = board.Map.CheckTriggers(CheckDeath(board.Map));
+            if (triggers.Count > 0)
             {
-                currentAction = cardsToPlay.Dequeue();
-                board.SetTurn(currentAction.Item1, currentAction.Item2);
+                StartCoroutine(RunTriggers(board, triggers));
+                return;
             }
-            else
-            {
-                StartTurn();
-            }
-        }));
+        }
+
+        if (cardsToPlay.Count > 0)
+        {
+            currentAction = cardsToPlay.Dequeue();
+            board.SetTurn(currentAction.Item1, currentAction.Item2);
+        }
+        else
+        {
+            StartTurn();
+        }
     }
 
-    List<PlayerInfo> CheckDeath(GameSettings settings)
+    IEnumerator RunTriggers(Board board, List<(Tile tile, Trigger trigger)> triggers)
     {
-        List<PlayerInfo> deadPlayers = new List<PlayerInfo>();
+        foreach (var trigger in triggers)
+            yield return trigger.trigger.Execute(board.Map, trigger.tile);
+        Progress();
+    }
+
+    List<PlayerInfo> CheckDeath(Map map)
+    {
+        var deadPlayers = new List<PlayerInfo>();
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
-            if (player.LooseCondition.Check(settings, player))
+            if (player.LooseCondition.Check(map, player))
             {
                 deadPlayers.Add(player);
             }
@@ -155,7 +166,7 @@ public class TurnPlate : MonoBehaviour
         gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
 
-        var settings = GameObject.FindObjectOfType<Board>().Settings;
+        var map = GameObject.FindObjectOfType<Board>().Map;
         foreach (var kvp in registeredPlayers)
         {
             var player = kvp.Key;
@@ -173,7 +184,7 @@ public class TurnPlate : MonoBehaviour
                 if (card is not PassiveCard pcard) continue;
                 if (pcard.State == Card.CardState.Active)
                 {
-                    pcard.Passive.OnRoundStart(settings, player);
+                    pcard.Passive.OnRoundStart(map, player);
                 }
             }
 

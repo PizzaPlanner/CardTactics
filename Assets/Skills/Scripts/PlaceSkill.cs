@@ -8,12 +8,12 @@ public class PlaceSkill : Skill
     UnitCard card;
     PlayerInfo player;
 
-    protected override Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card)
+    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         if (card is not UnitCard unitCard) return new Tile[0];
         this.card = unitCard;
         this.player = player;
-        return settings.Map.ShowSpawnTiles(TargetType.Empty, settings, player);
+        return map.ShowSpawnTiles(TargetType.Empty, player);
     }
 
     protected override IEnumerator OnPreview()

@@ -48,7 +48,7 @@ public abstract class Skill : ScriptableObject
 
     public Progress PlayProgress { get; private set; }
 
-    public bool Activate(GameSettings settings, PlayerInfo player, Card card, Skill dependency, Skill condition)
+    public bool Activate(Map map, PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
         PlayProgress = Progress.Failed;
         if (condition != null && condition.PlayProgress != Progress.Queued) return false;
@@ -61,7 +61,7 @@ public abstract class Skill : ScriptableObject
             else
                 SourceTile = dependency.SourceTile;
         }
-        var validTiles = OnActivate(settings, player, card);
+        var validTiles = OnActivate(map, player, card);
         if (validTiles.Length == 1 && (AutoSelectOnOnePossibleTile || player.IsAI) && !autoSelectIgnored && card != null)
         {
             card.SkillTarget = validTiles[0];
@@ -71,7 +71,7 @@ public abstract class Skill : ScriptableObject
         return validTiles.Length > 0;
     }
 
-    protected abstract Tile[] OnActivate(GameSettings settings, PlayerInfo player, Card card);
+    protected abstract Tile[] OnActivate(Map map, PlayerInfo player, Card card);
     public IEnumerator Preview(Tile target)
     {
         TargetTile = target;

@@ -64,7 +64,8 @@ public class TileGridDrawer : PropertyDrawer
         Trigger,
         Height,
         Spawn,
-        Marker
+        Marker,
+        Unit
     }
     EnumField mapEditMode;
     ObjectField drawSelected;
@@ -72,11 +73,15 @@ public class TileGridDrawer : PropertyDrawer
 
     Map.MapInfo data;
     VisualElement map, root;
+    ObjectField drawUnit;
 
     bool clickmap;
 
+    Map reference;
+
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
+        reference = property.serializedObject.targetObject as Map;
         if (property.managedReferenceValue == null)
         {
             property.serializedObject.Update();
@@ -96,9 +101,11 @@ public class TileGridDrawer : PropertyDrawer
         mapEditMode.RegisterValueChangedCallback(_ => map.Query<TileInfoItem>().ForEach(y => y.Update(this)));
         drawArea = new IntegerField();
         drawSelected = new ObjectField() { objectType = typeof(Tile), allowSceneObjects = false };
+        drawUnit = new ObjectField() { objectType = typeof(Unit), allowSceneObjects = false };
         mapedit.Add(mapEditMode);
         mapedit.Add(drawSelected);
         mapedit.Add(drawArea);
+        mapedit.Add(drawUnit);
         root.Add(mapedit);
         map = new VisualElement();
         map.style.flexDirection = FlexDirection.ColumnReverse;
@@ -131,6 +138,7 @@ public class TileGridDrawer : PropertyDrawer
             property.serializedObject.Update();
             property.managedReferenceValue = data;
             property.serializedObject.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
             DrawMap();
         })
         { text = "+ x" });
@@ -148,7 +156,7 @@ public class TileGridDrawer : PropertyDrawer
             map.Add(row);
             for (int x = 0; x < data.Size.x; x++)
             {
-                var elm = new TileInfoItem(data[x, y], this);
+                var elm = new TileInfoItem(x, y, this);
                 row.Add(elm);
             }
         }
@@ -157,22 +165,34 @@ public class TileGridDrawer : PropertyDrawer
     class TileInfoItem : VisualElement
     {
         Map.TilePrefabWithInfo info;
+        Vector2Int position;
         Label Area;
-        public TileInfoItem(Map.TilePrefabWithInfo info, TileGridDrawer drawer)
+        VisualElement UnitIcon;
+        public TileInfoItem(int x, int y, TileGridDrawer drawer)
         {
-            this.info = info;
+            this.info = drawer.data[x, y];
+            this.position = new Vector2Int(x, y);
             this.style.width = 32;
             this.style.height = 32;
-            this.style.borderLeftColor = Color.black;
-            this.style.borderRightColor = Color.black;
-            this.style.borderTopColor = Color.black;
-            this.style.borderBottomColor = Color.black;
+            this.style.borderLeftColor = Color.black * new Color(1, 1, 1, 0.4f);
+            this.style.borderRightColor = Color.black * new Color(1, 1, 1, 0.4f);
+            this.style.borderTopColor = Color.black * new Color(1, 1, 1, 0.4f);
+            this.style.borderBottomColor = Color.black * new Color(1, 1, 1, 0.4f);
             this.style.borderLeftWidth = 1;
             this.style.borderRightWidth = 1;
             this.style.borderTopWidth = 1;
             this.style.borderBottomWidth = 1;
             this.style.justifyContent = Justify.Center;
             this.style.alignItems = Align.Center;
+            UnitIcon = new VisualElement();
+            UnitIcon.style.position = Position.Absolute;
+            UnitIcon.style.width = 24;
+            UnitIcon.style.height = 24;
+            UnitIcon.style.borderLeftWidth = 1;
+            UnitIcon.style.borderRightWidth = 1;
+            UnitIcon.style.borderTopWidth = 1;
+            UnitIcon.style.borderBottomWidth = 1;
+            Add(UnitIcon);
             Area = new Label();
             Add(Area);
 
@@ -194,10 +214,13 @@ public class TileGridDrawer : PropertyDrawer
                         info.MarkerId = evt.button == 0 ? drawer.drawArea.value : 0;
                         break;
                     case MapEditMode.Spawn:
-                        info.SpawnId = evt.button == 0 ? drawer.drawArea.value : 0;
+                        info.Owner = evt.button == 0 ? drawer.drawArea.value : 0;
                         break;
                     case MapEditMode.Trigger:
                         info.Trigger = evt.button == 0 ? drawer.drawArea.value : 0;
+                        break;
+                    case MapEditMode.Unit:
+                        info.UnitPrefab = evt.button == 0 ? (Unit)drawer.drawUnit.value : null;
                         break;
                 }
                 Update(drawer);
@@ -205,18 +228,54 @@ public class TileGridDrawer : PropertyDrawer
             Update(drawer);
         }
 
+        void CheckPassable(TileGridDrawer drawer)
+        {
+            bool hdiff(Map.TilePrefabWithInfo other) => Math.Abs((other.Prefab == null ? -9999 : other.Height) - (info.Prefab == null ? -9999 : info.Height)) > 1;
+            if (position.x > 0)
+                this.style.borderLeftColor = Color.black * new Color(1, 1, 1, hdiff(drawer.data[position.x - 1, position.y]) ? 1f : 0.1f);
+            if (position.x < drawer.data.Size.x - 1)
+                this.style.borderRightColor = Color.black * new Color(1, 1, 1, hdiff(drawer.data[position.x + 1, position.y]) ? 1f : 0.1f);
+            if (position.y < drawer.data.Size.y - 1)
+                this.style.borderTopColor = Color.black * new Color(1, 1, 1, hdiff(drawer.data[position.x, position.y + 1]) ? 1f : 0.1f);
+            if (position.y > 0)
+                this.style.borderBottomColor = Color.black * new Color(1, 1, 1, hdiff(drawer.data[position.x, position.y - 1]) ? 1f : 0.1f);
+        }
+
         public void Update(TileGridDrawer drawer)
         {
+            CheckPassable(drawer);
             style.backgroundImage = info.Prefab?.EditorImage;
             if (info.Prefab == null)
             {
                 Area.style.visibility = Visibility.Hidden;
+                UnitIcon.style.visibility = Visibility.Hidden;
                 return;
             }
             Area.style.visibility = Visibility.Visible;
+            UnitIcon.style.visibility = Visibility.Visible;
+            if (info.Owner > 0 && info.Owner <= drawer.reference.Players.Length)
+            {
+                UnitIcon.style.borderBottomColor = drawer.reference.Players[info.Owner - 1].Color;
+                UnitIcon.style.borderTopColor = drawer.reference.Players[info.Owner - 1].Color;
+                UnitIcon.style.borderRightColor = drawer.reference.Players[info.Owner - 1].Color;
+                UnitIcon.style.borderLeftColor = drawer.reference.Players[info.Owner - 1].Color;
+            }
+            else
+            {
+                UnitIcon.style.borderBottomColor = Color.clear;
+                UnitIcon.style.borderTopColor = Color.clear;
+                UnitIcon.style.borderRightColor = Color.clear;
+                UnitIcon.style.borderLeftColor = Color.clear;
+            }
+
+            if (info.UnitPrefab != null)
+                UnitIcon.style.backgroundImage = info.UnitPrefab.Icon.texture;
+            else
+                UnitIcon.style.backgroundImage = null;
 
             switch (drawer.mapEditMode.value)
             {
+                case MapEditMode.Unit:
                 case MapEditMode.Tile:
                     Area.text = "";
                     break;
@@ -230,7 +289,7 @@ public class TileGridDrawer : PropertyDrawer
                     Area.text = info.MarkerId == 0 ? "" : info.MarkerId.ToString();
                     break;
                 case MapEditMode.Spawn:
-                    Area.text = info.SpawnId == 0 ? "" : info.SpawnId.ToString();
+                    Area.text = info.Owner == 0 ? "" : info.Owner.ToString();
                     break;
                 case MapEditMode.Trigger:
                     Area.text = info.Trigger == 0 ? "" : info.Trigger.ToString();
@@ -246,8 +305,9 @@ public class MapEditorWindow : Editor
     public override VisualElement CreateInspectorGUI()
     {
         var elm = new VisualElement();
-        elm.Add(new PropertyField(serializedObject.FindProperty("Triggers")));
         elm.Add(new PropertyField(serializedObject.FindProperty("TilePrefabs")));
+        elm.Add(new PropertyField(serializedObject.FindProperty("Triggers")));
+        elm.Add(new PropertyField(serializedObject.FindProperty("Players")));
         return elm;
     }
 }

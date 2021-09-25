@@ -19,6 +19,21 @@ MonoBehaviour:
   - rid: 4790068051735740698
   - rid: 4790068051735740699
   - rid: 4790068051735740700
+  Players:
+  - Deck: {fileID: 0}
+    Team: 0
+    IsAI: 0
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    RegisterLater: 0
+    LooseCondition: {fileID: 0}
+    OnLooseTrigger: 0
+  - Deck: {fileID: 0}
+    Team: 0
+    IsAI: 0
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    RegisterLater: 0
+    LooseCondition: {fileID: 0}
+    OnLooseTrigger: 0
   references:
     version: 2
     RefIds:
@@ -216,6 +231,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740702
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -225,6 +241,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740703
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -234,6 +251,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740704
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -243,6 +261,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740705
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -252,6 +271,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740706
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -261,6 +281,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740707
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -270,6 +291,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740708
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -279,6 +301,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740709
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -288,6 +311,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740710
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -297,6 +321,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740711
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -306,6 +331,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740712
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -315,6 +341,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740713
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -324,6 +351,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740714
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -333,6 +361,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740715
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -342,6 +371,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740716
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -351,6 +381,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740717
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -360,6 +391,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740718
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -369,6 +401,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740719
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -378,6 +411,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740720
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -387,6 +421,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740721
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -396,6 +431,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740722
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -405,6 +441,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740723
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -414,6 +451,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740724
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -423,6 +461,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740725
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -432,6 +471,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740726
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -441,6 +481,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740727
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -450,6 +491,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740728
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -459,6 +501,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740729
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -468,6 +511,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740730
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -477,6 +521,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740731
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -486,6 +531,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740732
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -495,6 +541,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740733
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -504,6 +551,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740734
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -513,6 +561,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 1
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740735
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -522,6 +571,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740736
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -531,6 +581,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740737
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -540,6 +591,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740738
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -549,6 +601,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740739
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -558,15 +611,17 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740740
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 3049862564528367, guid: d35754ec751017242ad6f9e9e1789a97, type: 3}
         Area: 1
         Trigger: 0
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740741
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -576,6 +631,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740742
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -585,6 +641,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740743
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -594,6 +651,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740744
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -603,6 +661,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740745
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -612,6 +671,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740746
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -621,6 +681,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740747
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -630,6 +691,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740748
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -639,6 +701,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740749
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -648,6 +711,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740750
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -657,6 +721,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740751
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -666,6 +731,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740752
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -675,6 +741,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740753
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -684,6 +751,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740754
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -693,6 +761,7 @@ MonoBehaviour:
         Height: -1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740755
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -702,6 +771,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 1
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740756
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -711,6 +781,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740757
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -720,6 +791,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740758
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -729,6 +801,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740759
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -738,6 +811,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740760
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -747,6 +821,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740761
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -756,6 +831,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740762
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -765,6 +841,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740763
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -774,6 +851,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740764
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -783,6 +861,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740765
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -792,6 +871,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740766
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -801,6 +881,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740767
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -810,15 +891,17 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740768
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
         Area: 0
         Trigger: 0
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740769
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -828,6 +911,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740770
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -837,6 +921,7 @@ MonoBehaviour:
         Height: -1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740771
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -846,6 +931,7 @@ MonoBehaviour:
         Height: -1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740772
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -855,15 +941,17 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740773
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 3049862564528367, guid: d35754ec751017242ad6f9e9e1789a97, type: 3}
         Area: 1
         Trigger: 0
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740774
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -873,6 +961,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740775
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -882,6 +971,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740776
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -891,6 +981,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740777
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -900,60 +991,67 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740778
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740779
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740780
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
         Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-        Area: 2
+        Area: 0
         Trigger: 0
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740781
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
         Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-        Area: 2
+        Area: 0
         Trigger: 0
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740782
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
         Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-        Area: 2
+        Area: 0
         Trigger: 0
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740783
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
         Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
-        Area: 2
+        Area: 0
         Trigger: 0
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740784
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -963,6 +1061,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740785
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -972,6 +1071,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740786
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -981,15 +1081,17 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740787
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 3049862564528367, guid: d35754ec751017242ad6f9e9e1789a97, type: 3}
         Area: 1
         Trigger: 0
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740788
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -999,6 +1101,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740789
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1008,6 +1111,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740790
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1017,6 +1121,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740791
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1026,33 +1131,37 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740792
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740793
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740794
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 5882492422521109190, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
     - rid: 4790068051735740795
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1062,6 +1171,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740796
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1071,6 +1181,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740797
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1080,6 +1191,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740798
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1089,6 +1201,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740799
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1098,6 +1211,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740800
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1107,6 +1221,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740801
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1116,6 +1231,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740802
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1125,6 +1241,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740803
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1134,6 +1251,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 2
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740804
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1143,6 +1261,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740805
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1152,6 +1271,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740806
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1161,33 +1281,37 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740807
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740808
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
-        SpawnId: 0
+        SpawnId: 3
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740809
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740810
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1197,6 +1321,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740811
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1206,6 +1331,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740812
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1215,6 +1341,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740813
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1224,6 +1351,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740814
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1233,6 +1361,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740815
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1242,24 +1371,27 @@ MonoBehaviour:
         Height: 1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740816
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 3049862564528367, guid: d35754ec751017242ad6f9e9e1789a97, type: 3}
         Area: 1
         Trigger: 0
         Height: 1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740817
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 3267036103467399288, guid: d5c1d0dd55d335d40a8970f5d9e171be, type: 3}
+        Prefab: {fileID: 3049862564528367, guid: d35754ec751017242ad6f9e9e1789a97, type: 3}
         Area: 1
         Trigger: 0
         Height: -1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
     - rid: 4790068051735740818
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1269,6 +1401,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740819
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1278,6 +1411,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740820
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1287,6 +1421,7 @@ MonoBehaviour:
         Height: -2
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740821
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1296,33 +1431,37 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740822
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740823
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740824
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 0}
-        Area: 0
+        Prefab: {fileID: 2794362127595055086, guid: 73a17696fb1983444870ae76e2ce681e, type: 3}
+        Area: 2
         Trigger: 0
-        Height: 0
+        Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 5882492422521109190, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
     - rid: 4790068051735740825
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1332,6 +1471,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740826
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1341,6 +1481,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740827
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1350,6 +1491,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740828
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1359,6 +1501,7 @@ MonoBehaviour:
         Height: 3
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740829
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1368,6 +1511,7 @@ MonoBehaviour:
         Height: 2
         MarkerId: 2
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740830
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1377,6 +1521,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740831
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1386,6 +1531,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740832
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1395,6 +1541,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740833
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1404,6 +1551,7 @@ MonoBehaviour:
         Height: -1
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740834
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1413,6 +1561,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740835
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1422,6 +1571,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740836
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1431,6 +1581,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740837
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1440,6 +1591,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740838
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1449,6 +1601,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740839
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1458,6 +1611,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740840
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1467,6 +1621,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740841
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1476,6 +1631,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740842
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1485,6 +1641,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740843
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1494,6 +1651,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740844
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1503,6 +1661,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740845
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1512,6 +1671,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740846
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1521,6 +1681,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740847
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1530,6 +1691,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740848
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1539,6 +1701,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740849
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1548,6 +1711,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740850
       type: {class: Map/TilePrefabWithInfo, ns: , asm: Assembly-CSharp}
       data:
@@ -1557,6 +1721,7 @@ MonoBehaviour:
         Height: 0
         MarkerId: 0
         SpawnId: 0
+        UnitPrefab: {fileID: 0}
     - rid: 4790068051735740851
       type: {class: DialogueTrigger, ns: , asm: Assembly-CSharp}
       data:

@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu]
-public partial class Map : ScriptableObject
+public class Map : ScriptableObject
 {
-
     [System.Serializable]
     internal class TilePrefabWithInfo
     {
@@ -16,7 +12,8 @@ public partial class Map : ScriptableObject
         public int Trigger;
         public int Height;
         public int MarkerId;
-        public int SpawnId;
+        public int Owner;
+        public Unit UnitPrefab;
     }
 
     [System.Serializable]
@@ -63,27 +60,37 @@ public partial class Map : ScriptableObject
 
     [SerializeReference] Trigger[] Triggers;
 
+    [SerializeField] public PlayerInfo[] Players;
+
     Tile[,] Tiles;
 
     List<int> ActivatedTriggers;
 
-    public IEnumerator CheckTriggers(GameSettings settings, List<PlayerInfo> playersDiedThisTurn, Action onFinish)
+    public List<(Tile tile, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
     {
+        var l = new List<(Tile tile, Trigger trigger)>();
+        foreach (var player in died)
+        {
+            if (player.OnLooseTrigger > 0 && player.OnLooseTrigger <= Triggers.Length && !ActivatedTriggers.Contains(player.OnLooseTrigger))
+            {
+                ActivatedTriggers.Add(player.OnLooseTrigger);
+                l.Add((null, Triggers[player.OnLooseTrigger - 1]));
+            }
+        }
+
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
             var trigger = TilePrefabs[tile.Position.x, tile.Position.y].Trigger;
-            if (trigger > 0 && Triggers.Length > trigger - 1 && Triggers[trigger - 1].ShouldTrigger(settings, tile))
-                yield return Trigger(settings, trigger, tile);
-        }
-        foreach (var player in playersDiedThisTurn)
-        {
-            if (player.OnLooseTrigger > 0 && player.OnLooseTrigger <= Triggers.Length)
+            if (trigger > 0 && Triggers.Length > trigger - 1
+                && !ActivatedTriggers.Contains(trigger)
+                && Triggers[trigger - 1].ShouldTrigger(this, tile))
             {
-                yield return Triggers[player.OnLooseTrigger - 1].Execute(settings, null);
+                ActivatedTriggers.Add(trigger);
+                l.Add((tile, Triggers[trigger - 1]));
             }
         }
-        onFinish();
+        return l;
     }
 
     public void ShowMarker(int id)
@@ -106,59 +113,67 @@ public partial class Map : ScriptableObject
         }
     }
 
-    public IEnumerator Trigger(GameSettings settings, int id, Tile tile)
-    {
-        if (ActivatedTriggers.Contains(id))
-            yield break;
-        ActivatedTriggers.Add(id);
-        if (Triggers.Length <= id - 1)
-        {
-            Debug.LogError("Trigger " + id + " is not defined!");
-            yield break;
-        }
-
-        yield return Triggers[id - 1].Execute(settings, tile);
-    }
-
     public void RevealArea(int area)
     {
         foreach (var tile in Tiles)
         {
             if (tile != null && tile.Area == area)
+            {
                 tile.gameObject.SetActive(true);
+                if (TilePrefabs[tile.Position.x, tile.Position.y].UnitPrefab != null)
+                    tile.Place(Instantiate(TilePrefabs[tile.Position.x, tile.Position.y].UnitPrefab), Facing.Preserve);
+            }
         }
     }
 
-    public void Create()
+    public static Map Create(Map prefab)
     {
-        ActivatedTriggers = new List<int>();
-        Tiles = new Tile[TilePrefabs.Size.x, TilePrefabs.Size.y];
-        for (int w = 0; w < TilePrefabs.Size.x; w++)
+        var map = Instantiate(prefab);
+        map.Players = new PlayerInfo[prefab.Players.Length];
+        for (int i = 0; i < prefab.Players.Length; i++)
         {
-            for (int h = 0; h < TilePrefabs.Size.y; h++)
+            map.Players[i] = new PlayerInfo
             {
-                if (TilePrefabs[w, h].Prefab == null) continue;
-                var data = TilePrefabs[w, h];
-                var tile = Instantiate(data.Prefab, new Vector3(w - TilePrefabs.Size.x / 2, data.Height * 0.25f, h - TilePrefabs.Size.y / 2), Quaternion.identity).GetComponent<Tile>();
+                Deck = Deck.Create(prefab.Players[i].Deck),
+                Color = prefab.Players[i].Color,
+                Team = prefab.Players[i].Team,
+                IsAI = prefab.Players[i].IsAI,
+                RegisterLater = prefab.Players[i].RegisterLater,
+                LooseCondition = prefab.Players[i].LooseCondition,
+                OnLooseTrigger = prefab.Players[i].OnLooseTrigger
+            };
+        }
+
+        map.ActivatedTriggers = new List<int>();
+        map.Tiles = new Tile[map.TilePrefabs.Size.x, map.TilePrefabs.Size.y];
+        for (int w = 0; w < map.TilePrefabs.Size.x; w++)
+        {
+            for (int h = 0; h < map.TilePrefabs.Size.y; h++)
+            {
+                if (map.TilePrefabs[w, h].Prefab == null) continue;
+                var data = map.TilePrefabs[w, h];
+                var tile = Instantiate(data.Prefab, new Vector3(w - map.TilePrefabs.Size.x / 2, data.Height * 0.25f, h - map.TilePrefabs.Size.y / 2), Quaternion.identity).GetComponent<Tile>();
                 tile.Area = data.Area;
-                Tiles[w, h] = tile;
+                map.Tiles[w, h] = tile;
                 tile.Position = (w, h);
                 tile.Neighbours = new List<Tile>();
-                if (w > 0 && Tiles[w - 1, h] != null
-                    && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w - 1, h].Height) < 2)
+                if (w > 0 && map.Tiles[w - 1, h] != null
+                    && Mathf.Abs(map.TilePrefabs[w, h].Height - map.TilePrefabs[w - 1, h].Height) < 2)
                 {
-                    Tiles[w, h].Neighbours.Add(Tiles[w - 1, h]);
-                    Tiles[w - 1, h].Neighbours.Add(Tiles[w, h]);
+                    map.Tiles[w, h].Neighbours.Add(map.Tiles[w - 1, h]);
+                    map.Tiles[w - 1, h].Neighbours.Add(map.Tiles[w, h]);
                 }
-                if (h > 0 && Tiles[w, h - 1] != null
-                    && Mathf.Abs(TilePrefabs[w, h].Height - TilePrefabs[w, h - 1].Height) < 2)
+                if (h > 0 && map.Tiles[w, h - 1] != null
+                    && Mathf.Abs(map.TilePrefabs[w, h].Height - map.TilePrefabs[w, h - 1].Height) < 2)
                 {
-                    Tiles[w, h].Neighbours.Add(Tiles[w, h - 1]);
-                    Tiles[w, h - 1].Neighbours.Add(Tiles[w, h]);
+                    map.Tiles[w, h].Neighbours.Add(map.Tiles[w, h - 1]);
+                    map.Tiles[w, h - 1].Neighbours.Add(map.Tiles[w, h]);
                 }
                 tile.gameObject.SetActive(false);
             }
         }
+
+        return map;
     }
 
     public void ShowTileIndicators()
@@ -167,12 +182,12 @@ public partial class Map : ScriptableObject
             tile?.SetIndicatorVisible(true);
     }
 
-    public Tile[] ShowSpawnTiles(TargetType filter, GameSettings settings, PlayerInfo player)
+    public Tile[] ShowSpawnTiles(TargetType filter, PlayerInfo player)
     {
         var id = 0;
-        for (int i = 0; i < settings.Players.Length; i++)
+        for (int i = 0; i < Players.Length; i++)
         {
-            if (settings.Players[i] == player)
+            if (Players[i] == player)
             {
                 id = i + 1;
                 break;
@@ -182,7 +197,7 @@ public partial class Map : ScriptableObject
         List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
         {
-            if (tile == null || TilePrefabs[tile.Position.x, tile.Position.y].SpawnId != id) continue;
+            if (tile == null || TilePrefabs[tile.Position.x, tile.Position.y].Owner != id || TilePrefabs[tile.Position.x, tile.Position.y].UnitPrefab != null) continue;
             if (TileMatches(tile, filter, player))
                 valid.Add(tile);
         }

@@ -18,5 +18,5 @@ public abstract class Passive : ScriptableObject
         return list;
     }
 
-    public abstract void OnRoundStart(GameSettings settings, PlayerInfo player);
+    public abstract void OnRoundStart(Map map, PlayerInfo player);
 }
