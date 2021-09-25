@@ -13,8 +13,6 @@ public class PlanningPanel : MonoBehaviour
 
     [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
 
-    PlayerInfoPanel infoPanel;
-
     int RoundPointsSpent;
 
     AudioSource audio;
@@ -25,7 +23,7 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    public void Show(PlayerInfo player, PlayerInfoPanel panel)
+    public void Show(PlayerInfo player, PlayerInfoPanel infoPanel)
     {
         var deck = player.Deck;
 
@@ -48,7 +46,6 @@ public class PlanningPanel : MonoBehaviour
         }
         cardsToPlay.Sort((x, y) => x.Speed.CompareTo(y.Speed));
         RoundPointsSpent = 0;
-        infoPanel = panel;
         infoPanel.confirmButton.GetComponentInChildren<Text>().text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
         infoPanel.confirmButton.enabled = true;
         infoPanel.confirmButton.interactable = false;
@@ -57,9 +54,9 @@ public class PlanningPanel : MonoBehaviour
         infoPanel.confirmButton.onClick.AddListener(() =>
         {
             audio.PlayOneShot(ReadySound);
+            infoPanel.confirmButton.enabled = false;
             Hide();
             turnPlate.SetPlayerReady(player, selection.ToArray());
-            infoPanel.confirmButton.enabled = false;
         });
 
         foreach (Transform child in cardsPanel)
