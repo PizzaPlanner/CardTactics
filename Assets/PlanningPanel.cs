@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class PlanningPanel : MonoBehaviour
 {
-    [SerializeField] Text costText;
     [SerializeField] RectTransform cardsPanel;
-    [SerializeField] Button confirm;
     [SerializeField] CardDisplay cardPrefab;
     [SerializeField] TurnPlate turnPlate;
 
     [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
+
+    PlayerInfoPanel infoPanel;
 
     int RoundPointsSpent;
 
@@ -24,7 +25,7 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    public void Show(PlayerInfo player)
+    public void Show(PlayerInfo player, PlayerInfoPanel panel)
     {
         var deck = player.Deck;
 
@@ -47,15 +48,18 @@ public class PlanningPanel : MonoBehaviour
         }
         cardsToPlay.Sort((x, y) => x.Speed.CompareTo(y.Speed));
         RoundPointsSpent = 0;
-        costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
-        confirm.interactable = false;
+        infoPanel = panel;
+        infoPanel.confirmButton.GetComponentInChildren<Text>().text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
+        infoPanel.confirmButton.enabled = true;
+        infoPanel.confirmButton.interactable = false;
 
-        confirm.onClick.RemoveAllListeners();
-        confirm.onClick.AddListener(() =>
+        infoPanel.confirmButton.onClick.RemoveAllListeners();
+        infoPanel.confirmButton.onClick.AddListener(() =>
         {
             audio.PlayOneShot(ReadySound);
             Hide();
             turnPlate.SetPlayerReady(player, selection.ToArray());
+            infoPanel.confirmButton.enabled = false;
         });
 
         foreach (Transform child in cardsPanel)
@@ -82,8 +86,8 @@ public class PlanningPanel : MonoBehaviour
                 }
                 audio.PlayOneShot(selection.Contains(card) ? UnselectSound : SelectSound);
                 visual.GetComponent<Button>().animator.SetBool("IsActive", selection.Contains(card));
-                confirm.interactable = selection.Count != 0 && RoundPointsSpent <= deck.RoundPointsFree;
-                costText.text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
+                infoPanel.confirmButton.interactable = selection.Count != 0 && RoundPointsSpent <= deck.RoundPointsFree;
+                infoPanel.confirmButton.GetComponentInChildren<Text>().text = $"{RoundPointsSpent}/{deck.RoundPointsFree}";
                 foreach (var otherCard in cardsPanel.GetComponentsInChildren<CardDisplay>(false))
                 {
                     if (selection.Contains(otherCard.Reference) || RoundPointsSpent + otherCard.Reference.Cost <= deck.RoundPointsFree)

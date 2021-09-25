@@ -11,6 +11,7 @@ public class PlayerInfoPanel : MonoBehaviour
     [SerializeField] RectTransform passivePanel;
     [SerializeField] PassiveIndicator passiveIndicatorPrefab;
     [SerializeField] CardDisplay commanderCard;
+    public Button confirmButton;
 
     public bool IsReady
     {
@@ -60,6 +61,7 @@ public class PlayerInfoPanel : MonoBehaviour
         CardsLeft.text = cardsToPlay.Count.ToString();
         CardsPlayed.text = cardsPlayed.Count.ToString();
         CardsRemoved.text = cardsDestroyed.Count.ToString();
+        confirmButton.GetComponentInChildren<Text>().text = Player.Deck.RoundPointsFree.ToString();
 
         passivePanel.gameObject.SetActive(hasPassives);
     }

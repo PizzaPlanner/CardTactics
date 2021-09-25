@@ -42,12 +42,12 @@ public class TurnPlate : MonoBehaviour
             }
         }
     }
-    void PlayerPrepare(PlayerInfo player)
+    void PlayerPrepare(PlayerInfo player, PlayerInfoPanel panel)
     {
         if (player.Deck.Commander?.State == Card.CardState.Unplayed)
             SetPlayerReady(player, new Card[1] { player.Deck.Commander });
         else
-            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, panel);
     }
 
     public bool NextPlayerPrepareTurn()
@@ -59,7 +59,7 @@ public class TurnPlate : MonoBehaviour
                 if (kvp.Key.IsAI)
                     AIPrepare(kvp.Key);
                 else
-                    PlayerPrepare(kvp.Key);
+                    PlayerPrepare(kvp.Key, kvp.Value);
                 return true;
             }
         }
