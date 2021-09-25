@@ -707,7 +707,7 @@ GameObject:
   - component: {fileID: 1888047059}
   - component: {fileID: 1888047058}
   m_Layer: 5
-  m_Name: Campaign
+  m_Name: Freeplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -899,7 +899,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Campaign
+  m_Text: Freeplay
 --- !u!222 &1949334152
 CanvasRenderer:
   m_ObjectHideFlags: 0
