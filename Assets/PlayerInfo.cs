@@ -1,3 +1,4 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,4 +15,9 @@ public class PlayerInfo
 
     public LooseCondition LooseCondition;
     public int OnLooseTrigger;
+
+    internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
+    {
+        card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
+    }
 }

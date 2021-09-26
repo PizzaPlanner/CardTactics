@@ -66,6 +66,10 @@ public abstract class Skill : ScriptableObject
         {
             card.SkillTarget = validTiles[0];
         }
+        else if (validTiles.Length > 0 && player.IsAI)
+        {
+            player.AIDecide(card, this, validTiles);
+        }
 
         PlayProgress = validTiles.Length > 0 ? Progress.Now : Progress.Failed;
         return validTiles.Length > 0;
