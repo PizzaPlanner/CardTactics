@@ -19,6 +19,11 @@ public enum RangeType
     SightUnblocked
 }
 
+public interface ICancelable
+{
+    void OnCancel();
+}
+
 public abstract class Skill : ScriptableObject
 {
     public enum Progress
@@ -88,8 +93,9 @@ public abstract class Skill : ScriptableObject
 
     public void Reset()
     {
+        if (this is not ICancelable cancelable) return;
         if (IsPreviewed)
-            OnCancel();
+            cancelable.OnCancel();
         IsPreviewed = false;
         TargetTile = null;
         PlayProgress = Progress.Pending;
@@ -98,7 +104,6 @@ public abstract class Skill : ScriptableObject
 
     protected abstract IEnumerator OnPreview();
     protected abstract void OnUse();
-    protected abstract void OnCancel();
 
     public void Use()
     {

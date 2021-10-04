@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Select")]
-public class SelectSkill : Skill
+public class SelectSkill : Skill, ICancelable
 {
     [SerializeField] TargetType TargetFilter;
     [SerializeField] bool confirmOnePossibleTile;
@@ -25,7 +25,7 @@ public class SelectSkill : Skill
     {
     }
 
-    protected override void OnCancel()
+    public void OnCancel()
     {
     }
 }

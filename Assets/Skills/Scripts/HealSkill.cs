@@ -24,8 +24,8 @@ public class HealSkill : Skill
 
     protected override IEnumerator OnPreview()
     {
-        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Attack");
-        yield return new WaitForSeconds(1);
+        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
+        yield return new WaitForSeconds(0.5f);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(-Heal, true);
     }
@@ -33,10 +33,5 @@ public class HealSkill : Skill
     protected override void OnUse()
     {
         previewUnit.Damage(-Heal, false);
-    }
-
-    protected override void OnCancel()
-    {
-        TargetTile.Unit.Damage(Heal, true);
     }
 }

@@ -19,8 +19,4 @@ public abstract class Passive : Skill
     protected override void OnUse()
     {
     }
-
-    protected override void OnCancel()
-    {
-    }
 }

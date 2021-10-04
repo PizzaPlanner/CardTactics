@@ -51,15 +51,4 @@ public class AttackSkill : Skill
     {
         previewUnit.Damage(Damage, false);
     }
-
-    protected override void OnCancel()
-    {
-        if (previewUnit.LifePreview <= 0)
-        {
-            previewUnit.gameObject.SetActive(true);
-            TargetTile.Unit = previewUnit;
-        }
-        TargetTile.Unit.Damage(-Damage, true);
-        SourceTile.Face(previewFacing);
-    }
 }

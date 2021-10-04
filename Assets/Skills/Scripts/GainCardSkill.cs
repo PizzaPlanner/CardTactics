@@ -36,10 +36,6 @@ public class GainCardSkill : Skill
         Player.Deck.ExtendWith(NewCardPrefab, Source, NewCardInitialState);
     }
 
-    protected override void OnCancel()
-    {
-    }
-
     public override List<Card> GetRelatedCards()
     {
         var list = base.GetRelatedCards();

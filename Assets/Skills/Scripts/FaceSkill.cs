@@ -36,9 +36,4 @@ public class FaceSkill : Skill
     {
         SourceTile.Face(targetFacing);
     }
-
-    protected override void OnCancel()
-    {
-        SourceTile.Face(originalFacing);
-    }
 }

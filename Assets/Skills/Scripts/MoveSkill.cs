@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Move")]
-public class MoveSkill : Skill
+public class MoveSkill : Skill, ICancelable
 {
     public int Range;
     public RangeType RangeType;
@@ -33,7 +33,7 @@ public class MoveSkill : Skill
     {
     }
 
-    protected override void OnCancel()
+    public void OnCancel()
     {
         unit.MoveInstant(TargetTile, SourceTile);
         SourceTile.Face(rotation);
