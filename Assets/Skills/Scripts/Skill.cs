@@ -34,6 +34,7 @@ public abstract class Skill : ScriptableObject
     public Sprite Icon;
 
     [NonSerialized] public Card Source;
+    public abstract string Description { get; }
 
     protected Tile TargetTile { get; private set; }
     public Tile SourceTile { get; private set; }
@@ -43,7 +44,7 @@ public abstract class Skill : ScriptableObject
     public Tile[] ValidTiles { get; protected set; }
 
     [SerializeField] bool SkippableWithInput;
-    [SerializeField] bool AutoSelectOnOnePossibleTile;
+    protected abstract bool AutoSelectOnOnePossibleTile { get; }
     bool autoSelectIgnored;
 
     public Progress PlayProgress { get; private set; }

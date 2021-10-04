@@ -1,11 +1,15 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Select")]
 public class SelectSkill : Skill
 {
-    public TargetType TargetFilter;
+    [SerializeField] TargetType TargetFilter;
+    [SerializeField] bool confirmOnePossibleTile;
+
+    public override string Description => TargetFilter == TargetType.Ally ? null : $"Select {TargetFilter}";
+
+    protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {

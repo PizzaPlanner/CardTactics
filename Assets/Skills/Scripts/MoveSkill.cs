@@ -11,6 +11,10 @@ public class MoveSkill : Skill
     Unit unit;
     Facing rotation;
 
+    public override string Description => $"{(RangeType == RangeType.Pathfinding ? "Move" : "Jump")} {Range}";
+
+    protected override bool AutoSelectOnOnePossibleTile => false;
+
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         if (SourceTile?.Unit == null)

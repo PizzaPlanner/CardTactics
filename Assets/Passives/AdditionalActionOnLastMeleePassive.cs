@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using UnityEngine;
 
 
@@ -10,6 +7,8 @@ public class AdditionalActionOnLastMeleePassive : Passive
     public Skill Skill;
     public int Dependency;
     public int Condition;
+
+    public override string Description => $"Whenever the last action of a card is a melee attack, you may {Skill.Description} afterwards.";
 
     public override void OnRoundStart(Map map, PlayerInfo player)
     {

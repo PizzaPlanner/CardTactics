@@ -13,6 +13,9 @@ public class FaceSkill : Skill
     Facing originalFacing;
     Facing targetFacing;
 
+    public override string Description => $"Look at";
+    protected override bool AutoSelectOnOnePossibleTile => true;
+
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         var unit = SourceTile?.Unit;

@@ -13,6 +13,8 @@ public class HealSkill : Skill
     public float Heal;
 
     Unit previewUnit;
+    public override string Description => $"Heal {Heal}";
+    protected override bool AutoSelectOnOnePossibleTile => false;
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {

@@ -13,6 +13,10 @@ public class GainCardSkill : Skill
 
     public Card CardPrefab => NewCardPrefab;
 
+    public override string Description => $"Gain {CardPrefab.Name} ({NewCardInitialState})";
+
+    protected override bool AutoSelectOnOnePossibleTile => true;
+
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         Player = player;
@@ -34,7 +38,6 @@ public class GainCardSkill : Skill
 
     protected override void OnCancel()
     {
-
     }
 
     public override List<Card> GetRelatedCards()

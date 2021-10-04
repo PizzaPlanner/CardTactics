@@ -9,10 +9,14 @@ public class AttackSkill : Skill
     public int MaxRange;
     public RangeType Type;
     [SerializeField] AudioClip Sound;
+    [SerializeField] bool confirmOnePossibleTile;
     public float Damage;
 
     Unit previewUnit;
     Facing previewFacing;
+
+    public override string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
+    protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {

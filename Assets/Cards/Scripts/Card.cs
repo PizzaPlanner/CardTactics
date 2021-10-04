@@ -51,6 +51,16 @@ public abstract class Card : ScriptableObject
         return list;
     }
 
+    public void OnRoundStart(Map map, PlayerInfo player)
+    {
+        if (State != CardState.Active) return;
+        foreach (var skill in Skills)
+        {
+            if (skill is Passive passive)
+                passive.OnRoundStart(map, player);
+        }
+    }
+
     protected abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }

@@ -1,22 +1,26 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Collections;
 
-public abstract class Passive : ScriptableObject
+public abstract class Passive : Skill
 {
-    public string Name;
-    public string Description;
-    public Sprite Icon;
-
-    [NonSerialized] public Card Source;
-
-    public virtual List<Card> GetRelatedCards()
-    {
-        var list = new List<Card>();
-        if (Source != null)
-            list.Add(Source);
-        return list;
-    }
+    protected override bool AutoSelectOnOnePossibleTile => true;
 
     public abstract void OnRoundStart(Map map, PlayerInfo player);
+
+    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    {
+        return map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);
+    }
+
+    protected override IEnumerator OnPreview()
+    {
+        yield return null;
+    }
+
+    protected override void OnUse()
+    {
+    }
+
+    protected override void OnCancel()
+    {
+    }
 }

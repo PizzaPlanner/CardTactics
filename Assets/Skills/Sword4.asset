@@ -15,11 +15,10 @@ MonoBehaviour:
   Name: 4
   Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
   SkippableWithInput: 1
-  AutoSelectOnOnePossibleTile: 0
-  PlayProgress: 0
   Filter: 2
   MinRange: 1
   MaxRange: 1
   Type: 1
   Sound: {fileID: 8300000, guid: efed935f5c2042c40a056ec2b2f374f5, type: 3}
+  confirmOnePossibleTile: 1
   Damage: 4

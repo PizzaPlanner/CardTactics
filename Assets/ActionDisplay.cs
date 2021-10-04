@@ -15,18 +15,5 @@ public class ActionDisplay : MonoBehaviour
 
         if (TempImage != null)
             TempImage.gameObject.SetActive(Reference.Temporary);
-
-        if (SkillPanel != null)
-        {
-            foreach (var leftover in SkillPanel.GetComponentsInChildren<SkillItem>())
-                Destroy(leftover.gameObject);
-            foreach (var skill in Reference.Skills)
-            {
-                var item = GameObject.Instantiate(SkillPrefab);
-                item.Skill = skill;
-                item.FromOtherSource = skill.Source != Reference && skill.Source != null;
-                item.transform.SetParent(SkillPanel);
-            }
-        }
     }
 }

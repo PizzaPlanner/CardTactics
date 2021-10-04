@@ -7,6 +7,8 @@ public class MoveModifierPassive : Passive
 {
     List<MoveSkill> affected = new List<MoveSkill>();
 
+    public override string Description => $"Every movement of type {RangeFilter} is increased by {Modifier}";
+
     public RangeType RangeFilter;
     public int Modifier;
 

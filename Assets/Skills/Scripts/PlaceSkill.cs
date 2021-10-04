@@ -8,6 +8,10 @@ public class PlaceSkill : Skill
     UnitCard card;
     PlayerInfo player;
 
+    public override string Description => null;
+
+    protected override bool AutoSelectOnOnePossibleTile => true;
+
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         if (card is not UnitCard unitCard) return new Tile[0];

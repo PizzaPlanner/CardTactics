@@ -9,7 +9,7 @@ public class PlayerInfoPanel : MonoBehaviour
 
     [SerializeField] RectTransform readyBadge;
     [SerializeField] RectTransform passivePanel;
-    [SerializeField] PassiveIndicator passiveIndicatorPrefab;
+    [SerializeField] CardDisplay activeCardPrefab;
     [SerializeField] CardDisplay commanderCard;
     public Button confirmButton;
 
@@ -50,10 +50,10 @@ public class PlayerInfoPanel : MonoBehaviour
                     cardsDestroyed.Add(card); break;
             }
 
-            if (card is PassiveCard pcard && pcard.State == Card.CardState.Active)
+            if (card.State == Card.CardState.Active && card != Player.Deck.Commander)
             {
-                var item = Instantiate(passiveIndicatorPrefab);
-                item.Passive = pcard.Passive;
+                var item = Instantiate(activeCardPrefab);
+                item.SetCard(card);
                 item.transform.SetParent(passivePanel);
                 hasPassives = true;
             }

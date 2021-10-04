@@ -12,19 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e0cf603a9a0bda45b5718ed41db56ff, type: 3}
   m_Name: Sebastian
   m_EditorClassIdentifier: 
-  IsVirtual: 0
   Class: {fileID: 11400000, guid: 9f30c883e3920954e997db4f39820a2f, type: 2}
   Skills:
   - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
-  Dependencies: 00000000
-  Conditions: 00000000
+  - {fileID: 11400000, guid: a158d345f4bf68e4e9f1a23a7332b16a, type: 2}
+  Dependencies: 0000000001000000
+  Conditions: 0000000001000000
   SkillTarget: {fileID: 0}
   WantSkillSkip: 0
-  WantCardSkip: 0
   WantComplete: 0
   WantReset: 0
   UnitReference: {fileID: 5882492422521109190, guid: 00b9ca29bedd6094592e8578e8440152, type: 3}
-  Passive: {fileID: 11400000, guid: bc33594d47920794e972256f05464348, type: 2}
   Capacities:
   - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     MaxNumber: 8

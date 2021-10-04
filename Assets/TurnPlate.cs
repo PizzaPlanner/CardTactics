@@ -180,13 +180,7 @@ public class TurnPlate : MonoBehaviour
             }
             player.Deck.ShuffleIfNeccessary();
             foreach (Card card in player.Deck.Cards)
-            {
-                if (card is not PassiveCard pcard) continue;
-                if (pcard.State == Card.CardState.Active)
-                {
-                    pcard.Passive.OnRoundStart(map, player);
-                }
-            }
+                card.OnRoundStart(map, player);
 
             kvp.Value.UpdateValues();
         }
