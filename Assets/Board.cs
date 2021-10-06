@@ -45,7 +45,7 @@ public class Board : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
-                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid || Tile.Hovered.CurrentIndicator == TargetIndicator.Path)
+                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid)
                     currentCard.SkillTarget = Tile.Hovered;
             }
             if (Input.GetMouseButtonDown(1))

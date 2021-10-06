@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
-public enum TileType
-{
-    Grass,
-    Mud,
-    Snow,
-    Wall
-}
 
 public enum TargetIndicator
 {
     Valid,
     Invalid,
     Hidden,
-    Path,
     Origin
 }
 
@@ -66,8 +56,6 @@ public class Tile : MonoBehaviour
     }
 
     public int Area;
-
-    public TileType Type;
 
     public Unit Unit;
 
@@ -162,16 +150,6 @@ public class Tile : MonoBehaviour
         MovementIndicators.SetActive(false);
         foreach (Transform t in MovementIndicators.transform)
             t.gameObject.SetActive(false);
-    }
-
-    public event Action<Tile> OnClickedValidTarget;
-
-    void OnMouseDown()
-    {
-        if (CurrentIndicator == TargetIndicator.Path || CurrentIndicator == TargetIndicator.Valid)
-        {
-            OnClickedValidTarget?.Invoke(this);
-        }
     }
 
     public void SetMarker(bool active)
@@ -271,7 +249,6 @@ public class Tile : MonoBehaviour
         switch (state)
         {
             case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.7f); break;
-            case TargetIndicator.Path: color = new Color(0, 0.6f, 1, 0.7f); break;
             case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.7f); break;
             case TargetIndicator.Origin: color = new Color(0.3f, .7f, .5f, 0.7f); break;
             case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
