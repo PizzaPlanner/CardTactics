@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,7 +18,8 @@ public enum TargetIndicator
     Valid,
     Invalid,
     Hidden,
-    Path
+    Path,
+    Origin
 }
 
 public enum Facing
@@ -80,6 +82,18 @@ public class Tile : MonoBehaviour
     [ChildGameObjectsOnly]
     GameObject Marker;
 
+    [SerializeField]
+    [ChildGameObjectsOnly]
+    GameObject PathingIndicator, PIBorderLeft, PIBorderRight, PIBorderTop, PIBorderBottom;
+
+    [SerializeField]
+    [ChildGameObjectsOnly]
+    GameObject MovementIndicators, MICenter, MILeft, MIRight, MITop, MIBottom;
+
+    [SerializeField]
+    [ChildGameObjectsOnly]
+    GameObject SelectionIndicator;
+
     void Start()
     {
         CurrentIndicator = TargetIndicator.Hidden;
@@ -90,11 +104,13 @@ public class Tile : MonoBehaviour
         if (Hovered != null || EventSystem.current.IsPointerOverGameObject())
             return;
         Hovered = this;
-        transform.position += new Vector3(0, 0.2f, 0);
-        // InfoPanel.Show(this);
+        SelectionIndicator.SetActive(true);
         if (Pathing.LastCalculatedPath != null)
+        {
             foreach (var tile in Pathing.LastCalculatedPath)
-                tile.SetIndicator(TargetIndicator.Path);
+                tile.ShowPath();
+            MICenter.SetActive(true);
+        }
     }
 
     // ...and the mesh finally turns white when the mouse moves away.
@@ -103,12 +119,49 @@ public class Tile : MonoBehaviour
         if (Hovered != this)
             return;
         Hovered = null;
-        transform.position -= new Vector3(0, 0.2f, 0);
-        // ClearGhost();
-        // InfoPanel.Hide();
+        SelectionIndicator.SetActive(false);
         if (Pathing.LastCalculatedPath != null)
+        {
             foreach (var tile in Pathing.LastCalculatedPath)
-                tile.SetIndicator(TargetIndicator.Valid);
+                tile.HidePath();
+        }
+    }
+
+    void ShowPath()
+    {
+        MovementIndicators.SetActive(true);
+        if (Pathing.LastCalculatedPath.Count < 2) return;
+        var prev = Pathing.LastCalculatedPath[^2];
+        if (prev != null)
+        {
+            if (prev.Position.x > Position.x)
+            {
+                prev.MILeft.SetActive(true);
+                MIRight.SetActive(true);
+            }
+            else if (prev.Position.x < Position.x)
+            {
+                prev.MIRight.SetActive(true);
+                MILeft.SetActive(true);
+            }
+            else if (prev.Position.y > Position.y)
+            {
+                prev.MIBottom.SetActive(true);
+                MITop.SetActive(true);
+            }
+            else if (prev.Position.y < Position.y)
+            {
+                prev.MITop.SetActive(true);
+                MIBottom.SetActive(true);
+            }
+        }
+    }
+
+    void HidePath()
+    {
+        MovementIndicators.SetActive(false);
+        foreach (Transform t in MovementIndicators.transform)
+            t.gameObject.SetActive(false);
     }
 
     public event Action<Tile> OnClickedValidTarget;
@@ -140,7 +193,7 @@ public class Tile : MonoBehaviour
         }
 
         start.Pathing.G = 0;
-        start.Pathing.LastCalculatedPath = null;
+        start.Pathing.LastCalculatedPath = new List<Tile> { start };
 
         var toTest = new List<Tile> { start };
 
@@ -190,7 +243,26 @@ public class Tile : MonoBehaviour
 
     public void SetIndicatorVisible(bool visible)
     {
-        transform.GetChild(0).gameObject.SetActive(visible);
+        PathingIndicator.gameObject.SetActive(visible);
+        if (visible)
+        {
+            var left = true;
+            var right = true;
+            var top = true;
+            var bottom = true;
+            foreach (var nb in Neighbours)
+            {
+                if (nb.CurrentIndicator != CurrentIndicator || nb.CurrentIndicator == TargetIndicator.Hidden) continue;
+                if (nb.Position.x > Position.x) right = false;
+                else if (nb.Position.x < Position.x) left = false;
+                if (nb.Position.y < Position.y) bottom = false;
+                if (nb.Position.y > Position.y) top = false;
+            }
+            PIBorderLeft.gameObject.SetActive(left);
+            PIBorderRight.gameObject.SetActive(right);
+            PIBorderTop.gameObject.SetActive(top);
+            PIBorderBottom.gameObject.SetActive(bottom);
+        }
     }
 
     public void SetIndicator(TargetIndicator state)
@@ -198,12 +270,15 @@ public class Tile : MonoBehaviour
         var color = Color.black;
         switch (state)
         {
-            case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.8f); break;
-            case TargetIndicator.Path: color = new Color(0, 1, 0, 0.8f); break;
-            case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.8f); break;
+            case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.7f); break;
+            case TargetIndicator.Path: color = new Color(0, 0.6f, 1, 0.7f); break;
+            case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.7f); break;
+            case TargetIndicator.Origin: color = new Color(0.3f, .7f, .5f, 0.7f); break;
             case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
         }
-        transform.GetChild(0).GetComponent<Renderer>().material.color = color;
+        PathingIndicator.GetComponent<Renderer>().material.color = color;
+        foreach (var border in PathingIndicator.GetComponentsInChildren<Renderer>(true))
+            border.material.color = color * 0.8f;
         CurrentIndicator = state;
     }
 
@@ -226,6 +301,7 @@ public class Tile : MonoBehaviour
     {
         Pathing = default;
         Pathing.LastCalculatedPath = null;
+        HidePath();
     }
 
     public int FaceToRot(Facing face)

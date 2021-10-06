@@ -8,7 +8,7 @@ public abstract class Passive : Skill
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
-        return map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);
+        return map.ShowRange(SourceTile, 0, 0, SelectionFilters.Self, player);
     }
 
     protected override IEnumerator OnPreview()

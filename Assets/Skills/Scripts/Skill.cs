@@ -3,20 +3,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class SelectionFilters
+{
+    public static SelectionFilter Self { get; } = new SelectionFilter { Unit = UnitFilter.Commander, Tile = TileFilter.Self };
+    public static SelectionFilter AnyEnemy { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment, Tile = TileFilter.Enemy };
+    public static SelectionFilter Empty { get; } = new SelectionFilter { Tile = TileFilter.Empty, Range = RangeFilter.Any };
+}
+
+[System.Serializable]
+public struct SelectionFilter
+{
+    public TileFilter Tile;
+    public UnitFilter Unit;
+    public RangeFilter Range;
+}
+
 [System.Flags]
-public enum TargetType
+public enum TileFilter
 {
     Empty = 1,
     Enemy = 2,
     Ally = 4,
-    Obstacle = 8
+    Obstacle = 8,
+    Self = 16
 }
 
-public enum RangeType
+[System.Flags]
+public enum UnitFilter
 {
-    Pathfinding,
-    Any,
-    SightUnblocked
+    Commander = 1,
+    Summon = 2,
+    Illusion = 4,
+    Environment = 8
+}
+
+public enum RangeFilter
+{
+    Any = 0,
+    Pathfinding = 1,
+    SightUnblocked = 2
 }
 
 public interface ICancelable
@@ -68,7 +93,7 @@ public abstract class Skill : ScriptableObject
                 SourceTile = dependency.SourceTile;
         }
         var validTiles = OnActivate(map, player, card);
-        if (validTiles.Length == 1 && (AutoSelectOnOnePossibleTile || player.IsAI) && !autoSelectIgnored && card != null)
+        if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
         {
             card.SkillTarget = validTiles[0];
         }

@@ -16,4 +16,4 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 57fb11ebdbdec0d4da191bc96289da01, type: 3}
   SkippableWithInput: 1
   Range: 2
-  RangeType: 1
+  RangeType: 0

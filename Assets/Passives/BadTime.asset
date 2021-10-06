@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: BadTime
   m_EditorClassIdentifier: 
   Name: Bad Time
-  Description: Add one Megalovania to your Hand after each Break, if you don't already
-    have one.
   Icon: {fileID: 21300000, guid: daa1f8557456e414f8f030d62cc1fcea, type: 3}
-  Source: {fileID: 0}
-  Skill: {fileID: 11400000, guid: 8a5555d0550b6c74fb5f94e95053f23e, type: 2}
+  SkippableWithInput: 0
+  CardPrefab: {fileID: 11400000, guid: 92a2a3cd541dea84d9eebe5139f19795, type: 2}
   OneCardPerPassive: 1
   InitialState: 2

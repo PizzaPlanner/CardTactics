@@ -29,14 +29,14 @@ public class PlaceSkill : Skill, ICancelable
                 if (card is not UnitCard unitCard) return new Tile[0];
                 this.card = unitCard;
                 this.player = player;
-                return map.ShowSpawnTiles(TargetType.Empty, player);
+                return map.ShowSpawnTiles(SelectionFilters.Empty, player);
             case PlaceType.Summon:
                 var unit = Summon?.UnitReference ?? (SourceTile?.Unit);
                 this.card = Summon ?? SourceTile?.Unit?.Card;
                 if (unit == null || this.card == null)
                     return new Tile[0];
                 this.player = player;
-                return map.ShowRange(SourceTile, 1, 1, TargetType.Empty, RangeType.Any, player);
+                return map.ShowRange(SourceTile, 1, 1, SelectionFilters.Empty, player);
         }
         return new Tile[0];
     }
@@ -54,6 +54,8 @@ public class PlaceSkill : Skill, ICancelable
         var unit = GameObject.Instantiate(card.UnitReference);
         unit.Card = card;
         unit.Player = player;
+        if (Type == PlaceType.Summon && Summon == null)
+            unit.Type = UnitFilter.Illusion;
         unit.gameObject.SetActive(false);
         TargetTile.Place(unit, 0);
         yield return null;

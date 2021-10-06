@@ -5,10 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skills/Heal")]
 public class HealSkill : Skill
 {
-    public TargetType Filter;
+    public SelectionFilter Filter;
     public int MinRange;
     public int MaxRange;
-    public RangeType Type;
 
     public float Heal;
 
@@ -18,8 +17,8 @@ public class HealSkill : Skill
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
-        if ((Filter & TargetType.Empty) > 0) return new Tile[0];
-        return map.ShowRange(SourceTile, MinRange, MaxRange, Filter, Type, player);
+        if ((Filter.Tile & TileFilter.Empty) > 0) return new Tile[0];
+        return map.ShowRange(SourceTile, MinRange, MaxRange, Filter, player);
     }
 
     protected override IEnumerator OnPreview()

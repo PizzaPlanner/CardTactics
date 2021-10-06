@@ -5,8 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skills/Face")]
 public class FaceSkill : Skill
 {
-    public TargetType TargetFilter;
-    public RangeType RangeFilter;
+    public SelectionFilter Filter;
     public int minRange;
     public int maxRange;
 
@@ -22,7 +21,7 @@ public class FaceSkill : Skill
         if (unit == null)
             return new Tile[0];
         originalFacing = SourceTile.Facing;
-        return map.ShowRange(SourceTile, minRange, maxRange, TargetFilter, RangeFilter, player);
+        return map.ShowRange(SourceTile, minRange, maxRange, Filter, player);
     }
 
     protected override IEnumerator OnPreview()

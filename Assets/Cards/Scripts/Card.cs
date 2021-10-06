@@ -175,7 +175,6 @@ public abstract class Card : ScriptableObject
             if (prog == Skill.Progress.Queued ||
                 prog == Skill.Progress.Skipped)
             {
-                Debug.Log("i is now " + (j - 1));
                 return j - 1;
             }
         }

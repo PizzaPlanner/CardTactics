@@ -54,6 +54,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 572403fdf06149d49be583f079188b23, type: 3}
   Card: {fileID: 0}
   MaxLife: 8
+  Type: 1
 --- !u!114 &7827538069635411841
 MonoBehaviour:
   m_ObjectHideFlags: 0

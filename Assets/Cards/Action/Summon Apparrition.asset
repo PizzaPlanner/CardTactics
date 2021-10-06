@@ -15,16 +15,16 @@ MonoBehaviour:
   Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Skills:
   - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
-  - {fileID: 11400000, guid: e9a05f0001005264c8ac326a7f5b6b69, type: 2}
+  - {fileID: 11400000, guid: a89fd7f547b7a414c8b4c3d4f6f7b077, type: 2}
   Dependencies: 0000000001000000
   Conditions: 0000000000000000
   SkillTarget: {fileID: 0}
   WantSkillSkip: 0
   WantComplete: 0
   WantReset: 0
-  icon: {fileID: 21300000, guid: 74e58aba47e666e46994c2700d7a8e29, type: 3}
-  name: Illusion
-  speed: 9
+  icon: {fileID: 21300000, guid: b1b9f592c5b511c4eabb493d2b73e123, type: 3}
+  name: Summon Apparrition
+  speed: 100
   cost: 2
   Once: 1
-  Temporary: 1
+  Temporary: 0

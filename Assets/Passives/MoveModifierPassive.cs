@@ -9,7 +9,7 @@ public class MoveModifierPassive : Passive
 
     public override string Description => $"Every movement of type {RangeFilter} is increased by {Modifier}";
 
-    public RangeType RangeFilter;
+    public RangeFilter RangeFilter;
     public int Modifier;
 
     public override void OnRoundStart(Map map, PlayerInfo player)
@@ -23,7 +23,6 @@ public class MoveModifierPassive : Passive
                 {
                     affected.Add(mskill);
                     mskill.Range += Modifier;
-                    mskill.Name += $"<color=green>+{Modifier}</color>";
                 }
             }
         }

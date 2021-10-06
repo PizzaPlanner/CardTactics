@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Illusionist
   m_EditorClassIdentifier: 
   Name: Illusionist
-  Description: Add one Create Illusion to your Hand after each Break, if you don't
-    already have one.
   Icon: {fileID: 21300000, guid: 74e58aba47e666e46994c2700d7a8e29, type: 3}
-  Skill: {fileID: 11400000, guid: 94e07bde7dab8e14a9e7df8d203a7030, type: 2}
+  SkippableWithInput: 0
+  CardPrefab: {fileID: 11400000, guid: 6ffb03443d5d35a469d6b622fd353de7, type: 2}
   OneCardPerPassive: 1
-  InitialState: 2
+  InitialState: 0

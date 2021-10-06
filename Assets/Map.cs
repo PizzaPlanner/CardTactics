@@ -189,7 +189,7 @@ public class Map : ScriptableObject
             tile?.SetIndicatorVisible(true);
     }
 
-    public Tile[] ShowSpawnTiles(TargetType filter, PlayerInfo player)
+    public Tile[] ShowSpawnTiles(SelectionFilter filter, PlayerInfo player)
     {
         var id = 0;
         for (int i = 0; i < Players.Length; i++)
@@ -211,7 +211,7 @@ public class Map : ScriptableObject
         return valid.ToArray();
     }
 
-    public Tile[] ShowPlacementTiles(TargetType filter, PlayerInfo player)
+    public Tile[] ShowPlacementTiles(SelectionFilter filter, PlayerInfo player)
     {
         List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
@@ -245,24 +245,27 @@ public class Map : ScriptableObject
         return valid.ToArray();
     }
 
-    public bool TileMatches(Tile tile, TargetType filter, PlayerInfo player)
+    public bool TileMatches(Tile tile, SelectionFilter filter, PlayerInfo player)
     {
         if (!tile.gameObject.activeSelf)
             return false;
-        var validTarget = ((filter & TargetType.Empty) > 0) && (tile.Unit == null);
+        var validTarget = ((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null);
         if (tile.Unit != null)
         {
             var isObstacle = tile.Unit.Player == null;
-            validTarget |= ((filter & TargetType.Obstacle) > 0) && isObstacle;
-            validTarget |= ((filter & TargetType.Ally) > 0) && !isObstacle && (tile.Unit.Player.Team == player.Team);
-            validTarget |= ((filter & TargetType.Enemy) > 0) && !isObstacle && (tile.Unit.Player?.Team != player.Team);
+            validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;
+            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == player;
+            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != player && tile.Unit.Player.Team == player.Team;
+            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && (tile.Unit.Player.Team != player.Team);
+
+            validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }
 
         tile.SetIndicator(validTarget ? TargetIndicator.Valid : TargetIndicator.Invalid);
         return validTarget;
     }
 
-    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, TargetType filter, RangeType type, PlayerInfo player)
+    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, SelectionFilter filter, PlayerInfo player)
     {
         List<Tile> valid = new List<Tile>();
         List<Tile> rangeTiles = new List<Tile>();
@@ -284,17 +287,34 @@ public class Map : ScriptableObject
                 rangeTiles.Add(tile);
             }
         }
-        if (type == RangeType.Pathfinding)
+        if (filter.Range == RangeFilter.Pathfinding)
         {
             foreach (var tile in rangeTiles)
             {
                 if (!Tile.FindPath(origin, tile, maxRange, rangeTiles))
                 {
-                    tile.SetIndicator(TargetIndicator.Hidden);
+                    tile.SetIndicator(TargetIndicator.Invalid);
                     valid.Remove(tile);
                 }
             }
         }
+        else if (filter.Range == RangeFilter.SightUnblocked)
+        {
+            Debug.Log($"Have {rangeTiles.Count} available Tiles");
+            foreach (var tile in rangeTiles)
+            {
+                var start = origin.transform.position + Vector3.up * 1.5f;
+                var finish = tile.transform.position + Vector3.up * 0.5f;
+                if (!Physics.Raycast(start, finish - start, out var hit) || hit.transform.gameObject != tile.gameObject)
+                {
+                    valid.Remove(tile);
+                    Debug.Log("Removed tile from sight");
+                    Debug.DrawLine(start, finish, Color.red, 10, false);
+                }
+            }
+        }
+        if (!valid.Contains(origin))
+            origin.SetIndicator(TargetIndicator.Origin);
         return valid.ToArray();
     }
 }

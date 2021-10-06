@@ -15,7 +15,9 @@ MonoBehaviour:
   Name: Look at Enemy
   Icon: {fileID: 21300000, guid: 1d72a592cb331c24885d25523ae8643e, type: 3}
   SkippableWithInput: 1
-  TargetFilter: 2
-  RangeFilter: 2
+  Filter:
+    Tile: 2
+    Unit: 15
+    Range: 0
   minRange: 1
   maxRange: 10

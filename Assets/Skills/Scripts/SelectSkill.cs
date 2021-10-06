@@ -4,10 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skills/Select")]
 public class SelectSkill : Skill, ICancelable
 {
-    [SerializeField] TargetType TargetFilter;
+    [SerializeField] SelectionFilter TargetFilter;
     [SerializeField] bool confirmOnePossibleTile;
 
-    public override string Description => TargetFilter == TargetType.Ally ? null : $"Select {TargetFilter}";
+    public override string Description => TargetFilter.Equals(SelectionFilters.Self) ? null : $"Select {TargetFilter}";
 
     protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 

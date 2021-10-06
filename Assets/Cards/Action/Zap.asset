@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Skills:
-  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
+  - {fileID: 11400000, guid: 292c53a45ac7d4c4895bb717fc50e557, type: 2}
   - {fileID: 11400000, guid: 1aae21c03ae36e748b86d35382846ec6, type: 2}
   - {fileID: 11400000, guid: 61466e25f7b2e384689beb594372f7b6, type: 2}
   Dependencies: 000000000100000002000000

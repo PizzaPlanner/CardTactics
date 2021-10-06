@@ -24,7 +24,7 @@ MonoBehaviour:
   WantReset: 0
   icon: {fileID: 21300000, guid: 74e58aba47e666e46994c2700d7a8e29, type: 3}
   name: Illusion
-  speed: 9
-  cost: 2
+  speed: 100
+  cost: 5
   Once: 1
   Temporary: 1

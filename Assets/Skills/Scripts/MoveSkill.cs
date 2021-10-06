@@ -6,22 +6,24 @@ using UnityEngine;
 public class MoveSkill : Skill, ICancelable
 {
     public int Range;
-    public RangeType RangeType;
+    public RangeFilter RangeType;
 
     Unit unit;
     Facing rotation;
 
-    public override string Description => $"{(RangeType == RangeType.Pathfinding ? "Move" : "Jump")} {Range}";
+    public override string Description => $"{(RangeType == RangeFilter.Pathfinding ? "Move" : "Jump")} {Range}";
 
     protected override bool AutoSelectOnOnePossibleTile => false;
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
+        var filter = SelectionFilters.Empty;
+        filter.Range = RangeType;
         if (SourceTile?.Unit == null)
             return new Tile[0];
         unit = SourceTile.Unit;
         rotation = SourceTile.Facing;
-        return map.ShowRange(SourceTile, 0, Range, TargetType.Empty, RangeType, player);
+        return map.ShowRange(SourceTile, 0, Range, filter, player);
     }
 
     protected override IEnumerator OnPreview()

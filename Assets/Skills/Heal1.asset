@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: 1
   Icon: {fileID: 21300000, guid: 6b4d731bb49028047a4a8c4c1fa3bc4f, type: 3}
-  Source: {fileID: 0}
   SkippableWithInput: 1
-  Filter: 4
+  Filter:
+    Tile: 20
+    Unit: 1
+    Range: 2
   MinRange: 0
   MaxRange: 0
-  Type: 1
   Heal: 1

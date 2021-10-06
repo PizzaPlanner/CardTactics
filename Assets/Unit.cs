@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 public class Unit : MonoBehaviour
@@ -14,6 +15,8 @@ public class Unit : MonoBehaviour
     public float MaxLife;
     public float Life { get; private set; }
     public float LifePreview { get; private set; }
+
+    public UnitFilter Type;
 
     public void Damage(float dmg, bool isPreview = false)
     {
@@ -54,11 +57,11 @@ public class Unit : MonoBehaviour
         to.Place(this, facing);
     }
 
-    public IEnumerator Move(Tile from, Tile to, RangeType type)
+    public IEnumerator Move(Tile from, Tile to, RangeFilter type)
     {
         if (from.Unit != this || to.Unit != null)
             yield break;
-        if (type == RangeType.Pathfinding)
+        if (type == RangeFilter.Pathfinding)
         {
             foreach (var tile in to.Pathing.LastCalculatedPath)
             {
@@ -67,7 +70,7 @@ public class Unit : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
         }
-        else if (type == RangeType.Any)
+        else if (type == RangeFilter.Any)
         {
             while (transform.position.y < 5)
             {

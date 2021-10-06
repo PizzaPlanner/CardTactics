@@ -20,7 +20,7 @@ public class GainCardSkill : Skill
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
         Player = player;
-        return map.ShowRange(SourceTile, 0, 0, TargetType.Ally, RangeType.Any, player);
+        return map.ShowRange(SourceTile, 0, 0, SelectionFilters.Self, player);
     }
 
     protected override IEnumerator OnPreview()

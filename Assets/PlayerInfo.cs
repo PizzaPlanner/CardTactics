@@ -18,6 +18,9 @@ public class PlayerInfo
 
     internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
     {
-        card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
+        if (validTiles.Length == 1)
+            card.SkillTarget = validTiles[0];
+        else
+            card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
     }
 }

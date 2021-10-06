@@ -35,6 +35,7 @@ public class Deck : ScriptableObject
         foreach (var card in prefab.Cards)
             deck.ExtendWith(card, null, Card.CardState.Skipped);
         deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
+        deck.Commander.UnitReference.Type = UnitFilter.Commander;
         return deck;
     }
 
