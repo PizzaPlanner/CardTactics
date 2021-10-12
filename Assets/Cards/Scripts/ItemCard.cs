@@ -17,15 +17,16 @@ public class ItemCard : Card
     [Required]
     public CardClass ItemClass;
 
-    public bool Once;
-
     public override Sprite Icon => icon;
     public override string Name => name;
-    public override int Speed => 0;
+    public override int Speed => speed;
 
-    protected override void OnInit() { }
+    protected override void OnInit()
+    {
+        State = CardState.Active;
+    }
 
-    protected override CardState StateOnPlayed => Once ? CardState.Destroyed : CardState.Played;
+    protected override CardState StateOnPlayed => CardState.Active;
 
     public override IEnumerator Play(Map map, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
     {

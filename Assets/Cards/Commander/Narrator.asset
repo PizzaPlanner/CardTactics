@@ -21,6 +21,7 @@ MonoBehaviour:
   WantSkillSkip: 0
   WantComplete: 0
   WantReset: 0
+  speed: 0
   UnitReference: {fileID: 1887082216528888834, guid: 062c2f0213f68a24fb1c28a4d656242b, type: 3}
-  Passive: {fileID: 0}
   Capacities: []
+  ClassesPerTurn: 2

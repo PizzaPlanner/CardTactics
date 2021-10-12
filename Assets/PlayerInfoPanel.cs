@@ -5,13 +5,11 @@ using UnityEngine.UI;
 public class PlayerInfoPanel : MonoBehaviour
 {
     public PlayerInfo Player;
-    [SerializeField] Text Name, CardsLeft, CardsPlayed, CardsRemoved;
+    [SerializeField] Text Name;
 
     [SerializeField] RectTransform readyBadge;
     [SerializeField] RectTransform passivePanel;
-    [SerializeField] CardDisplay activeCardPrefab;
     [SerializeField] CardDisplay commanderCard;
-    public Button confirmButton;
 
     public bool IsReady
     {
@@ -32,37 +30,5 @@ public class PlayerInfoPanel : MonoBehaviour
 
         foreach (Transform t in passivePanel)
             GameObject.Destroy(t.gameObject);
-
-        var cardsToPlay = new List<Card>();
-        var cardsPlayed = new List<Card>();
-        var cardsDestroyed = new List<Card>();
-        bool hasPassives = false;
-        foreach (var card in Player.Deck.Cards)
-        {
-            switch (card.State)
-            {
-                case Card.CardState.Unplayed:
-                    cardsToPlay.Add(card); break;
-                case Card.CardState.Active:
-                case Card.CardState.Played:
-                    cardsPlayed.Add(card); break;
-                case Card.CardState.Destroyed:
-                    cardsDestroyed.Add(card); break;
-            }
-
-            if (card.State == Card.CardState.Active && card != Player.Deck.Commander)
-            {
-                var item = Instantiate(activeCardPrefab);
-                item.SetCard(card);
-                item.transform.SetParent(passivePanel);
-                hasPassives = true;
-            }
-        }
-        CardsLeft.text = cardsToPlay.Count.ToString();
-        CardsPlayed.text = cardsPlayed.Count.ToString();
-        CardsRemoved.text = cardsDestroyed.Count.ToString();
-        // confirmButton.GetComponentInChildren<Text>().text = Player.Deck.RoundPointsFree.ToString();
-
-        passivePanel.gameObject.SetActive(hasPassives);
     }
 }

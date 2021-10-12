@@ -22,9 +22,11 @@ MonoBehaviour:
   WantSkillSkip: 0
   WantComplete: 0
   WantReset: 0
+  speed: 27
   UnitReference: {fileID: 5882492422521109190, guid: 00b9ca29bedd6094592e8578e8440152, type: 3}
   Capacities:
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    MaxNumber: 8
-  - Class: {fileID: 11400000, guid: bce54789696c1ff4a92d46de62a40aba, type: 2}
-    MaxNumber: 3
+  - Class: {fileID: 11400000, guid: d2c6ee1c89558d84b88c266929394544, type: 2}
+    Count: 2
+  - Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
+    Count: 2
+  ClassesPerTurn: 2

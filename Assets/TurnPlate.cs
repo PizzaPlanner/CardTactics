@@ -17,6 +17,8 @@ public class TurnPlate : MonoBehaviour
     {
         gameObject.SetActive(false);
         badges = new Dictionary<PlayerInfo, PlayerInfoPanel>();
+        foreach (Transform t in readyPanel)
+            Destroy(t.gameObject);
     }
 
     public void AddPlayer(PlayerInfo player)
@@ -47,6 +49,11 @@ public class TurnPlate : MonoBehaviour
         }
     }
 
+    public void OnPlayerReady(PlayerInfo player)
+    {
+        badges[player].GetComponentInChildren<CardDisplay>().Speed.text = $"<color=green>{player.Deck.CurrentSpeed.ToString()}</color>";
+    }
+
     public void OnCardInQueue(Card card, PlayerInfo player)
     {
         var indicator = Instantiate(turnIndicatorPrefab);
@@ -54,11 +61,6 @@ public class TurnPlate : MonoBehaviour
         indicator.SetCard(card);
         indicator.PlayerColorBorder.color = player.Color;
         indicator.transform.SetParent(nextActionsPanel);
-    }
-
-    internal PlayerInfoPanel PlateOf(PlayerInfo player)
-    {
-        return badges[player];
     }
 
     internal void RemovePlayer(PlayerInfo player)

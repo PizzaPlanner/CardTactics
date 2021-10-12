@@ -21,6 +21,15 @@ public class Deck : ScriptableObject
 
     public int ClassesPerTurn => Commander.ClassesPerTurn;
 
+    public int CurrentSpeed
+    {
+        get
+        {
+            var caps = GetCapacities();
+            return Commander.Speed + Equipped.Sum(x => x.Speed) + Queued.Sum(x => x.Speed);
+        }
+    }
+
     public Dictionary<CardClass, int> GetCapacities()
     {
         var capacities = new Dictionary<CardClass, int>();
@@ -35,43 +44,25 @@ public class Deck : ScriptableObject
             if (card is ItemCard icard && !capacities.ContainsKey(icard.ItemClass))
                 capacities[icard.ItemClass] = 0;
         }
-        foreach (var card in Cards)
-            if (card is ItemCard icard && icard.State == Card.CardState.Active)
-                capacities[icard.ItemClass] += icard.actions;
+        foreach (var card in Equipped)
+            capacities[card.ItemClass] += card.actions;
 
         return capacities;
     }
 
+    public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
+    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
+    public IEnumerable<Card> Queued => Cards.Where(x => x.State == Card.CardState.Queued);
+
     public static Deck Create(Deck prefab)
     {
         var deck = Deck.Instantiate(prefab);
-        // deck.RoundPointsFree = POINTS_PER_ROUND_BASE;
         deck.Cards = new Card[0];
         foreach (var card in prefab.Cards)
             deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Skipped);
-        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
+        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Queued);
         deck.Commander.UnitReference.Type = UnitFilter.Commander;
         return deck;
-    }
-
-    public void ShuffleIfNeccessary()
-    {
-        // foreach (var card in Cards)
-        // {
-        //     if (card.State == Card.CardState.Unplayed)
-        //         return;
-        // }
-
-        Shuffle();
-    }
-
-    void Shuffle()
-    {
-        foreach (var card in Cards)
-        {
-            if (card.State == Card.CardState.Skipped || card.State == Card.CardState.Played)
-                card.Reshuffle();
-        }
     }
 
     public T ExtendWith<T>(T cardPrefab, Card source, Card.CardState initialState) where T : Card

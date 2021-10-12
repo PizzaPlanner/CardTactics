@@ -30,4 +30,10 @@ public class ActionCard : Card
     protected override void OnInit() { }
 
     protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;
+
+    public override void OnRoundStart(Map map, PlayerInfo player)
+    {
+        if (State == CardState.Unplayed && Temporary) Destroy();
+        base.OnRoundStart(map, player);
+    }
 }

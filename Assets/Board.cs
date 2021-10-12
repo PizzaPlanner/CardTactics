@@ -93,17 +93,19 @@ public class Board : MonoBehaviour
         {
             if (card.State == Card.CardState.Unplayed)
             {
-                SetPlayerReady(aiPlayer, new Card[1] { card });
+                card.SetSelectionState(true);
+                SetPlayerReady(aiPlayer);
                 return;
             }
         }
     }
+
     void PlayerPrepare(PlayerInfo player)
     {
-        if (player.Deck.Commander?.State == Card.CardState.Unplayed)
-            SetPlayerReady(player, new Card[1] { player.Deck.Commander });
+        if (player.Deck.Commander?.State == Card.CardState.Queued)
+            SetPlayerReady(player);
         else
-            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, turnPanel.PlateOf(player));
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
     }
 
     public bool NextPlayerPrepareTurn()
@@ -120,11 +122,11 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    public void SetPlayerReady(PlayerInfo player, Card[] cards)
+    public void SetPlayerReady(PlayerInfo player)
     {
         readyPlayers.Add(player);
 
-        foreach (var card in cards)
+        foreach (var card in player.Deck.Queued)
         {
             cardsThisRound.Add((player, card));
         }
@@ -133,7 +135,14 @@ public class Board : MonoBehaviour
             return;
 
         // Round started
-        cardsThisRound.Sort((x, y) => x.Item2.Speed.CompareTo(y.Item2.Speed));
+        cardsThisRound.Sort((x, y) =>
+        {
+            var deckComp = x.Item1.Deck.CurrentSpeed.CompareTo(y.Item1.Deck.CurrentSpeed);
+            if (deckComp == 0)
+                return x.Item2.Speed.CompareTo(y.Item2.Speed);
+            else
+                return deckComp;
+        });
         turnPanel.OnRoundStart();
         foreach (var item in cardsThisRound)
         {
@@ -200,12 +209,6 @@ public class Board : MonoBehaviour
         var map = GameObject.FindObjectOfType<Board>().Map;
         foreach (var player in registeredPlayers)
         {
-
-            foreach (Card card in player.Deck.Cards)
-            {
-                if (card is ActionCard acard && acard.Temporary && acard.State == Card.CardState.Unplayed) acard.Destroy();
-            }
-            player.Deck.ShuffleIfNeccessary();
             foreach (Card card in player.Deck.Cards)
                 card.OnRoundStart(map, player);
         }

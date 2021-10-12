@@ -11,6 +11,7 @@ public abstract class Card : ScriptableObject
     public enum CardState
     {
         Unplayed,
+        Queued,
         Current,
         Played,
         Skipped,
@@ -34,9 +35,9 @@ public abstract class Card : ScriptableObject
 
     public void Destroy() { State = CardState.Destroyed; }
 
-    public virtual void Reshuffle()
+    public void SetSelectionState(bool value)
     {
-        State = CardState.Unplayed;
+        State = value ? CardState.Queued : CardState.Unplayed;
     }
 
     public virtual List<Card> GetRelatedCards()
@@ -51,8 +52,10 @@ public abstract class Card : ScriptableObject
         return list;
     }
 
-    public void OnRoundStart(Map map, PlayerInfo player)
+    public virtual void OnRoundStart(Map map, PlayerInfo player)
     {
+        if (State == CardState.Skipped || State == CardState.Played)
+            State = CardState.Unplayed;
         foreach (var skill in Skills)
         {
             skill.Prepare();
