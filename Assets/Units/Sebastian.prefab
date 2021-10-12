@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5814881731473810615}
   - component: {fileID: 5882492422521109190}
-  - component: {fileID: 7827538069635411841}
   - component: {fileID: 8942890046518652142}
   m_Layer: 0
   m_Name: Sebastian
@@ -55,24 +54,6 @@ MonoBehaviour:
   Card: {fileID: 0}
   MaxLife: 8
   Type: 1
---- !u!114 &7827538069635411841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 563312192517643092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 3
-  outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  outlineWidth: 0.75
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!82 &8942890046518652142
 AudioSource:
   m_ObjectHideFlags: 0
@@ -272,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 9537696, guid: b0297681c8568974da8dc86f4cdc853c, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 7ff0cf27ed8e9684b9bdd381bab1f846, type: 2}
+      objectReference: {fileID: 9100000, guid: 4dfe7abacd67e914b95e05bff86330b9, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0297681c8568974da8dc86f4cdc853c, type: 3}
 --- !u!4 &7637769073818063928 stripped

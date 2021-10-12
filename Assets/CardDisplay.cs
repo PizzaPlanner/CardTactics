@@ -10,7 +10,6 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public Image Icon;
     public Text Name;
-    public Text Cost;
     public Text Speed;
     public Text ClassName;
     public Text SkillPanel;
@@ -25,8 +24,6 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         Icon.sprite = Reference.Icon;
         if (Name != null)
             Name.text = Reference.Name;
-        if (Cost != null)
-            Cost.text = Reference.Cost.ToString();
         if (Speed != null)
             Speed.text = Reference.Speed.ToString();
         if (ClassName != null)

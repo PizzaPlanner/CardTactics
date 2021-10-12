@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8370077354337622116}
   - component: {fileID: -776819737043778027}
-  - component: {fileID: -5004799524395137141}
   - component: {fileID: -2726392461604522692}
   m_Layer: 0
   m_Name: Diluc
@@ -55,24 +54,6 @@ MonoBehaviour:
   Card: {fileID: 0}
   MaxLife: 15
   Type: 1
---- !u!114 &-5004799524395137141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2543311500896593799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 3
-  outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  outlineWidth: 0.75
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!82 &-2726392461604522692
 AudioSource:
   m_ObjectHideFlags: 0
@@ -272,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 9517520, guid: 99cdb7462838a6342bd2288456e75888, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 7ff0cf27ed8e9684b9bdd381bab1f846, type: 2}
+      objectReference: {fileID: 9100000, guid: 4dfe7abacd67e914b95e05bff86330b9, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99cdb7462838a6342bd2288456e75888, type: 3}
 --- !u!4 &8088831679376826063 stripped

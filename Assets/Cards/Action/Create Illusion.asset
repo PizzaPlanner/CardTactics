@@ -26,5 +26,6 @@ MonoBehaviour:
   name: Illusion
   speed: 100
   cost: 5
+  RequiredClass: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
   Once: 1
   Temporary: 1

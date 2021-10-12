@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.2850265, g: 0.3713935, b: 0.49601153, a: 1}
+  m_IndirectSpecularColor: {r: 0.28502637, g: 0.3713933, b: 0.49601105, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnPanel: {fileID: 1871533224}
-  Map: {fileID: 0}
 --- !u!4 &78512298
 Transform:
   m_ObjectHideFlags: 0
@@ -318,15 +317,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5556868676048540494, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 89.6
+      value: 83.579994
       objectReference: {fileID: 0}
     - target: {fileID: 5556868676048540494, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: NaN
+      value: 505.31
       objectReference: {fileID: 0}
     - target: {fileID: 5556868676048540494, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -44.8
+      value: -41.789997
       objectReference: {fileID: 0}
     - target: {fileID: 5678208121371944207, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -338,10 +337,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6127577370753874986, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: NaN
-      objectReference: {fileID: 0}
-    - target: {fileID: 6241295472163684830, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
-      propertyPath: m_AspectRatio
       value: NaN
       objectReference: {fileID: 0}
     - target: {fileID: 6246570236996189397, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
@@ -384,10 +379,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: NaN
       objectReference: {fileID: 0}
-    - target: {fileID: 7709546359349821848, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
-      propertyPath: m_AspectRatio
-      value: NaN
-      objectReference: {fileID: 0}
     - target: {fileID: 8079149284068587153, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: NaN
@@ -406,15 +397,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8177886174283535112, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 89.6
+      value: 83.579994
       objectReference: {fileID: 0}
     - target: {fileID: 8177886174283535112, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: NaN
+      value: 593.88995
       objectReference: {fileID: 0}
     - target: {fileID: 8177886174283535112, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -44.8
+      value: -41.789997
       objectReference: {fileID: 0}
     - target: {fileID: 8263342841820685641, guid: 2854b4a3b5da0a042a2387ef81772f99, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -733,6 +724,8 @@ GameObject:
   - component: {fileID: 1899945463}
   - component: {fileID: 1899945462}
   - component: {fileID: 1899945461}
+  - component: {fileID: 1899945466}
+  - component: {fileID: 1899945465}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -826,6 +819,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1899945465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899945460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &1899945466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899945460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class RegisterPlayerTrigger : Trigger
 
     public override IEnumerator Execute(Map map, Tile tile)
     {
-        GameObject.FindObjectOfType<TurnPlate>(true).Register(map.Players[Player]);
+        GameObject.FindObjectOfType<Board>(true).Register(map.Players[Player]);
         yield return map.Players[Player].Deck.Commander?.Play(map, map.Players[Player]);
     }
 }

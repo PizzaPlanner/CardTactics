@@ -79,6 +79,14 @@ public abstract class Skill : ScriptableObject
 
     public Progress PlayProgress { get; private set; }
 
+    public virtual void Prepare()
+    {
+        PlayProgress = Progress.Pending;
+        SourceTile = null;
+        TargetTile = null;
+        IsPreviewed = false;
+    }
+
     public bool Activate(Map map, PlayerInfo player, Card card, Skill dependency, Skill condition)
     {
         PlayProgress = Progress.Failed;

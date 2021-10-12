@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1954580750980536947}
   - component: {fileID: 1887082216528888834}
-  - component: {fileID: 6161782523034944924}
   - component: {fileID: 7211393287276737073}
   m_Layer: 0
   m_Name: Narrator
@@ -52,24 +51,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 6408704b229edb748b2c6595d880da08, type: 3}
   Card: {fileID: 0}
   MaxLife: 0
---- !u!114 &6161782523034944924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5495453133545694608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 3
-  outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  outlineWidth: 0.75
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
+  Type: 0
 --- !u!82 &7211393287276737073
 AudioSource:
   m_ObjectHideFlags: 0

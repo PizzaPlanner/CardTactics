@@ -61,7 +61,7 @@ public class PlayerInfoPanel : MonoBehaviour
         CardsLeft.text = cardsToPlay.Count.ToString();
         CardsPlayed.text = cardsPlayed.Count.ToString();
         CardsRemoved.text = cardsDestroyed.Count.ToString();
-        confirmButton.GetComponentInChildren<Text>().text = Player.Deck.RoundPointsFree.ToString();
+        // confirmButton.GetComponentInChildren<Text>().text = Player.Deck.RoundPointsFree.ToString();
 
         passivePanel.gameObject.SetActive(hasPassives);
     }

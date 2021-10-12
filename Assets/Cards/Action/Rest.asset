@@ -26,5 +26,6 @@ MonoBehaviour:
   name: Rest
   speed: 85
   cost: 3
+  RequiredClass: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
   Once: 0
   Temporary: 0

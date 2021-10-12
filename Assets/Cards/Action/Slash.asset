@@ -18,9 +18,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
   Dependencies: 0000000001000000
   Conditions: 0000000000000000
-  fullCardPrefab: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
-  turnIndicatorPrefab: {fileID: 2600667030779569031, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
+  SkillTarget: {fileID: 0}
+  WantSkillSkip: 0
+  WantComplete: 0
+  WantReset: 0
   icon: {fileID: 21300000, guid: 8e0bc87a0991fb646ad0f0834130139d, type: 3}
   name: Slash
   speed: 22
   cost: 1
+  RequiredClass: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+  Once: 0
+  Temporary: 0

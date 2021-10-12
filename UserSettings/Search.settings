@@ -13,6 +13,9 @@ scopes = {
 	"last_search.91531927" = ""
 	"OpenInspectorPreview.91531927" = "0"
 	"currentGroup.91531927" = "scene"
+	"last_search.969B5199" = "input"
+	"OpenInspectorPreview.969B5199" = "0"
+	"currentGroup.969B5199" = "all"
 }
 providers = {
 	expression = {
@@ -67,6 +70,7 @@ providers = {
 	}
 }
 recentSearches = [
+	"input"
 ]
 searchItemFavorites = [
 ]

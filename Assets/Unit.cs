@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 public class Unit : MonoBehaviour
 {
-    public PlayerInfo Player { get => player; set { player = value; GetComponent<Outline>().OutlineColor = value.Color; } }
+    public PlayerInfo Player { get => player; set { player = value; /*GetComponent<Outline>().OutlineColor = value.Color;*/ } }
     PlayerInfo player;
     public int Level;
     public int Rank;

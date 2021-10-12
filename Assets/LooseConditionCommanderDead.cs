@@ -7,5 +7,4 @@ public class LooseConditionCommanderDead : LooseCondition
     {
         return player.Deck.Commander.State == Card.CardState.Destroyed;
     }
-
 }

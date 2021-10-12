@@ -8,9 +8,13 @@ using UnityEngine.UI;
 public class SkillProgressBarItem : MonoBehaviour
 {
 
+    const float SKIP_TIME = 0.5f;
     public Skill.Progress State => skill.PlayProgress;
 
-    public Button skipButton;
+    public RectTransform skipPanel;
+    public RectTransform skipBar;
+    float skipDuration;
+    Action onSkip;
 
     public Sprite Pending;
     public Sprite Queued;
@@ -30,17 +34,18 @@ public class SkillProgressBarItem : MonoBehaviour
     {
         this.skill = skill;
         Icon.sprite = skill.Icon;
-        skipButton.onClick.RemoveAllListeners();
-        if (skill.IsOptional)
-            skipButton.onClick.AddListener(() => OnSkip());
+        onSkip = OnSkip;
         GetComponent<Image>().sprite = Pending;
+        skipBar.gameObject.SetActive(false);
+        skipPanel.gameObject.SetActive(false);
     }
 
     Skill.Progress prevProgress = Skill.Progress.Pending;
 
     void Update()
     {
-        if (skill.PlayProgress == prevProgress || !ShouldUpdate())
+        var skippable = skill.IsOptional && skill.PlayProgress == Skill.Progress.Now && onSkip != null;
+        if ((skill.PlayProgress == prevProgress && !skippable) || !ShouldUpdate())
             return;
 
         prevProgress = skill.PlayProgress;
@@ -52,10 +57,29 @@ public class SkillProgressBarItem : MonoBehaviour
             Skill.Progress.Failed => Failed,
             Skill.Progress.Now => Now,
         };
-        skipButton.gameObject.SetActive(skill.IsOptional && skill.PlayProgress == Skill.Progress.Now);
+
         if (skill.PlayProgress == Skill.Progress.Skipped)
             GetComponent<AudioSource>().PlayOneShot(SkipSound);
         else if (skill.PlayProgress == Skill.Progress.Failed)
             GetComponent<AudioSource>().PlayOneShot(FailSound);
+
+        skipPanel.gameObject.SetActive(skippable);
+        if (!skippable || !Input.GetButton("Skip"))
+        {
+            skipBar.gameObject.SetActive(false);
+            skipDuration = 0f;
+        }
+        else if (Input.GetButton("Skip"))
+        {
+            skipDuration += Time.deltaTime / SKIP_TIME;
+            skipBar.gameObject.SetActive(true);
+            if (skipDuration >= 1)
+            {
+                skipDuration = 1;
+                onSkip();
+                skipBar.gameObject.SetActive(false);
+            }
+            skipBar.anchorMax = new Vector2(skipDuration, 1);
+        }
     }
 }

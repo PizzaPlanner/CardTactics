@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a94ec77900fee7f40aa8c3dd385c7451, type: 3}
+  m_Name: Explorer's Boots
+  m_EditorClassIdentifier: 
+  Class: {fileID: 11400000, guid: 94d5650e16e4cd845920cc7323e0f6e9, type: 2}
+  Skills: []
+  Dependencies: 
+  Conditions: 
+  SkillTarget: {fileID: 0}
+  WantSkillSkip: 0
+  WantComplete: 0
+  WantReset: 0
+  speed: 12
+  actions: 2
+  chargeCost: 0
+  icon: {fileID: 21300000, guid: 1d822deb1f8dfd048888ec2d5c0e3dfe, type: 3}
+  name: Explorer's Boots
+  ItemClass: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
+  Once: 0

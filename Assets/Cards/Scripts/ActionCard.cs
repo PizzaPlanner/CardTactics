@@ -1,6 +1,6 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.UI;
 
 [CreateAssetMenu(menuName = "Card/Action")]
 public class ActionCard : Card
@@ -13,11 +13,14 @@ public class ActionCard : Card
     [Range(0, 10)]
     [SerializeField] int cost;
 
+    [Required]
+    public CardClass RequiredClass;
+
     public bool Once;
     public bool Temporary;
 
 
-    public override int Cost => cost;
+    public int Cost => cost;
     public override Sprite Icon => icon;
 
     public override string Name => name;

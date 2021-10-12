@@ -249,9 +249,9 @@ MonoBehaviour:
   Reference: {fileID: 0}
   Icon: {fileID: 4577472147977071903}
   Name: {fileID: 0}
-  Cost: {fileID: 0}
   Speed: {fileID: 2832366767148933119}
   ClassName: {fileID: 0}
+  SkillPanel: {fileID: 0}
   ClassIcon: {fileID: 0}
   PlayerColorBorder: {fileID: 4084081426530638918}
   ShowTooltipOnHover: 1
@@ -359,7 +359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62536eb65c1b29478423bc61bccb410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredCategory: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+  RequiredCategory: {fileID: 11400000, guid: 94d5650e16e4cd845920cc7323e0f6e9, type: 2}
 --- !u!1 &5700368293238001184
 GameObject:
   m_ObjectHideFlags: 0

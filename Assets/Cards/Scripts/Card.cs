@@ -53,10 +53,10 @@ public abstract class Card : ScriptableObject
 
     public void OnRoundStart(Map map, PlayerInfo player)
     {
-        if (State != CardState.Active) return;
         foreach (var skill in Skills)
         {
-            if (skill is Passive passive)
+            skill.Prepare();
+            if (State == CardState.Active && skill is Passive passive)
                 passive.OnRoundStart(map, player);
         }
     }
@@ -65,7 +65,8 @@ public abstract class Card : ScriptableObject
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }
     public abstract int Speed { get; }
-    public abstract int Cost { get; }
+
+    [Required]
     public CardClass Class;
     public Card Source { get; private set; }
 
