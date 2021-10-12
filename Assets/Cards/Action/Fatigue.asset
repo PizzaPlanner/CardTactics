@@ -26,4 +26,4 @@ MonoBehaviour:
   cost: 2
   RequiredClass: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
   Once: 1
-  Temporary: 0
+  Temporary: 1
