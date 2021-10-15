@@ -25,7 +25,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 74e58aba47e666e46994c2700d7a8e29, type: 3}
   name: Illusion
   speed: 100
-  cost: 5
+  cost: 1
   RequiredClass: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
   Once: 1
-  Temporary: 1
+  Temporary: 0

@@ -131,6 +131,7 @@ public class Board : MonoBehaviour
             cardsThisRound.Add((player, card));
         }
 
+        turnPanel.OnPlayerReady(player);
         if (NextPlayerPrepareTurn())
             return;
 

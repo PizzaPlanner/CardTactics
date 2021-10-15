@@ -10,6 +10,7 @@ public class PlayerInfoPanel : MonoBehaviour
     [SerializeField] RectTransform readyBadge;
     [SerializeField] RectTransform passivePanel;
     [SerializeField] CardDisplay commanderCard;
+    [SerializeField] CardDisplay itemCardPrefab;
 
     public bool IsReady
     {
@@ -26,9 +27,16 @@ public class PlayerInfoPanel : MonoBehaviour
         Name.color = Player.Color;
         Name.text = Player.Deck.Commander.Name;
         commanderCard.SetCard(Player.Deck.Commander);
+        commanderCard.Speed.text = Player.Deck.CurrentSpeed.ToString();
         commanderCard.GetComponent<Button>().interactable = false;
-
         foreach (Transform t in passivePanel)
             GameObject.Destroy(t.gameObject);
+
+        foreach (var card in Player.Deck.Equipped)
+        {
+            var item = Instantiate(itemCardPrefab);
+            item.SetCard(card);
+            item.transform.SetParent(passivePanel);
+        }
     }
 }

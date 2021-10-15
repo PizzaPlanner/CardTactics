@@ -59,7 +59,8 @@ public class TurnPlate : MonoBehaviour
         var indicator = Instantiate(turnIndicatorPrefab);
         indicator.GetComponent<SkillProgressBar>().SetSkills(card, player);
         indicator.SetCard(card);
-        indicator.PlayerColorBorder.color = player.Color;
+        indicator.GetComponentInChildren<UnitDisplay>().GetComponent<CardDisplay>().SetCard(player.Deck.Commander);
+        // indicator.PlayerColorBorder.color = player.Color;
         indicator.transform.SetParent(nextActionsPanel);
     }
 

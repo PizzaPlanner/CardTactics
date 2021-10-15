@@ -24,7 +24,7 @@ MonoBehaviour:
   WantReset: 0
   icon: {fileID: 21300000, guid: 5730b1e2ea3f9aa40981faeb1fd35688, type: 3}
   name: Leap
-  speed: 34
+  speed: 23
   cost: 1
   RequiredClass: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
   Once: 0

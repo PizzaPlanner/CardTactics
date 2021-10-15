@@ -206,6 +206,7 @@ MonoBehaviour:
   readyBadge: {fileID: 7045695174527916986}
   passivePanel: {fileID: 4725111067429926828}
   commanderCard: {fileID: 3020048929753802949}
+  itemCardPrefab: {fileID: -3313291656261730026, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
 --- !u!114 &8035852398249992145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20.529993
+      value: 16.659996
       objectReference: {fileID: 0}
     - target: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_SizeDelta.y
@@ -516,7 +517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20.529993
+      value: 16.659996
       objectReference: {fileID: 0}
     - target: {fileID: 8153431151738238454, guid: 480550a22ec7cfb4ba1335711c5e75ae, type: 3}
       propertyPath: m_SizeDelta.y

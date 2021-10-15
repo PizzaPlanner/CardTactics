@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillProgressBar : MonoBehaviour
 {
@@ -10,15 +9,26 @@ public class SkillProgressBar : MonoBehaviour
 
     Card card;
 
-    void Update()
+    Animator animator;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+    void LateUpdate()
     {
         if (card.State == Card.CardState.Current)
         {
-            transform.localScale = Vector3.one * 1.15f;
+            animator.SetTrigger("Start");
+            animator.ResetTrigger("Next");
+            // transform.localScale = Vector3.one * 1.15f;
         }
         else
         {
-            transform.localScale = Vector3.one;
+            animator.SetTrigger("Next");
+            animator.ResetTrigger("Start");
+            // transform.localScale = Vector3.one;
         }
     }
 
@@ -34,7 +44,7 @@ public class SkillProgressBar : MonoBehaviour
         }
         var cardItem = GetComponent<CardDisplay>();
         cardItem.SetCard(card);
-        cardItem.PlayerColorBorder.color = player.Color;
+        // cardItem.PlayerColorBorder.color = player.Color;
         // skipButton.gameObject.SetActive(false);
     }
 }
