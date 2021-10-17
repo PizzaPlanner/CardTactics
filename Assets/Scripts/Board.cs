@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -193,9 +192,9 @@ public class Board : MonoBehaviour
         }
         foreach (var player in deadPlayers)
         {
-            Debug.Log("A player died!");
-            registeredPlayers.Remove(player);
+            Debug.Log($"<color={player.Color}>{player.Deck.Commander.Name}</color> died!");
             turnPanel.RemovePlayer(player);
+            registeredPlayers.Remove(player);
         }
         return deadPlayers;
     }
