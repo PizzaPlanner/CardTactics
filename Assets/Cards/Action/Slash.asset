@@ -18,14 +18,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
   Dependencies: 0000000001000000
   Conditions: 0000000000000000
-  SkillTarget: {fileID: 0}
-  WantSkillSkip: 0
-  WantComplete: 0
-  WantReset: 0
   icon: {fileID: 21300000, guid: 8e0bc87a0991fb646ad0f0834130139d, type: 3}
   name: Slash
   speed: 22
-  cost: 1
-  RequiredClass: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+  cost:
+  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    Cost: 1
+  - Class: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    Cost: 1
   Once: 0
   Temporary: 0

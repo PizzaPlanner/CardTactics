@@ -24,5 +24,7 @@ MonoBehaviour:
   cost:
   - Class: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
     Cost: 1
+  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    Cost: 1
   Once: 1
   Temporary: 0

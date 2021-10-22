@@ -22,7 +22,7 @@ MonoBehaviour:
   name: Rest
   speed: 85
   cost:
-  - Class: {fileID: 11400000, guid: d2c6ee1c89558d84b88c266929394544, type: 2}
+  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     Cost: 2
   Once: 0
   Temporary: 0

@@ -18,15 +18,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9527ff0647e405d4eaa74e9eef7d6a98, type: 2}
   Dependencies: 0000000001000000
   Conditions: 0000000001000000
-  SkillTarget: {fileID: 0}
-  WantSkillSkip: 0
-  WantComplete: 0
-  WantReset: 0
   speed: 21
   UnitReference: {fileID: -776819737043778027, guid: d110e092fe8b15142a7e558c1e4e1ff9, type: 3}
   Capacities:
   - Class: {fileID: 11400000, guid: d2c6ee1c89558d84b88c266929394544, type: 2}
     Count: 4
   - Class: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
+    Count: 2
+  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     Count: 2
   ClassesPerTurn: 2

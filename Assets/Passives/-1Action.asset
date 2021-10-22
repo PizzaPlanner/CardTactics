@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55459676c366a6148836daa2da38647c, type: 3}
   m_Name: -1Action
   m_EditorClassIdentifier: 
-  Name: 
-  Icon: {fileID: 0}
+  Name: Gain -1 Action
+  Icon: {fileID: 21300000, guid: f6155c86d5314024989c1ef8cb0100e5, type: 3}
   SkippableWithInput: 0
   Buff:
-    Class: {fileID: 0}
-    Cost: 0
+    Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    Cost: -1
