@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,8 @@ public class PlanningPanel : MonoBehaviour
     [SerializeField] RectTransform cardsPanel, equipPanel;
     [SerializeField] CardDisplay cardPrefab;
     [SerializeField] Button confirmButton;
-    [SerializeField] Text capacityText;
+    [SerializeField] RectTransform costBox;
+    [SerializeField] RectTransform costPrefab;
 
     [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
     [SerializeField] CardDisplay commanderPanel;
@@ -32,7 +34,6 @@ public class PlanningPanel : MonoBehaviour
         commanderPanel.SetCard(deck.Commander);
 
         var unplayed = deck.Unplayed.ToList();
-        unplayed.AddRange(deck.Queued);
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
         confirmButton.enabled = true;
         confirmButton.interactable = false;
@@ -40,6 +41,7 @@ public class PlanningPanel : MonoBehaviour
         confirmButton.onClick.RemoveAllListeners();
         confirmButton.onClick.AddListener(() =>
         {
+            if (!deck.QueueIsValid) return;
             audio.PlayOneShot(ReadySound);
             confirmButton.enabled = false;
             Hide();
@@ -64,73 +66,78 @@ public class PlanningPanel : MonoBehaviour
             visual.GetComponent<Button>().interactable = false;
         }
 
+        List<CardDisplay> displayCards = new List<CardDisplay>();
         foreach (var card in unplayed)
         {
             var visual = Instantiate(cardPrefab);
             visual.SetCard(card);
             visual.transform.SetParent(cardsPanel);
-            if (deck.Queued.Contains(card))
+            displayCards.Add(visual);
+            visual.GetComponent<Button>().onClick.AddListener(() =>
             {
-                visual.GetComponent<Button>().animator.SetBool("IsLocked", true);
-            }
-            else
-                visual.GetComponent<Button>().onClick.AddListener(() =>
-                {
-                    card.SetSelectionState(!deck.Queued.Contains(card));
+                card.SetSelectionState(!deck.Queued.Contains(card));
 
-                    var selected = card.State == Card.CardState.Queued;
-                    audio.PlayOneShot(selected ? UnselectSound : SelectSound);
-                    visual.GetComponent<Button>().animator.SetBool("IsActive", selected);
-                    CalculateValidCards(deck);
-                });
+                var selected = card.State == Card.CardState.Queued;
+                audio.PlayOneShot(selected ? UnselectSound : SelectSound);
+                visual.GetComponent<Button>().animator.SetBool("IsActive", selected);
+                CalculateValidCards(deck, displayCards);
+            });
         }
-        CalculateValidCards(deck);
+        CalculateValidCards(deck, displayCards);
         gameObject.SetActive(true);
         StartCoroutine(FixLayoutBug());
     }
 
-    void CalculateValidCards(Deck deck)
+    void CalculateValidCards(Deck deck, List<CardDisplay> displayCards)
     {
-        var capacities = deck.GetCapacities();
-        var uses = new Dictionary<CardClass, int>();
-        var classes = new List<CardClass>();
-        foreach (var key in capacities.Keys)
-            uses[key] = 0;
-        foreach (var card in deck.Queued)
-        {
-            if (card is not ActionCard acard) continue;
-            uses[acard.RequiredClass] += acard.Cost;
-            if (!classes.Contains(acard.RequiredClass))
-                classes.Add(acard.RequiredClass);
-        }
+        var capacities = deck.GetTotalCapacities();
+        var uses = deck.GetUsedCapacities();
+        var free = deck.GetTotalCapacities();
+        foreach (var cost in uses)
+            free[cost.Key] -= uses[cost.Key];
 
-        foreach (var otherCard in cardsPanel.GetComponentsInChildren<CardDisplay>(false))
+        foreach (var otherCard in displayCards)
         {
             if (otherCard.Reference is not ActionCard acard) continue;
-            if (!capacities.ContainsKey(acard.RequiredClass))
-                capacities[acard.RequiredClass] = 0;
-            if (!uses.ContainsKey(acard.RequiredClass))
-                uses[acard.RequiredClass] = 0;
-            if (deck.Queued.Contains(acard) ||
-            (capacities[acard.RequiredClass] - uses[acard.RequiredClass] >= acard.Cost
-            && (classes.Contains(acard.RequiredClass) || classes.Count < deck.ClassesPerTurn)))
+            if (deck.Queued.Contains(acard) || CanAfford(acard, uses, capacities))
             {
                 otherCard.GetComponent<Button>().interactable = true;
+                otherCard.GetComponent<ActionDisplay>().SetCostColor(capacities);
             }
             else
             {
                 otherCard.GetComponent<Button>().interactable = false;
+                otherCard.GetComponent<ActionDisplay>().SetCostColor(free);
             }
         }
 
-        var countText = $"Categories: {classes.Count}/{deck.ClassesPerTurn}\nSpeed: {deck.CurrentSpeed}\n-----\n";
-        foreach (var cap in capacities.Keys)
+        foreach (Transform t in costBox)
+            t.gameObject.SetActive(false);
+
+        int i = 0;
+        foreach (var cost in capacities)
         {
-            if (capacities[cap] == 0) continue;
-            countText += $"{cap.Name}: {uses[cap]}/{capacities[cap]}\n";
+            if (cost.Value <= 0) continue;
+            var row = costBox.GetChild(i++);
+            foreach (Transform t in row)
+                Destroy(t.gameObject);
+            row.gameObject.SetActive(true);
+            for (int j = 0; j < cost.Value; j++)
+            {
+                var item = Instantiate(costPrefab);
+                item.GetComponentInChildren<Image>().sprite = cost.Key.Icon;
+                item.SetParent(row);
+                if (uses.ContainsKey(cost.Key) && j >= cost.Value - uses[cost.Key])
+                    item.GetComponentInChildren<Image>().color *= new Color(1, 1, 1, 0.2f);
+            }
         }
-        capacityText.text = countText.Trim();
-        confirmButton.interactable = deck.Queued.Count() != 0;
+
+        confirmButton.interactable = deck.QueueIsValid;
+    }
+
+    private bool CanAfford(ActionCard card, Dictionary<CardClass, int> uses, Dictionary<CardClass, int> capacities)
+    {
+        return card.Cost.All(cost => capacities[cost.Class] - uses[cost.Class] >= cost.Cost);
     }
 
     // https://issuetracker.unity3d.com/issues/horizontallayoutgroup-fails-to-position-children-when-entering-slash-leaving-play-mode-if-controlchildsize-dot-height-is-enabled?_ga=2.205791891.1245712443.1631889840-1271266292.1625017527

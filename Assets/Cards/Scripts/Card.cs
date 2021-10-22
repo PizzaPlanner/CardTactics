@@ -107,10 +107,10 @@ public abstract class Card : ScriptableObject
         Conditions = listC.ToArray();
     }
 
-    public Tile SkillTarget;
-    public bool WantSkillSkip;
-    public bool WantComplete;
-    public bool WantReset;
+    public Tile SkillTarget { get; set; }
+    public bool WantSkillSkip { get; set; }
+    public bool WantComplete { get; set; }
+    public bool WantReset { get; set; }
 
     protected IEnumerator PlaySkills(Map map, PlayerInfo player, bool autocompleteIfPossible)
     {

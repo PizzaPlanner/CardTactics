@@ -1,6 +1,14 @@
 using System;
 using Sirenix.OdinInspector;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+
+[System.Serializable]
+public struct PlayCost
+{
+    public CardClass Class;
+    public int Cost;
+}
 
 [CreateAssetMenu(menuName = "Card/Action")]
 public class ActionCard : Card
@@ -9,18 +17,13 @@ public class ActionCard : Card
     [SerializeField] new string name;
     [Range(1, 100)]
     [SerializeField] int speed;
-
-    [Range(0, 10)]
-    [SerializeField] int cost;
-
-    [Required]
-    public CardClass RequiredClass;
+    [SerializeField] PlayCost[] cost;
 
     public bool Once;
     public bool Temporary;
 
 
-    public int Cost => cost;
+    public PlayCost[] Cost => cost;
     public override Sprite Icon => icon;
 
     public override string Name => name;
@@ -35,5 +38,7 @@ public class ActionCard : Card
     {
         if (State == CardState.Unplayed && Temporary) Destroy();
         base.OnRoundStart(map, player);
+        // This destroy after base call to trigger effects
+        if (State == CardState.Active && Temporary) Destroy();
     }
 }

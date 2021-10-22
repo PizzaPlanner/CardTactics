@@ -25,27 +25,79 @@ public class Deck : ScriptableObject
     {
         get
         {
-            var caps = GetCapacities();
             return Commander.Speed + Equipped.Sum(x => x.Speed) + Queued.Sum(x => x.Speed);
         }
     }
 
-    public Dictionary<CardClass, int> GetCapacities()
+    public bool QueueIsValid
+    {
+        get
+        {
+            var total = GetTotalCapacities();
+            var used = GetUsedCapacities();
+            foreach (var cap in used.Keys.ToArray())
+            {
+                total[cap] -= used[cap];
+            }
+
+            return total.Values.All(x => x >= 0) && used.Values.Sum() > 0;
+        }
+    }
+
+    public Dictionary<CardClass, int> GetUsedCapacities()
     {
         var capacities = new Dictionary<CardClass, int>();
-        foreach (var cap in Commander.Capacities)
-            capacities[cap.Class] = cap.Count;
+
+        // Initialize
         foreach (var card in Cards)
         {
-            if (!capacities.ContainsKey(card.Class))
-                capacities[card.Class] = 0;
-            if (card is ActionCard acard && !capacities.ContainsKey(acard.RequiredClass))
-                capacities[acard.RequiredClass] = 0;
-            if (card is ItemCard icard && !capacities.ContainsKey(icard.ItemClass))
+            capacities[card.Class] = 0;
+            if (card is ActionCard acard)
+                foreach (var cost in acard.Cost)
+                    capacities[cost.Class] = 0;
+            if (card is ItemCard icard)
                 capacities[icard.ItemClass] = 0;
         }
+
+        foreach (Card card in Cards)
+        {
+            if (card is not ActionCard acard || card.State != Card.CardState.Queued) continue;
+            foreach (var cost in acard.Cost)
+                capacities[cost.Class] += cost.Cost;
+        }
+
+        return capacities;
+    }
+
+    public Dictionary<CardClass, int> GetTotalCapacities()
+    {
+        var capacities = new Dictionary<CardClass, int>();
+
+        // Initialize
+        foreach (var card in Cards)
+        {
+            capacities[card.Class] = 0;
+            if (card is ActionCard acard)
+                foreach (var cost in acard.Cost)
+                    capacities[cost.Class] = 0;
+            if (card is ItemCard icard)
+                capacities[icard.ItemClass] = 0;
+        }
+
+        // Count
+        foreach (var cap in Commander.Capacities)
+            capacities[cap.Class] = cap.Count;
         foreach (var card in Equipped)
             capacities[card.ItemClass] += card.actions;
+
+        // Apply buffs last to handle negative values properly
+        foreach (var card in Cards)
+        {
+            if (card.State != Card.CardState.Active) continue;
+            foreach (var skill in card.Skills)
+                if (skill is CostModifierPassive p)
+                    capacities[p.Buff.Class] = Mathf.Max(0, capacities[p.Buff.Class] + p.Buff.Cost);
+        }
 
         return capacities;
     }

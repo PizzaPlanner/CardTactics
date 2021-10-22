@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,7 +14,10 @@ public class Board : MonoBehaviour
     Queue<(PlayerInfo, Card)> cardsToPlay;
     (PlayerInfo, Card) currentAction;
 
+    [ShowInInspector]
+    [ReadOnly]
     List<PlayerInfo> registeredPlayers;
+
     List<PlayerInfo> readyPlayers;
 
     // Start is called before the first frame update
