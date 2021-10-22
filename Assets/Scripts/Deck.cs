@@ -111,7 +111,7 @@ public class Deck : ScriptableObject
         var deck = Deck.Instantiate(prefab);
         deck.Cards = new Card[0];
         foreach (var card in prefab.Cards)
-            deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Skipped);
+            deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Played);
         deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Queued);
         deck.Commander.UnitReference.Type = UnitFilter.Commander;
         return deck;

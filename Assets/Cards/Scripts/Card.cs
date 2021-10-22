@@ -14,7 +14,6 @@ public abstract class Card : ScriptableObject
         Queued,
         Current,
         Played,
-        Skipped,
         Active,
         Destroyed
     }
@@ -54,7 +53,7 @@ public abstract class Card : ScriptableObject
 
     public virtual void OnRoundStart(Map map, PlayerInfo player)
     {
-        if (State == CardState.Skipped || State == CardState.Played)
+        if (State == CardState.Played)
             State = CardState.Unplayed;
         foreach (var skill in Skills)
         {

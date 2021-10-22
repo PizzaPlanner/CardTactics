@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,11 +21,14 @@ public class Board : MonoBehaviour
 
     List<PlayerInfo> readyPlayers;
 
+    bool beforeSecondTeamAdded;
+
     // Start is called before the first frame update
     public void Initialize(Map mapPrefab)
     {
         Map = Map.Create(mapPrefab);
         Map.RevealArea(0);
+        beforeSecondTeamAdded = true;
         foreach (var player in Map.Players)
         {
             if (!player.RegisterLater)
@@ -88,6 +92,9 @@ public class Board : MonoBehaviour
 
         turnPanel.AddPlayer(player);
         registeredPlayers.Add(player);
+
+        if (registeredPlayers.GroupBy(x => x.Team).Count() > 1)
+            beforeSecondTeamAdded = false;
     }
 
     void AIPrepare(PlayerInfo aiPlayer)
@@ -171,9 +178,15 @@ public class Board : MonoBehaviour
             currentAction = cardsToPlay.Dequeue();
             SetTurn(currentAction.Item1, currentAction.Item2);
         }
-        else
+        else if (registeredPlayers.GroupBy(x => x.Team).Count() > 1 || beforeSecondTeamAdded)
         {
             PrepareNextRound();
+        }
+        else
+        {
+            foreach (var player in registeredPlayers)
+                Debug.Log($"<color={player.Color}>{player.Deck.Commander.Name}</color> won!");
+            LoadingScreen.GoToMenu();
         }
     }
 
