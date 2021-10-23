@@ -6,7 +6,7 @@ public class RevealAreaTrigger : Trigger
 {
     public int Area;
 
-    public override IEnumerator Execute(Map map, Tile tile)
+    protected override IEnumerator Execute(Map map, Tile tile)
     {
         yield return new WaitForSeconds(0.1f);
         map.RevealArea(Area);

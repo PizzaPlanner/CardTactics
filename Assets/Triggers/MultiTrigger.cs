@@ -1,14 +1,16 @@
 using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
 public class MultiTrigger : Trigger
 {
-    [SerializeReference] Trigger[] SubTriggers;
+    [InlineEditor(InlineEditorObjectFieldModes.Hidden)]
+    [SerializeField] Trigger[] SubTriggers;
 
-    public override IEnumerator Execute(Map map, Tile tile)
+    protected override IEnumerator Execute(Map map, Tile tile)
     {
         foreach (var trigger in SubTriggers)
-            yield return trigger.Execute(map, tile);
+            yield return trigger.Run(map, tile);
     }
 }

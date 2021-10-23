@@ -26,8 +26,7 @@ public class Board : MonoBehaviour
     // Start is called before the first frame update
     public void Initialize(Map mapPrefab)
     {
-        Map = Map.Create(mapPrefab);
-        Map.RevealArea(0);
+        Map = Instantiate(mapPrefab);
         beforeSecondTeamAdded = true;
         foreach (var player in Map.Players)
         {
@@ -193,7 +192,7 @@ public class Board : MonoBehaviour
     IEnumerator RunTriggers(List<(Tile tile, Trigger trigger)> triggers)
     {
         foreach (var trigger in triggers)
-            yield return trigger.trigger.Execute(Map, trigger.tile);
+            yield return trigger.trigger.Run(Map, trigger.tile);
         Progress();
     }
 

@@ -12,9 +12,9 @@ public class ExternalTrigger : MultiTrigger
         return ConditionMet;
     }
 
-    public override IEnumerator Execute(Map map, Tile tile)
+    protected override IEnumerator Execute(Map map, Tile tile)
     {
         ConditionMet = true;
-        yield return base.Execute(map, tile);
+        yield return base.Run(map, tile);
     }
 }

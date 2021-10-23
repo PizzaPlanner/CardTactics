@@ -21,12 +21,9 @@ public enum Facing
     Preserve
 }
 
+[RequireComponent(typeof(GridPosition))]
 public class Tile : MonoBehaviour
 {
-
-#if UNITY_EDITOR
-    public Texture2D EditorImage;
-#endif
     public struct PathingData
     {
         public int G, H;
@@ -41,21 +38,19 @@ public class Tile : MonoBehaviour
         if (absx > absy)
         {
             if (from.Position.x < to.Position.x)
-                return Facing.Left;
-            else if (from.Position.x > to.Position.x)
                 return Facing.Right;
+            else if (from.Position.x > to.Position.x)
+                return Facing.Left;
         }
         else
         {
             if (from.Position.y < to.Position.y)
-                return Facing.Down;
-            else if (from.Position.y > to.Position.y)
                 return Facing.Up;
+            else if (from.Position.y > to.Position.y)
+                return Facing.Down;
         }
         return Facing.Preserve;
     }
-
-    public int Area;
 
     public Unit Unit;
 
@@ -81,6 +76,11 @@ public class Tile : MonoBehaviour
     [SerializeField]
     [ChildGameObjectsOnly]
     GameObject SelectionIndicator;
+
+    void Awake()
+    {
+        Neighbours = new List<Tile>();
+    }
 
     void Start()
     {
@@ -284,27 +284,27 @@ public class Tile : MonoBehaviour
     public int FaceToRot(Facing face)
     {
         if (face == Facing.Left)
-            return 90;
-        else if (face == Facing.Right)
             return 270;
+        else if (face == Facing.Right)
+            return 90;
         else if (face == Facing.Up)
-            return 180;
-        else if (face == Facing.Down)
             return 0;
-        return (int)(Unit?.transform.rotation.eulerAngles.y ?? 0);
+        else if (face == Facing.Down)
+            return 180;
+        return (int)(Unit != null ? Unit.transform.rotation.eulerAngles.y : 0);
     }
 
     public Facing RotToFace(float rot)
     {
         rot %= 360;
         if (rot >= 225 && rot < 315)
-            return Facing.Right;
-        else if (rot >= 45 && rot < 135)
             return Facing.Left;
+        else if (rot >= 45 && rot < 135)
+            return Facing.Right;
         else if (rot >= 315 || rot < 45)
-            return Facing.Down;
-        else if (rot >= 135 && rot < 225)
             return Facing.Up;
+        else if (rot >= 135 && rot < 225)
+            return Facing.Down;
         return Facing.Preserve;
     }
 

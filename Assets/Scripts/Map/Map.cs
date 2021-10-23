@@ -1,0 +1,229 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+[RequireComponent(typeof(Grid))]
+public class Map : MonoBehaviour
+{
+    [SerializeField] public PlayerInfo[] Players;
+
+    List<Tile> Tiles;
+
+    public List<(Tile tile, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
+    {
+        var l = new List<(Tile tile, Trigger trigger)>();
+        foreach (var player in died)
+        {
+            if (player.OnLooseTrigger != null)
+            {
+                l.Add((null, player.OnLooseTrigger));
+            }
+        }
+
+        foreach (var tcomp in GetComponentsInChildren<TriggerComponent>())
+        {
+            if (tcomp.TryGetComponent<Tile>(out var tile) && tcomp.Trigger.ShouldTrigger(this, tile))
+                l.Add((tile, tcomp.Trigger));
+        }
+        return l;
+    }
+
+    public void ShowMarker(int id)
+    {
+        foreach (var marker in GetComponentsInChildren<Marker>())
+        {
+            if (marker.Id == id)
+                marker.GetComponent<Tile>().SetMarker(true);
+        }
+    }
+
+    public void HideMarker(int id)
+    {
+        foreach (var marker in GetComponentsInChildren<Marker>())
+        {
+            if (marker.Id == id)
+                marker.GetComponent<Tile>().SetMarker(false);
+        }
+    }
+
+    public void RevealArea(int area)
+    {
+        foreach (var thing in GetComponentsInChildren<Area>())
+            if (thing.Id == area)
+                thing.gameObject.SetActive(true);
+    }
+
+    IEnumerable<T> Get<T>(int x, int y, int z) => GetComponentsInChildren<GridPosition>()
+        .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z == z && gp.GetComponent<T>() != null)
+        .Select(gp => gp.GetComponent<T>());
+
+    void Start()
+    {
+        var allGridThings = GetComponentsInChildren<GridPosition>();
+        Tiles = new List<Tile>();
+        foreach (var thing in allGridThings)
+        {
+            if (!thing.TryGetComponent<Tile>(out var tile)) continue;
+            Tiles.Add(tile);
+            var pos = thing.Position;
+            foreach (var neighbour in Get<Tile>(pos.x - 1, pos.y, pos.z).Union(Get<Tile>(pos.x, pos.y - 1, pos.z)))
+            {
+                neighbour.Neighbours.Add(tile);
+                tile.Neighbours.Add(neighbour);
+            }
+
+            if (thing.GetComponent<Area>() != null)
+                thing.gameObject.SetActive(false);
+            if (tile.Unit != null && thing.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length)
+            {
+                tile.Place(tile.Unit, Facing.Preserve);
+                tile.Unit.Player = Players[owner.Id];
+            }
+        }
+    }
+
+    public void ShowTileIndicators()
+    {
+        foreach (var tile in Tiles)
+            tile?.SetIndicatorVisible(true);
+    }
+
+    public Tile[] ShowSpawnTiles(SelectionFilter filter, PlayerInfo player)
+    {
+        var id = 0;
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == player)
+            {
+                id = i + 1;
+                break;
+            }
+        }
+
+        List<Tile> valid = new List<Tile>();
+        foreach (var tile in Tiles)
+        {
+            if (!TryGetComponent<Owner>(out var owner) || owner.Id != id) continue;
+            if (TileMatches(tile, filter, player))
+                valid.Add(tile);
+        }
+        return valid.ToArray();
+    }
+
+    public Tile[] ShowPlacementTiles(SelectionFilter filter, PlayerInfo player)
+    {
+        List<Tile> valid = new List<Tile>();
+        foreach (var tile in Tiles)
+        {
+            if (tile == null) continue;
+            if (TileMatches(tile, filter, player))
+                valid.Add(tile);
+        }
+        return valid.ToArray();
+    }
+
+    public void HideTileSelectionPreview()
+    {
+        foreach (var tile in Tiles)
+        {
+            if (tile == null) continue;
+            tile.SetIndicator(TargetIndicator.Hidden);
+            tile.ClearPathingInfo();
+            tile.SetIndicatorVisible(false);
+        }
+    }
+
+    public Tile[] GetPlayerTiles(PlayerInfo player)
+    {
+        List<Tile> valid = new List<Tile>();
+        foreach (var tile in Tiles)
+        {
+            if (tile == null || tile.Unit == null || tile.Unit.Player != player) continue;
+            valid.Add(tile);
+        }
+        return valid.ToArray();
+    }
+
+    public bool TileMatches(Tile tile, SelectionFilter filter, PlayerInfo player)
+    {
+        if (!tile.gameObject.activeSelf)
+            return false;
+        var validTarget = ((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null);
+        if (tile.Unit != null)
+        {
+            var isObstacle = tile.Unit.Player == null;
+            validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;
+            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == player;
+            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != player && tile.Unit.Player.Team == player.Team;
+            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && (tile.Unit.Player.Team != player.Team);
+
+            validTarget &= (filter.Unit & tile.Unit.Type) > 0;
+        }
+
+        tile.SetIndicator(validTarget ? TargetIndicator.Valid : TargetIndicator.Invalid);
+        return validTarget;
+    }
+
+    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, SelectionFilter filter, PlayerInfo player)
+    {
+        List<Tile> valid = new List<Tile>();
+        List<Tile> rangeTiles = new List<Tile>();
+        foreach (var tile in Tiles)
+        {
+            if (tile == null || !tile.gameObject.activeSelf) continue;
+
+            // Check range
+            if (Tile.Distance(origin, tile) > maxRange || Tile.Distance(origin, tile) < minRange)
+            {
+                tile.SetIndicator(TargetIndicator.Hidden);
+                continue;
+            }
+
+            // Check TargetType
+            if (TileMatches(tile, filter, player))
+            {
+                valid.Add(tile);
+                rangeTiles.Add(tile);
+            }
+        }
+        if (filter.Range == RangeFilter.Pathfinding)
+        {
+            foreach (var tile in rangeTiles)
+            {
+                if (!Tile.FindPath(origin, tile, maxRange, rangeTiles))
+                {
+                    tile.SetIndicator(TargetIndicator.Invalid);
+                    valid.Remove(tile);
+                }
+            }
+        }
+        else if (filter.Range == RangeFilter.SightUnblocked)
+        {
+            Debug.Log($"Have {rangeTiles.Count} available Tiles");
+            foreach (var tile in rangeTiles)
+            {
+                var start = origin.transform.position + Vector3.up * 1.5f;
+                var finish = tile.transform.position + Vector3.up * 0.5f;
+                if (!Physics.Raycast(start, finish - start, out var hit) || hit.transform.gameObject != tile.gameObject)
+                {
+                    valid.Remove(tile);
+                    Debug.Log("Removed tile from sight");
+                    Debug.DrawLine(start, finish, Color.red, 10, false);
+                }
+            }
+        }
+        if (!valid.Contains(origin))
+            origin.SetIndicator(TargetIndicator.Origin);
+        return valid.ToArray();
+    }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position + Vector3.one * 0.5f + Vector3.down * 0.5f, new Vector3(1, 0, 0));
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(transform.position + Vector3.one * 0.5f + Vector3.down * 0.5f, new Vector3(0, 0, 1));
+    }
+#endif
+}

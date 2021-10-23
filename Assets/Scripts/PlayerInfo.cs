@@ -13,7 +13,7 @@ public class PlayerInfo
     public bool RegisterLater;
 
     public LooseCondition LooseCondition;
-    public int OnLooseTrigger;
+    public Trigger OnLooseTrigger;
 
     internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
     {
