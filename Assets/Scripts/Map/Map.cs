@@ -48,38 +48,46 @@ public class Map : MonoBehaviour
 
     public void RevealArea(int area)
     {
-        foreach (var thing in GetComponentsInChildren<Area>())
+        foreach (var thing in GetComponentsInChildren<Area>(true))
             if (thing.Id == area)
                 thing.gameObject.SetActive(true);
     }
 
-    IEnumerable<T> Get<T>(int x, int y, int z) => GetComponentsInChildren<GridPosition>()
-        .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z == z && gp.GetComponent<T>() != null)
+    IEnumerable<T> Get<T>(int x, int y, int zMin, int zMax) => GetComponentsInChildren<GridPosition>()
+        .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z >= zMin && gp.Position.z <= zMax && gp.GetComponent<T>() != null)
         .Select(gp => gp.GetComponent<T>());
 
     void Start()
     {
-        var allGridThings = GetComponentsInChildren<GridPosition>();
+        var allGridThings = GetComponentsInChildren<GridPosition>(true);
         Tiles = new List<Tile>();
         foreach (var thing in allGridThings)
         {
             if (!thing.TryGetComponent<Tile>(out var tile)) continue;
             Tiles.Add(tile);
             var pos = thing.Position;
-            foreach (var neighbour in Get<Tile>(pos.x - 1, pos.y, pos.z).Union(Get<Tile>(pos.x, pos.y - 1, pos.z)))
+            foreach (var neighbour in Get<Tile>(pos.x - 1, pos.y, pos.z - 1, pos.z + 1).Union(Get<Tile>(pos.x, pos.y - 1, pos.z - 1, pos.z + 1)))
             {
+                if (Mathf.Abs(thing.Height - neighbour.GetComponent<GridPosition>().Height) >= 2) continue;
+
+                if (neighbour.Neighbours == null)
+                    neighbour.Neighbours = new();
+                if (tile.Neighbours == null)
+                    tile.Neighbours = new();
+
                 neighbour.Neighbours.Add(tile);
                 tile.Neighbours.Add(neighbour);
             }
 
-            if (thing.GetComponent<Area>() != null)
-                thing.gameObject.SetActive(false);
             if (tile.Unit != null && thing.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length)
             {
                 tile.Place(tile.Unit, Facing.Preserve);
                 tile.Unit.Player = Players[owner.Id];
             }
         }
+        foreach (var tile in Tiles)
+            if (tile.GetComponent<Area>() != null)
+                tile.gameObject.SetActive(false);
     }
 
     public void ShowTileIndicators()
@@ -95,15 +103,16 @@ public class Map : MonoBehaviour
         {
             if (Players[i] == player)
             {
-                id = i + 1;
+                id = i;
                 break;
             }
         }
 
         List<Tile> valid = new List<Tile>();
-        foreach (var tile in Tiles)
+        foreach (var owner in GetComponentsInChildren<Owner>())
         {
-            if (!TryGetComponent<Owner>(out var owner) || owner.Id != id) continue;
+            if (owner.Id != id || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
+            var tile = owner.GetComponent<Tile>();
             if (TileMatches(tile, filter, player))
                 valid.Add(tile);
         }

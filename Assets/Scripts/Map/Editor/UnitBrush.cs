@@ -27,22 +27,26 @@ namespace UnityEditor.Tilemaps
         void RemoveCell(GridLayout grid, Vector3Int position, Transform parent)
         {
             var existingTile = TileBrush.GetCell<Tile>(grid, parent, position);
-            if (existingTile == null || existingTile.Unit == null) return;
+            if (existingTile == null || existingTile.GetComponentInChildren<Unit>() == null) return;
 
-            Undo.DestroyObjectImmediate(existingTile.Unit.gameObject);
+            Undo.DestroyObjectImmediate(existingTile.GetComponentInChildren<Unit>().gameObject);
+            Debug.Log("Bye unit!");
         }
 
         private void PaintCell(GridLayout grid, Vector3Int position, Transform parent, Unit unit, Facing facing)
         {
             var existingTile = TileBrush.GetCell<Tile>(grid, parent, position);
             if (existingTile == null || unit == null) return;
-            if (existingTile.Unit != null)
+            var existingUnit = existingTile.GetComponentInChildren<Unit>();
+            if (existingUnit != null)
             {
-                Undo.DestroyObjectImmediate(existingTile.Unit);
+                Undo.DestroyObjectImmediate(existingUnit.gameObject);
             }
             var instance = Instantiate(unit);
             existingTile.Place(instance, facing);
+            existingTile.Unit = null;
             Undo.RegisterCreatedObjectUndo(instance, "Paint Unit");
+            Debug.Log("Hello unit!");
         }
     }
 }

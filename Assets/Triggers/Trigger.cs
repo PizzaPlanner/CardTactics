@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Trigger : MonoBehaviour
 {
-    public virtual bool ShouldTrigger(Map map, Tile tile) => tile.Unit != null;
+    public bool ShouldTrigger(Map map, Tile tile) => (!Executed || CanTriggerMultipleTimes) && (tile == null || tile.Unit != null);
 
     [SerializeField] protected bool CanTriggerMultipleTimes;
 

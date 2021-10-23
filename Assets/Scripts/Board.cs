@@ -89,6 +89,7 @@ public class Board : MonoBehaviour
 
         if (registeredPlayers.Contains(player)) return;
 
+        player.Initialize();
         turnPanel.AddPlayer(player);
         registeredPlayers.Add(player);
 

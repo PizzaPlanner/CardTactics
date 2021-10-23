@@ -54,7 +54,7 @@ public class Tile : MonoBehaviour
 
     public Unit Unit;
 
-    public (int x, int y) Position;
+    public Vector3Int Position { get; private set; }
 
     public static Tile Hovered { get; private set; }
     public List<Tile> Neighbours;
@@ -79,7 +79,10 @@ public class Tile : MonoBehaviour
 
     void Awake()
     {
-        Neighbours = new List<Tile>();
+        Position = GetComponent<GridPosition>().Position;
+        var unit = GetComponentInChildren<Unit>();
+        if (unit != null)
+            Place(unit, Facing.Preserve);
     }
 
     void Start()

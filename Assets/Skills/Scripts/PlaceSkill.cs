@@ -57,7 +57,8 @@ public class PlaceSkill : Skill, ICancelable
         if (Type == PlaceType.Summon && Summon == null)
             unit.Type = UnitFilter.Illusion;
         unit.gameObject.SetActive(false);
-        TargetTile.Place(unit, 0);
+        var facing = TargetTile.TryGetComponent<SpawnLocation>(out var sl) ? sl.Facing : 0;
+        TargetTile.Place(unit, facing);
         yield return null;
     }
 
