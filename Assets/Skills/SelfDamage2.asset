@@ -16,7 +16,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 60ad9b388a610d742b43170d2a71521a, type: 3}
   SkippableWithInput: 1
   Filter:
-    Tile: 31
+    Tile: 16
     Unit: 15
     Range: 0
   MinRange: 0

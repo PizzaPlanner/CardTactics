@@ -5,28 +5,28 @@ using UnityEngine;
 [RequireComponent(typeof(CardDisplay))]
 public class CardTooltip : MonoBehaviour
 {
-    static CardTooltip Tooltip;
-    static CardDisplay Display;
     public RectTransform RelatedCardsDisplay;
     public CardDisplay RelatedCardPrefab;
 
+    static CardTooltip Instance => instance ??= FindObjectOfType<CardTooltip>(true);
+    static CardTooltip instance;
+
     void Start()
     {
-        Tooltip = this;
-        Display = GetComponent<CardDisplay>();
+        instance = this;
         gameObject.SetActive(false);
     }
 
     public static void Show(Card card)
     {
-        Display.SetCard(card);
-        Tooltip.ShowRelated(card);
-        Tooltip.gameObject.SetActive(true);
+        Instance.GetComponent<CardDisplay>().SetCard(card);
+        Instance.ShowRelated(card);
+        Instance.gameObject.SetActive(true);
     }
 
     public static void Hide()
     {
-        Tooltip.gameObject.SetActive(false);
+        Instance.gameObject.SetActive(false);
     }
 
     public void ShowRelated(Card card)

@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TempImage: {fileID: 154205674038042015}
-  CostPrefab: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
+  CostPrefab: {fileID: 2125488017404638989, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
   CostPanel: {fileID: 5879999446285053686}
 --- !u!114 &7685025370528704358
 MonoBehaviour:
@@ -1294,7 +1294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 17.175003
+      value: 16.987507
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1388,7 +1388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 17.175003
+      value: 16.987507
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.y

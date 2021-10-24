@@ -8,7 +8,7 @@ public class ActionDisplay : MonoBehaviour
 {
     [SerializeField] RectTransform TempImage;
 
-    [SerializeField] RectTransform CostPrefab;
+    [SerializeField] CostIcon CostPrefab;
 
     [SerializeField] RectTransform CostPanel;
 
@@ -22,35 +22,21 @@ public class ActionDisplay : MonoBehaviour
 
         if (CostPanel != null && CostPrefab != null)
         {
+
             foreach (Transform t in CostPanel)
                 Destroy(t.gameObject);
+
             foreach (var cost in Reference.Cost)
             {
                 for (int i = 0; i < cost.Cost; i++)
                 {
                     var citem = Instantiate(CostPrefab);
-                    citem.GetComponentInChildren<Image>().sprite = cost.Class.Icon;
-                    citem.SetParent(CostPanel);
+                    citem.transform.SetParent(CostPanel);
+                    citem.Class = cost.Class;
+                    citem.Rank = i;
                 }
             }
             CostPanel.gameObject.SetActive(Reference.Cost.Length > 0);
-        }
-
-    }
-
-    public void SetCostColor(Dictionary<CardClass, int> free)
-    {
-        var Reference = GetComponent<CardDisplay>().Reference as ActionCard;
-        if (Reference == null) return;
-
-        var panelI = 0;
-        foreach (var cost in Reference.Cost)
-        {
-            for (int i = 0; i < cost.Cost; i++)
-            {
-                var citem = CostPanel.GetChild(panelI++);
-                citem.GetComponentInChildren<Image>().color = free[cost.Class] > i ? Color.white : Color.red;
-            }
         }
     }
 }

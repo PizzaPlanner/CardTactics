@@ -10,6 +10,9 @@ namespace UnityEditor.Tilemaps
         [SerializeField]
         Facing Facing;
 
+        [SerializeField]
+        bool instantCommanderSpawn;
+
         public override void Paint(GridLayout gridLayout, GameObject brushTarget, Vector3Int position)
         {
             PaintCell(gridLayout, position, brushTarget.transform, Facing);
@@ -33,6 +36,7 @@ namespace UnityEditor.Tilemaps
                     area = Undo.AddComponent<SpawnLocation>(existingTile.gameObject);
                 Undo.RecordObject(area, "Paint Spawn");
                 area.Facing = facing;
+                area.InstantCommanderSpawn = instantCommanderSpawn;
             }
         }
     }

@@ -22,7 +22,7 @@ public abstract class Card : ScriptableObject, IPlayable
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(Map map, PlayerInfo player)
+    public virtual IEnumerator Play(Board board, Map map, PlayerInfo player)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);

@@ -10,7 +10,6 @@ public class UnitCard : Card
     public Unit UnitReference;
 
     public Capacity[] Capacities;
-    public int ClassesPerTurn;
 
     protected override void OnInit() { }
 

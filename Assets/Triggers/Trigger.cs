@@ -1,10 +1,9 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 public interface IPlayable
 {
-    IEnumerator Play(Map map, PlayerInfo player);
+    IEnumerator Play(Board board, Map map, PlayerInfo player);
 }
 
 [System.Serializable]
@@ -16,13 +15,13 @@ public abstract class Trigger : MonoBehaviour, IPlayable
 
     public bool Executed { get; private set; }
 
-    public IEnumerator Play(Map map, PlayerInfo player)
+    public IEnumerator Play(Board board, Map map, PlayerInfo player)
     {
         if (Executed && !CanTriggerMultipleTimes)
             yield break;
         Executed = true;
-        yield return Execute(map, player);
+        yield return Execute(board, map, player);
     }
 
-    protected abstract IEnumerator Execute(Map map, PlayerInfo player);
+    protected abstract IEnumerator Execute(Board board, Map map, PlayerInfo player);
 }

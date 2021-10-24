@@ -6,10 +6,10 @@ public class RevealAreaTrigger : Trigger
 {
     public int Area;
 
-    protected override IEnumerator Execute(Map map, PlayerInfo player)
+    protected override IEnumerator Execute(Board board, Map map, PlayerInfo player)
     {
         yield return new WaitForSeconds(0.1f);
-        map.RevealArea(Area);
+        map.RevealArea(board, Area);
         yield return new WaitForSeconds(0.5f);
     }
 }

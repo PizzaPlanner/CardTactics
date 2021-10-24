@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Facing: 3
+  InstantCommanderSpawn: 1
 --- !u!1 &1345033143816521030
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +319,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 1
   Skill: {fileID: 11400000, guid: 3c8d58592181cf7469dadc1c880ac4af, type: 2}
+  Player: 0
+  GiveToTriggerer: 1
 --- !u!114 &2455776158606294598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,6 +334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Facing: 2
+  InstantCommanderSpawn: 1
 --- !u!114 &3810849437675613688
 MonoBehaviour:
   m_ObjectHideFlags: 0

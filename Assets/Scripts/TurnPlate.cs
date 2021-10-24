@@ -29,7 +29,7 @@ public class TurnPlate : MonoBehaviour
         badge.Player = player;
         badge.transform.SetParent(readyPanel);
         badges[player] = badge;
-        Debug.Log($"New Player: <color={player.Color}>{player.Deck.Commander}</color>");
+        Debug.Log($"New Player: {player.Name}");
     }
 
     public void OnRoundStart()
@@ -71,5 +71,6 @@ public class TurnPlate : MonoBehaviour
     {
         Destroy(badges[player].gameObject);
         badges.Remove(player);
+        Debug.Log($"{player.Name} died!");
     }
 }

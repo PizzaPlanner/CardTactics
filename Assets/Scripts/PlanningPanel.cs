@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -96,21 +97,25 @@ public class PlanningPanel : MonoBehaviour
         foreach (var cost in uses)
             free[cost.Key] -= uses[cost.Key];
 
+        // Costs on Cards
         foreach (var otherCard in displayCards)
         {
             if (otherCard.Reference is not ActionCard acard) continue;
-            if (deck.Queued.Contains(acard) || CanAfford(acard, uses, capacities))
+            if (deck.Queued.Contains(acard) || CanAfford(acard, free))
             {
                 otherCard.GetComponent<Button>().interactable = true;
-                otherCard.GetComponent<ActionDisplay>().SetCostColor(capacities);
+                foreach (var icon in otherCard.GetComponentsInChildren<CostIcon>())
+                    icon.SetCostColor(capacities);
             }
             else
             {
                 otherCard.GetComponent<Button>().interactable = false;
-                otherCard.GetComponent<ActionDisplay>().SetCostColor(free);
+                foreach (var icon in otherCard.GetComponentsInChildren<CostIcon>())
+                    icon.SetCostColor(free);
             }
         }
 
+        // Cost box
         foreach (Transform t in costBox)
             t.gameObject.SetActive(false);
 
@@ -135,9 +140,9 @@ public class PlanningPanel : MonoBehaviour
         confirmButton.interactable = deck.QueueIsValid;
     }
 
-    private bool CanAfford(ActionCard card, Dictionary<CardClass, int> uses, Dictionary<CardClass, int> capacities)
+    private bool CanAfford(ActionCard card, Dictionary<CardClass, int> free)
     {
-        return card.Cost.All(cost => capacities[cost.Class] - uses[cost.Class] >= cost.Cost);
+        return card.Cost.All(cost => free[cost.Class] >= cost.Cost);
     }
 
     // https://issuetracker.unity3d.com/issues/horizontallayoutgroup-fails-to-position-children-when-entering-slash-leaving-play-mode-if-controlchildsize-dot-height-is-enabled?_ga=2.205791891.1245712443.1631889840-1271266292.1625017527

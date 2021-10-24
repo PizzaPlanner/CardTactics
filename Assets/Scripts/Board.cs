@@ -42,12 +42,13 @@ public class Board : MonoBehaviour
     public void Initialize(Map mapInstance, HumanPlayer[] players)
     {
         CurrentStage = Stage.Setup;
-        Map = mapInstance;
         unassignedPlayers = new Queue<HumanPlayer>();
         queuedPlayables = new Queue<(PlayerInfo, IPlayable)>();
         if (players != null)
             foreach (var player in players)
                 unassignedPlayers.Enqueue(player);
+        Map = mapInstance;
+        Map.Load(this);
         WaitingForAction = true;
     }
 
@@ -58,6 +59,8 @@ public class Board : MonoBehaviour
         player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
         turnPanel.AddPlayer(player);
         player.State = PlayerInfo.PlayerState.Active;
+
+        QueuePlayable(player, player.Deck.Commander, true);
         return true;
     }
 
@@ -76,10 +79,16 @@ public class Board : MonoBehaviour
         else
         {
             var (player, playable) = queuedPlayables.Dequeue();
+            if (player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
+            {
+                Debug.Log($"{player.Name} is dead. skipped {playable.GetType().Name}");
+                return;
+            }
+
             IEnumerator PlayAndResume()
             {
                 currentPlayable = playable;
-                yield return playable.Play(Map, player);
+                yield return playable.Play(this, Map, player);
                 currentPlayable = null;
                 Resume();
             }
@@ -93,16 +102,17 @@ public class Board : MonoBehaviour
 
     void OnEvents()
     {
-        var triggers = Map.CheckTriggers(CheckDeath(Map));
+        var triggers = Map.CheckTriggers();
         if (triggers.Count > 0)
         {
             foreach (var trigger in triggers)
                 QueuePlayable(trigger.player, trigger.trigger, false);
         }
-        foreach (var player in Map.GetSpawnablePlayers())
+        foreach (var player in CheckDeath(Map))
         {
-            if (Register(player))
-                QueuePlayable(player, player.Deck.Commander, true);
+            turnPanel.RemovePlayer(player);
+            player.State = PlayerInfo.PlayerState.Dead;
+            QueuePlayable(player, player.OnLooseTrigger, true);
         }
 
         if (queuedPlayables.Count() > 0)
@@ -196,10 +206,10 @@ public class Board : MonoBehaviour
                 }
             }
             turnPanel.OnCardInQueue(card, player);
-            Debug.Log($"Queued up {card.Name} for {player.Name}");
+            Debug.Log($"Queued {card.Name} for {player.Name}");
         }
         else
-            Debug.Log($"Queued up {playable.GetType().Name} for {player.Name}");
+            Debug.Log($"Queued {playable.GetType().Name} for {player.Name}");
 
         queuedPlayables.Enqueue((player, playable));
         if (priorizeNext)
@@ -211,7 +221,7 @@ public class Board : MonoBehaviour
     {
         if (!WaitingForAction)
         {
-            Debug.Log("Now entering Stage " + CurrentStage);
+            Debug.Log("-- " + CurrentStage + " --");
             switch (CurrentStage)
             {
                 case Stage.Execute:
@@ -243,7 +253,10 @@ public class Board : MonoBehaviour
     void AIPrepare(PlayerInfo aiPlayer)
     {
         while (aiPlayer.Deck.Playable.Count() > 0)
-            aiPlayer.Deck.Playable.First().SetSelectionState(true);
+        {
+            var rnd = Random.Range(0, aiPlayer.Deck.Playable.Count());
+            aiPlayer.Deck.Playable.ToArray()[rnd].SetSelectionState(true);
+        }
 
         SetPlayerReady(aiPlayer);
     }
@@ -277,12 +290,6 @@ public class Board : MonoBehaviour
             {
                 deadPlayers.Add(player);
             }
-        }
-        foreach (var player in deadPlayers)
-        {
-            Debug.Log($"<color={player.Color}>{player.Deck.Commander.Name}</color> died!");
-            turnPanel.RemovePlayer(player);
-            player.State = PlayerInfo.PlayerState.Dead;
         }
         return deadPlayers;
     }

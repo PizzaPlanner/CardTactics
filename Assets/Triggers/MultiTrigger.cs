@@ -8,9 +8,10 @@ public class MultiTrigger : Trigger
     [InlineEditor(InlineEditorObjectFieldModes.Hidden)]
     [SerializeField] Trigger[] SubTriggers;
 
-    protected override IEnumerator Execute(Map map, PlayerInfo player)
+    protected override IEnumerator Execute(Board board, Map map, PlayerInfo player)
     {
         foreach (var trigger in SubTriggers)
-            yield return trigger.Play(map, player);
+            board.QueuePlayable(player, trigger, false);
+        yield return null;
     }
 }

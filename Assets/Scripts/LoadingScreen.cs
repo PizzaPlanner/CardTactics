@@ -30,9 +30,10 @@ public class LoadingScreen : MonoBehaviour
     {
         var players = lobby.Players.ToArray();
         if (players.Length < map.MinPartySize || players.Length > map.MaxPartySize)
+        {
+            Debug.LogError("Can not start this map with Party Size " + players.Length);
             return false;
-        foreach (var player in players)
-            player.Deck = Deck.Create(player.Deck);
+        }
         var loader = new GameObject();
         loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map, players));
         return true;
@@ -56,7 +57,6 @@ public class LoadingScreen : MonoBehaviour
         }
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("Board"));
         var mapInstance = Instantiate(map);
-        mapInstance.Load();
         GameObject.FindObjectOfType<Board>().Initialize(mapInstance, players);
 
         SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>

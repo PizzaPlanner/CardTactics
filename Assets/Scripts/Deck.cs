@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [Serializable]
@@ -18,8 +19,6 @@ public class Deck : ScriptableObject
     public Card[] Cards;
 
     public UnitCard Commander;
-
-    public int ClassesPerTurn => Commander.ClassesPerTurn;
 
     public int CurrentSpeed
     {
@@ -144,4 +143,16 @@ public class Deck : ScriptableObject
 
         return newCard;
     }
+
+#if UNITY_EDITOR
+    [BoxGroup("Editor")]
+    [ShowInInspector] Card editorAddCardPrefab;
+
+    [BoxGroup("Editor")]
+    [Button("Add Queued Card")]
+    void EditorAddCard()
+    {
+        ExtendWith(editorAddCardPrefab, null, Card.CardState.Queued);
+    }
+#endif
 }

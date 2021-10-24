@@ -35,7 +35,7 @@ public class PlayerInfo
     public bool IsAI => Slot == SlotType.AI;
     public Color Color;
 
-    public string Name => Deck.Commander.Name;
+    public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Color)}>{Deck.Commander.Name}</color>";
 
     [ShowInInspector]
     [NonSerialized]

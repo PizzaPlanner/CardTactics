@@ -30,7 +30,6 @@ namespace UnityEditor.Tilemaps
             if (existingTile == null || existingTile.GetComponentInChildren<Unit>() == null) return;
 
             Undo.DestroyObjectImmediate(existingTile.GetComponentInChildren<Unit>().gameObject);
-            Debug.Log("Bye unit!");
         }
 
         private void PaintCell(GridLayout grid, Vector3Int position, Transform parent, Unit unit, Facing facing)
@@ -46,7 +45,6 @@ namespace UnityEditor.Tilemaps
             existingTile.Place(instance, facing);
             existingTile.Unit = null;
             Undo.RegisterCreatedObjectUndo(instance, "Paint Unit");
-            Debug.Log("Hello unit!");
         }
     }
 }

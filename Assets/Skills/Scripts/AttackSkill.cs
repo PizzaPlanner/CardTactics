@@ -1,9 +1,11 @@
 using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Skills/Attack")]
 public class AttackSkill : Skill
 {
+    [ValidateInput("@((int)$value.Tile & (int)TileFilter.Empty) == 0")]
     public SelectionFilter Filter;
     public int MinRange;
     public int MaxRange;
@@ -19,7 +21,6 @@ public class AttackSkill : Skill
 
     protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
     {
-        if ((Filter.Tile & TileFilter.Empty) > 0) return new Tile[0];
         return map.ShowRange(SourceTile, MinRange, MaxRange, Filter, player);
     }
 

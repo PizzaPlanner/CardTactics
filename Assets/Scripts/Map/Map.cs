@@ -13,17 +13,9 @@ public class Map : MonoBehaviour
     List<Tile> Tiles;
     List<int> revealedAreas;
 
-    public List<(PlayerInfo player, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
+    public List<(PlayerInfo player, Trigger trigger)> CheckTriggers()
     {
         var l = new List<(PlayerInfo player, Trigger trigger)>();
-        foreach (var player in died)
-        {
-            if (player.OnLooseTrigger != null)
-            {
-                l.Add((player, player.OnLooseTrigger));
-            }
-        }
-
         foreach (var tcomp in GetComponentsInChildren<TriggerComponent>())
         {
             if (tcomp.TryGetComponent<Tile>(out var tile) && tcomp.Trigger.ShouldTrigger(this, tile))
@@ -57,7 +49,7 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void RevealArea(int area)
+    public void RevealArea(Board board, int area)
     {
         if (revealedAreas == null)
             revealedAreas = new List<int>();
@@ -65,14 +57,26 @@ public class Map : MonoBehaviour
 
         foreach (var thing in GetComponentsInChildren<Area>(true))
             if (thing.Id == area)
+            {
                 thing.gameObject.SetActive(true);
+                TryRegisterSpawn(board, thing);
+            }
+    }
+
+    void TryRegisterSpawn(Board board, Component thing)
+    {
+        if (thing.TryGetComponent<SpawnLocation>(out var spawn)
+                && spawn.InstantCommanderSpawn
+                && thing.TryGetComponent<Owner>(out var owner)
+                && Players[owner.Id].State == PlayerInfo.PlayerState.Hidden)
+            board.Register(Players[owner.Id]);
     }
 
     IEnumerable<T> Get<T>(int x, int y, int zMin, int zMax) => GetComponentsInChildren<GridPosition>()
         .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z >= zMin && gp.Position.z <= zMax && gp.GetComponent<T>() != null)
         .Select(gp => gp.GetComponent<T>());
 
-    public void Load()
+    public void Load(Board board)
     {
         var allGridThings = GetComponentsInChildren<GridPosition>(true);
         Tiles = new List<Tile>();
@@ -103,6 +107,8 @@ public class Map : MonoBehaviour
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
+            else
+                TryRegisterSpawn(board, tile);
     }
 
     public void ShowTileIndicators()
@@ -223,7 +229,6 @@ public class Map : MonoBehaviour
         }
         else if (filter.Range == RangeFilter.SightUnblocked)
         {
-            Debug.Log($"Have {rangeTiles.Count} available Tiles");
             foreach (var tile in rangeTiles)
             {
                 var start = origin.transform.position + Vector3.up * 1.5f;
@@ -231,8 +236,6 @@ public class Map : MonoBehaviour
                 if (!Physics.Raycast(start, finish - start, out var hit) || hit.transform.gameObject != tile.gameObject)
                 {
                     valid.Remove(tile);
-                    Debug.Log("Removed tile from sight");
-                    Debug.DrawLine(start, finish, Color.red, 10, false);
                 }
             }
         }
