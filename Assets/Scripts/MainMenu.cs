@@ -19,6 +19,6 @@ public class MainMenu : MonoBehaviour
 
     public void Load(Map map)
     {
-        LoadingScreen.CreateGame(map);
+        LoadingScreen.CreateGame(map, FindObjectOfType<Lobby>());
     }
 }

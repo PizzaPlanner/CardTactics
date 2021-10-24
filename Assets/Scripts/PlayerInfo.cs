@@ -5,18 +5,31 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerInfo
 {
+    public enum SlotType
+    {
+        PlayerRequired,
+        PlayerOptional,
+        AI
+    }
+
+    [HideIf("IsAI")]
+    [SerializeField] bool bringYourOwnDeck;
+
+    [HideIf("bringYourOwnDeck")]
+    [HideIf("Deck")]
     [SerializeField] Deck deck;
 
-    [NonSerialized]
     [ShowInInspector]
     [ReadOnly]
+    [ShowIf("Deck")]
+    [NonSerialized]
     public Deck Deck;
     public int Team;
-    public bool IsAI;
+    public bool IsAI => Slot == SlotType.AI;
     public Color Color;
 
-    [ShowIf("IsAI")]
-    public bool RegisterLater;
+    public SlotType Slot => slot;
+    [SerializeField] SlotType slot;
 
     public LooseCondition LooseCondition;
     public Trigger OnLooseTrigger;
@@ -29,8 +42,16 @@ public class PlayerInfo
             card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
     }
 
-    public void Initialize()
+    public void Initialize(HumanPlayer humanPlayer)
     {
-        Deck = Deck.Create(deck);
+        if (humanPlayer != null && IsAI)
+            Debug.LogError("Incompatible Player Slot assignment");
+        if (humanPlayer == null && Slot == SlotType.PlayerRequired)
+            Debug.LogError("Incompatible Player Slot assignment");
+
+        if (bringYourOwnDeck)
+            Deck = Deck.Create(humanPlayer.Deck);
+        else if (Deck == null)
+            Deck = Deck.Create(deck);
     }
 }

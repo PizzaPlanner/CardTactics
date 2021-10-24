@@ -1,9 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+[System.Serializable]
+public class HumanPlayer
+{
+    public Deck Deck;
+    public bool IsLocal;
+}
 
 public class LoadingScreen : MonoBehaviour
 {
@@ -21,13 +26,19 @@ public class LoadingScreen : MonoBehaviour
     }
     float progress = 0;
 
-    public static void CreateGame(Map map)
+    public static bool CreateGame(Map map, Lobby lobby)
     {
+        var players = lobby.Players.ToArray();
+        if (players.Length < map.MinPartySize || players.Length > map.MaxPartySize)
+            return false;
+        foreach (var player in players)
+            player.Deck = Deck.Create(player.Deck);
         var loader = new GameObject();
-        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map));
+        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map, players));
+        return true;
     }
 
-    static IEnumerator LoadMap(GameObject loader, Map map)
+    static IEnumerator LoadMap(GameObject loader, Map map, HumanPlayer[] players)
     {
         DontDestroyOnLoad(loader);
         yield return null;
@@ -44,7 +55,9 @@ public class LoadingScreen : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("Board"));
-        GameObject.FindObjectOfType<Board>().Initialize(map);
+        var mapInstance = Instantiate(map);
+        mapInstance.Load();
+        GameObject.FindObjectOfType<Board>().Initialize(mapInstance, players);
 
         SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>
         {

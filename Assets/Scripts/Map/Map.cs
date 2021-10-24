@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(Grid))]
 public class Map : MonoBehaviour
 {
     [SerializeField] public PlayerInfo[] Players;
+    public int MinPartySize => Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired);
+    public int MaxPartySize => Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired || x.Slot == PlayerInfo.SlotType.PlayerOptional);
 
     List<Tile> Tiles;
+    List<int> revealedAreas;
 
     public List<(Tile tile, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
     {
@@ -26,6 +30,13 @@ public class Map : MonoBehaviour
                 l.Add((tile, tcomp.Trigger));
         }
         return l;
+    }
+
+    internal IEnumerable<PlayerInfo> GetSpawnablePlayers()
+    {
+        foreach (var spawn in GetComponentsInChildren<SpawnLocation>())
+            if (spawn.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length && (!spawn.TryGetComponent<Area>(out var area) || (revealedAreas?.Contains(area.Id) ?? false)))
+                yield return Players[owner.Id];
     }
 
     public void ShowMarker(int id)
@@ -48,16 +59,22 @@ public class Map : MonoBehaviour
 
     public void RevealArea(int area)
     {
+        if (revealedAreas == null)
+            revealedAreas = new List<int>();
+        revealedAreas.Add(area);
+
         foreach (var thing in GetComponentsInChildren<Area>(true))
             if (thing.Id == area)
                 thing.gameObject.SetActive(true);
+
+        FindObjectOfType<Board>().RegisterNewPlayers();
     }
 
     IEnumerable<T> Get<T>(int x, int y, int zMin, int zMax) => GetComponentsInChildren<GridPosition>()
         .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z >= zMin && gp.Position.z <= zMax && gp.GetComponent<T>() != null)
         .Select(gp => gp.GetComponent<T>());
 
-    void Start()
+    public void Load()
     {
         var allGridThings = GetComponentsInChildren<GridPosition>(true);
         Tiles = new List<Tile>();

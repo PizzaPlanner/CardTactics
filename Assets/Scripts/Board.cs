@@ -21,24 +21,29 @@ public class Board : MonoBehaviour
 
     List<PlayerInfo> readyPlayers;
 
-    bool beforeSecondTeamAdded;
+    Queue<HumanPlayer> unassignedPlayers;
 
     // Start is called before the first frame update
-    public void Initialize(Map mapPrefab)
+    public void Initialize(Map mapInstance, HumanPlayer[] players)
     {
-        Map = Instantiate(mapPrefab);
-        beforeSecondTeamAdded = true;
-        foreach (var player in Map.Players)
+        Map = mapInstance;
+        unassignedPlayers = new Queue<HumanPlayer>();
+        if (players != null)
+            foreach (var player in players)
+                unassignedPlayers.Enqueue(player);
+    }
+
+    public void RegisterNewPlayers()
+    {
+        foreach (var player in Map.GetSpawnablePlayers())
         {
-            if (!player.RegisterLater)
-            {
-                Register(player);
-            }
+            Register(player);
         }
     }
 
     public void StartGame()
     {
+        RegisterNewPlayers();
         PrepareNextRound();
     }
 
@@ -89,12 +94,9 @@ public class Board : MonoBehaviour
 
         if (registeredPlayers.Contains(player)) return;
 
-        player.Initialize();
+        player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
         turnPanel.AddPlayer(player);
         registeredPlayers.Add(player);
-
-        if (registeredPlayers.GroupBy(x => x.Team).Count() > 1)
-            beforeSecondTeamAdded = false;
     }
 
     void AIPrepare(PlayerInfo aiPlayer)
@@ -178,15 +180,9 @@ public class Board : MonoBehaviour
             currentAction = cardsToPlay.Dequeue();
             SetTurn(currentAction.Item1, currentAction.Item2);
         }
-        else if (registeredPlayers.GroupBy(x => x.Team).Count() > 1 || beforeSecondTeamAdded)
-        {
-            PrepareNextRound();
-        }
         else
         {
-            foreach (var player in registeredPlayers)
-                Debug.Log($"<color={player.Color}>{player.Deck.Commander.Name}</color> won!");
-            LoadingScreen.GoToMenu();
+            PrepareNextRound();
         }
     }
 
