@@ -40,7 +40,7 @@ public class Deck : ScriptableObject
                 total[cap] -= used[cap];
             }
 
-            return total.Values.All(x => x >= 0) && used.Values.Sum() > 0;
+            return total.Values.All(x => x >= 0) && Queued.Count() > 0;
         }
     }
 
@@ -105,14 +105,30 @@ public class Deck : ScriptableObject
     public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
     public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
     public IEnumerable<Card> Queued => Cards.Where(x => x.State == Card.CardState.Queued);
+    public IEnumerable<ActionCard> Playable
+    {
+        get
+        {
+            var used = GetUsedCapacities();
+            var total = GetTotalCapacities();
+            return Unplayed.Where(x => x is ActionCard acard && acard.Cost.All(x => used[x.Class] + x.Cost <= total[x.Class])).Cast<ActionCard>();
+        }
+    }
+
+    public bool Shuffle()
+    {
+        foreach (var card in Cards.Where(x => x.State == Card.CardState.Played))
+            card.SetSelectionState(false);
+        return Cards.Count(x => x.State == Card.CardState.Unplayed) > 0;
+    }
 
     public static Deck Create(Deck prefab)
     {
         var deck = Deck.Instantiate(prefab);
         deck.Cards = new Card[0];
         foreach (var card in prefab.Cards)
-            deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Played);
-        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Queued);
+            deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Unplayed);
+        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
         deck.Commander.UnitReference.Type = UnitFilter.Commander;
         return deck;
     }

@@ -25,8 +25,13 @@ public class GainCardSkill : Skill
 
     protected override IEnumerator OnPreview()
     {
+        yield return ShowGetAnimation(NewCardPrefab);
+    }
+
+    public static IEnumerator ShowGetAnimation(Card cardPrefab)
+    {
         yield return new WaitForEndOfFrame();
-        CardTooltip.Show(NewCardPrefab);
+        CardTooltip.Show(cardPrefab);
         yield return new WaitForSeconds(2);
         CardTooltip.Hide();
     }

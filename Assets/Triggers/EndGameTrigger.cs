@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class EndGameTrigger : Trigger
 {
-    protected override IEnumerator Execute(Map map, Tile tile)
+    protected override IEnumerator Execute(Map map, PlayerInfo _)
     {
         var survivors = map.Players.Where(x => !x.LooseCondition.Check(map, x)).Select(x => x.Team).Distinct();
         if (survivors.Count() > 1)

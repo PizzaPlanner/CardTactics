@@ -6,7 +6,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public abstract class Card : ScriptableObject
+public abstract class Card : ScriptableObject, IPlayable
 {
     public enum CardState
     {
@@ -22,14 +22,13 @@ public abstract class Card : ScriptableObject
     [ReadOnly]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(Map map, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
+    public virtual IEnumerator Play(Map map, PlayerInfo player)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);
-        yield return PlaySkills(map, player, autocompleteIfPossible);
-        State = StateOnPlayed;
+        yield return PlaySkills(map, player, true);
         yield return new WaitForSeconds(0.2f);
-        onComplete?.Invoke();
+        State = StateOnPlayed;
     }
 
     public void Destroy() { State = CardState.Destroyed; }

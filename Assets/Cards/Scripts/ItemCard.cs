@@ -28,7 +28,7 @@ public class ItemCard : Card
 
     protected override CardState StateOnPlayed => CardState.Active;
 
-    public override IEnumerator Play(Map map, PlayerInfo player, bool autocompleteIfPossible = true, Action onComplete = null)
+    public override IEnumerator Play(Map map, PlayerInfo player)
     {
         yield return null;
     }

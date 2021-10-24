@@ -19,6 +19,8 @@ public class TurnPlate : MonoBehaviour
         badges = new Dictionary<PlayerInfo, PlayerInfoPanel>();
         foreach (Transform t in readyPanel)
             Destroy(t.gameObject);
+        foreach (Transform t in nextActionsPanel)
+            Destroy(t.gameObject);
     }
 
     public void AddPlayer(PlayerInfo player)
@@ -34,14 +36,14 @@ public class TurnPlate : MonoBehaviour
     {
         readyPanel.gameObject.SetActive(false);
         gameObject.SetActive(true);
-        foreach (Transform t in nextActionsPanel)
-            Destroy(t.gameObject);
     }
 
     public void OnPreparation()
     {
         gameObject.SetActive(false);
         readyPanel.gameObject.SetActive(true);
+        foreach (Transform t in nextActionsPanel)
+            Destroy(t.gameObject);
         foreach (var kvp in badges)
         {
             kvp.Value.gameObject.SetActive(true);

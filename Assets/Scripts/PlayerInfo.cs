@@ -12,6 +12,13 @@ public class PlayerInfo
         AI
     }
 
+    public enum PlayerState
+    {
+        Hidden,
+        Active,
+        Dead
+    }
+
     [HideIf("IsAI")]
     [SerializeField] bool bringYourOwnDeck;
 
@@ -28,11 +35,18 @@ public class PlayerInfo
     public bool IsAI => Slot == SlotType.AI;
     public Color Color;
 
+    public string Name => Deck.Commander.Name;
+
+    [ShowInInspector]
+    [NonSerialized]
+    public PlayerState State;
+
     public SlotType Slot => slot;
     [SerializeField] SlotType slot;
 
     public LooseCondition LooseCondition;
     public Trigger OnLooseTrigger;
+    public Trigger OnInvalidQueueTrigger;
 
     internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
     {
@@ -53,5 +67,7 @@ public class PlayerInfo
             Deck = Deck.Create(humanPlayer.Deck);
         else if (Deck == null)
             Deck = Deck.Create(deck);
+
+        State = PlayerState.Hidden;
     }
 }

@@ -1,15 +1,26 @@
 using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
 public class GainCardTrigger : Trigger
 {
-    public GainCardSkill Skill;
+    [SerializeField] GainCardSkill Skill;
 
-    protected override IEnumerator Execute(Map map, Tile tile)
+    [HideIf("GiveToTriggerer")]
+    [SerializeField] int Player;
+    [SerializeField] bool GiveToTriggerer;
+
+    protected override IEnumerator Execute(Map map, PlayerInfo player)
     {
-        Skill.Player = tile?.Unit.Player ?? map.Players[0];
-        yield return Skill.Preview(tile);
+        if (!GiveToTriggerer && (Player < 0 || Player >= map.Players.Length))
+        {
+            Debug.LogWarning("Invalid Target for GainCardTrigger. Skipped.");
+            yield break;
+        }
+
+        Skill.Player = GiveToTriggerer ? player : map.Players[Player];
+        yield return GainCardSkill.ShowGetAnimation(Skill.CardPrefab);
         Skill.Use();
     }
 }

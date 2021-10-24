@@ -13,21 +13,21 @@ public class Map : MonoBehaviour
     List<Tile> Tiles;
     List<int> revealedAreas;
 
-    public List<(Tile tile, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
+    public List<(PlayerInfo player, Trigger trigger)> CheckTriggers(List<PlayerInfo> died)
     {
-        var l = new List<(Tile tile, Trigger trigger)>();
+        var l = new List<(PlayerInfo player, Trigger trigger)>();
         foreach (var player in died)
         {
             if (player.OnLooseTrigger != null)
             {
-                l.Add((null, player.OnLooseTrigger));
+                l.Add((player, player.OnLooseTrigger));
             }
         }
 
         foreach (var tcomp in GetComponentsInChildren<TriggerComponent>())
         {
             if (tcomp.TryGetComponent<Tile>(out var tile) && tcomp.Trigger.ShouldTrigger(this, tile))
-                l.Add((tile, tcomp.Trigger));
+                l.Add((tile.Unit?.Player ?? null, tcomp.Trigger));
         }
         return l;
     }
@@ -66,8 +66,6 @@ public class Map : MonoBehaviour
         foreach (var thing in GetComponentsInChildren<Area>(true))
             if (thing.Id == area)
                 thing.gameObject.SetActive(true);
-
-        FindObjectOfType<Board>().RegisterNewPlayers();
     }
 
     IEnumerable<T> Get<T>(int x, int y, int zMin, int zMax) => GetComponentsInChildren<GridPosition>()

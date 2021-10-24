@@ -7,17 +7,32 @@ using UnityEngine.EventSystems;
 
 public class Board : MonoBehaviour
 {
+
+    public enum Stage
+    {
+        Setup,
+        Execute,
+        Play,
+        Plan,
+        Events,
+        End
+
+    }
+
+    [ShowInInspector]
+    bool WaitingForAction;
+
+    [ShowInInspector]
+    public Stage CurrentStage { get; private set; }
+
     TurnPlate turnPanel;
     Map Map;
 
-
-    List<(PlayerInfo, Card)> cardsThisRound;
-    Queue<(PlayerInfo, Card)> cardsToPlay;
-    (PlayerInfo, Card) currentAction;
+    [ShowInInspector]
+    Queue<(PlayerInfo player, IPlayable playable)> queuedPlayables;
 
     [ShowInInspector]
-    [ReadOnly]
-    List<PlayerInfo> registeredPlayers;
+    IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.State == PlayerInfo.PlayerState.Active);
 
     List<PlayerInfo> readyPlayers;
 
@@ -26,25 +41,136 @@ public class Board : MonoBehaviour
     // Start is called before the first frame update
     public void Initialize(Map mapInstance, HumanPlayer[] players)
     {
+        CurrentStage = Stage.Setup;
         Map = mapInstance;
         unassignedPlayers = new Queue<HumanPlayer>();
+        queuedPlayables = new Queue<(PlayerInfo, IPlayable)>();
         if (players != null)
             foreach (var player in players)
                 unassignedPlayers.Enqueue(player);
+        WaitingForAction = true;
     }
 
-    public void RegisterNewPlayers()
+    public bool Register(PlayerInfo player)
     {
-        foreach (var player in Map.GetSpawnablePlayers())
-        {
-            Register(player);
-        }
+        if (player.State != PlayerInfo.PlayerState.Hidden) return false;
+
+        player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
+        turnPanel.AddPlayer(player);
+        player.State = PlayerInfo.PlayerState.Active;
+        return true;
     }
 
     public void StartGame()
     {
-        RegisterNewPlayers();
-        PrepareNextRound();
+        CurrentStage = Stage.Events;
+        Resume();
+    }
+
+    void OnPlay()
+    {
+        if (queuedPlayables.Count == 0)
+        {
+            CurrentStage = Stage.Events;
+        }
+        else
+        {
+            var (player, playable) = queuedPlayables.Dequeue();
+            IEnumerator PlayAndResume()
+            {
+                currentPlayable = playable;
+                yield return playable.Play(Map, player);
+                currentPlayable = null;
+                Resume();
+            }
+            WaitingForAction = true;
+            StartCoroutine(PlayAndResume());
+
+            turnPanel.OnRoundStart();
+        }
+
+    }
+
+    void OnEvents()
+    {
+        var triggers = Map.CheckTriggers(CheckDeath(Map));
+        if (triggers.Count > 0)
+        {
+            foreach (var trigger in triggers)
+                QueuePlayable(trigger.player, trigger.trigger, false);
+        }
+        foreach (var player in Map.GetSpawnablePlayers())
+        {
+            if (Register(player))
+                QueuePlayable(player, player.Deck.Commander, true);
+        }
+
+        if (queuedPlayables.Count() > 0)
+            CurrentStage = Stage.Play;
+        else if (RegisteredPlayers.Count() > 0)
+        {
+            readyPlayers = new List<PlayerInfo>();
+            turnPanel.OnPreparation();
+            CurrentStage = Stage.Plan;
+        }
+        else
+        {
+            turnPanel.OnPreparation();
+            CurrentStage = Stage.End;
+        }
+    }
+
+    void OnEnd()
+    {
+        Debug.Log("No Player left! Game ended!");
+        LoadingScreen.GoToMenu();
+    }
+
+    void OnPlan()
+    {
+        foreach (var player in RegisteredPlayers)
+        {
+            if (readyPlayers.Contains(player)) continue;
+            player.Deck.Shuffle();
+            if (player.IsAI)
+                AIPrepare(player);
+            else
+            {
+                WaitingForAction = true;
+                PlayerPrepare(player);
+            }
+        }
+        if (readyPlayers.Count == RegisteredPlayers.Count())
+            CurrentStage = Stage.Execute;
+    }
+
+    void OnExecute()
+    {
+        var cardsPlay = new List<(PlayerInfo player, Card card)>();
+        foreach (var player in RegisteredPlayers)
+            foreach (var card in player.Deck.Queued)
+            {
+                cardsPlay.Add((player, card));
+            }
+        cardsPlay.Sort((x, y) =>
+        {
+            var deckComp = x.player.Deck.CurrentSpeed.CompareTo(y.player.Deck.CurrentSpeed);
+            if (deckComp == 0)
+                return x.card.Speed.CompareTo(y.card.Speed);
+            else
+                return deckComp;
+        });
+
+        foreach (var (player, card) in cardsPlay)
+            QueuePlayable(player, card, false);
+
+        CurrentStage = Stage.Play;
+    }
+
+    IPlayable currentPlayable;
+    public void Resume()
+    {
+        WaitingForAction = false;
     }
 
     void Awake()
@@ -55,11 +181,52 @@ public class Board : MonoBehaviour
             turnPanel = GameObject.FindObjectOfType<TurnPlate>();
     }
 
-    Card currentCard;
+    public void QueuePlayable(PlayerInfo player, IPlayable playable, bool priorizeNext)
+    {
+        if (playable is Card card)
+        {
+            if (card.State != Card.CardState.Queued)
+            {
+                if (card.State == Card.CardState.Unplayed)
+                    card.SetSelectionState(true);
+                else
+                {
+                    Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
+                    return;
+                }
+            }
+            turnPanel.OnCardInQueue(card, player);
+            Debug.Log($"Queued up {card.Name} for {player.Name}");
+        }
+        else
+            Debug.Log($"Queued up {playable.GetType().Name} for {player.Name}");
+
+        queuedPlayables.Enqueue((player, playable));
+        if (priorizeNext)
+            while (!queuedPlayables.Peek().Equals((player, playable)))
+                queuedPlayables.Enqueue(queuedPlayables.Dequeue());
+    }
 
     void Update()
     {
-        if (!EventSystem.current.IsPointerOverGameObject() && currentCard != null)
+        if (!WaitingForAction)
+        {
+            Debug.Log("Now entering Stage " + CurrentStage);
+            switch (CurrentStage)
+            {
+                case Stage.Execute:
+                    OnExecute(); break;
+                case Stage.Play:
+                    OnPlay(); break;
+                case Stage.Plan:
+                    OnPlan(); break;
+                case Stage.Events:
+                    OnEvents(); break;
+                case Stage.End:
+                    OnEnd(); break;
+            }
+        }
+        else if (CurrentStage == Stage.Play && !EventSystem.current.IsPointerOverGameObject() && currentPlayable is Card currentCard)
         {
             if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
@@ -73,130 +240,38 @@ public class Board : MonoBehaviour
         }
     }
 
-    void NextTurn()
-    {
-        currentCard = null;
-        Map.HideTileSelectionPreview();
-        Progress();
-    }
-
-    internal void SetTurn(PlayerInfo player, Card card)
-    {
-        currentCard = card;
-        var cr = StartCoroutine(currentCard.Play(Map, player, onComplete: NextTurn));
-    }
-
-
-    public void Register(PlayerInfo player)
-    {
-        if (registeredPlayers == null)
-            registeredPlayers = new List<PlayerInfo>();
-
-        if (registeredPlayers.Contains(player)) return;
-
-        player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
-        turnPanel.AddPlayer(player);
-        registeredPlayers.Add(player);
-    }
-
     void AIPrepare(PlayerInfo aiPlayer)
     {
-        foreach (var card in aiPlayer.Deck.Cards)
-        {
-            if (card.State == Card.CardState.Unplayed)
-            {
-                card.SetSelectionState(true);
-                SetPlayerReady(aiPlayer);
-                return;
-            }
-        }
+        while (aiPlayer.Deck.Playable.Count() > 0)
+            aiPlayer.Deck.Playable.First().SetSelectionState(true);
+
+        SetPlayerReady(aiPlayer);
     }
 
     void PlayerPrepare(PlayerInfo player)
     {
-        if (player.Deck.Commander?.State == Card.CardState.Queued)
-            SetPlayerReady(player);
+        if (player.Deck.Playable.Count() > 0)
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, onConfirm: () => SetPlayerReady(player));
         else
-            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player);
-    }
-
-    public bool NextPlayerPrepareTurn()
-    {
-        foreach (var kvp in registeredPlayers)
-        {
-            if (readyPlayers.Contains(kvp)) continue;
-            if (kvp.IsAI)
-                AIPrepare(kvp);
-            else
-                PlayerPrepare(kvp);
-            return true;
-        }
-        return false;
+            SetPlayerReady(player);
     }
 
     public void SetPlayerReady(PlayerInfo player)
     {
+        if (!player.Deck.QueueIsValid)
+        {
+            Debug.LogWarning("Error with Queue. Ouch!");
+            QueuePlayable(player, player.OnInvalidQueueTrigger, true);
+        }
+
         readyPlayers.Add(player);
-
-        foreach (var card in player.Deck.Queued)
-        {
-            cardsThisRound.Add((player, card));
-        }
-
-        turnPanel.OnPlayerReady(player);
-        if (NextPlayerPrepareTurn())
-            return;
-
-        // Round started
-        cardsThisRound.Sort((x, y) =>
-        {
-            var deckComp = x.Item1.Deck.CurrentSpeed.CompareTo(y.Item1.Deck.CurrentSpeed);
-            if (deckComp == 0)
-                return x.Item2.Speed.CompareTo(y.Item2.Speed);
-            else
-                return deckComp;
-        });
-        turnPanel.OnRoundStart();
-        foreach (var item in cardsThisRound)
-        {
-            cardsToPlay.Enqueue(item);
-            turnPanel.OnCardInQueue(item.Item2, item.Item1);
-        }
-        cardsThisRound.Clear();
-        Progress();
-    }
-
-    void Progress()
-    {
-        var triggers = Map.CheckTriggers(CheckDeath(Map));
-        if (triggers.Count > 0)
-        {
-            StartCoroutine(RunTriggers(triggers));
-            return;
-        }
-
-        if (cardsToPlay.Count > 0)
-        {
-            currentAction = cardsToPlay.Dequeue();
-            SetTurn(currentAction.Item1, currentAction.Item2);
-        }
-        else
-        {
-            PrepareNextRound();
-        }
-    }
-
-    IEnumerator RunTriggers(List<(Tile tile, Trigger trigger)> triggers)
-    {
-        foreach (var trigger in triggers)
-            yield return trigger.trigger.Run(Map, trigger.tile);
-        Progress();
+        Resume();
     }
 
     List<PlayerInfo> CheckDeath(Map map)
     {
         var deadPlayers = new List<PlayerInfo>();
-        foreach (var player in registeredPlayers)
+        foreach (var player in RegisteredPlayers)
         {
             if (player.LooseCondition.Check(map, player))
             {
@@ -207,31 +282,8 @@ public class Board : MonoBehaviour
         {
             Debug.Log($"<color={player.Color}>{player.Deck.Commander.Name}</color> died!");
             turnPanel.RemovePlayer(player);
-            registeredPlayers.Remove(player);
+            player.State = PlayerInfo.PlayerState.Dead;
         }
         return deadPlayers;
-    }
-
-    internal void PrepareNextRound()
-    {
-        cardsThisRound = new List<(PlayerInfo, Card)>();
-        cardsToPlay = new Queue<(PlayerInfo, Card)>();
-        currentAction = (default, null);
-        readyPlayers = new List<PlayerInfo>();
-
-        var map = GameObject.FindObjectOfType<Board>().Map;
-        foreach (var player in registeredPlayers)
-        {
-            foreach (Card card in player.Deck.Cards)
-                card.OnRoundStart(map, player);
-        }
-
-        turnPanel.OnPreparation();
-
-        if (!NextPlayerPrepareTurn())
-        {
-            Debug.Log("No Player left! Game ended!");
-            LoadingScreen.GoToMenu();
-        }
     }
 }

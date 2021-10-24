@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    public void Show(PlayerInfo player)
+    public void Show(PlayerInfo player, Action onConfirm)
     {
         var deck = player.Deck;
 
@@ -41,11 +42,10 @@ public class PlanningPanel : MonoBehaviour
         confirmButton.onClick.RemoveAllListeners();
         confirmButton.onClick.AddListener(() =>
         {
-            if (!deck.QueueIsValid) return;
             audio.PlayOneShot(ReadySound);
             confirmButton.enabled = false;
             Hide();
-            GameObject.FindObjectOfType<Board>().SetPlayerReady(player);
+            onConfirm?.Invoke();
         });
 
         foreach (Transform child in cardsPanel)

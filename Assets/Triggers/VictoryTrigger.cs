@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class VictoryTrigger : Trigger
 {
-    protected override IEnumerator Execute(Map map, Tile tile)
+    protected override IEnumerator Execute(Map map, PlayerInfo player)
     {
         Debug.Log("Victory!!");
         yield return new WaitForSeconds(1);
