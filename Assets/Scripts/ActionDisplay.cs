@@ -30,10 +30,7 @@ public class ActionDisplay : MonoBehaviour
             {
                 for (int i = 0; i < cost.Cost; i++)
                 {
-                    var citem = Instantiate(CostPrefab);
-                    citem.transform.SetParent(CostPanel);
-                    citem.Class = cost.Class;
-                    citem.Rank = i;
+                    // var citem = new CostIcon(cost.Class, i);
                 }
             }
             CostPanel.gameObject.SetActive(Reference.Cost.Length > 0);

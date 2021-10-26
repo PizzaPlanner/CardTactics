@@ -57,6 +57,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (GetComponent<ActionDisplay>() != null && card is ActionCard)
             GetComponent<ActionDisplay>().UpdateVisuals();
         UpdateVisuals();
+
+
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -1044,7 +1044,7 @@ Animator:
   m_GameObject: {fileID: 8153431151738238455}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 51b39e3202a58724886f98b5eed62c4c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 906d5e976e9e2e549b138ad6f167a1b3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1294,7 +1294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 16.987507
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1388,7 +1388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 16.987507
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7106164901634973757, guid: 7bc32d165addd554cb82b195889688d9, type: 3}
       propertyPath: m_SizeDelta.y

@@ -32,13 +32,17 @@ public class ActionCard : Card
 
     protected override void OnInit() { }
 
-    protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;
+    protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Unplayed;
 
-    public override void OnRoundStart(Map map, PlayerInfo player)
+    public override void OnPlanningStart(Map map, PlayerInfo player)
     {
-        if (State == CardState.Unplayed && Temporary) Destroy();
-        base.OnRoundStart(map, player);
-        // This destroy after base call to trigger effects
-        if (State == CardState.Active && Temporary) Destroy();
+        if (State == CardState.Active && Once) Destroy();
+        base.OnPlanningStart(map, player);
+    }
+
+    public override void OnPlanningEnd(Map map, PlayerInfo player)
+    {
+        if (Temporary && State == CardState.Unplayed) Destroy();
+        base.OnPlanningEnd(map, player);
     }
 }

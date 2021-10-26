@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class Board : MonoBehaviour
 {
@@ -141,13 +142,14 @@ public class Board : MonoBehaviour
         foreach (var player in RegisteredPlayers)
         {
             if (readyPlayers.Contains(player)) continue;
-            player.Deck.Shuffle();
+            player.Deck.OnPlanningStart(Map, player);
             if (player.IsAI)
                 AIPrepare(player);
             else
             {
                 WaitingForAction = true;
                 PlayerPrepare(player);
+                return;
             }
         }
         if (readyPlayers.Count == RegisteredPlayers.Count())
@@ -271,6 +273,8 @@ public class Board : MonoBehaviour
 
     public void SetPlayerReady(PlayerInfo player)
     {
+        player.Deck.OnPlanningEnd(Map, player);
+
         if (!player.Deck.QueueIsValid)
         {
             Debug.LogWarning("Error with Queue. Ouch!");

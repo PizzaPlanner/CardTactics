@@ -114,11 +114,16 @@ public class Deck : ScriptableObject
         }
     }
 
-    public bool Shuffle()
+    public void OnPlanningStart(Map map, PlayerInfo player)
     {
-        foreach (var card in Cards.Where(x => x.State == Card.CardState.Played))
-            card.SetSelectionState(false);
-        return Cards.Count(x => x.State == Card.CardState.Unplayed) > 0;
+        foreach (var card in Cards)
+            card.OnPlanningStart(map, player);
+    }
+
+    public void OnPlanningEnd(Map map, PlayerInfo player)
+    {
+        foreach (var card in Cards)
+            card.OnPlanningEnd(map, player);
     }
 
     public static Deck Create(Deck prefab)

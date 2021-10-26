@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <ui:VisualElement name="PlanningPanel" picking-mode="Ignore" style="position: absolute; bottom: 0; left: 0; right: 0; top: 0; align-items: center; justify-content: flex-end;">
+        <ui:VisualElement name="CardPanel" style="position: relative; height: 20%; align-items: center; justify-content: center; flex-direction: row; background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/barmid_ready.png?fileID=21300000&amp;guid=f7f681cd213d9a7488500ce745f2d4f8&amp;type=3#barmid_ready&apos;); width: 64%;" />
+        <ui:Button text="Confirm" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 21%;" />
+    </ui:VisualElement>
+    <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 10px; left: 0; right: 0;">
+        <ui:VisualElement name="ReadyPanel" style="flex-direction: row;" />
+    </ui:VisualElement>
+</ui:UXML>

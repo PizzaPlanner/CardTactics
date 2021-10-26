@@ -13,7 +13,6 @@ public abstract class Card : ScriptableObject, IPlayable
         Unplayed,
         Queued,
         Current,
-        Played,
         Active,
         Destroyed
     }
@@ -50,10 +49,8 @@ public abstract class Card : ScriptableObject, IPlayable
         return list;
     }
 
-    public virtual void OnRoundStart(Map map, PlayerInfo player)
+    public virtual void OnPlanningStart(Map map, PlayerInfo player)
     {
-        if (State == CardState.Played)
-            State = CardState.Unplayed;
         foreach (var skill in Skills)
         {
             skill.Prepare();
@@ -61,6 +58,8 @@ public abstract class Card : ScriptableObject, IPlayable
                 passive.OnRoundStart(map, player);
         }
     }
+
+    public virtual void OnPlanningEnd(Map map, PlayerInfo player) { }
 
     protected abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }

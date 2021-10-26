@@ -1,95 +1,84 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Sirenix.Utilities;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+// using UnityEngine.UIElements;
 
 [RequireComponent(typeof(AudioSource))]
 public class PlanningPanel : MonoBehaviour
 {
-    [SerializeField] RectTransform cardsPanel, equipPanel;
-    [SerializeField] CardDisplay cardPrefab;
-    [SerializeField] Button confirmButton;
-    [SerializeField] RectTransform costBox;
-    [SerializeField] RectTransform costPrefab;
-
     [SerializeField] AudioClip SelectSound, UnselectSound, ReadySound;
-    [SerializeField] CardDisplay commanderPanel;
-
-    int RoundPointsSpent;
+    [SerializeField] VisualTreeAsset cardAsset;
 
     AudioSource audio;
+
+    VisualElement cardPanel, planningPanel, resourcePanel;
 
     void Awake()
     {
         audio = GetComponent<AudioSource>();
+        gameObject.SetActive(false);
+        planningPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("PlanningPanel");
+        Debug.Assert(planningPanel != null, this);
+        cardPanel = planningPanel.Q("CardPanel");
+        planningPanel.Q<Button>("Confirm").clicked += OnConfirm;
         Hide();
     }
+
+    public void Hide()
+    {
+        planningPanel.style.display = DisplayStyle.None;
+    }
+
+
+    void OnConfirm()
+    {
+        audio.PlayOneShot(ReadySound);
+        onConfirmWrapper?.Invoke();
+        Hide();
+    }
+    Action onConfirmWrapper;
 
     public void Show(PlayerInfo player, Action onConfirm)
     {
         var deck = player.Deck;
 
-        commanderPanel.SetCard(deck.Commander);
+        var badges = FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
+        .Where(x => x.Player == player).ToList();
 
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
-        confirmButton.enabled = true;
-        confirmButton.interactable = false;
 
-        confirmButton.onClick.RemoveAllListeners();
-        confirmButton.onClick.AddListener(() =>
-        {
-            audio.PlayOneShot(ReadySound);
-            confirmButton.enabled = false;
-            Hide();
-            onConfirm?.Invoke();
-        });
+        onConfirmWrapper = onConfirm;
 
-        foreach (Transform child in cardsPanel)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (Transform child in equipPanel)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (var card in deck.Equipped)
-        {
-            var visual = Instantiate(cardPrefab);
-            visual.SetCard(card);
-            visual.transform.SetParent(equipPanel);
-            visual.GetComponent<Button>().interactable = false;
-        }
-
-        List<CardDisplay> displayCards = new List<CardDisplay>();
+        var doc = FindObjectOfType<UIDocument>();
+        cardPanel.Clear();
         foreach (var card in unplayed)
         {
-            var visual = Instantiate(cardPrefab);
-            visual.SetCard(card);
-            visual.transform.SetParent(cardsPanel);
-            displayCards.Add(visual);
-            visual.GetComponent<Button>().onClick.AddListener(() =>
+            cardAsset.CloneTree(cardPanel, out int idx, out int _);
+            var cx = cardPanel[idx].Q<CardItemSmall>();
+            cx.AddToClassList("carditem-selectable");
+            cx.Card = card;
+            cx.RegisterCallback<MouseDownEvent>((_) =>
             {
                 card.SetSelectionState(!deck.Queued.Contains(card));
-
                 var selected = card.State == Card.CardState.Queued;
                 audio.PlayOneShot(selected ? UnselectSound : SelectSound);
-                visual.GetComponent<Button>().animator.SetBool("IsActive", selected);
-                CalculateValidCards(deck, displayCards);
+                if (selected)
+                    cx.AddToClassList("carditem-selectable--selected");
+                else
+                    cx.RemoveFromClassList("carditem-selectable--selected");
+                CalculateValidCards(deck, badges);
             });
         }
-        CalculateValidCards(deck, displayCards);
-        gameObject.SetActive(true);
-        StartCoroutine(FixLayoutBug());
+        CalculateValidCards(deck, badges);
+
+        planningPanel.style.display = DisplayStyle.Flex;
     }
 
-    void CalculateValidCards(Deck deck, List<CardDisplay> displayCards)
+    void CalculateValidCards(Deck deck, List<PlayerInfoBadge> badges)
     {
         var capacities = deck.GetTotalCapacities();
         var uses = deck.GetUsedCapacities();
@@ -97,63 +86,22 @@ public class PlanningPanel : MonoBehaviour
         foreach (var cost in uses)
             free[cost.Key] -= uses[cost.Key];
 
-        // Costs on Cards
-        foreach (var otherCard in displayCards)
+        badges.ForEach(x => x.Query<CostIcon>().ForEach(y => y.SetCostColor(free)));
+
+        cardPanel.Query<CardItemSmall>().ForEach(x =>
         {
-            if (otherCard.Reference is not ActionCard acard) continue;
-            if (deck.Queued.Contains(acard) || CanAfford(acard, free))
+            if (x.Card is ActionCard card)
             {
-                otherCard.GetComponent<Button>().interactable = true;
-                foreach (var icon in otherCard.GetComponentsInChildren<CostIcon>())
-                    icon.SetCostColor(capacities);
+                var costOk = true;
+                if (!x.ClassListContains("carditem-selectable--selected"))
+                    foreach (var cost in card.Cost)
+                        costOk &= free[cost.Class] >= cost.Cost;
+
+                x.Query<CostIcon>().ForEach(x => x.SetCostColor(costOk ? capacities : free));
+                x.SetEnabled(costOk);
             }
-            else
-            {
-                otherCard.GetComponent<Button>().interactable = false;
-                foreach (var icon in otherCard.GetComponentsInChildren<CostIcon>())
-                    icon.SetCostColor(free);
-            }
-        }
+        });
 
-        // Cost box
-        foreach (Transform t in costBox)
-            t.gameObject.SetActive(false);
-
-        int i = 0;
-        foreach (var cost in capacities)
-        {
-            if (cost.Value <= 0) continue;
-            var row = costBox.GetChild(i++);
-            foreach (Transform t in row)
-                Destroy(t.gameObject);
-            row.gameObject.SetActive(true);
-            for (int j = 0; j < cost.Value; j++)
-            {
-                var item = Instantiate(costPrefab);
-                item.GetComponentInChildren<Image>().sprite = cost.Key.Icon;
-                item.SetParent(row);
-                if (uses.ContainsKey(cost.Key) && j >= cost.Value - uses[cost.Key])
-                    item.GetComponentInChildren<Image>().color *= new Color(1, 1, 1, 0.2f);
-            }
-        }
-
-        confirmButton.interactable = deck.QueueIsValid;
-    }
-
-    private bool CanAfford(ActionCard card, Dictionary<CardClass, int> free)
-    {
-        return card.Cost.All(cost => free[cost.Class] >= cost.Cost);
-    }
-
-    // https://issuetracker.unity3d.com/issues/horizontallayoutgroup-fails-to-position-children-when-entering-slash-leaving-play-mode-if-controlchildsize-dot-height-is-enabled?_ga=2.205791891.1245712443.1631889840-1271266292.1625017527
-    IEnumerator FixLayoutBug()
-    {
-        yield return new WaitForEndOfFrame();
-        LayoutRebuilder.MarkLayoutForRebuild(cardsPanel);
-    }
-
-    public void Hide()
-    {
-        gameObject.SetActive(false);
+        planningPanel.Q<Button>("Confirm").SetEnabled(deck.QueueIsValid);
     }
 }

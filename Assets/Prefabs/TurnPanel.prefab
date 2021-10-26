@@ -172,9 +172,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1307702e5342ac4f9f023f8f12a1bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  readyPanel: {fileID: 0}
+  readyBadgeAsset: {fileID: 9197481963319205126, guid: 1d599a6e9e01ecd4cbdd0045b1307771, type: 3}
   nextActionsPanel: {fileID: 754448835996356269}
-  playerInfoPanelPrefab: {fileID: 5152621014195566775, guid: 15f4425c10f3cb442b6001822b21387a, type: 3}
   turnIndicatorPrefab: {fileID: 519444780935583591, guid: e98677408972bdf4d83bcab43dcf2fcb, type: 3}
 --- !u!1001 &389197916013808721
 PrefabInstance:
