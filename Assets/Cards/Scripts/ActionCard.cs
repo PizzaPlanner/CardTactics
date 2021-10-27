@@ -1,13 +1,16 @@
 using System;
 using Sirenix.OdinInspector;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 [System.Serializable]
 public struct PlayCost
 {
-    public CardClass Class;
+    [HorizontalGroup(0.2f)]
+    [HideLabel]
     public int Cost;
+    [HorizontalGroup(0.8f)]
+    [HideLabel]
+    public CardClass Class;
 }
 
 [CreateAssetMenu(menuName = "Card/Action")]

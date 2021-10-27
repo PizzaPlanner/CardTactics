@@ -9,7 +9,7 @@ public class UnitCard : Card
     public override int Speed => speed;
     public Unit UnitReference;
 
-    public Capacity[] Capacities;
+    public PlayCost[] Capacities;
 
     protected override void OnInit() { }
 

@@ -13,18 +13,28 @@ MonoBehaviour:
   m_Name: Trickster
   m_EditorClassIdentifier: 
   Class: {fileID: 11400000, guid: 9f30c883e3920954e997db4f39820a2f, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: fc54fd367fab71b4f9c29f56a1679e0c, type: 2}
-  - {fileID: 11400000, guid: 9527ff0647e405d4eaa74e9eef7d6a98, type: 2}
-  Dependencies: 0000000001000000
-  Conditions: 0000000001000000
+  Skills2:
+  - Conditions: 
+    SourceTileInput: 0
+    TileOutput: 0
+    Skill:
+      rid: 8171666687908380720
   speed: 21
   UnitReference: {fileID: -776819737043778027, guid: d110e092fe8b15142a7e558c1e4e1ff9, type: 3}
   Capacities:
-  - Class: {fileID: 11400000, guid: d2c6ee1c89558d84b88c266929394544, type: 2}
-    Count: 4
-  - Class: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
-    Count: 2
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    Count: 2
-  ClassesPerTurn: 2
+  - Cost: 2
+    Class: {fileID: 11400000, guid: d2c6ee1c89558d84b88c266929394544, type: 2}
+  - Cost: 2
+    Class: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
+  - Cost: 2
+    Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8171666687908380720
+      type: {class: PlaceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: cdc6dff623db6dd4d9cb39553726d4fa, type: 3}
+        SkippableWithInput: 0
+        Type: 0
+        Summon: {fileID: 0}

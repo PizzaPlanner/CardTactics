@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Passives/Gain Card")]
+[System.Serializable]
 public class AdditionalCardPassive : Passive
 {
     public Card CardPrefab;

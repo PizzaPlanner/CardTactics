@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Select")]
+[System.Serializable]
 public class SelectSkill : Skill, ICancelable
 {
     [SerializeField] SelectionFilter TargetFilter;

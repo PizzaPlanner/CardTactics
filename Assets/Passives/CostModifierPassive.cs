@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Passives/Cost Modifier")]
+[System.Serializable]
 public class CostModifierPassive : Passive
 {
     public PlayCost Buff;

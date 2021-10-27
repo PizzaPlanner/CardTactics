@@ -1,7 +1,8 @@
+using System.Linq;
 using UnityEngine;
 
 
-[CreateAssetMenu(menuName = "Passives/Additional Action")]
+[System.Serializable]
 public class AdditionalActionOnLastMeleePassive : Passive
 {
     public Skill Skill;
@@ -14,12 +15,12 @@ public class AdditionalActionOnLastMeleePassive : Passive
     {
         foreach (var card in player.Deck.Cards)
         {
-            if (card is not ActionCard acard || acard.Skills.Length == 0) continue;
-            if (acard.Skills[acard.Skills.Length - 1] is not AttackSkill askl || askl.MaxRange != 1) continue;
+            if (card is not ActionCard acard || acard.Skills.Count() == 0) continue;
+            if (acard.Skills.Last() is not AttackSkill askl || askl.MaxRange != 1) continue;
             foreach (var skill in acard.Skills)
-                if (skill.Source == this) continue;
+                if (skill.Source == this.Source) continue;
 
-            acard.ExtendWith(Skill, Source, acard.Skills.Length, Dependency, Condition);
+            // acard.ExtendWith(Skill, Source, acard.Skills.Length, Dependency, Condition);
         }
     }
 }

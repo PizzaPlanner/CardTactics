@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Heal")]
+[System.Serializable]
 public class HealSkill : Skill
 {
     public SelectionFilter Filter;

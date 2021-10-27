@@ -6995,7 +6995,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 1
-  Skill: {fileID: 11400000, guid: 3c8d58592181cf7469dadc1c880ac4af, type: 2}
+  Skill:
+    Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 11400000, guid: 8086d45c1fa73b44d9f9261d17bd7a77, type: 2}
+    NewCardInitialState: 1
   Player: 0
   GiveToTriggerer: 1
 --- !u!1 &3870854393539468432
@@ -10162,7 +10166,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Skill: {fileID: 11400000, guid: 0bf7138a59b587b429e1a386323c1dfb, type: 2}
+  Skill:
+    Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 11400000, guid: ce485af286435b54a8af90b6416c9993, type: 2}
+    NewCardInitialState: 0
   Player: 0
   GiveToTriggerer: 1
 --- !u!114 &8703973177150945742
@@ -10178,7 +10186,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Skill: {fileID: 11400000, guid: 86040aff29db0ae4b9f340892e131408, type: 2}
+  Skill:
+    Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 11400000, guid: deafccf3d0c90a5418c787a2f743b885, type: 2}
+    NewCardInitialState: 0
   Player: 0
   GiveToTriggerer: 1
 --- !u!114 &8137443201774582159
@@ -10212,7 +10224,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Skill: {fileID: 11400000, guid: bda226a06c5f4bd46ad510ca988b7597, type: 2}
+  Skill:
+    Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 11400000, guid: 92fd2c70933d41448a94ac96b4230aa6, type: 2}
+    NewCardInitialState: 0
   Player: 0
   GiveToTriggerer: 0
 --- !u!114 &8337079817750291092
@@ -10259,7 +10275,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Skill: {fileID: 11400000, guid: e5404b50535692843877b3568f75c6ed, type: 2}
+  Skill:
+    Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 11400000, guid: 5baf07c73b9b9ed4db1f3c9333a1e6dd, type: 2}
+    NewCardInitialState: 0
   Player: 0
   GiveToTriggerer: 1
 --- !u!114 &9038509656476550887

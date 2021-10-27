@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Gain Card")]
+[System.Serializable]
 public class GainCardSkill : Skill
 {
     [NonSerialized] public PlayerInfo Player;

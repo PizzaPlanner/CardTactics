@@ -30,20 +30,20 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             ClassName.text = Reference.Class.Name;
         if (ClassIcon != null)
             ClassIcon.sprite = Reference.Class.Icon;
-        if (SkillPanel != null)
-        {
-            var descriptions = new List<string>();
-            for (int i = 0; i < Reference.Skills.Length; i++)
-            {
-                if (Reference.Conditions[i] == 0 && descriptions.Count > 0)
-                {
-                    descriptions.Add("-----");
-                }
-                if (Reference.Skills[i].Description != null)
-                    descriptions.Add(Reference.Skills[i].Description);
-            }
-            SkillPanel.text = string.Join("\n", descriptions);
-        }
+        // if (SkillPanel != null)
+        // {
+        //     var descriptions = new List<string>();
+        //     for (int i = 0; i < Reference.Skills.Length; i++)
+        //     {
+        //         if (Reference.Conditions[i] == 0 && descriptions.Count > 0)
+        //         {
+        //             descriptions.Add("-----");
+        //         }
+        //         if (Reference.Skills[i].Description != null)
+        //             descriptions.Add(Reference.Skills[i].Description);
+        //     }
+        //     SkillPanel.text = string.Join("\n", descriptions);
+        // }
     }
 
     public void SetCard(Card card)

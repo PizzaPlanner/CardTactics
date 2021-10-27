@@ -4,13 +4,6 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[Serializable]
-public struct Capacity
-{
-    public CardClass Class;
-    public int Count;
-}
-
 [CreateAssetMenu]
 public class Deck : ScriptableObject
 {
@@ -85,7 +78,7 @@ public class Deck : ScriptableObject
 
         // Count
         foreach (var cap in Commander.Capacities)
-            capacities[cap.Class] = cap.Count;
+            capacities[cap.Class] = cap.Cost;
         foreach (var card in Equipped)
             capacities[card.ItemClass] += card.actions;
 

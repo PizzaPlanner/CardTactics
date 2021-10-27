@@ -2,7 +2,7 @@ using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Attack")]
+[System.Serializable]
 public class AttackSkill : Skill
 {
     [ValidateInput("@((int)$value.Tile & (int)TileFilter.Empty) == 0")]

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Move")]
+[System.Serializable]
 public class MoveSkill : Skill, ICancelable
 {
     public int Range;

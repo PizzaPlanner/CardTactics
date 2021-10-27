@@ -13,18 +13,44 @@ MonoBehaviour:
   m_Name: Explore
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
-  - {fileID: 11400000, guid: c13e6466756201d44abad4fe4e5e08d5, type: 2}
-  Dependencies: 0000000001000000
-  Conditions: 0000000000000000
+  Skills2:
+  - Conditions: 
+    SourceTileInput: 0
+    TileOutput: 1
+    Skill:
+      rid: 8171666687908380727
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 0
+    Skill:
+      rid: 8171666687908380728
   icon: {fileID: 21300000, guid: 889096820535b0f48acdff308771b1b5, type: 3}
   name: Explore
   speed: 20
   cost:
-  - Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
-    Cost: 1
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    Cost: 1
+  - Cost: 1
+    Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
+  - Cost: 1
+    Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Once: 0
   Temporary: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 8171666687908380727
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: 13dbe3e19f5da6849a01f0f4678e8f01, type: 3}
+        SkippableWithInput: 0
+        TargetFilter:
+          Tile: 16
+          Unit: 1
+          Range: 0
+        confirmOnePossibleTile: 0
+    - rid: 8171666687908380728
+      type: {class: MoveSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: 248e0c0ee3ca1184cae692996a197183, type: 3}
+        SkippableWithInput: 1
+        Range: 4
+        RangeType: 1

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Face")]
+[System.Serializable]
 public class FaceSkill : Skill
 {
     public SelectionFilter Filter;

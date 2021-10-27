@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public static class SelectionFilters
@@ -13,8 +15,14 @@ public static class SelectionFilters
 [System.Serializable]
 public struct SelectionFilter
 {
+    [EnumToggleButtons]
+    [HideLabel]
     public TileFilter Tile;
+    [EnumToggleButtons]
+    [HideLabel]
     public UnitFilter Unit;
+    [EnumToggleButtons]
+    [HideLabel]
     public RangeFilter Range;
 }
 
@@ -49,7 +57,65 @@ public interface ICancelable
     void OnCancel();
 }
 
-public abstract class Skill : ScriptableObject
+public enum SkillChain
+{
+    _ = 0,
+    A = 1,
+    B = 2,
+    C = 3,
+    D = 4,
+    E = 5,
+    F = 6
+}
+
+[System.Serializable]
+public class SkillInfo
+{
+    [LabelText("If")]
+    public SkillChain[] Conditions;
+
+    [HorizontalGroup(5)]
+    [HideLabel]
+    [SuffixLabel("->")]
+    [LabelWidth(10)]
+    public SkillChain SourceTileInput;
+
+    [HorizontalGroup(5)]
+    [HideLabel]
+    public SkillChain TileOutput;
+
+    [HideLabel]
+    [SerializeReference]
+    public Skill Skill;
+
+
+    public Tile GetInputTile(IEnumerable<SkillInfo> previousSkills)
+    {
+        if (SourceTileInput == SkillChain._) return null;
+        var wanted = SourceTileInput;
+        var inputInfo = previousSkills.Where(x => x.TileOutput == wanted).LastOrDefault();
+        return inputInfo?.GetOutputTile();
+    }
+
+    public Tile GetOutputTile()
+    {
+        return Skill.PlayProgress == Skill.Progress.Queued ? Skill.TargetTile : Skill.SourceTile;
+    }
+
+    public bool CanUse(IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
+    {
+        inputTile = null;
+        Debug.Log("Check CanUse of " + Skill.GetType().Name);
+        foreach (var condition in Conditions)
+            if (previousSkills.Where(x => x.TileOutput == condition).LastOrDefault()?.Skill.PlayProgress != Skill.Progress.Queued) return false;
+        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(previousSkills)) == null) return false;
+        Debug.Log("Yes!");
+        return true;
+    }
+}
+
+[System.Serializable]
+public abstract class Skill
 {
     public enum Progress
     {
@@ -60,13 +126,14 @@ public abstract class Skill : ScriptableObject
         Now
     }
 
-    public string Name;
+    [PreviewField(32)]
+    [AssetSelector(Paths = "Assets/3rdParty/64 flat icons/png/64px", FlattenTreeView = true)]
     public Sprite Icon;
 
     [NonSerialized] public Card Source;
     public abstract string Description { get; }
 
-    protected Tile TargetTile { get; private set; }
+    public Tile TargetTile { get; private set; }
     public Tile SourceTile { get; private set; }
     public bool IsOptional => SkippableWithInput;
     public bool IsPreviewed { get; private set; }
@@ -87,19 +154,12 @@ public abstract class Skill : ScriptableObject
         IsPreviewed = false;
     }
 
-    public bool Activate(Map map, PlayerInfo player, Card card, Skill dependency, Skill condition)
+    public bool Activate(Map map, PlayerInfo player, Card card, Tile inputTile)
     {
         PlayProgress = Progress.Failed;
-        if (condition != null && condition.PlayProgress != Progress.Queued) return false;
-        if (dependency != null)
-        {
-            if (dependency.PlayProgress != Progress.Queued && !dependency.SkippableWithInput)
-                return false;
-            if (dependency.PlayProgress == Progress.Queued)
-                SourceTile = dependency.TargetTile;
-            else
-                SourceTile = dependency.SourceTile;
-        }
+
+        SourceTile = inputTile;
+
         var validTiles = OnActivate(map, player, card);
         if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
         {

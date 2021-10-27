@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Skills/Place")]
+[System.Serializable]
 public class PlaceSkill : Skill, ICancelable
 {
     public enum PlaceType

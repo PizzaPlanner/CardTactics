@@ -18,7 +18,7 @@ public abstract class Card : ScriptableObject, IPlayable
     }
 
     [ShowInInspector]
-    [ReadOnly]
+    [HideInEditorMode]
     public CardState State { get; protected set; }
 
     public virtual IEnumerator Play(Board board, Map map, PlayerInfo player)
@@ -75,33 +75,22 @@ public abstract class Card : ScriptableObject, IPlayable
     {
         State = initialState;
         Source = source;
-        for (int i = 0; i < Skills.Length; i++)
+        for (int i = 0; i < Skills2.Length; i++)
         {
-            Skills[i] = Skill.Instantiate(Skills[i]);
-            Skills[i].Source = this;
+            Skills2[i].Skill.Source = this;
         }
         OnInit();
     }
 
-    public Skill[] Skills;
-    public int[] Dependencies;
-    public int[] Conditions;
+    public SkillInfo[] Skills2;
 
-    public void ExtendWith(Skill newSkillPrefab, Card source, int index, int dependency, int condition)
+    public IEnumerable<Skill> Skills => Skills2.Select(x => x.Skill);
+
+    public void ExtendWith(SkillInfo newSkill, int index)
     {
-        var newSkill = Instantiate(newSkillPrefab);
-        newSkill.Source = source;
-        var listS = Skills.ToList();
+        var listS = Skills2.ToList();
         listS.Insert(index, newSkill);
-        Skills = listS.ToArray();
-
-        var listD = Dependencies.ToList();
-        listD.Insert(index, dependency);
-        Dependencies = listD.ToArray();
-
-        var listC = Conditions.ToList();
-        listC.Insert(index, condition);
-        Conditions = listC.ToArray();
+        Skills2 = listS.ToArray();
     }
 
     public Tile SkillTarget { get; set; }
@@ -111,34 +100,33 @@ public abstract class Card : ScriptableObject, IPlayable
 
     protected IEnumerator PlaySkills(Map map, PlayerInfo player, bool autocompleteIfPossible)
     {
-        if (Skills.Length == 0)
+        if (Skills2.Length == 0)
             WantComplete = true;
-        for (int i = 0; i <= Skills.Length; i++)
+        for (int i = 0; i <= Skills2.Length; i++)
         {
-            if (i < Skills.Length)
+            if (i < Skills2.Length)
             {
                 SkillTarget = null;
                 WantSkillSkip = false;
                 WantComplete = autocompleteIfPossible;
                 WantReset = false;
-                Skill dependency = Dependencies[i] > 0 ? Skills[i - Dependencies[i]] : null;
-                Skill condition = Conditions[i] > 0 ? Skills[i - Conditions[i]] : null;
-                if (Skills[i].Activate(map, player, this, dependency, condition))
+                if (Skills2[i].CanUse(Skills2.ToList().GetRange(0, i), out var inputTile)
+                && Skills2[i].Skill.Activate(map, player, this, inputTile))
                 {
                     if (!player.IsAI && SkillTarget == null)
                         map.ShowTileIndicators();
 
-                    yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills[i].IsOptional));
+                    yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills2[i].Skill.IsOptional));
 
                     if (SkillTarget != null)
                     {
-                        yield return Skills[i].Preview(SkillTarget);
+                        yield return Skills2[i].Skill.Preview(SkillTarget);
                         if (player.IsAI)
                             WantComplete = true;
                     }
                     else if (WantSkillSkip)
                     {
-                        Skills[i].Skip();
+                        Skills2[i].Skill.Skip();
                     }
                     else if (WantReset)
                     {
@@ -168,10 +156,10 @@ public abstract class Card : ScriptableObject, IPlayable
 
     int PartialReset()
     {
-        for (int j = Skills.Length - 1; j >= 0; j--)
+        for (int j = Skills2.Length - 1; j >= 0; j--)
         {
-            var prog = Skills[j].PlayProgress;
-            Skills[j].Reset();
+            var prog = Skills2[j].Skill.PlayProgress;
+            Skills2[j].Skill.Reset();
             Debug.Log("Resetting skill " + j);
             if (prog == Skill.Progress.Queued ||
                 prog == Skill.Progress.Skipped)
