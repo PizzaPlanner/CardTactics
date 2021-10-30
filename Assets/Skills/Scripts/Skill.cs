@@ -89,11 +89,13 @@ public class SkillInfo
     public Skill Skill;
 
 
-    public Tile GetInputTile(IEnumerable<SkillInfo> previousSkills)
+    public Tile GetInputTile(Tile origin, IEnumerable<SkillInfo> previousSkills)
     {
         if (SourceTileInput == SkillChain._) return null;
         var wanted = SourceTileInput;
         var inputInfo = previousSkills.Where(x => x.TileOutput == wanted).LastOrDefault();
+        if (wanted == SkillChain.A && inputInfo == null)
+            return origin;
         return inputInfo?.GetOutputTile();
     }
 
@@ -102,14 +104,12 @@ public class SkillInfo
         return Skill.PlayProgress == Skill.Progress.Queued ? Skill.TargetTile : Skill.SourceTile;
     }
 
-    public bool CanUse(IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
+    public bool CanUse(Tile origin, IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
     {
         inputTile = null;
-        Debug.Log("Check CanUse of " + Skill.GetType().Name);
         foreach (var condition in Conditions)
             if (previousSkills.Where(x => x.TileOutput == condition).LastOrDefault()?.Skill.PlayProgress != Skill.Progress.Queued) return false;
-        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(previousSkills)) == null) return false;
-        Debug.Log("Yes!");
+        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, previousSkills)) == null) return false;
         return true;
     }
 }

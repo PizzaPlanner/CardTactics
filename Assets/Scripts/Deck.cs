@@ -13,14 +13,6 @@ public class Deck : ScriptableObject
 
     public UnitCard Commander;
 
-    public int CurrentSpeed
-    {
-        get
-        {
-            return Commander.Speed + Equipped.Sum(x => x.Speed) + Queued.Sum(x => x.Speed);
-        }
-    }
-
     public bool QueueIsValid
     {
         get

@@ -14,8 +14,11 @@ public class PlaceSkill : Skill, ICancelable
     [SerializeField] PlaceType Type;
     [SerializeField] UnitCard Summon;
 
+    [SerializeField] int maxRange;
+
     UnitCard card;
     PlayerInfo player;
+
 
     public override string Description => Type == PlaceType.Spawn ? null : $"Summon {Summon?.UnitReference.Name ?? "Illusion" }";
 
@@ -36,7 +39,7 @@ public class PlaceSkill : Skill, ICancelable
                 if (unit == null || this.card == null)
                     return new Tile[0];
                 this.player = player;
-                return map.ShowRange(SourceTile, 1, 1, SelectionFilters.Empty, player);
+                return map.ShowRange(SourceTile, 1, maxRange, SelectionFilters.Empty, player);
         }
         return new Tile[0];
     }

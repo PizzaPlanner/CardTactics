@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0cf603a9a0bda45b5718ed41db56ff, type: 3}
+  m_Name: Dummy
+  m_EditorClassIdentifier: 
+  Class: {fileID: 11400000, guid: 9f30c883e3920954e997db4f39820a2f, type: 2}
+  Skills2:
+  - Conditions: 
+    SourceTileInput: 0
+    TileOutput: 0
+    Skill:
+      rid: 8171666731894308893
+  speed: 1
+  UnitReference: {fileID: 5882492422521109190, guid: c17ec6991b75bf4408808625cbdea8bc, type: 3}
+  Capacities: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 8171666731894308893
+      type: {class: PlaceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: cdc6dff623db6dd4d9cb39553726d4fa, type: 3}
+        SkippableWithInput: 0
+        Type: 0
+        Summon: {fileID: 11400000}
+        maxRange: 0

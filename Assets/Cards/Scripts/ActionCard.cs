@@ -18,8 +18,6 @@ public class ActionCard : Card
 {
     [SerializeField] Sprite icon;
     [SerializeField] new string name;
-    [Range(1, 100)]
-    [SerializeField] int speed;
     [SerializeField] PlayCost[] cost;
 
     public bool Once;
@@ -30,8 +28,6 @@ public class ActionCard : Card
     public override Sprite Icon => icon;
 
     public override string Name => name;
-
-    public override int Speed => speed;
 
     protected override void OnInit() { }
 

@@ -42,8 +42,8 @@ public class SkillProgressBar : MonoBehaviour
             item.SetSkill(skill, () => card.WantSkillSkip = true);
             item.ShouldUpdate = () => card.State == Card.CardState.Current;
         }
-        var cardItem = GetComponent<CardDisplay>();
-        cardItem.SetCard(card);
+        // var cardItem = GetComponent<CardDisplay>();
+        // cardItem.SetCard(card);
         // cardItem.PlayerColorBorder.color = player.Color;
         // skipButton.gameObject.SetActive(false);
     }

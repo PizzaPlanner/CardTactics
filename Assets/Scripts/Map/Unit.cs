@@ -9,6 +9,7 @@ public class Unit : MonoBehaviour
     public int Rank;
     public string Name;
     public Sprite Icon;
+    public int Speed;
 
     public UnitCard Card;
 

@@ -30,15 +30,21 @@ public class AttackSkill : Skill
         Animator targetAnimator = TargetTile.Unit.GetComponentInChildren<Animator>();
         previewFacing = SourceTile.Facing;
         SourceTile.Face(Tile.GetFacing(SourceTile, TargetTile));
-        sourceAnimator.SetInteger("Action", 1);
-        sourceAnimator.SetTrigger("AttackTrigger");
+        if (sourceAnimator != null)
+        {
+            sourceAnimator.SetInteger("Action", 1);
+            sourceAnimator.SetTrigger("AttackTrigger");
+        }
         if (Sound != null)
             SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
         yield return new WaitForSeconds(0.3f);
         previewUnit = TargetTile.Unit;
         previewUnit.Damage(Damage, true);
-        targetAnimator.SetInteger("Action", 1);
-        targetAnimator.SetTrigger("GetHitTrigger");
+        if (targetAnimator != null)
+        {
+            targetAnimator.SetInteger("Action", 1);
+            targetAnimator.SetTrigger("GetHitTrigger");
+        }
         if (previewUnit.LifePreview <= 0)
         {
             yield return new WaitForSeconds(0.5f);

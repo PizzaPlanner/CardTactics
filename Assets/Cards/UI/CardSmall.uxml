@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <CardItemSmall style="width: 160px; height: 160px; align-items: center;">
+    <CardItem style="width: 160px; height: 160px; align-items: center;">
         <ui:VisualElement name="Background" style="background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/Mini_background.png?fileID=21300000&amp;guid=4f033cdd2b09f9a43b139729d09d002c&amp;type=3#Mini_background&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
         <ui:VisualElement name="Icon" style="background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/Update_icons/skill_b_Standart/09_magic_bolt.png?fileID=21300000&amp;guid=aff477b2fab2d0542be64d8ea903698a&amp;type=3#09_magic_bolt&apos;); position: absolute; left: 3px; top: 3px; right: 3px; bottom: 3px;" />
         <ui:VisualElement name="CostRow" class="filter-actioncard" style="top: 4%; left: 4%; position: absolute; flex-direction: row;">
@@ -18,5 +18,5 @@
         <ui:VisualElement name="Lifebar" class="filter-unitcard" style="width: 48px; height: 48px; position: absolute; bottom: -20px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/Update_icons/runic_tablet_12.png?fileID=21300000&amp;guid=9a55b94c8bace9e43855a800d07e5129&amp;type=3#runic_tablet_12&apos;); right: -10px;">
             <ui:Label text="21" name="Life" class="color-default-text" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 28px; -unity-font-style: bold; -unity-text-align: middle-center; padding-left: 3px; padding-right: 0;" />
         </ui:VisualElement>
-    </CardItemSmall>
+    </CardItem>
 </ui:UXML>

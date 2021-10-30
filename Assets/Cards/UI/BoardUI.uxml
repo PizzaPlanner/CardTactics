@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="CardBig" src="project://database/Assets/Cards/UI/CardBig.uxml?fileID=9197481963319205126&amp;guid=29a9371bab04ae14aa88f1bec4eb9fbc&amp;type=3#CardBig" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
     <ui:VisualElement name="PlanningPanel" picking-mode="Ignore" style="position: absolute; bottom: 0; left: 0; right: 0; top: 0; align-items: center; justify-content: flex-end;">
         <ui:VisualElement name="CardPanel" style="position: relative; height: 20%; align-items: flex-end; justify-content: center; flex-direction: row; width: 64%; padding-bottom: 10px;" />
@@ -7,4 +8,5 @@
     <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 10px; left: 0; right: 0;">
         <ui:VisualElement name="ReadyPanel" style="flex-direction: row;" />
     </ui:VisualElement>
+    <ui:Instance template="CardBig" name="TooltipCard" style="position: absolute; right: 0; justify-content: center; top: 0; bottom: 0; padding-right: 20px;" />
 </ui:UXML>

@@ -21,11 +21,11 @@ public abstract class Card : ScriptableObject, IPlayable
     [HideInEditorMode]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(Board board, Map map, PlayerInfo player)
+    public virtual IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);
-        yield return PlaySkills(map, player, true);
+        yield return PlaySkills(map, unit, player, true);
         yield return new WaitForSeconds(0.2f);
         State = StateOnPlayed;
     }
@@ -64,7 +64,6 @@ public abstract class Card : ScriptableObject, IPlayable
     protected abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }
-    public abstract int Speed { get; }
 
     [Required]
     public CardClass Class;
@@ -98,7 +97,7 @@ public abstract class Card : ScriptableObject, IPlayable
     public bool WantComplete { get; set; }
     public bool WantReset { get; set; }
 
-    protected IEnumerator PlaySkills(Map map, PlayerInfo player, bool autocompleteIfPossible)
+    protected IEnumerator PlaySkills(Map map, Unit unit, PlayerInfo player, bool autocompleteIfPossible)
     {
         if (Skills2.Length == 0)
             WantComplete = true;
@@ -110,7 +109,7 @@ public abstract class Card : ScriptableObject, IPlayable
                 WantSkillSkip = false;
                 WantComplete = autocompleteIfPossible;
                 WantReset = false;
-                if (Skills2[i].CanUse(Skills2.ToList().GetRange(0, i), out var inputTile)
+                if (Skills2[i].CanUse(map.TileOf(unit), Skills2.ToList().GetRange(0, i), out var inputTile)
                 && Skills2[i].Skill.Activate(map, player, this, inputTile))
                 {
                     if (!player.IsAI && SkillTarget == null)

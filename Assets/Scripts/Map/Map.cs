@@ -111,6 +111,11 @@ public class Map : MonoBehaviour
                 TryRegisterSpawn(board, tile);
     }
 
+    internal Tile TileOf(Unit unit)
+    {
+        return Tiles.FirstOrDefault(x => x.Unit == unit);
+    }
+
     public void ShowTileIndicators()
     {
         foreach (var tile in Tiles)

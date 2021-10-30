@@ -1,48 +1,46 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-[RequireComponent(typeof(CardDisplay))]
 public class CardTooltip : MonoBehaviour
 {
-    public RectTransform RelatedCardsDisplay;
-    public CardDisplay RelatedCardPrefab;
-
     static CardTooltip Instance => instance ??= FindObjectOfType<CardTooltip>(true);
     static CardTooltip instance;
+
+    CardItem mainCard;
 
     void Start()
     {
         instance = this;
-        gameObject.SetActive(false);
+        mainCard = FindObjectOfType<UIDocument>().rootVisualElement.Q("TooltipCard").Q<CardItem>();
+        Debug.Assert(mainCard != null, this);
+        Hide();
     }
 
     public static void Show(Card card)
     {
-        Instance.GetComponent<CardDisplay>().SetCard(card);
+        Instance.mainCard.Card = card;
+        Instance.mainCard.style.display = DisplayStyle.Flex;
         Instance.ShowRelated(card);
-        Instance.gameObject.SetActive(true);
     }
 
     public static void Hide()
     {
-        Instance.gameObject.SetActive(false);
+        Instance.mainCard.style.display = DisplayStyle.None;
     }
 
     public void ShowRelated(Card card)
     {
-        foreach (Transform t in RelatedCardsDisplay)
-            Destroy(t.gameObject);
+        // foreach (Transform t in RelatedCardsDisplay)
+        //     Destroy(t.gameObject);
 
-        foreach (var related in card.GetRelatedCards().Distinct(new CardComparer()))
-        {
-            if (related.Name.Equals(card.Name)) continue;
-            var c = Instantiate(RelatedCardPrefab);
-            c.transform.SetParent(RelatedCardsDisplay);
-            c.SetCard(related);
-        }
+        // foreach (var related in card.GetRelatedCards().Distinct(new CardComparer()))
+        // {
+        //     if (related.Name.Equals(card.Name)) continue;
 
-        RelatedCardsDisplay.gameObject.SetActive(RelatedCardsDisplay.childCount > 0);
+        // }
+
+        // RelatedCardsDisplay.gameObject.SetActive(RelatedCardsDisplay.childCount > 0);
     }
 }
 

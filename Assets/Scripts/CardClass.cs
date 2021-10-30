@@ -7,5 +7,8 @@ using UnityEngine;
 public class CardClass : ScriptableObject
 {
     public string Name;
+
+    [Sirenix.OdinInspector.PreviewField(32)]
+    [Sirenix.OdinInspector.AssetSelector(Paths = "Assets/3rdParty/64 flat icons/png/64px", FlattenTreeView = true)]
     public Sprite Icon;
 }

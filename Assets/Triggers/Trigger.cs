@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IPlayable
 {
-    IEnumerator Play(Board board, Map map, PlayerInfo player);
+    IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player);
 }
 
 [System.Serializable]
@@ -15,7 +15,7 @@ public abstract class Trigger : MonoBehaviour, IPlayable
 
     public bool Executed { get; private set; }
 
-    public IEnumerator Play(Board board, Map map, PlayerInfo player)
+    public IEnumerator Play(Board board, Map map, Unit _, PlayerInfo player)
     {
         if (Executed && !CanTriggerMultipleTimes)
             yield break;

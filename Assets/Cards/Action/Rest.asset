@@ -15,18 +15,12 @@ MonoBehaviour:
   Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Skills2:
   - Conditions: 
-    SourceTileInput: 0
-    TileOutput: 1
-    Skill:
-      rid: 8171666687908380716
-  - Conditions: 
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 8171666687908380717
+      rid: 8171666775164584264
   icon: {fileID: 21300000, guid: b57d07fbee5bd9340a9354c9c41d3f82, type: 3}
   name: Rest
-  speed: 85
   cost:
   - Cost: 2
     Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
@@ -35,17 +29,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8171666687908380716
-      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
-      data:
-        Icon: {fileID: 21300000, guid: 13dbe3e19f5da6849a01f0f4678e8f01, type: 3}
-        SkippableWithInput: 0
-        TargetFilter:
-          Tile: 16
-          Unit: 1
-          Range: 0
-        confirmOnePossibleTile: 0
-    - rid: 8171666687908380717
+    - rid: 8171666775164584264
       type: {class: HealSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: 6b4d731bb49028047a4a8c4c1fa3bc4f, type: 3}

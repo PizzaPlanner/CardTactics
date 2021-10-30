@@ -15,18 +15,12 @@ MonoBehaviour:
   Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Skills2:
   - Conditions: 
-    SourceTileInput: 0
-    TileOutput: 1
-    Skill:
-      rid: 8171666687908380727
-  - Conditions: 
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 8171666687908380728
+      rid: 8171666775164584273
   icon: {fileID: 21300000, guid: 889096820535b0f48acdff308771b1b5, type: 3}
   name: Explore
-  speed: 20
   cost:
   - Cost: 1
     Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
@@ -37,17 +31,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8171666687908380727
-      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
-      data:
-        Icon: {fileID: 21300000, guid: 13dbe3e19f5da6849a01f0f4678e8f01, type: 3}
-        SkippableWithInput: 0
-        TargetFilter:
-          Tile: 16
-          Unit: 1
-          Range: 0
-        confirmOnePossibleTile: 0
-    - rid: 8171666687908380728
+    - rid: 8171666775164584273
       type: {class: MoveSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: 248e0c0ee3ca1184cae692996a197183, type: 3}

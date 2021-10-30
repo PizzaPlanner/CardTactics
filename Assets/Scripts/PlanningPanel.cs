@@ -19,7 +19,6 @@ public class PlanningPanel : MonoBehaviour
     void Awake()
     {
         audio = GetComponent<AudioSource>();
-        gameObject.SetActive(false);
         planningPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("PlanningPanel");
         Debug.Assert(planningPanel != null, this);
         cardPanel = planningPanel.Q("CardPanel");
@@ -58,7 +57,7 @@ public class PlanningPanel : MonoBehaviour
         foreach (var card in unplayed)
         {
             cardAsset.CloneTree(cardPanel, out int idx, out int _);
-            var cx = cardPanel[idx].Q<CardItemSmall>();
+            var cx = cardPanel[idx].Q<CardItem>();
             cx.AddToClassList("carditem-selectable");
             cx.Card = card;
             cx.RegisterCallback<MouseDownEvent>((_) =>
@@ -88,7 +87,7 @@ public class PlanningPanel : MonoBehaviour
 
         badges.ForEach(x => x.Query<CostIcon>().ForEach(y => y.SetCostColor(free)));
 
-        cardPanel.Query<CardItemSmall>().ForEach(x =>
+        cardPanel.Query<CardItem>().ForEach(x =>
         {
             if (x.Card is ActionCard card)
             {

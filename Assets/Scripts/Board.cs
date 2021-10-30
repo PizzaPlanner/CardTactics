@@ -12,9 +12,9 @@ public class Board : MonoBehaviour
     public enum Stage
     {
         Setup,
-        Execute,
-        Play,
         Plan,
+        Play,
+        StartTurn,
         Events,
         End
 
@@ -26,7 +26,7 @@ public class Board : MonoBehaviour
     [ShowInInspector]
     public Stage CurrentStage { get; private set; }
 
-    TurnPlate turnPanel;
+    TurnPanel turnPanel;
     Map Map;
 
     [ShowInInspector]
@@ -34,8 +34,6 @@ public class Board : MonoBehaviour
 
     [ShowInInspector]
     IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.State == PlayerInfo.PlayerState.Active);
-
-    List<PlayerInfo> readyPlayers;
 
     Queue<HumanPlayer> unassignedPlayers;
 
@@ -45,6 +43,7 @@ public class Board : MonoBehaviour
         CurrentStage = Stage.Setup;
         unassignedPlayers = new Queue<HumanPlayer>();
         queuedPlayables = new Queue<(PlayerInfo, IPlayable)>();
+        playableUnits = new Queue<Unit>();
         if (players != null)
             foreach (var player in players)
                 unassignedPlayers.Enqueue(player);
@@ -73,32 +72,28 @@ public class Board : MonoBehaviour
 
     void OnPlay()
     {
-        if (queuedPlayables.Count == 0)
+        var (player, playable) = queuedPlayables.Dequeue();
+        if (player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
         {
-            CurrentStage = Stage.Events;
-        }
-        else
-        {
-            var (player, playable) = queuedPlayables.Dequeue();
-            if (player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
-            {
-                Debug.Log($"{player.Name} is dead. skipped {playable.GetType().Name}");
-                return;
-            }
-
-            IEnumerator PlayAndResume()
-            {
-                currentPlayable = playable;
-                yield return playable.Play(this, Map, player);
-                currentPlayable = null;
-                Resume();
-            }
-            WaitingForAction = true;
-            StartCoroutine(PlayAndResume());
-
-            turnPanel.OnRoundStart();
+            Debug.Log($"{player.Name} is dead. skipped {playable.GetType().Name}");
+            return;
         }
 
+        IEnumerator PlayAndResume()
+        {
+            currentPlayable = playable;
+            yield return playable.Play(this, Map, currentUnit, player);
+            currentPlayable = null;
+            if (queuedPlayables.Count == 0)
+                CurrentStage = Stage.Events;
+            else
+                CurrentStage = Stage.Play;
+            Resume();
+        }
+        WaitingForAction = true;
+        StartCoroutine(PlayAndResume());
+
+        turnPanel.OnRoundStart();
     }
 
     void OnEvents()
@@ -118,11 +113,15 @@ public class Board : MonoBehaviour
 
         if (queuedPlayables.Count() > 0)
             CurrentStage = Stage.Play;
+        else if (playableUnits.Count() > 0)
+        {
+            CurrentStage = Stage.Plan;
+        }
         else if (RegisteredPlayers.Count() > 0)
         {
-            readyPlayers = new List<PlayerInfo>();
+            currentUnit = null;
             turnPanel.OnPreparation();
-            CurrentStage = Stage.Plan;
+            CurrentStage = Stage.StartTurn;
         }
         else
         {
@@ -137,46 +136,44 @@ public class Board : MonoBehaviour
         LoadingScreen.GoToMenu();
     }
 
-    void OnPlan()
+    Unit currentUnit;
+    Queue<Unit> playableUnits;
+    void OnStartTurn()
     {
         foreach (var player in RegisteredPlayers)
         {
-            if (readyPlayers.Contains(player)) continue;
+            player.Deck.OnPlanningEnd(Map, player);
             player.Deck.OnPlanningStart(Map, player);
-            if (player.IsAI)
-                AIPrepare(player);
-            else
-            {
-                WaitingForAction = true;
-                PlayerPrepare(player);
-                return;
-            }
         }
-        if (readyPlayers.Count == RegisteredPlayers.Count())
-            CurrentStage = Stage.Execute;
+
+        playableUnits.Clear();
+        var playables = new List<Unit>();
+        foreach (var unit in FindObjectsOfType<Unit>())
+            if (unit.Player != null && RegisteredPlayers.Contains(unit.Player) && unit.Card != null)
+            {
+                playables.Add(unit);
+            }
+        playables.Sort((x, y) => x.Speed.CompareTo(y.Speed));
+        foreach (var item in playables)
+        {
+            playableUnits.Enqueue(item);
+        }
+
+        if (playableUnits.Count() > 0)
+            CurrentStage = Stage.Plan;
+        else
+            CurrentStage = Stage.End;
     }
 
-    void OnExecute()
+    void OnPlan()
     {
-        var cardsPlay = new List<(PlayerInfo player, Card card)>();
-        foreach (var player in RegisteredPlayers)
-            foreach (var card in player.Deck.Queued)
-            {
-                cardsPlay.Add((player, card));
-            }
-        cardsPlay.Sort((x, y) =>
-        {
-            var deckComp = x.player.Deck.CurrentSpeed.CompareTo(y.player.Deck.CurrentSpeed);
-            if (deckComp == 0)
-                return x.card.Speed.CompareTo(y.card.Speed);
-            else
-                return deckComp;
-        });
-
-        foreach (var (player, card) in cardsPlay)
-            QueuePlayable(player, card, false);
-
-        CurrentStage = Stage.Play;
+        currentUnit = playableUnits.Dequeue();
+        var player = currentUnit.Player;
+        WaitingForAction = true;
+        if (player.IsAI)
+            AIPrepare(player);
+        else
+            PlayerPrepare(player);
     }
 
     IPlayable currentPlayable;
@@ -190,7 +187,7 @@ public class Board : MonoBehaviour
         if (Map == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
             LoadingScreen.GoToMenu();
         else
-            turnPanel = GameObject.FindObjectOfType<TurnPlate>();
+            turnPanel = GameObject.FindObjectOfType<TurnPanel>();
     }
 
     public void QueuePlayable(PlayerInfo player, IPlayable playable, bool priorizeNext)
@@ -226,12 +223,12 @@ public class Board : MonoBehaviour
             Debug.Log("-- " + CurrentStage + " --");
             switch (CurrentStage)
             {
-                case Stage.Execute:
-                    OnExecute(); break;
-                case Stage.Play:
-                    OnPlay(); break;
                 case Stage.Plan:
                     OnPlan(); break;
+                case Stage.Play:
+                    OnPlay(); break;
+                case Stage.StartTurn:
+                    OnStartTurn(); break;
                 case Stage.Events:
                     OnEvents(); break;
                 case Stage.End:
@@ -273,15 +270,18 @@ public class Board : MonoBehaviour
 
     public void SetPlayerReady(PlayerInfo player)
     {
-        player.Deck.OnPlanningEnd(Map, player);
-
         if (!player.Deck.QueueIsValid)
         {
             Debug.LogWarning("Error with Queue. Ouch!");
             QueuePlayable(player, player.OnInvalidQueueTrigger, true);
         }
+        else
+        {
+            foreach (var card in player.Deck.Queued)
+                QueuePlayable(player, card, false);
+        }
 
-        readyPlayers.Add(player);
+        CurrentStage = Stage.Events;
         Resume();
     }
 
