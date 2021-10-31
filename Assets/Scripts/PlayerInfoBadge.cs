@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 public class PlayerInfoBadge : VisualElement
 {
-    public PlayerInfo Player;
+    public UnitItem UnitItem => this.Q<UnitItem>();
 
     public new class UxmlFactory : UxmlFactory<PlayerInfoBadge, UxmlTraits> { }
 

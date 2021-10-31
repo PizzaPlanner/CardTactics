@@ -31,17 +31,6 @@ public class ResourcePanel : VisualElement
 
     Deck deck;
 
-    public void Update()
-    {
-        var used = deck.GetUsedCapacities();
-        var total = deck.GetTotalCapacities();
-
-        foreach (var item in total.Keys)
-            total[item] -= used[item];
-
-        this.Query<CostIcon>().ForEach(x => x.SetCostColor(used));
-    }
-
     public new class UxmlFactory : UxmlFactory<ResourcePanel, UxmlTraits> { }
 
     public new class UxmlTraits : VisualElement.UxmlTraits

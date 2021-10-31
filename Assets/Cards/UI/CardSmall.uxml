@@ -16,7 +16,7 @@
             <ui:Label text="100" display-tooltip-when-elided="true" name="Speed" class="color-default-text" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 26px;" />
         </ui:VisualElement>
         <ui:VisualElement name="Lifebar" class="filter-unitcard" style="width: 48px; height: 48px; position: absolute; bottom: -20px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/Update_icons/runic_tablet_12.png?fileID=21300000&amp;guid=9a55b94c8bace9e43855a800d07e5129&amp;type=3#runic_tablet_12&apos;); right: -10px;">
-            <ui:Label text="21" name="Life" class="color-default-text" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 28px; -unity-font-style: bold; -unity-text-align: middle-center; padding-left: 3px; padding-right: 0;" />
+            <ui:Label text="21" name="Life" class="color-default-text text-shadow" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 28px; -unity-font-style: bold; -unity-text-align: middle-center; padding-left: 3px; padding-right: 0;" />
         </ui:VisualElement>
     </CardItem>
 </ui:UXML>

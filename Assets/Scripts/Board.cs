@@ -57,7 +57,6 @@ public class Board : MonoBehaviour
         if (player.State != PlayerInfo.PlayerState.Hidden) return false;
 
         player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
-        turnPanel.AddPlayer(player);
         player.State = PlayerInfo.PlayerState.Active;
 
         QueuePlayable(player, player.Deck.Commander, true);
@@ -88,6 +87,7 @@ public class Board : MonoBehaviour
                 CurrentStage = Stage.Events;
             else
                 CurrentStage = Stage.Play;
+
             Resume();
         }
         WaitingForAction = true;
@@ -106,7 +106,9 @@ public class Board : MonoBehaviour
         }
         foreach (var player in CheckDeath(Map))
         {
-            turnPanel.RemovePlayer(player);
+            foreach (var unit in FindObjectsOfType<Unit>())
+                if (unit.Player == player)
+                    Destroy(unit);
             player.State = PlayerInfo.PlayerState.Dead;
             QueuePlayable(player, player.OnLooseTrigger, true);
         }
@@ -119,6 +121,7 @@ public class Board : MonoBehaviour
         }
         else if (RegisteredPlayers.Count() > 0)
         {
+            turnPanel.OnTurnEnd(currentUnit);
             currentUnit = null;
             turnPanel.OnPreparation();
             CurrentStage = Stage.StartTurn;
@@ -167,7 +170,10 @@ public class Board : MonoBehaviour
 
     void OnPlan()
     {
+        if (currentUnit != null)
+            turnPanel.OnTurnEnd(currentUnit);
         currentUnit = playableUnits.Dequeue();
+        turnPanel.OnTurnStart(currentUnit);
         var player = currentUnit.Player;
         WaitingForAction = true;
         if (player.IsAI)
@@ -263,7 +269,7 @@ public class Board : MonoBehaviour
     void PlayerPrepare(PlayerInfo player)
     {
         if (player.Deck.Playable.Count() > 0)
-            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, onConfirm: () => SetPlayerReady(player));
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, currentUnit, onConfirm: () => SetPlayerReady(player));
         else
             SetPlayerReady(player);
     }

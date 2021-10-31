@@ -40,12 +40,12 @@ public class PlanningPanel : MonoBehaviour
     }
     Action onConfirmWrapper;
 
-    public void Show(PlayerInfo player, Action onConfirm)
+    public void Show(PlayerInfo player, Unit unit, Action onConfirm)
     {
         var deck = player.Deck;
 
         var badges = FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
-        .Where(x => x.Player == player).ToList();
+        .Where(x => x.Q<UnitItem>().Unit == unit).ToList();
 
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));

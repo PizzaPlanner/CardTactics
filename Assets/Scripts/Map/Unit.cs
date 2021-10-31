@@ -27,6 +27,7 @@ public class Unit : MonoBehaviour
             if (Life > MaxLife)
                 Life = MaxLife;
             LifePreview = Life;
+            OnLifeChange?.Invoke(Life);
             if (Life <= 0)
             {
                 Card?.Destroy();
@@ -41,10 +42,20 @@ public class Unit : MonoBehaviour
         }
     }
 
+    public Action<float> OnLifeChange;
+
+    void OnDestroy()
+    {
+        if (Player != null)
+            FindObjectOfType<TurnPanel>().RemoveUnit(this);
+    }
+
     void Start()
     {
         Life = MaxLife;
         LifePreview = MaxLife;
+        if (Player != null)
+            FindObjectOfType<TurnPanel>().AddUnit(this);
     }
 
     public void MoveInstant(Tile from, Tile to)

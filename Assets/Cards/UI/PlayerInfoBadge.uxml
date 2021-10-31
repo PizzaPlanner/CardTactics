@@ -1,8 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Template name="CardSmall" src="project://database/Assets/Cards/UI/CardSmall.uxml?fileID=9197481963319205126&amp;guid=9eb4eb3896cb6cb46a56779107bae110&amp;type=3#CardSmall" />
+    <ui:Template name="UnitItem" src="project://database/Assets/Cards/UI/UnitItem.uxml?fileID=9197481963319205126&amp;guid=26805b5f1c472734bbd37880d504ef40&amp;type=3#UnitItem" />
+    <ui:Template name="SkillBar" src="project://database/Assets/Cards/UI/SkillBar.uxml?fileID=9197481963319205126&amp;guid=e4cdacb54d940e146b36d03a85a10d66&amp;type=3#SkillBar" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <PlayerInfoBadge style="width: 180px; height: 300px; align-items: center; flex-direction: column-reverse; justify-content: flex-end;">
-        <ResourcePanel />
-        <ui:Instance template="CardSmall" name="CardSmall" />
+    <PlayerInfoBadge picking-mode="Ignore" class="unit-badge" style="align-items: flex-start; flex-direction: column; justify-content: flex-start; padding-bottom: 20px;">
+        <ui:VisualElement style="align-items: center; flex-direction: row;">
+            <ui:Instance template="UnitItem" name="UnitItem" style="padding-bottom: 17px;" />
+            <ResourcePanel />
+        </ui:VisualElement>
+        <ui:VisualElement name="PlayBar">
+            <ui:Instance template="SkillBar" name="SkillBar" />
+            <ui:Instance template="SkillBar" name="SkillBar" />
+        </ui:VisualElement>
     </PlayerInfoBadge>
 </ui:UXML>
