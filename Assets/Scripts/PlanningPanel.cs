@@ -22,7 +22,7 @@ public class PlanningPanel : MonoBehaviour
         planningPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("PlanningPanel");
         Debug.Assert(planningPanel != null, this);
         cardPanel = planningPanel.Q("CardPanel");
-        planningPanel.Q<Button>("Confirm").clicked += OnConfirm;
+        planningPanel.Q<Button>("Confirm").clicked += OnEndTurn;
         Hide();
     }
 
@@ -31,16 +31,22 @@ public class PlanningPanel : MonoBehaviour
         planningPanel.style.display = DisplayStyle.None;
     }
 
-
-    void OnConfirm()
+    void OnEndTurn()
     {
-        audio.PlayOneShot(ReadySound);
-        onConfirmWrapper?.Invoke();
+        onEndTurnWrapper.Invoke();
         Hide();
     }
-    Action onConfirmWrapper;
 
-    public void Show(PlayerInfo player, Unit unit, Action onConfirm)
+    void OnConfirm(Card card)
+    {
+        onPlayWrapper.Invoke(card);
+        Hide();
+    }
+
+    Action<Card> onPlayWrapper;
+    Action onEndTurnWrapper;
+
+    public void Show(PlayerInfo player, Unit unit, Action<Card> onPlay, Action onEndTurn)
     {
         var deck = player.Deck;
 
@@ -50,7 +56,8 @@ public class PlanningPanel : MonoBehaviour
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-        onConfirmWrapper = onConfirm;
+        onPlayWrapper = onPlay;
+        onEndTurnWrapper = onEndTurn;
 
         var doc = FindObjectOfType<UIDocument>();
         cardPanel.Clear();
@@ -65,11 +72,7 @@ public class PlanningPanel : MonoBehaviour
                 card.SetSelectionState(!deck.Queued.Contains(card));
                 var selected = card.State == Card.CardState.Queued;
                 audio.PlayOneShot(selected ? UnselectSound : SelectSound);
-                if (selected)
-                    cx.AddToClassList("carditem-selectable--selected");
-                else
-                    cx.RemoveFromClassList("carditem-selectable--selected");
-                CalculateValidCards(deck, badges);
+                OnConfirm(card);
             });
         }
         CalculateValidCards(deck, badges);
@@ -100,7 +103,5 @@ public class PlanningPanel : MonoBehaviour
                 x.SetEnabled(costOk);
             }
         });
-
-        planningPanel.Q<Button>("Confirm").SetEnabled(deck.QueueIsValid);
     }
 }

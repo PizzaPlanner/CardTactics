@@ -21,13 +21,14 @@ public abstract class Card : ScriptableObject, IPlayable
     [HideInEditorMode]
     public CardState State { get; protected set; }
 
-    public virtual IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
+    public IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
     {
         State = CardState.Current;
         yield return new WaitForSeconds(0.2f);
         yield return PlaySkills(map, unit, player, true);
         yield return new WaitForSeconds(0.2f);
         State = StateOnPlayed;
+        player.Deck.MarkPlayed(this);
     }
 
     public void Destroy() { State = CardState.Destroyed; }
@@ -49,7 +50,7 @@ public abstract class Card : ScriptableObject, IPlayable
         return list;
     }
 
-    public virtual void OnPlanningStart(Map map, PlayerInfo player)
+    public virtual void OnTurnStart(Map map, PlayerInfo player)
     {
         foreach (var skill in Skills)
         {
@@ -59,7 +60,7 @@ public abstract class Card : ScriptableObject, IPlayable
         }
     }
 
-    public virtual void OnPlanningEnd(Map map, PlayerInfo player) { }
+    public virtual void OnTurnEnd(Map map, PlayerInfo player) { }
 
     protected abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }

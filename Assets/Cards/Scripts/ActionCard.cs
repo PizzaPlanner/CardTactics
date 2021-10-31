@@ -33,15 +33,15 @@ public class ActionCard : Card
 
     protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Unplayed;
 
-    public override void OnPlanningStart(Map map, PlayerInfo player)
+    public override void OnTurnStart(Map map, PlayerInfo player)
     {
         if (State == CardState.Active && Once) Destroy();
-        base.OnPlanningStart(map, player);
+        base.OnTurnStart(map, player);
     }
 
-    public override void OnPlanningEnd(Map map, PlayerInfo player)
+    public override void OnTurnEnd(Map map, PlayerInfo player)
     {
         if (Temporary && State == CardState.Unplayed) Destroy();
-        base.OnPlanningEnd(map, player);
+        base.OnTurnEnd(map, player);
     }
 }

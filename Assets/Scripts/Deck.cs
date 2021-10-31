@@ -13,21 +13,6 @@ public class Deck : ScriptableObject
 
     public UnitCard Commander;
 
-    public bool QueueIsValid
-    {
-        get
-        {
-            var total = GetTotalCapacities();
-            var used = GetUsedCapacities();
-            foreach (var cap in used.Keys.ToArray())
-            {
-                total[cap] -= used[cap];
-            }
-
-            return total.Values.All(x => x >= 0) && Queued.Count() > 0;
-        }
-    }
-
     public Dictionary<CardClass, int> GetUsedCapacities()
     {
         var capacities = new Dictionary<CardClass, int>();
@@ -45,7 +30,7 @@ public class Deck : ScriptableObject
 
         foreach (Card card in Cards)
         {
-            if (card is not ActionCard acard || card.State != Card.CardState.Queued) continue;
+            if (card is not ActionCard acard || (card.State != Card.CardState.Queued && !Played.Contains(card))) continue;
             foreach (var cost in acard.Cost)
                 capacities[cost.Class] += cost.Cost;
         }
@@ -86,8 +71,10 @@ public class Deck : ScriptableObject
         return capacities;
     }
 
+    List<Card> Played;
+
     public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
-    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
+    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed && !Played.Contains(x));
     public IEnumerable<Card> Queued => Cards.Where(x => x.State == Card.CardState.Queued);
     public IEnumerable<ActionCard> Playable
     {
@@ -99,16 +86,19 @@ public class Deck : ScriptableObject
         }
     }
 
-    public void OnPlanningStart(Map map, PlayerInfo player)
+    public void MarkPlayed(Card card) => Played.Add(card);
+
+    public void OnTurnStart(Map map, PlayerInfo player)
     {
+        Played = new List<Card>();
         foreach (var card in Cards)
-            card.OnPlanningStart(map, player);
+            card.OnTurnStart(map, player);
     }
 
-    public void OnPlanningEnd(Map map, PlayerInfo player)
+    public void OnTurnEnd(Map map, PlayerInfo player)
     {
         foreach (var card in Cards)
-            card.OnPlanningEnd(map, player);
+            card.OnTurnEnd(map, player);
     }
 
     public static Deck Create(Deck prefab)
@@ -119,6 +109,7 @@ public class Deck : ScriptableObject
             deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Unplayed);
         deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
         deck.Commander.UnitReference.Type = UnitFilter.Commander;
+        deck.Played = new List<Card>();
         return deck;
     }
 

@@ -2,8 +2,8 @@
     <ui:Template name="CardBig" src="project://database/Assets/Cards/UI/CardBig.uxml?fileID=9197481963319205126&amp;guid=29a9371bab04ae14aa88f1bec4eb9fbc&amp;type=3#CardBig" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
     <ui:VisualElement name="PlanningPanel" picking-mode="Ignore" style="position: absolute; bottom: 0; left: 0; right: 0; top: 0; align-items: center; justify-content: flex-end;">
-        <ui:VisualElement name="CardPanel" style="position: relative; height: 20%; align-items: flex-end; justify-content: center; flex-direction: row; width: 64%; padding-bottom: 10px;" />
-        <ui:Button text="Confirm" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 21%;" />
+        <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; justify-content: center; flex-direction: row; padding-bottom: 10px; bottom: -200px;" />
+        <ui:Button text="End Turn" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 150px; right: 50px; height: 128px;" />
     </ui:VisualElement>
     <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 10px; left: 0; bottom: 0; padding-left: 10px;">
         <ui:VisualElement name="ReadyPanel" style="flex-direction: column; align-items: flex-start; justify-content: center;" />

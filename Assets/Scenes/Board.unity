@@ -246,7 +246,7 @@ MonoBehaviour:
   SelectSound: {fileID: 8300000, guid: e978cf7567ededc4cbac4fffbe072afb, type: 3}
   UnselectSound: {fileID: 8300000, guid: 623e8d2f237eccd4b9c3c9545695c15f, type: 3}
   ReadySound: {fileID: 8300000, guid: ec966655d5e585c48b343f0369bd39ef, type: 3}
-  cardAsset: {fileID: 9197481963319205126, guid: 9eb4eb3896cb6cb46a56779107bae110, type: 3}
+  cardAsset: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
 --- !u!82 &728829429
 AudioSource:
   m_ObjectHideFlags: 0

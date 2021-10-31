@@ -12,8 +12,8 @@
 }
 
 .cost-icon--big {
-    width: 37px;
-    height: 37px;
+    width: 52px;
+    height: 52px;
     background-image: url('project://database/Assets/3rdParty/64%20flat%20icons/png/64px/Modifiers_LevelUp.png?fileID=21300000&guid=f6155c86d5314024989c1ef8cb0100e5&type=3#Modifiers_LevelUp');
 }
 
@@ -53,9 +53,21 @@
 }
 
 .carditem-selectable:hover {
-    translate: 0 -25px;
+    translate: 0 -200px;
     transition-duration: 50ms;
-    transition-timing-function: ease-out;
+    transition-timing-function: linear;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(255, 255, 255, 255);
+    border-right-color: rgba(255, 255, 255, 255);
+    border-top-color: rgba(255, 255, 255, 255);
+    border-bottom-color: rgba(255, 255, 255, 255);
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
 }
 
 .carditem-selectable:active {
@@ -158,4 +170,12 @@
 
 #SkillDisplay #CostRow {
     display: none;
+}
+
+.helper-playcard {
+    display: none;
+}
+
+.carditem-selectable:hover .helper-playcard {
+    display: flex;
 }
