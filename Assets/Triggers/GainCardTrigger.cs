@@ -11,7 +11,7 @@ public class GainCardTrigger : Trigger
     [SerializeField] int Player;
     [SerializeField] bool GiveToTriggerer;
 
-    protected override IEnumerator Execute(Board board, Map map, PlayerInfo player)
+    protected override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
     {
         if (!GiveToTriggerer && (Player < 0 || Player >= map.Players.Length))
         {

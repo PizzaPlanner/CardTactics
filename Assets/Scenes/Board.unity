@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88996214e8ffd6a4d8f930c4fd27bf00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnNoCardsPlayed: {fileID: 11400000, guid: 8086d45c1fa73b44d9f9261d17bd7a77, type: 2}
 --- !u!4 &78512298
 Transform:
   m_ObjectHideFlags: 0

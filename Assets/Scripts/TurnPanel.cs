@@ -42,28 +42,6 @@ public class TurnPanel : MonoBehaviour
         SortBadges();
     }
 
-    public void OnRoundStart()
-    {
-
-    }
-
-    public void OnPreparation()
-    {
-        // readyPanel.Query<PlayerInfoBadge>()
-        // .ForEach(x => x.Q<ResourcePanel>().Deck = x.Player.Deck);
-        // foreach (Transform t in nextActionsPanel)
-        //     Destroy(t.gameObject);
-    }
-
-    public void OnCardInQueue(Card card, PlayerInfo player)
-    {
-        // var indicator = Instantiate(turnIndicatorPrefab);
-        // indicator.GetComponent<SkillProgressBar>().SetSkills(card, player);
-        // indicator.SetCard(card);
-        // // indicator.PlayerColorBorder.color = player.Color;
-        // indicator.transform.SetParent(nextActionsPanel);
-    }
-
     internal void SortBadges()
     {
         readyPanel.Sort((x, y) => x.Q<UnitItem>().Unit.Speed.CompareTo(y.Q<UnitItem>().Unit.Speed));

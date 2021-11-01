@@ -6,6 +6,61 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
+public class PlayableQueue
+{
+    public struct PlayableWithInfo
+    {
+        public PlayerInfo Player;
+        public Unit Unit;
+        public IPlayable Playable;
+    }
+
+    public PlayableQueue()
+    {
+        queue = new();
+    }
+
+    public bool Empty => queue.Count == 0;
+
+    readonly Queue<PlayableWithInfo> queue;
+
+    public PlayableWithInfo Dequeue() => queue.Dequeue();
+    public void Enqueue(PlayerInfo player, Unit unit, IPlayable playable) => Enqueue(player, unit, playable, false);
+    public void InsertFirst(PlayerInfo player, Unit unit, IPlayable playable) => Enqueue(player, unit, playable, true);
+
+
+    void Enqueue(PlayerInfo player, Unit unit, IPlayable playable, bool priorizeNext)
+    {
+        if (playable is Card card)
+        {
+            if (card.State != Card.CardState.Queued)
+            {
+                if (card.State == Card.CardState.Unplayed)
+                    card.SetSelectionState(true);
+                else
+                {
+                    Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
+                    return;
+                }
+            }
+            Debug.Log($"Queued {card.Name} for {player.Name}");
+        }
+        else
+            Debug.Log($"Queued {playable.GetType().Name} for {player.Name}");
+
+        if (priorizeNext)
+        {
+            var old = queue.ToArray();
+            queue.Clear();
+            queue.Enqueue(new PlayableWithInfo { Player = player, Unit = unit, Playable = playable });
+            foreach (var item in old)
+                queue.Enqueue(item);
+        }
+        else
+            queue.Enqueue(new PlayableWithInfo { Player = player, Unit = unit, Playable = playable });
+    }
+}
+
 public class Board : MonoBehaviour
 {
 
@@ -31,10 +86,12 @@ public class Board : MonoBehaviour
     Map Map;
 
     [ShowInInspector]
-    Queue<(PlayerInfo player, IPlayable playable)> queuedPlayables;
+    public PlayableQueue Playables { get; } = new();
 
-    [ShowInInspector]
     IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.State == PlayerInfo.PlayerState.Active);
+
+    [SerializeField]
+    Card OnNoCardsPlayed;
 
     Queue<HumanPlayer> unassignedPlayers;
 
@@ -43,7 +100,6 @@ public class Board : MonoBehaviour
     {
         CurrentStage = Stage.Setup;
         unassignedPlayers = new Queue<HumanPlayer>();
-        queuedPlayables = new Queue<(PlayerInfo, IPlayable)>();
         playableUnits = new Queue<Unit>();
         if (players != null)
             foreach (var player in players)
@@ -60,7 +116,7 @@ public class Board : MonoBehaviour
         player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
         player.State = PlayerInfo.PlayerState.Active;
 
-        QueuePlayable(player, player.Deck.Commander, true);
+        Playables.InsertFirst(player, null, player.Deck.Commander);
         return true;
     }
 
@@ -72,8 +128,11 @@ public class Board : MonoBehaviour
 
     void OnPlay()
     {
-        var (player, playable) = queuedPlayables.Dequeue();
-        if (player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
+        var info = Playables.Dequeue();
+        var player = info.Player;
+        var playable = info.Playable;
+        var unit = info.Unit;
+        if (player != null && player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
         {
             Debug.Log($"{player.Name} is dead. skipped {playable.GetType().Name}");
             return;
@@ -82,9 +141,9 @@ public class Board : MonoBehaviour
         IEnumerator PlayAndResume()
         {
             currentPlayable = playable;
-            yield return playable.Play(this, Map, currentUnit, player);
+            yield return playable.Play(this, Map, unit, player);
             currentPlayable = null;
-            if (queuedPlayables.Count > 0)
+            if (!Playables.Empty)
                 CurrentStage = Stage.Play;
             else if (currentUnit == null)
                 CurrentStage = Stage.Events;
@@ -95,8 +154,6 @@ public class Board : MonoBehaviour
         }
         WaitingForAction = true;
         StartCoroutine(PlayAndResume());
-
-        turnPanel.OnRoundStart();
     }
 
     void OnEvents()
@@ -109,7 +166,7 @@ public class Board : MonoBehaviour
         if (triggers.Count > 0)
         {
             foreach (var trigger in triggers)
-                QueuePlayable(trigger.player, trigger.trigger, false);
+                Playables.Enqueue(trigger.player, null, trigger.trigger);
         }
         foreach (var player in CheckDeath(Map))
         {
@@ -117,10 +174,10 @@ public class Board : MonoBehaviour
                 if (unit.Player == player)
                     Destroy(unit);
             player.State = PlayerInfo.PlayerState.Dead;
-            QueuePlayable(player, player.OnLooseTrigger, true);
+            Playables.InsertFirst(player, null, player.OnLooseTrigger);
         }
 
-        if (queuedPlayables.Count() > 0)
+        if (!Playables.Empty)
             CurrentStage = Stage.Play;
         else if (playableUnits.Count() > 0)
         {
@@ -207,32 +264,6 @@ public class Board : MonoBehaviour
             turnPanel = GameObject.FindObjectOfType<TurnPanel>();
     }
 
-    public void QueuePlayable(PlayerInfo player, IPlayable playable, bool priorizeNext)
-    {
-        if (playable is Card card)
-        {
-            if (card.State != Card.CardState.Queued)
-            {
-                if (card.State == Card.CardState.Unplayed)
-                    card.SetSelectionState(true);
-                else
-                {
-                    Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
-                    return;
-                }
-            }
-            turnPanel.OnCardInQueue(card, player);
-            Debug.Log($"Queued {card.Name} for {player.Name}");
-        }
-        else
-            Debug.Log($"Queued {playable.GetType().Name} for {player.Name}");
-
-        queuedPlayables.Enqueue((player, playable));
-        if (priorizeNext)
-            while (!queuedPlayables.Peek().Equals((player, playable)))
-                queuedPlayables.Enqueue(queuedPlayables.Dequeue());
-    }
-
     void Update()
     {
         if (!WaitingForAction)
@@ -294,8 +325,10 @@ public class Board : MonoBehaviour
     {
         if (cardsPlayedForCurrentUnit == 0)
         {
-            Debug.LogWarning("Error with Queue. Ouch!");
-            QueuePlayable(player, player.OnInvalidQueueTrigger, true);
+            Debug.LogWarning($"{currentUnit.Name} ended without playing a Card!");
+            var onNoCardsInstance = Instantiate(OnNoCardsPlayed);
+            onNoCardsInstance.Init();
+            Playables.InsertFirst(player, currentUnit, onNoCardsInstance);
         }
 
         CurrentStage = Stage.Events;
@@ -304,7 +337,7 @@ public class Board : MonoBehaviour
 
     public void SetPlayerReady(PlayerInfo player, Card card)
     {
-        QueuePlayable(player, card, false);
+        Playables.Enqueue(player, currentUnit, card);
         cardsPlayedForCurrentUnit++;
         CurrentStage = Stage.Play;
         Resume();

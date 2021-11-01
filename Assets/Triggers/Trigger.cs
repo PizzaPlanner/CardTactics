@@ -15,13 +15,13 @@ public abstract class Trigger : MonoBehaviour, IPlayable
 
     public bool Executed { get; private set; }
 
-    public IEnumerator Play(Board board, Map map, Unit _, PlayerInfo player)
+    public IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
     {
         if (Executed && !CanTriggerMultipleTimes)
             yield break;
         Executed = true;
-        yield return Execute(board, map, player);
+        yield return Execute(board, map, unit, player);
     }
 
-    protected abstract IEnumerator Execute(Board board, Map map, PlayerInfo player);
+    protected abstract IEnumerator Execute(Board board, Map map, Unit unit, PlayerInfo player);
 }

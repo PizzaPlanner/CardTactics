@@ -1,6 +1,7 @@
-﻿{
+{
     "files.exclude":
     {
+        "Assets/3rdParty":true,
         "**/.DS_Store":true,
         "**/.git":true,
         "**/.gitignore":true,

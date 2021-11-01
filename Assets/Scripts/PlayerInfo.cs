@@ -46,7 +46,6 @@ public class PlayerInfo
 
     public LooseCondition LooseCondition;
     public Trigger OnLooseTrigger;
-    public Trigger OnInvalidQueueTrigger;
 
     internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
     {

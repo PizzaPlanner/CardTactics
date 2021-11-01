@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Pool;
 
 [RequireComponent(typeof(Grid))]
 public class Map : MonoBehaviour
