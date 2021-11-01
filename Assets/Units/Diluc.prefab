@@ -51,6 +51,7 @@ MonoBehaviour:
   Rank: 0
   Name: Diluc
   Icon: {fileID: 21300000, guid: df7e8639cbf988a4ba57d4c0bf1c1fb3, type: 3}
+  Speed: 50
   Card: {fileID: 0}
   MaxLife: 15
   Type: 1

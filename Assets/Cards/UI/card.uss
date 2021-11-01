@@ -22,6 +22,10 @@
     -unity-font: url('project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=8378c736dc8127647b9fbabd26844a78&type=3#NotInter-Regular');
 }
 
+.carditem-selectable:disabled .color-default-text {
+    color: rgb(192, 185, 168);
+}
+
 .cost-icon--affordable {
     -unity-background-image-tint-color: rgb(225, 241, 224);
 }
@@ -54,20 +58,29 @@
 
 .carditem-selectable:hover {
     translate: 0 -200px;
-    transition-duration: 50ms;
+    transition-duration: 150ms;
     transition-timing-function: linear;
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-left-color: rgba(255, 255, 255, 255);
-    border-right-color: rgba(255, 255, 255, 255);
-    border-top-color: rgba(255, 255, 255, 255);
-    border-bottom-color: rgba(255, 255, 255, 255);
-    border-top-left-radius: 1px;
-    border-bottom-left-radius: 1px;
-    border-top-right-radius: 1px;
-    border-bottom-right-radius: 1px;
+    border-left-color: rgba(63, 173, 233, 255);
+    border-right-color: rgba(63, 173, 233, 255);
+    border-top-color: rgba(63, 173, 233, 255);
+    border-bottom-color: rgba(63, 173, 233, 255);
+    transition-property: translate;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    border-top-width: 5px;
+    border-bottom-width: 5px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.carditem-selectable:hover .helper-playcard {
+    display: flex;
+}
+
+.carditem-selectable:disabled .helper-playcard {
+    display: none;
 }
 
 .carditem-selectable:active {
@@ -77,23 +90,15 @@
 }
 
 .carditem-selectable:disabled {
-    transition-duration: 50ms;
-    transition-timing-function: linear;
-    scale: 0.95 0.95;
     opacity: 1;
+    border-left-color: rgba(195, 54, 54, 255);
+    border-right-color: rgba(195, 54, 54, 255);
+    border-top-color: rgba(195, 54, 54, 255);
+    border-bottom-color: rgba(195, 54, 54, 255);
 }
 
-.carditem-selectable--selected > #Border {
-    -unity-background-image-tint-color: rgb(0, 255, 94);
-}
-
-.carditem-selectable--selected {
-    scale: 1.1 1.1;
-    transition-duration: 100ms;
-}
-
-.carditem-selectable:disabled > #Border {
-    -unity-background-image-tint-color: rgb(219, 28, 28);
+.carditem-selectable:disabled #Icon {
+    -unity-background-image-tint-color: rgba(125, 125, 125, 255);
 }
 
 .resource-panel {
@@ -174,8 +179,4 @@
 
 .helper-playcard {
     display: none;
-}
-
-.carditem-selectable:hover .helper-playcard {
-    display: flex;
 }

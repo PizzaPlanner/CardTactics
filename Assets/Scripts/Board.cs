@@ -155,7 +155,7 @@ public class Board : MonoBehaviour
         playableUnits.Clear();
         var playables = new List<Unit>();
         foreach (var unit in FindObjectsOfType<Unit>())
-            if (unit.Player != null && RegisteredPlayers.Contains(unit.Player) && unit.Card != null)
+            if (unit.Player != null && RegisteredPlayers.Contains(unit.Player))
             {
                 playables.Add(unit);
             }
@@ -164,6 +164,7 @@ public class Board : MonoBehaviour
         {
             playableUnits.Enqueue(item);
         }
+        turnPanel.SortBadges();
 
         if (playableUnits.Count() > 0)
             CurrentStage = Stage.PreparePlan;
@@ -175,7 +176,8 @@ public class Board : MonoBehaviour
     {
         currentUnit = playableUnits.Dequeue();
         cardsPlayedForCurrentUnit = 0;
-        turnPanel.OnTurnStart(currentUnit);
+        WaitingForAction = true;
+        StartCoroutine(turnPanel.OnTurnStart(currentUnit, onComplete: Resume));
 
         CurrentStage = Stage.Plan;
     }

@@ -9,4 +9,7 @@
         <ui:VisualElement name="ReadyPanel" style="flex-direction: column; align-items: flex-start; justify-content: center;" />
     </ui:VisualElement>
     <ui:Instance template="CardBig" name="TooltipCard" style="position: absolute; right: 0; justify-content: center; top: 0; bottom: 0; padding-right: 20px;" />
+    <ui:VisualElement name="TurnAnnouncer" style="position: absolute; top: 35%; left: 25%; right: 25%; height: 100px; background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/name_bar3.png?fileID=21300000&amp;guid=12eaceb7341922b4398ff20c8bbcff90&amp;type=3#name_bar3&apos;); justify-content: center; opacity: 0.75;">
+        <ui:Label text="Your Turn" display-tooltip-when-elided="true" class="color-default-text" style="-unity-text-align: middle-center; -unity-text-outline-width: 0; text-shadow: 2px 2px 2px rgb(0, 0, 0); font-size: 52px; word-spacing: 10px;" />
+    </ui:VisualElement>
 </ui:UXML>

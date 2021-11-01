@@ -356,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   readyBadgeAsset: {fileID: 9197481963319205126, guid: 1d599a6e9e01ecd4cbdd0045b1307771, type: 3}
+  turnAnnouncerTime: 1
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0
