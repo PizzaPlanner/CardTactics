@@ -97,10 +97,12 @@ public class Map : MonoBehaviour
                 tile.Neighbours.Add(neighbour);
             }
 
-            if (tile.Unit != null && thing.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length)
+            if (tile.TryGetComponent<UnitSpawn>(out var spawn))
             {
-                tile.Place(tile.Unit, Facing.Preserve);
-                tile.Unit.Player = Players[owner.Id];
+                var instance = Instantiate(spawn.Prefab);
+                if (thing.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length)
+                    instance.Player = Players[owner.Id];
+                tile.Place(instance, spawn.Facing);
             }
         }
         foreach (var tile in Tiles)

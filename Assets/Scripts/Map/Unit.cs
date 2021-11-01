@@ -19,6 +19,9 @@ public class Unit : MonoBehaviour
 
     public UnitFilter Type;
 
+    static int spawnCounter;
+    int counter;
+
     public void Damage(float dmg, bool isPreview = false)
     {
         if (!isPreview)
@@ -27,7 +30,7 @@ public class Unit : MonoBehaviour
             if (Life > MaxLife)
                 Life = MaxLife;
             LifePreview = Life;
-            OnLifeChange?.Invoke(Life);
+            OnLifeChange?.Invoke(Life, MaxLife);
             if (Life <= 0)
             {
                 Card?.Destroy();
@@ -42,20 +45,31 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public Action<float> OnLifeChange;
+    public Action<float, float> OnLifeChange;
 
     void OnDestroy()
     {
         if (Player != null)
-            FindObjectOfType<TurnPanel>().RemoveUnit(this);
+            FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
     }
 
     void Start()
     {
         Life = MaxLife;
         LifePreview = MaxLife;
+        counter = spawnCounter++;
         if (Player != null)
-            FindObjectOfType<TurnPanel>().AddUnit(this);
+            FindObjectOfType<TurnPanel>()?.AddUnit(this);
+        OnLifeChange?.Invoke(Life, MaxLife);
+    }
+
+    public static int CompareSpeed(Unit u1, Unit u2)
+    {
+        var x = u1.Speed.CompareTo(u2.Speed);
+        if (x == 0)
+            return u1.counter.CompareTo(u2.counter);
+        else
+            return x;
     }
 
     public void MoveInstant(Tile from, Tile to)

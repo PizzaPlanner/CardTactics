@@ -18,7 +18,7 @@ MonoBehaviour:
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 1776283050534502411
+      rid: 1776283050534502456
   icon: {fileID: 21300000, guid: a701eaa02915c794796463d6eb6a829a, type: 3}
   name: Sorrow
   cost: []
@@ -27,14 +27,14 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1776283050534502411
+    - rid: 1776283050534502456
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: 60ad9b388a610d742b43170d2a71521a, type: 3}
         SkippableWithInput: 0
         Filter:
-          Tile: 0
-          Unit: 0
+          Tile: 16
+          Unit: 15
           Range: 0
         MinRange: 0
         MaxRange: 0
