@@ -1,9 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <ui:Template name="UnitItem" src="project://database/Assets/Cards/UI/UnitItem.uxml?fileID=9197481963319205126&amp;guid=26805b5f1c472734bbd37880d504ef40&amp;type=3#UnitItem" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <PlayerInfoBadge picking-mode="Ignore" class="unit-badge" style="align-items: flex-start; flex-direction: column; justify-content: flex-start; padding-bottom: 20px;">
+    <PlayerInfoBadge picking-mode="Ignore" class="unit-badge unit-badge--current" style="align-items: flex-start; flex-direction: column; justify-content: flex-start; padding-bottom: 20px;">
         <ui:VisualElement style="align-items: center; flex-direction: row;">
-            <ui:Instance template="UnitItem" name="UnitItem" style="padding-bottom: 17px;" />
+            <ui:VisualElement name="ActiveMarker" style="background-image: url(&apos;project://database/Assets/SkillPreviewProgress_Done.png?fileID=21300000&amp;guid=47761a728805bc7438646507fa78a043&amp;type=3#SkillPreviewProgress_Done&apos;); width: 86px; height: 87px; -unity-slice-left: 1; -unity-slice-top: 1; -unity-slice-right: 1; -unity-slice-bottom: 1; margin-right: 10px;" />
+            <ui:Instance template="UnitItem" name="UnitItem" />
+            <ui:VisualElement name="NewMarker" style="position: absolute; top: 30px; width: 100px; height: 100px; left: 30px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_resources/Quest_118.png?fileID=21300000&amp;guid=e1ec4925824a4f843bcce6fd988d7109&amp;type=3#Quest_118&apos;);" />
             <ResourcePanel />
         </ui:VisualElement>
     </PlayerInfoBadge>

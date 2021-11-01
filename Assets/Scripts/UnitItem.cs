@@ -17,10 +17,11 @@ public class UnitItem : VisualElement
             this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter());
             this.RegisterCallback<MouseLeaveEvent>(_ => OnMouseLeave());
 
-            this.Query<Label>("Life").ForEach(x => x.text = unit.Life.ToString());
-            this.Query<Label>("MaxLife").ForEach(x => x.text = unit.MaxLife.ToString());
-
-            unit.OnLifeChange = (life) => this.Query<Label>("Life").ForEach(x => x.text = life.ToString());
+            unit.OnLifeChange = (life, maxLife) =>
+            {
+                this.Query<Label>("Life").ForEach(x => x.text = life.ToString());
+                this.Query<VisualElement>("Lifebar-Bar").ForEach(x => x.style.width = new StyleLength(new Length(life / maxLife * 100, LengthUnit.Percent)));
+            };
         }
     }
     Unit unit;

@@ -37,14 +37,13 @@ public class TurnPanel : MonoBehaviour
         border.style.borderBottomColor = player.Color;
         var resources = badge.Q<ResourcePanel>();
         resources.Deck = player.Deck;
+        badge.SetEnabled(false);
         OnTurnEnd(unit);
-
-        SortBadges();
     }
 
     internal void SortBadges()
     {
-        readyPanel.Sort((x, y) => x.Q<UnitItem>().Unit.Speed.CompareTo(y.Q<UnitItem>().Unit.Speed));
+        readyPanel.Sort((x, y) => Unit.CompareSpeed(x.Q<UnitItem>().Unit, y.Q<UnitItem>().Unit));
     }
 
     internal void RemoveUnit(Unit unit)
@@ -52,9 +51,20 @@ public class TurnPanel : MonoBehaviour
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.Q<UnitItem>().Unit == unit).ForEach(x => x.RemoveFromHierarchy());
     }
 
+    internal IEnumerator OnRoundStart(int round, Action onComplete)
+    {
+        turnAnnouncer.Q<Label>().text = $"Round {round}";
+        turnAnnouncer.style.display = DisplayStyle.Flex;
+        yield return new WaitForSeconds(turnAnnouncerTime);
+        turnAnnouncer.style.display = DisplayStyle.None;
+        readyPanel.Query<PlayerInfoBadge>().ForEach(x => x.SetEnabled(true));
+        SortBadges();
+        onComplete?.Invoke();
+    }
+
     internal IEnumerator OnTurnStart(Unit unit, Action onComplete)
     {
-        readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.SetEnabled(true));
+        readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.AddToClassList("unit-badge--current"));
         turnAnnouncer.Q<Label>().text = $"Turn of <color=#{ColorUtility.ToHtmlStringRGB(unit.Player.Color)}>{unit.Name}</color>";
         turnAnnouncer.style.display = DisplayStyle.Flex;
         yield return new WaitForSeconds(turnAnnouncerTime);
@@ -64,6 +74,6 @@ public class TurnPanel : MonoBehaviour
 
     internal void OnTurnEnd(Unit unit)
     {
-        readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.SetEnabled(false));
+        readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.RemoveFromClassList("unit-badge--current"));
     }
 }

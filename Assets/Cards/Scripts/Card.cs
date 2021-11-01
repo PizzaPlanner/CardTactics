@@ -24,9 +24,11 @@ public abstract class Card : ScriptableObject, IPlayable
     public IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
     {
         State = CardState.Current;
-        yield return new WaitForSeconds(0.2f);
+        CardTooltip.Show(this);
+        yield return new WaitForSeconds(board.CardPlayPreTime);
         yield return PlaySkills(map, unit, player, true);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(board.CardPlayPostTime);
+        CardTooltip.Hide();
         State = StateOnPlayed;
         player.Deck.MarkPlayed(this);
     }

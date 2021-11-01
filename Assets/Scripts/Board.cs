@@ -4,7 +4,6 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 public class PlayableQueue
 {
@@ -70,11 +69,15 @@ public class Board : MonoBehaviour
         PreparePlan,
         Plan,
         Play,
-        StartTurn,
+        EndTurn,
+        StartRound,
         Events,
         End
 
     }
+
+    public float CardPlayPreTime;
+    public float CardPlayPostTime;
 
     [ShowInInspector]
     bool WaitingForAction;
@@ -145,10 +148,8 @@ public class Board : MonoBehaviour
             currentPlayable = null;
             if (!Playables.Empty)
                 CurrentStage = Stage.Play;
-            else if (currentUnit == null)
-                CurrentStage = Stage.Events;
             else
-                CurrentStage = Stage.Plan;
+                CurrentStage = Stage.Events;
 
             Resume();
         }
@@ -158,15 +159,11 @@ public class Board : MonoBehaviour
 
     void OnEvents()
     {
-        if (currentUnit != null)
-            turnPanel.OnTurnEnd(currentUnit);
-        currentUnit = null;
-        cardsPlayedForCurrentUnit = 0;
         var triggers = Map.CheckTriggers();
         if (triggers.Count > 0)
         {
             foreach (var trigger in triggers)
-                Playables.Enqueue(trigger.player, null, trigger.trigger);
+                Playables.Enqueue(trigger.player, currentUnit, trigger.trigger);
         }
         foreach (var player in CheckDeath(Map))
         {
@@ -174,23 +171,19 @@ public class Board : MonoBehaviour
                 if (unit.Player == player)
                     Destroy(unit);
             player.State = PlayerInfo.PlayerState.Dead;
-            Playables.InsertFirst(player, null, player.OnLooseTrigger);
+            Playables.InsertFirst(player, currentUnit, player.OnLooseTrigger);
         }
 
         if (!Playables.Empty)
             CurrentStage = Stage.Play;
+        else if (currentUnit != null)
+            CurrentStage = Stage.Plan;
         else if (playableUnits.Count() > 0)
-        {
             CurrentStage = Stage.PreparePlan;
-        }
         else if (RegisteredPlayers.Count() > 0)
-        {
-            CurrentStage = Stage.StartTurn;
-        }
+            CurrentStage = Stage.StartRound;
         else
-        {
             CurrentStage = Stage.End;
-        }
     }
 
     void OnEnd()
@@ -201,7 +194,8 @@ public class Board : MonoBehaviour
 
     Unit currentUnit;
     Queue<Unit> playableUnits;
-    void OnStartTurn()
+    int round;
+    void OnStartRound()
     {
         foreach (var player in RegisteredPlayers)
         {
@@ -216,17 +210,26 @@ public class Board : MonoBehaviour
             {
                 playables.Add(unit);
             }
-        playables.Sort((x, y) => x.Speed.CompareTo(y.Speed));
+        playables.Sort((x, y) => Unit.CompareSpeed(x, y));
         foreach (var item in playables)
         {
             playableUnits.Enqueue(item);
         }
-        turnPanel.SortBadges();
 
         if (playableUnits.Count() > 0)
             CurrentStage = Stage.PreparePlan;
         else
             CurrentStage = Stage.End;
+
+        WaitingForAction = true;
+        StartCoroutine(turnPanel.OnRoundStart(++round, onComplete: Resume));
+    }
+
+    void OnEndTurn()
+    {
+        turnPanel.OnTurnEnd(currentUnit);
+        currentUnit = null;
+        CurrentStage = Stage.Events;
     }
 
     void OnPreparePlan()
@@ -277,8 +280,10 @@ public class Board : MonoBehaviour
                     OnPlan(); break;
                 case Stage.Play:
                     OnPlay(); break;
-                case Stage.StartTurn:
-                    OnStartTurn(); break;
+                case Stage.EndTurn:
+                    OnEndTurn(); break;
+                case Stage.StartRound:
+                    OnStartRound(); break;
                 case Stage.Events:
                     OnEvents(); break;
                 case Stage.End:
@@ -331,7 +336,7 @@ public class Board : MonoBehaviour
             Playables.InsertFirst(player, currentUnit, onNoCardsInstance);
         }
 
-        CurrentStage = Stage.Events;
+        CurrentStage = Stage.EndTurn;
         Resume();
     }
 
