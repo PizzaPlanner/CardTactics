@@ -28,8 +28,8 @@ public class CardItem : VisualElement
             }
             else if (card is UnitCard ucard)
             {
-                this.Query<Label>("Life").ForEach(x => x.text = ucard.UnitReference.Life.ToString());
-                this.Query<Label>("MaxLife").ForEach(x => x.text = ucard.UnitReference.MaxLife.ToString());
+                this.Query<Label>("Life").ForEach(x => x.text = ucard.UnitReference.MaxLife.ToString());
+                this.Query<Label>("Energy").ForEach(x => x.text = ucard.UnitReference.Resources.Energy.ToString());
                 this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
             }
         }
