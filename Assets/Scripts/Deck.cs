@@ -7,90 +7,22 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Deck : ScriptableObject
 {
-    // const int POINTS_PER_ROUND_BASE = 8;
-    // public int RoundPointsFree { get; private set; }
     public Card[] Cards;
 
     public UnitCard Commander;
-
-    public Dictionary<CardClass, int> GetUsedCapacities()
-    {
-        var capacities = new Dictionary<CardClass, int>();
-
-        // Initialize
-        foreach (var card in Cards)
-        {
-            capacities[card.Class] = 0;
-            if (card is ActionCard acard)
-                foreach (var cost in acard.Cost)
-                    capacities[cost.Class] = 0;
-            if (card is ItemCard icard)
-                capacities[icard.ItemClass] = 0;
-        }
-
-        foreach (Card card in Cards)
-        {
-            if (card is not ActionCard acard || (card.State != Card.CardState.Queued && !Played.Contains(card))) continue;
-            foreach (var cost in acard.Cost)
-                capacities[cost.Class] += cost.Cost;
-        }
-
-        return capacities;
-    }
-
-    public Dictionary<CardClass, int> GetTotalCapacities()
-    {
-        var capacities = new Dictionary<CardClass, int>();
-
-        // Initialize
-        foreach (var card in Cards)
-        {
-            capacities[card.Class] = 0;
-            if (card is ActionCard acard)
-                foreach (var cost in acard.Cost)
-                    capacities[cost.Class] = 0;
-            if (card is ItemCard icard)
-                capacities[icard.ItemClass] = 0;
-        }
-
-        // Count
-        foreach (var cap in Commander.Capacities)
-            capacities[cap.Class] = cap.Cost;
-        foreach (var card in Equipped)
-            capacities[card.ItemClass] += card.actions;
-
-        // Apply buffs last to handle negative values properly
-        foreach (var card in Cards)
-        {
-            if (card.State != Card.CardState.Active) continue;
-            foreach (var skill in card.Skills)
-                if (skill is CostModifierPassive p)
-                    capacities[p.Buff.Class] = Mathf.Max(0, capacities[p.Buff.Class] + p.Buff.Cost);
-        }
-
-        return capacities;
-    }
 
     List<Card> Played;
 
     public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
     public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed && !Played.Contains(x));
     public IEnumerable<Card> Queued => Cards.Where(x => x.State == Card.CardState.Queued);
-    public IEnumerable<ActionCard> Playable
-    {
-        get
-        {
-            var used = GetUsedCapacities();
-            var total = GetTotalCapacities();
-            return Unplayed.Where(x => x is ActionCard acard && acard.Cost.All(x => used[x.Class] + x.Cost <= total[x.Class])).Cast<ActionCard>();
-        }
-    }
+    public IEnumerable<ActionCard> Playable(Unit currentUnit) => Unplayed.Where(x => x is ActionCard acard && currentUnit.Resources.CanAfford(acard.Cost)).Cast<ActionCard>();
 
     public void MarkPlayed(Card card) => Played.Add(card);
 
     public void OnTurnStart(Map map, PlayerInfo player)
     {
-        Played = new List<Card>();
+        Played.Clear();
         foreach (var card in Cards)
             card.OnTurnStart(map, player);
     }

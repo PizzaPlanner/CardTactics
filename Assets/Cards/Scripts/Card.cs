@@ -25,6 +25,7 @@ public abstract class Card : ScriptableObject, IPlayable
     {
         State = CardState.Current;
         CardTooltip.Show(this);
+        OnPlay(board, map, unit, player);
         yield return new WaitForSeconds(board.CardPlayPreTime);
         yield return PlaySkills(map, unit, player, true);
         yield return new WaitForSeconds(board.CardPlayPostTime);
@@ -34,6 +35,8 @@ public abstract class Card : ScriptableObject, IPlayable
     }
 
     public void Destroy() { State = CardState.Destroyed; }
+
+    protected virtual void OnPlay(Board board, Map map, Unit unit, PlayerInfo player) { }
 
     public void SetSelectionState(bool value)
     {

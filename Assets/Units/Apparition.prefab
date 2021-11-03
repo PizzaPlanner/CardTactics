@@ -47,14 +47,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Apparition
   Icon: {fileID: 21300000, guid: 5c0bfb21105c497409f09f8ad9df8adc, type: 3}
   Speed: 37
-  Card: {fileID: 0}
   MaxLife: 5
   Type: 2
+  Resources:
+    Energy: 1
+    Classes:
+    - {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
 --- !u!82 &8942890046518652142
 AudioSource:
   m_ObjectHideFlags: 0

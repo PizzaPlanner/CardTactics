@@ -18,18 +18,19 @@ MonoBehaviour:
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 8171666775164584270
+      rid: 1776283093645131782
   icon: {fileID: 21300000, guid: ceeb46d7d4e44b844beca0c537f88ca1, type: 3}
   name: Slow Swing
   cost:
-  - Cost: 1
-    Class: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    Energy: 1
+    Classes:
+    - {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
   Once: 0
   Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 8171666775164584270
+    - rid: 1776283093645131782
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}

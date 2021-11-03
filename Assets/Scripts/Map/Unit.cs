@@ -1,23 +1,35 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
+
+[System.Serializable]
+public class ResourceInfo
+{
+    public int Energy;
+    public int EnergySpent { get; set; }
+    public CardClass[] Classes;
+
+    public bool CanAfford(ResourceInfo other)
+    {
+        var classes = Classes;
+        return Energy - EnergySpent >= other.Energy && other.Classes.Count(x => !classes.Contains(x)) == 0;
+    }
+}
+
 public class Unit : MonoBehaviour
 {
-    public PlayerInfo Player { get => player; set { player = value; /*GetComponent<Outline>().OutlineColor = value.Color;*/ } }
-    PlayerInfo player;
-    public int Level;
-    public int Rank;
     public string Name;
     public Sprite Icon;
     public int Speed;
-
-    public UnitCard Card;
-
     public float MaxLife;
+    public UnitFilter Type;
+    public ResourceInfo Resources;
+
     public float Life { get; private set; }
     public float LifePreview { get; private set; }
-
-    public UnitFilter Type;
+    public PlayerInfo Player { get; set; }
+    public UnitCard Card { get; set; }
 
     static int spawnCounter;
     int counter;

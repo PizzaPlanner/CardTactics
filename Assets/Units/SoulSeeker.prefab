@@ -47,14 +47,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Soul Seeker
   Icon: {fileID: 21300000, guid: 2f5f12c1e28063045b07f1b6a009ec08, type: 3}
   Speed: 42
-  Card: {fileID: 0}
   MaxLife: 8
   Type: 1
+  Resources:
+    Energy: 2
+    Classes:
+    - {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
 --- !u!82 &1222922040391292849
 AudioSource:
   m_ObjectHideFlags: 0

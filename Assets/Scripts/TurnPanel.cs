@@ -36,7 +36,8 @@ public class TurnPanel : MonoBehaviour
         border.style.borderRightColor = player.Color;
         border.style.borderBottomColor = player.Color;
         var resources = badge.Q<ResourcePanel>();
-        resources.Deck = player.Deck;
+        resources.Resources = unit.Resources;
+        badge.Q<Label>("Energy").text = (unit.Resources.Energy - unit.Resources.EnergySpent).ToString();
         badge.SetEnabled(false);
         OnTurnEnd(unit);
     }
@@ -57,9 +58,25 @@ public class TurnPanel : MonoBehaviour
         turnAnnouncer.style.display = DisplayStyle.Flex;
         yield return new WaitForSeconds(turnAnnouncerTime);
         turnAnnouncer.style.display = DisplayStyle.None;
-        readyPanel.Query<PlayerInfoBadge>().ForEach(x => x.SetEnabled(true));
+        readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
+        {
+            x.SetEnabled(true);
+            var res = x.UnitItem.Unit.Resources;
+            x.Q<ResourcePanel>().Resources = res;
+            x.Q<Label>("Energy").text = (res.Energy - res.EnergySpent).ToString();
+        });
         SortBadges();
         onComplete?.Invoke();
+    }
+
+    public void OnPlayablePlayed()
+    {
+        readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
+        {
+            var res = x.UnitItem.Unit.Resources;
+            x.Q<ResourcePanel>().Resources = res;
+            x.Q<Label>("Energy").text = (res.Energy - res.EnergySpent).ToString();
+        });
     }
 
     internal IEnumerator OnTurnStart(Unit unit, Action onComplete)

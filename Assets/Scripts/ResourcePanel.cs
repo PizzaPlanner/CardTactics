@@ -9,27 +9,27 @@ public class ResourcePanel : VisualElement
         this.AddToClassList("resource-panel");
     }
 
-    public Deck Deck
+    public ResourceInfo Resources
     {
-        get => deck;
+        get => resources;
         set
         {
-            deck = value;
+            resources = value;
             Clear();
 
-            var total = deck.GetTotalCapacities();
-            foreach (var res in total)
+            foreach (var res in resources.Classes)
             {
-                var row = new VisualElement();
-                row.AddToClassList("resource-panel-group");
-                Add(row);
-                for (int i = 0; i < res.Value; i++)
-                    row.Add(new CostIcon { Class = res.Key, Rank = i });
+                Add(new CostIcon { Class = res });
             }
         }
     }
 
-    Deck deck;
+    ResourceInfo resources;
+
+    public void SetAffordable(ResourceInfo info)
+    {
+        this.Query<CostIcon>().ForEach(x => x.SetCostColor(info));
+    }
 
     public new class UxmlFactory : UxmlFactory<ResourcePanel, UxmlTraits> { }
 

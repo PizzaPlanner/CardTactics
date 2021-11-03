@@ -23,23 +23,8 @@ public class CardItem : VisualElement
 
             if (card is ActionCard acard)
             {
-                this.Query<CostIcon>().ForEach(x => x.style.display = DisplayStyle.None);
-                var costIcons = this.Query<CostIcon>().ToList();
-                var j = 0;
-                foreach (var cost in acard.Cost)
-                    for (int i = 0; i < cost.Cost; i++)
-                    {
-                        if (j >= costIcons.Count)
-                        {
-                            Debug.LogError("Cost too high!");
-                            break;
-                        }
-                        costIcons[j].style.display = DisplayStyle.Flex;
-                        costIcons[j++].Set(cost.Class, i);
-                    }
-
-                for (; j < costIcons.Count; j++)
-                    costIcons[j].style.display = DisplayStyle.None;
+                this.Query<ResourcePanel>().ForEach(x => x.Resources = acard.Cost);
+                this.Query<Label>("Energy").ForEach(x => x.text = (acard.Cost.Energy - acard.Cost.EnergySpent).ToString());
             }
             else if (card is UnitCard ucard)
             {

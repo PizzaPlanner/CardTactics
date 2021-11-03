@@ -50,9 +50,6 @@ public class PlanningPanel : MonoBehaviour
     {
         var deck = player.Deck;
 
-        var badges = FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
-        .Where(x => x.Q<UnitItem>().Unit == unit).ToList();
-
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
 
@@ -75,32 +72,29 @@ public class PlanningPanel : MonoBehaviour
                 OnConfirm(card);
             });
         }
-        CalculateValidCards(deck, badges);
+        CalculateValidCards(unit);
 
         planningPanel.style.display = DisplayStyle.Flex;
     }
 
-    void CalculateValidCards(Deck deck, List<PlayerInfoBadge> badges)
+    void CalculateValidCards(Unit unit)
     {
-        var capacities = deck.GetTotalCapacities();
-        var uses = deck.GetUsedCapacities();
-        var free = deck.GetTotalCapacities();
-        foreach (var cost in uses)
-            free[cost.Key] -= uses[cost.Key];
-
-        badges.ForEach(x => x.Query<CostIcon>().ForEach(y => y.SetCostColor(free)));
-
         cardPanel.Query<CardItem>().ForEach(x =>
         {
             if (x.Card is ActionCard card)
             {
-                var costOk = true;
-                if (!x.ClassListContains("carditem-selectable--selected"))
-                    foreach (var cost in card.Cost)
-                        costOk &= free[cost.Class] >= cost.Cost;
-
-                x.Query<CostIcon>().ForEach(x => x.SetCostColor(costOk ? capacities : free));
-                x.SetEnabled(costOk);
+                var energy = unit.Resources.Energy - unit.Resources.EnergySpent;
+                var hasEnergy = energy >= card.Cost.Energy;
+                x.Query<ResourcePanel>().ForEach(x => x.SetAffordable(unit.Resources));
+                x.Query<Label>("Energy").ForEach(x =>
+                {
+                    x.text = card.Cost.Energy.ToString();
+                    if (hasEnergy)
+                        x.RemoveFromClassList("text-color-overbudget");
+                    else
+                        x.AddToClassList("text-color-overbudget");
+                });
+                x.SetEnabled(unit.Resources.CanAfford(card.Cost));
             }
         });
     }

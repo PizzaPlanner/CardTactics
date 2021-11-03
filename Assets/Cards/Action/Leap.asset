@@ -18,20 +18,18 @@ MonoBehaviour:
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 8171666775164584261
+      rid: 1776283093645131776
   icon: {fileID: 21300000, guid: 6d8a6ce5aad4a744bb8febc5624e15a5, type: 3}
   name: Leap
   cost:
-  - Cost: 2
-    Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  - Cost: 1
-    Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
+    Energy: 1
+    Classes: []
   Once: 0
   Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 8171666775164584261
+    - rid: 1776283093645131776
       type: {class: MoveSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: 248e0c0ee3ca1184cae692996a197183, type: 3}

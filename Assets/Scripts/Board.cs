@@ -152,6 +152,7 @@ public class Board : MonoBehaviour
                 CurrentStage = Stage.Events;
 
             Resume();
+            turnPanel.OnPlayablePlayed();
         }
         WaitingForAction = true;
         StartCoroutine(PlayAndResume());
@@ -208,6 +209,7 @@ public class Board : MonoBehaviour
         foreach (var unit in FindObjectsOfType<Unit>())
             if (unit.Player != null && RegisteredPlayers.Contains(unit.Player))
             {
+                unit.Resources.EnergySpent = 0;
                 playables.Add(unit);
             }
         playables.Sort((x, y) => Unit.CompareSpeed(x, y));
@@ -306,19 +308,18 @@ public class Board : MonoBehaviour
 
     void AIPrepare(PlayerInfo aiPlayer)
     {
-        if (aiPlayer.Deck.Playable.Count() > 0)
+        if (aiPlayer.Deck.Playable(currentUnit).Count() > 0)
         {
-            var rnd = Random.Range(0, aiPlayer.Deck.Playable.Count());
-            SetPlayerReady(aiPlayer, aiPlayer.Deck.Playable.ToArray()[rnd]);
+            var rnd = Random.Range(0, aiPlayer.Deck.Playable(currentUnit).Count());
+            SetPlayerReady(aiPlayer, aiPlayer.Deck.Playable(currentUnit).ToArray()[rnd]);
         }
         else
             SetPlayerDone(aiPlayer);
-
     }
 
     void PlayerPrepare(PlayerInfo player)
     {
-        if (player.Deck.Playable.Count() > 0)
+        if (player.Deck.Playable(currentUnit).Count() > 0)
             GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, currentUnit,
             onPlay: (card) => SetPlayerReady(player, card),
             onEndTurn: () => SetPlayerDone(player));

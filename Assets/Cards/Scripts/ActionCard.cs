@@ -2,34 +2,33 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[System.Serializable]
-public struct PlayCost
-{
-    [HorizontalGroup(0.2f)]
-    [HideLabel]
-    public int Cost;
-    [HorizontalGroup(0.8f)]
-    [HideLabel]
-    public CardClass Class;
-}
 
 [CreateAssetMenu(menuName = "Card/Action")]
 public class ActionCard : Card
 {
     [SerializeField] Sprite icon;
     [SerializeField] new string name;
-    [SerializeField] PlayCost[] cost;
+    [SerializeField] ResourceInfo cost;
 
     public bool Once;
     public bool Temporary;
 
 
-    public PlayCost[] Cost => cost;
+    public ResourceInfo Cost => cost;
     public override Sprite Icon => icon;
 
     public override string Name => name;
 
     protected override void OnInit() { }
+
+    protected override void OnPlay(Board board, Map map, Unit unit, PlayerInfo player)
+    {
+        if (unit != null)
+        {
+            unit.Resources.EnergySpent += Cost.Energy;
+            Debug.Log(unit.Resources.EnergySpent);
+        }
+    }
 
     protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Unplayed;
 

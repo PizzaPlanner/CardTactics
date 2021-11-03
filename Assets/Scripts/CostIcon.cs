@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UIElements;
 
 public class CostIcon : VisualElement
@@ -6,7 +7,10 @@ public class CostIcon : VisualElement
     public CostIcon()
     {
         AddToClassList("cost-icon");
-        AddToClassList("costicon-affordable");
+        AddToClassList("cost-icon--affordable");
+        var child = new VisualElement();
+        child.AddToClassList("cost-icon-icon");
+        Add(child);
     }
 
     public CardClass Class
@@ -15,23 +19,21 @@ public class CostIcon : VisualElement
         set
         {
             cls = value;
-            style.backgroundImage = new StyleBackground(cls.Icon);
+            this.Q(null, "cost-icon-icon").style.backgroundImage = new StyleBackground(cls.Icon);
         }
     }
 
     CardClass cls;
-    public int Rank;
 
-    public void Set(CardClass cardClass, int rank)
+    public void Set(CardClass cardClass)
     {
         Class = cardClass;
-        Rank = rank;
     }
 
-    public void SetCostColor(Dictionary<CardClass, int> free)
+    public void SetCostColor(ResourceInfo resources)
     {
         if (Class == null) return;
-        bool affordable = free.ContainsKey(Class) && free[Class] > Rank;
+        bool affordable = resources.Classes.Contains(Class);
         RemoveFromClassList(affordable ? "cost-icon--overbudget" : "cost-icon--affordable");
         AddToClassList(affordable ? "cost-icon--affordable" : "cost-icon--overbudget");
     }

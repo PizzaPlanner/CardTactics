@@ -12,14 +12,6 @@ public class AIPlayer
         foreach (var enemy in map.Players.Where(x => x.Team != Player.Team))
             enemyTiles.AddRange(map.GetPlayerTiles(enemy));
 
-        foreach (var playableCard in Player.Deck.Playable)
-        {
-            foreach (var skill in playableCard.Skills)
-            {
-
-            }
-        }
-
         return new Card[0];
     }
 }
