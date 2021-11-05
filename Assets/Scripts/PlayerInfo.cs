@@ -55,8 +55,11 @@ public class PlayerInfo
             card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
     }
 
+    public HumanPlayer Human { get; private set; }
+
     public void Initialize(HumanPlayer humanPlayer)
     {
+        Human = humanPlayer;
         if (humanPlayer != null && IsAI)
             Debug.LogError("Incompatible Player Slot assignment");
         if (humanPlayer == null && Slot == SlotType.PlayerRequired)

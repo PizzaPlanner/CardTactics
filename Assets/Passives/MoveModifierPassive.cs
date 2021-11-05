@@ -15,7 +15,7 @@ public class MoveModifierPassive : Passive
 
     public override void OnRoundStart(Map map, PlayerInfo player)
     {
-        foreach (var card in player.Deck.Cards)
+        foreach (var card in player.Deck.All)
         {
             if (card is not ActionCard acard || acard.Skills.Count() == 0) continue;
             foreach (var skill in card.Skills)

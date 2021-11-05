@@ -3,34 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 [CreateAssetMenu]
 public class Deck : ScriptableObject
 {
-    public Card[] Cards;
+    [SerializeField] Card[] Cards;
 
-    public UnitCard Commander;
+    public UnitCard Commander => Cards.First(x => x is UnitCard) as UnitCard;
 
-    List<Card> Played;
-
+    public IEnumerable<Card> All => Cards;
     public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
-    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed && !Played.Contains(x));
-    public IEnumerable<Card> Queued => Cards.Where(x => x.State == Card.CardState.Queued);
+    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
     public IEnumerable<ActionCard> Playable(Unit currentUnit) => Unplayed.Where(x => x is ActionCard acard && currentUnit.Resources.CanAfford(acard.Cost)).Cast<ActionCard>();
 
-    public void MarkPlayed(Card card) => Played.Add(card);
-
-    public void OnTurnStart(Map map, PlayerInfo player)
+    public void OnRoundStart(Map map, PlayerInfo player)
     {
-        Played.Clear();
         foreach (var card in Cards)
-            card.OnTurnStart(map, player);
+            card.OnRoundStart(map, player);
     }
 
-    public void OnTurnEnd(Map map, PlayerInfo player)
+    public void OnRoundEnd(Map map, PlayerInfo player)
     {
         foreach (var card in Cards)
-            card.OnTurnEnd(map, player);
+            card.OnRoundEnd(map, player);
     }
 
     public static Deck Create(Deck prefab)
@@ -39,9 +35,8 @@ public class Deck : ScriptableObject
         deck.Cards = new Card[0];
         foreach (var card in prefab.Cards)
             deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Unplayed);
-        deck.Commander = deck.ExtendWith(prefab.Commander, null, Card.CardState.Unplayed);
-        deck.Commander.UnitReference.Type = UnitFilter.Commander;
-        deck.Played = new List<Card>();
+
+        Assert.IsNotNull(deck.Commander);
         return deck;
     }
 
@@ -65,7 +60,7 @@ public class Deck : ScriptableObject
     [Button("Add Queued Card")]
     void EditorAddCard()
     {
-        ExtendWith(editorAddCardPrefab, null, Card.CardState.Queued);
+        ExtendWith(editorAddCardPrefab, null, Card.CardState.Unplayed);
     }
 #endif
 }

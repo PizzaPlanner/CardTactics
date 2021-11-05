@@ -28,18 +28,21 @@ public class LoadingScreen : MonoBehaviour
 
     public static bool CreateGame(Map map, Lobby lobby)
     {
-        var players = lobby.Players.ToArray();
-        if (players.Length < map.MinPartySize || players.Length > map.MaxPartySize)
+        if (lobby.Players.Count < map.MinPartySize || lobby.Players.Count > map.MaxPartySize)
         {
-            Debug.LogError("Can not start this map with Party Size " + players.Length);
+            Debug.LogError("Can not start this map with Party Size " + lobby.Players.Count);
             return false;
         }
         var loader = new GameObject();
-        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map, players));
+        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map, lobby));
         return true;
     }
 
-    static IEnumerator LoadMap(GameObject loader, Map map, HumanPlayer[] players)
+    public static void LoadHub(Hubworld hub, Lobby lobby)
+    {
+    }
+
+    static IEnumerator LoadMap(GameObject loader, Map map, Lobby lobby)
     {
         DontDestroyOnLoad(loader);
         yield return null;
@@ -57,7 +60,7 @@ public class LoadingScreen : MonoBehaviour
         }
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("Board"));
         var mapInstance = Instantiate(map);
-        GameObject.FindObjectOfType<Board>().Initialize(mapInstance, players);
+        GameObject.FindObjectOfType<Board>().Initialize(mapInstance, lobby);
 
         SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>
         {

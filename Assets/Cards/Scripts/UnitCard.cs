@@ -7,7 +7,5 @@ public class UnitCard : Card
     public override string Name => UnitReference.Name;
     public Unit UnitReference;
 
-    protected override void OnInit() { }
-
     protected override CardState StateOnPlayed => CardState.Active;
 }

@@ -13,9 +13,5 @@ MonoBehaviour:
   m_Name: Tutorial AI
   m_EditorClassIdentifier: 
   Cards:
+  - {fileID: 11400000, guid: 0c658d64087cdde4abf95660391060da, type: 2}
   - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
-  - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
-  - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
-  - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
-  - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
-  Commander: {fileID: 11400000, guid: 0c658d64087cdde4abf95660391060da, type: 2}

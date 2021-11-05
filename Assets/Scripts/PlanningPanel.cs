@@ -66,9 +66,7 @@ public class PlanningPanel : MonoBehaviour
             cx.Card = card;
             cx.RegisterCallback<MouseDownEvent>((_) =>
             {
-                card.SetSelectionState(!deck.Queued.Contains(card));
-                var selected = card.State == Card.CardState.Queued;
-                audio.PlayOneShot(selected ? UnselectSound : SelectSound);
+                audio.PlayOneShot(SelectSound);
                 OnConfirm(card);
             });
         }

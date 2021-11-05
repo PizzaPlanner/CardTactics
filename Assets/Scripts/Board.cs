@@ -32,15 +32,10 @@ public class PlayableQueue
     {
         if (playable is Card card)
         {
-            if (card.State != Card.CardState.Queued)
+            if (card.State != Card.CardState.Unplayed)
             {
-                if (card.State == Card.CardState.Unplayed)
-                    card.SetSelectionState(true);
-                else
-                {
-                    Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
-                    return;
-                }
+                Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
+                return;
             }
             Debug.Log($"Queued {card.Name} for {player.Name}");
         }
@@ -51,7 +46,12 @@ public class PlayableQueue
         {
             var old = queue.ToArray();
             queue.Clear();
-            queue.Enqueue(new PlayableWithInfo { Player = player, Unit = unit, Playable = playable });
+            queue.Enqueue(new PlayableWithInfo
+            {
+                Player = player,
+                Unit = unit,
+                Playable = playable
+            });
             foreach (var item in old)
                 queue.Enqueue(item);
         }
@@ -98,14 +98,17 @@ public class Board : MonoBehaviour
 
     Queue<HumanPlayer> unassignedPlayers;
 
+    Lobby lobby;
+
     // Start is called before the first frame update
-    public void Initialize(Map mapInstance, HumanPlayer[] players)
+    public void Initialize(Map mapInstance, Lobby lobby)
     {
         CurrentStage = Stage.Setup;
         unassignedPlayers = new Queue<HumanPlayer>();
         playableUnits = new Queue<Unit>();
-        if (players != null)
-            foreach (var player in players)
+        this.lobby = lobby;
+        if (lobby?.Players != null)
+            foreach (var player in lobby.Players)
                 unassignedPlayers.Enqueue(player);
         Map = mapInstance;
         Map.Load(this);
@@ -146,10 +149,13 @@ public class Board : MonoBehaviour
             currentPlayable = playable;
             yield return playable.Play(this, Map, unit, player);
             currentPlayable = null;
-            if (!Playables.Empty)
-                CurrentStage = Stage.Play;
-            else
-                CurrentStage = Stage.Events;
+            if (CurrentStage != Stage.End)
+            {
+                if (!Playables.Empty)
+                    CurrentStage = Stage.Play;
+                else
+                    CurrentStage = Stage.Events;
+            }
 
             Resume();
             turnPanel.OnPlayablePlayed();
@@ -187,10 +193,20 @@ public class Board : MonoBehaviour
             CurrentStage = Stage.End;
     }
 
+    public void CloseBoard()
+    {
+        CurrentStage = Stage.End;
+    }
+
     void OnEnd()
     {
-        Debug.Log("No Player left! Game ended!");
-        LoadingScreen.GoToMenu();
+        WaitingForAction = true;
+        Dictionary<HumanPlayer, bool> outcomes = new();
+        var survivors = Map.Players.Where(x => !x.LooseCondition.Check(Map, x)).Select(x => x.Team).Distinct();
+        foreach (var player in Map.Players.Where(x => x.Human != null))
+            outcomes[player.Human] = survivors.Contains(player.Team) && survivors.Count() == 1;
+
+        lobby.GoToHub(outcomes);
     }
 
     Unit currentUnit;
@@ -200,8 +216,8 @@ public class Board : MonoBehaviour
     {
         foreach (var player in RegisteredPlayers)
         {
-            player.Deck.OnTurnEnd(Map, player);
-            player.Deck.OnTurnStart(Map, player);
+            player.Deck.OnRoundEnd(Map, player);
+            player.Deck.OnRoundStart(Map, player);
         }
 
         playableUnits.Clear();

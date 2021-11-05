@@ -22,7 +22,7 @@ public class AdditionalCardPassive : Passive
     {
         if (OneCardPerPassive)
         {
-            foreach (var card in player.Deck.Cards)
+            foreach (var card in player.Deck.All)
             {
                 if (card.Source == Source && card.State != Card.CardState.Destroyed) return;
             }

@@ -11,7 +11,7 @@ public abstract class Card : ScriptableObject, IPlayable
     public enum CardState
     {
         Unplayed,
-        Queued,
+        Played,
         Current,
         Active,
         Destroyed
@@ -31,17 +31,11 @@ public abstract class Card : ScriptableObject, IPlayable
         yield return new WaitForSeconds(board.CardPlayPostTime);
         CardTooltip.Hide();
         State = StateOnPlayed;
-        player.Deck.MarkPlayed(this);
     }
 
     public void Destroy() { State = CardState.Destroyed; }
 
     protected virtual void OnPlay(Board board, Map map, Unit unit, PlayerInfo player) { }
-
-    public void SetSelectionState(bool value)
-    {
-        State = value ? CardState.Queued : CardState.Unplayed;
-    }
 
     public virtual List<Card> GetRelatedCards()
     {
@@ -55,7 +49,7 @@ public abstract class Card : ScriptableObject, IPlayable
         return list;
     }
 
-    public virtual void OnTurnStart(Map map, PlayerInfo player)
+    public virtual void OnRoundStart(Map map, PlayerInfo player)
     {
         foreach (var skill in Skills)
         {
@@ -65,17 +59,18 @@ public abstract class Card : ScriptableObject, IPlayable
         }
     }
 
-    public virtual void OnTurnEnd(Map map, PlayerInfo player) { }
+    public virtual void OnRoundEnd(Map map, PlayerInfo player)
+    {
+        if (State == CardState.Played)
+            State = CardState.Unplayed;
+    }
 
     protected abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }
-
-    [Required]
-    public CardClass Class;
     public Card Source { get; private set; }
 
-    protected abstract void OnInit();
+    protected virtual void OnInit() { }
     public void Init(Card source = null, CardState initialState = CardState.Unplayed)
     {
         State = initialState;

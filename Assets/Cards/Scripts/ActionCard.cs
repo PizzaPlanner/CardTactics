@@ -19,28 +19,18 @@ public class ActionCard : Card
 
     public override string Name => name;
 
-    protected override void OnInit() { }
-
     protected override void OnPlay(Board board, Map map, Unit unit, PlayerInfo player)
     {
         if (unit != null)
-        {
             unit.Resources.EnergySpent += Cost.Energy;
-            Debug.Log(unit.Resources.EnergySpent);
-        }
     }
 
-    protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Unplayed;
+    protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;
 
-    public override void OnTurnStart(Map map, PlayerInfo player)
-    {
-        if (State == CardState.Active && Once) Destroy();
-        base.OnTurnStart(map, player);
-    }
-
-    public override void OnTurnEnd(Map map, PlayerInfo player)
+    public override void OnRoundEnd(Map map, PlayerInfo player)
     {
         if (Temporary && State == CardState.Unplayed) Destroy();
-        base.OnTurnEnd(map, player);
+        if (State == CardState.Active && Once) Destroy();
+        base.OnRoundEnd(map, player);
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tutorial Player
   m_EditorClassIdentifier: 
   Cards:
+  - {fileID: 11400000, guid: 54928dd0b82bf994e83cc9e59849934f, type: 2}
   - {fileID: 11400000, guid: 96ddc092a6441cc479f15607c27a2368, type: 2}
-  Commander: {fileID: 11400000, guid: 54928dd0b82bf994e83cc9e59849934f, type: 2}
