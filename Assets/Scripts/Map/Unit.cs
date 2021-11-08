@@ -19,6 +19,8 @@ public class ResourceInfo
 
 public class Unit : MonoBehaviour
 {
+    public const float MOVEMENT_SPEED = 8f;
+
     public string Name;
     public Sprite Icon;
     public int Speed;
@@ -101,11 +103,25 @@ public class Unit : MonoBehaviour
             yield break;
         if (type == RangeFilter.Pathfinding)
         {
-            foreach (var tile in to.Pathing.LastCalculatedPath)
+            if (Tile.Distance(from, to) > 1)
+                for (int i = 1; i < to.Pathing.LastCalculatedPath.Count; i++)
+                {
+                    var f = to.Pathing.LastCalculatedPath[i - 1];
+                    var t = to.Pathing.LastCalculatedPath[i];
+                    if (Tile.Distance(f, t) == 1)
+                        yield return Move(f, t, type);
+                    else
+                        yield return Move(f, t, RangeFilter.Any);
+                }
+            else
             {
-                transform.position = tile.transform.position + Vector3.up * 0.5f;
-                transform.rotation = Quaternion.Euler(0, tile.FaceToRot(tile.GetPathFacing()), 0);
-                yield return new WaitForSeconds(0.1f);
+                transform.rotation = Quaternion.Euler(0, to.FaceToRot(to.GetPathFacing()), 0);
+                var target = to.UnitAnchor;
+                while (Vector3.Distance(transform.position, target) > MOVEMENT_SPEED * Time.deltaTime)
+                {
+                    transform.position += (target - transform.position).normalized * MOVEMENT_SPEED * Time.deltaTime;
+                    yield return new WaitForEndOfFrame();
+                }
             }
         }
         else if (type == RangeFilter.Any)

@@ -96,20 +96,14 @@ public class Board : MonoBehaviour
     [SerializeField]
     Card OnNoCardsPlayed;
 
-    Queue<HumanPlayer> unassignedPlayers;
-
     Lobby lobby;
 
     // Start is called before the first frame update
     public void Initialize(Map mapInstance, Lobby lobby)
     {
         CurrentStage = Stage.Setup;
-        unassignedPlayers = new Queue<HumanPlayer>();
         playableUnits = new Queue<Unit>();
         this.lobby = lobby;
-        if (lobby?.Players != null)
-            foreach (var player in lobby.Players)
-                unassignedPlayers.Enqueue(player);
         Map = mapInstance;
         Map.Load(this);
         WaitingForAction = true;
@@ -118,10 +112,11 @@ public class Board : MonoBehaviour
     public bool Register(PlayerInfo player)
     {
         if (player.State != PlayerInfo.PlayerState.Hidden) return false;
+        player.State = PlayerInfo.PlayerState.Dead;
+        if (!player.Initialize(lobby))
+            return false;
 
-        player.Initialize(player.IsAI || !unassignedPlayers.TryDequeue(out var human) ? null : human);
         player.State = PlayerInfo.PlayerState.Active;
-
         Playables.InsertFirst(player, null, player.Deck.Commander);
         return true;
     }
@@ -201,12 +196,11 @@ public class Board : MonoBehaviour
     void OnEnd()
     {
         WaitingForAction = true;
-        Dictionary<HumanPlayer, bool> outcomes = new();
         var survivors = Map.Players.Where(x => !x.LooseCondition.Check(Map, x)).Select(x => x.Team).Distinct();
-        foreach (var player in Map.Players.Where(x => x.Human != null))
-            outcomes[player.Human] = survivors.Contains(player.Team) && survivors.Count() == 1;
-
-        lobby.GoToHub(outcomes);
+        foreach (var player in Map.Players.Where(x => !x.IsAI && survivors.Contains(x.Team) && survivors.Count() == 1))
+            lobby.Award($"Victory:{Map.name}", player);
+        lobby.Award($"Finished:{Map.name}");
+        lobby.Return();
     }
 
     Unit currentUnit;

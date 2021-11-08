@@ -55,21 +55,25 @@ public class PlayerInfo
             card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
     }
 
-    public HumanPlayer Human { get; private set; }
-
-    public void Initialize(HumanPlayer humanPlayer)
+    public bool Initialize(Lobby lobby)
     {
-        Human = humanPlayer;
-        if (humanPlayer != null && IsAI)
+        if (Slot == SlotType.PlayerRequired && !lobby.AssignPlayer(this))
+        {
             Debug.LogError("Incompatible Player Slot assignment");
-        if (humanPlayer == null && Slot == SlotType.PlayerRequired)
-            Debug.LogError("Incompatible Player Slot assignment");
+            return false;
+        }
+        else if (Slot == SlotType.PlayerOptional)
+            if (!lobby.AssignPlayer(this))
+                return false;
+
+        if (bringYourOwnDeck && lobby.DeckOf(this) == null) return false;
 
         if (bringYourOwnDeck)
-            Deck = Deck.Create(humanPlayer.Deck);
+            Deck = Deck.Create(lobby.DeckOf(this));
         else if (Deck == null)
             Deck = Deck.Create(deck);
 
         State = PlayerState.Hidden;
+        return true;
     }
 }

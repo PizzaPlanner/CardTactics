@@ -185,9 +185,9 @@ public class Map : MonoBehaviour
         if (!tile.gameObject.activeSelf)
             return false;
         var validTarget = ((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null);
-        if (tile.Unit != null)
+        if (tile.Unit != null || tile.HasObstacle)
         {
-            var isObstacle = tile.Unit.Player == null;
+            var isObstacle = tile.HasObstacle || tile.Unit.Player == null;
             validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;
             validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == player;
             validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != player && tile.Unit.Player.Team == player.Team;

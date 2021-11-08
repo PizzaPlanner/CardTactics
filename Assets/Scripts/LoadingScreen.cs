@@ -1,17 +1,16 @@
+using System;
 using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[System.Serializable]
-public class HumanPlayer
-{
-    public Deck Deck;
-    public bool IsLocal;
-}
-
 public class LoadingScreen : MonoBehaviour
 {
+    const string SCENE_BOARD = "Board";
+    const string SCENE_MENU = "Menu";
+    const string SCENE_EMPTY = "Empty";
+    const string SCENE_LOADING = "LoadingScreen";
+
     class FakeBehaviour : MonoBehaviour { }
 
     [ShowInInspector]
@@ -28,49 +27,62 @@ public class LoadingScreen : MonoBehaviour
 
     public static bool CreateGame(Map map, Lobby lobby)
     {
-        if (lobby.Players.Count < map.MinPartySize || lobby.Players.Count > map.MaxPartySize)
+
+        ChangeScene(
+        SCENE_BOARD,
+        () =>
         {
-            Debug.LogError("Can not start this map with Party Size " + lobby.Players.Count);
-            return false;
-        }
-        var loader = new GameObject();
-        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, map, lobby));
+            var mapInstance = Instantiate(map);
+            GameObject.FindObjectOfType<Board>().Initialize(mapInstance, lobby);
+        },
+        () => GameObject.FindObjectOfType<Board>().StartGame());
         return true;
     }
 
-    public static void LoadHub(Hubworld hub, Lobby lobby)
+    public static void LoadHub(Hubworld hubPrefab)
     {
+        ChangeScene(
+        SCENE_EMPTY,
+        () =>
+        {
+            var hub = Instantiate(hubPrefab);
+        }, null);
     }
 
-    static IEnumerator LoadMap(GameObject loader, Map map, Lobby lobby)
+    static IEnumerator LoadMap(GameObject loader, string scene, Action onLoaded, Action onFinished)
     {
         DontDestroyOnLoad(loader);
         yield return null;
-        SceneManager.LoadScene("LoadingScreen", LoadSceneMode.Single);
+        SceneManager.LoadScene(SCENE_LOADING, LoadSceneMode.Single);
         while (FindObjectOfType<LoadingScreen>() == null)
         {
             yield return new WaitForEndOfFrame();
         }
         var lbar = FindObjectOfType<LoadingScreen>();
-        var op = SceneManager.LoadSceneAsync("Board", LoadSceneMode.Additive);
+        var op = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
         while (!op.isDone)
         {
             lbar.Progress = op.progress;
             yield return new WaitForEndOfFrame();
         }
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Board"));
-        var mapInstance = Instantiate(map);
-        GameObject.FindObjectOfType<Board>().Initialize(mapInstance, lobby);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
+        onLoaded?.Invoke();
 
-        SceneManager.UnloadSceneAsync("LoadingScreen").completed += (_) =>
+        SceneManager.UnloadSceneAsync(SCENE_LOADING).completed += (_) =>
         {
-            GameObject.FindObjectOfType<Board>().StartGame();
+            onFinished?.Invoke();
             Destroy(loader);
         };
     }
 
+    static void ChangeScene(string targetSceneName, Action onLoaded = null, Action onFinished = null)
+    {
+        var loader = new GameObject();
+        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, targetSceneName, onLoaded, onFinished));
+    }
+
     public static void GoToMenu()
     {
-        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        ChangeScene(SCENE_MENU);
     }
 }

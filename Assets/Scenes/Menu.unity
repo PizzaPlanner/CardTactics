@@ -207,13 +207,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 845707129}
-        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
-        m_MethodName: PlayMap
+      - m_Target: {fileID: 1591483868}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OpenHubLobby
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}
-          m_ObjectArgumentAssemblyTypeName: Map, Assembly-CSharp
+          m_ObjectArgument: {fileID: 5134339028818186798, guid: d73e69eec1d3ca6489f10807891c0050, type: 3}
+          m_ObjectArgumentAssemblyTypeName: Hubworld, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -337,54 +337,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 524095058}
   m_CullTransparentMesh: 1
---- !u!1 &532426808
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 532426810}
-  - component: {fileID: 532426809}
-  m_Layer: 0
-  m_Name: TutorialLobby
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &532426809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 532426808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ee9d01086c48e046bd4a00e0c3de7f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Players:
-  - Deck: {fileID: 0}
-    IsLocal: 1
-  LobbyMapPrefab: {fileID: 0}
---- !u!4 &532426810
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 532426808}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &701480506
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,9 +421,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 532426809}
-        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
-        m_MethodName: PlayMap
+      - m_Target: {fileID: 1591483868}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OpenMapLobby
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}
@@ -519,54 +471,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 701480506}
   m_CullTransparentMesh: 1
---- !u!1 &845707128
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 845707130}
-  - component: {fileID: 845707129}
-  m_Layer: 0
-  m_Name: CampaignLobby
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &845707129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845707128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ee9d01086c48e046bd4a00e0c3de7f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Players:
-  - Deck: {fileID: 0}
-    IsLocal: 1
-  LobbyMapPrefab: {fileID: 0}
---- !u!4 &845707130
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845707128}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &996791710
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,54 +731,6 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
---- !u!1 &1329339692
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1329339693}
-  - component: {fileID: 1329339694}
-  m_Layer: 0
-  m_Name: FreeplayLobby
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1329339693
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1329339692}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1329339694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1329339692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ee9d01086c48e046bd4a00e0c3de7f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Players:
-  - Deck: {fileID: 11400000, guid: d1d1310e9f0173c408d8c25a82b1e938, type: 2}
-    IsLocal: 1
-  LobbyMapPrefab: {fileID: 0}
 --- !u!1 &1478979692
 GameObject:
   m_ObjectHideFlags: 0
@@ -968,7 +824,7 @@ GameObject:
   - component: {fileID: 1591483866}
   - component: {fileID: 1591483865}
   - component: {fileID: 1591483864}
-  - component: {fileID: 1591483863}
+  - component: {fileID: 1591483868}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -999,18 +855,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1591483863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1591483860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68f88da97233cb945abd40718a27ff87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1591483864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1089,6 +933,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1591483860}
   m_CullTransparentMesh: 1
+--- !u!114 &1591483868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591483860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa718199ba25964d9747100a80e8262, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1888047056
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,9 +1029,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1329339694}
-        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
-        m_MethodName: PlayMap
+      - m_Target: {fileID: 1591483868}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OpenMapLobby
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1285172813067429327, guid: f2e8a925c168ba24288889c2a93fdd00, type: 3}

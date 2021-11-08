@@ -319,9 +319,13 @@ public class Tile : MonoBehaviour
 
     public Facing Facing => RotToFace(Unit.transform.rotation.eulerAngles.y);
 
+    public Vector3 UnitAnchor => transform.position + new Vector3(0, 0.5f, 0);
+
+    public bool HasObstacle { get; internal set; }
+
     void PlaceUnitNoCheck(Unit unit, Facing facing)
     {
-        unit.transform.position = transform.position + new Vector3(0, 0.5f, 0);
+        unit.transform.position = UnitAnchor;
         unit.transform.SetParent(transform);
         unit.transform.rotation = Quaternion.AngleAxis(FaceToRot(facing), Vector3.up);
         unit.gameObject.SetActive(true);
