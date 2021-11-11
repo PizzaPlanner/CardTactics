@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,20 +17,27 @@ public class MoveSkill : Skill, ICancelable
 
     protected override bool AutoSelectOnOnePossibleTile => false;
 
-    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
         if (SourceTile?.Unit == null)
-            return new Tile[0];
+            return new ITilePattern[0];
         unit = SourceTile.Unit;
         rotation = SourceTile.Facing;
-        return map.ShowRange(SourceTile, 0, Range, filter, player);
+        if (RangeType == RangeFilter.Pathfinding)
+            return new PathPatternBuilder { MaxRange = Range }.Patterns(map, SourceTile, player, filter);
+        else
+            return new RangePatternBuilder { MaxRange = Range }.Patterns(map, SourceTile, player, filter);
     }
 
-    protected override IEnumerator OnPreview()
+    protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
-        yield return unit.Move(SourceTile, TargetTile, RangeType);
+        if (targetPattern is PathPattern pp)
+            OutTile = pp.Target;
+        else if (targetPattern is SingleTilePattern stp)
+            OutTile = stp.Target;
+        yield return unit.Move(SourceTile, targetPattern, OutTile, RangeType);
     }
 
     protected override void OnUse()
@@ -37,7 +46,7 @@ public class MoveSkill : Skill, ICancelable
 
     public void OnCancel()
     {
-        unit.MoveInstant(TargetTile, SourceTile);
+        unit.MoveInstant(OutTile, SourceTile);
         SourceTile.Face(rotation);
     }
 }

@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -11,13 +13,14 @@ public class SelectSkill : Skill, ICancelable
 
     protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
-        return map.ShowPlacementTiles(TargetFilter, player);
+        return new GlobalPatternBuilder().Patterns(map, SourceTile, player, TargetFilter);
     }
 
-    protected override IEnumerator OnPreview()
+    protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
+        OutTile = targetPattern.Tiles.First();
         yield return null;
     }
 

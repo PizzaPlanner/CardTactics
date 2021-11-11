@@ -307,7 +307,7 @@ public class Board : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
                 if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid)
-                    currentCard.SkillTarget = Tile.Hovered;
+                    currentCard.SkillTarget = Tile.Hovered.PrimaryPattern;
             }
             if (Input.GetMouseButtonDown(1))
             {

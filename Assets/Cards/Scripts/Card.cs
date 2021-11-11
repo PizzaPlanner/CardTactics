@@ -93,7 +93,7 @@ public abstract class Card : ScriptableObject, IPlayable
         Skills2 = listS.ToArray();
     }
 
-    public Tile SkillTarget { get; set; }
+    public ITilePattern SkillTarget { get; set; }
     public bool WantSkillSkip { get; set; }
     public bool WantComplete { get; set; }
     public bool WantReset { get; set; }
@@ -111,10 +111,10 @@ public abstract class Card : ScriptableObject, IPlayable
                 WantComplete = autocompleteIfPossible;
                 WantReset = false;
                 if (Skills2[i].CanUse(map.TileOf(unit), Skills2.ToList().GetRange(0, i), out var inputTile)
-                && Skills2[i].Skill.Activate(map, player, this, inputTile))
+                && Skills2[i].Skill.Activate(map, player, this, inputTile, out var validPatterns))
                 {
                     if (!player.IsAI && SkillTarget == null)
-                        map.ShowTileIndicators();
+                        map.ShowTileIndicators(validPatterns);
 
                     yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills2[i].Skill.IsOptional));
 

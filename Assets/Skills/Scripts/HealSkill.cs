@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class HealSkill : Skill
@@ -15,17 +17,18 @@ public class HealSkill : Skill
     public override string Description => $"Heal {Heal}";
     protected override bool AutoSelectOnOnePossibleTile => false;
 
-    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
-        if ((Filter.Tile & TileFilter.Empty) > 0) return new Tile[0];
-        return map.ShowRange(SourceTile, MinRange, MaxRange, Filter, player);
+        if ((Filter.Tile & TileFilter.Empty) > 0) return new ITilePattern[0];
+        return new RangePatternBuilder { MinRange = MinRange, MaxRange = MaxRange }.Patterns(map, SourceTile, player, Filter);
     }
 
-    protected override IEnumerator OnPreview()
+    protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
+        OutTile = targetPattern.Tiles.First();
         SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
         yield return new WaitForSeconds(0.5f);
-        previewUnit = TargetTile.Unit;
+        previewUnit = OutTile.Unit;
         previewUnit.Damage(-Heal, true);
     }
 

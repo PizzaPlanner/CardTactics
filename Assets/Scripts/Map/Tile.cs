@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +10,8 @@ public enum TargetIndicator
     Valid,
     Invalid,
     Hidden,
-    Origin
+    Origin,
+    Special
 }
 
 public enum Facing
@@ -54,6 +56,8 @@ public class Tile : MonoBehaviour
 
     public Unit Unit;
 
+    public ITilePattern PrimaryPattern { get; set; }
+
     public Vector3Int Position { get; private set; }
 
     public static Tile Hovered { get; private set; }
@@ -96,11 +100,16 @@ public class Tile : MonoBehaviour
             return;
         Hovered = this;
         SelectionIndicator.SetActive(true);
-        if (Pathing.LastCalculatedPath != null)
+        if (PrimaryPattern != null)
         {
-            foreach (var tile in Pathing.LastCalculatedPath)
-                tile.ShowPath();
-            MICenter.SetActive(true);
+            var isPath = (PrimaryPattern is PathPattern);
+            var tiles = PrimaryPattern.Tiles.ToArray();
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                tiles[i].PaintIndicator(true);
+                if (isPath)
+                    tiles[i].ShowPath(i > 0 ? tiles[i - 1] : null, i < tiles.Length - 1 ? tiles[i + 1] : null);
+            }
         }
     }
 
@@ -111,38 +120,44 @@ public class Tile : MonoBehaviour
             return;
         Hovered = null;
         SelectionIndicator.SetActive(false);
-        if (Pathing.LastCalculatedPath != null)
+        if (PrimaryPattern != null)
         {
-            foreach (var tile in Pathing.LastCalculatedPath)
-                tile.HidePath();
+            var isPath = (PrimaryPattern is PathPattern);
+            var tiles = PrimaryPattern.Tiles.ToArray();
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                tiles[i].PaintIndicator(false);
+                if (isPath)
+                    tiles[i].HidePath();
+            }
         }
     }
 
-    void ShowPath()
+    void ShowPath(Tile from, Tile to)
     {
         MovementIndicators.SetActive(true);
-        if (Pathing.LastCalculatedPath.Count < 2) return;
-        var prev = Pathing.LastCalculatedPath[^2];
-        if (prev != null)
+        if (to == null)
+            MICenter.SetActive(true);
+        if (from != null)
         {
-            if (prev.Position.x > Position.x)
+            if (from.Position.x > Position.x)
             {
-                prev.MILeft.SetActive(true);
+                from.MILeft.SetActive(true);
                 MIRight.SetActive(true);
             }
-            else if (prev.Position.x < Position.x)
+            else if (from.Position.x < Position.x)
             {
-                prev.MIRight.SetActive(true);
+                from.MIRight.SetActive(true);
                 MILeft.SetActive(true);
             }
-            else if (prev.Position.y > Position.y)
+            else if (from.Position.y > Position.y)
             {
-                prev.MIBottom.SetActive(true);
+                from.MIBottom.SetActive(true);
                 MITop.SetActive(true);
             }
-            else if (prev.Position.y < Position.y)
+            else if (from.Position.y < Position.y)
             {
-                prev.MITop.SetActive(true);
+                from.MITop.SetActive(true);
                 MIBottom.SetActive(true);
             }
         }
@@ -220,9 +235,10 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
-    public TargetIndicator CurrentIndicator { get; private set; }
+    [ShowInInspector]
+    public TargetIndicator CurrentIndicator { get; set; }
 
-    public void SetIndicatorVisible(bool visible)
+    public void SetIndicatorVisible(bool visible, bool highlightPattern)
     {
         PathingIndicator.gameObject.SetActive(visible);
         if (visible)
@@ -243,23 +259,26 @@ public class Tile : MonoBehaviour
             PIBorderRight.gameObject.SetActive(right);
             PIBorderTop.gameObject.SetActive(top);
             PIBorderBottom.gameObject.SetActive(bottom);
+            PaintIndicator(highlightPattern);
         }
     }
 
-    public void SetIndicator(TargetIndicator state)
+    void PaintIndicator(bool highlightPattern)
     {
         var color = Color.black;
-        switch (state)
+        switch (CurrentIndicator)
         {
             case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.7f); break;
             case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.7f); break;
             case TargetIndicator.Origin: color = new Color(0.3f, .7f, .5f, 0.7f); break;
             case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
+            case TargetIndicator.Special: color = new Color(0, 1, 0, 0); break;
         }
+        if (highlightPattern)
+            color += new Color(0.2f, 0.2f, 0.2f);
         PathingIndicator.GetComponent<Renderer>().material.color = color;
         foreach (var border in PathingIndicator.GetComponentsInChildren<Renderer>(true))
             border.material.color = color * 0.8f;
-        CurrentIndicator = state;
     }
 
     public bool CanPlace(Unit unit)

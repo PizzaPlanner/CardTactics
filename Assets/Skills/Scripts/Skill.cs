@@ -9,6 +9,7 @@ public static class SelectionFilters
 {
     public static SelectionFilter Self { get; } = new SelectionFilter { Unit = UnitFilter.Commander, Tile = TileFilter.Self };
     public static SelectionFilter AnyEnemy { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment, Tile = TileFilter.Enemy };
+    public static SelectionFilter AnyUnit { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment };
     public static SelectionFilter Empty { get; } = new SelectionFilter { Tile = TileFilter.Empty, Range = RangeFilter.Any };
 }
 
@@ -101,7 +102,7 @@ public class SkillInfo
 
     public Tile GetOutputTile()
     {
-        return Skill.PlayProgress == Skill.Progress.Queued ? Skill.TargetTile : Skill.SourceTile;
+        return Skill.PlayProgress == Skill.Progress.Queued ? Skill.OutTile : Skill.SourceTile;
     }
 
     public bool CanUse(Tile origin, IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
@@ -130,11 +131,12 @@ public abstract class Skill
     [AssetSelector(Paths = "Assets/3rdParty/64 flat icons/png/64px", FlattenTreeView = true)]
     public Sprite Icon;
 
-    [NonSerialized] public Card Source;
+    public Card Source { get; set; }
     public abstract string Description { get; }
 
-    public Tile TargetTile { get; private set; }
+    public ITilePattern TargetPattern { get; private set; }
     public Tile SourceTile { get; private set; }
+    public Tile OutTile { get; protected set; }
     public bool IsOptional => SkippableWithInput;
     public bool IsPreviewed { get; private set; }
 
@@ -150,36 +152,39 @@ public abstract class Skill
     {
         PlayProgress = Progress.Pending;
         SourceTile = null;
-        TargetTile = null;
+        OutTile = null;
         IsPreviewed = false;
     }
 
-    public bool Activate(Map map, PlayerInfo player, Card card, Tile inputTile)
+    public bool Activate(Map map, PlayerInfo player, Card card, Tile inputTile, out IEnumerable<ITilePattern> validPatterns)
     {
         PlayProgress = Progress.Failed;
 
         SourceTile = inputTile;
 
-        var validTiles = OnActivate(map, player, card);
-        if (validTiles.Length == 1 && AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
+        validPatterns = OnActivate(map, player, card).Where(x => x.Tiles.Any());
+        var hasAny = validPatterns.Any();
+        PlayProgress = hasAny ? Progress.Now : Progress.Failed;
+        if (!hasAny)
+            return false;
+
+        if (AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
         {
-            card.SkillTarget = validTiles[0];
+            card.SkillTarget = validPatterns.First();
         }
-        else if (validTiles.Length > 0 && player.IsAI)
+        else if (player.IsAI)
         {
-            player.AIDecide(card, this, validTiles);
+            player.AIDecide(card, this, validPatterns);
         }
 
-        PlayProgress = validTiles.Length > 0 ? Progress.Now : Progress.Failed;
-        return validTiles.Length > 0;
+        return true;
     }
 
-    protected abstract Tile[] OnActivate(Map map, PlayerInfo player, Card card);
-    public IEnumerator Preview(Tile target)
+    protected abstract IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card);
+    public IEnumerator Preview(ITilePattern target)
     {
-        TargetTile = target;
         IsPreviewed = true;
-        yield return OnPreview();
+        yield return OnPreview(target);
         PlayProgress = Progress.Queued;
         autoSelectIgnored = false;
     }
@@ -190,12 +195,11 @@ public abstract class Skill
         if (IsPreviewed)
             cancelable.OnCancel();
         IsPreviewed = false;
-        TargetTile = null;
         PlayProgress = Progress.Pending;
         autoSelectIgnored = true;
     }
 
-    protected abstract IEnumerator OnPreview();
+    protected abstract IEnumerator OnPreview(ITilePattern targetPattern);
     protected abstract void OnUse();
 
     public void Use()

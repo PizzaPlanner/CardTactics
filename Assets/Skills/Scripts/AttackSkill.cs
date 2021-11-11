@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class AttackSkill : Skill
@@ -19,17 +21,18 @@ public class AttackSkill : Skill
     public override string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
     protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
-        return map.ShowRange(SourceTile, MinRange, MaxRange, Filter, player);
+        return new RangePatternBuilder { MinRange = MinRange, MaxRange = MaxRange }.Patterns(map, SourceTile, player, Filter);
     }
 
-    protected override IEnumerator OnPreview()
+    protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
+        var OutTile = targetPattern.Tiles.First();
         Animator sourceAnimator = SourceTile.Unit.GetComponentInChildren<Animator>();
-        Animator targetAnimator = TargetTile.Unit.GetComponentInChildren<Animator>();
+        Animator targetAnimator = OutTile.Unit.GetComponentInChildren<Animator>();
         previewFacing = SourceTile.Facing;
-        SourceTile.Face(Tile.GetFacing(SourceTile, TargetTile));
+        SourceTile.Face(Tile.GetFacing(SourceTile, OutTile));
         if (sourceAnimator != null)
         {
             sourceAnimator.SetInteger("Action", 1);
@@ -38,7 +41,7 @@ public class AttackSkill : Skill
         if (Sound != null)
             SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
         yield return new WaitForSeconds(0.3f);
-        previewUnit = TargetTile.Unit;
+        previewUnit = OutTile.Unit;
         previewUnit.Damage(Damage, true);
         if (targetAnimator != null)
         {
@@ -49,7 +52,7 @@ public class AttackSkill : Skill
         {
             yield return new WaitForSeconds(0.5f);
             previewUnit.gameObject.SetActive(false);
-            TargetTile.Unit = null;
+            OutTile.Unit = null;
         }
     }
 

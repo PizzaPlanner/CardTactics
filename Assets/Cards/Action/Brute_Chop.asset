@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
+  m_Name: Brute_Chop
+  m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  Skills2:
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 2
+    Skill:
+      rid: 1776283240145354773
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 3
+    Skill:
+      rid: 1776283240145354774
+  icon: {fileID: 21300000, guid: f6a67d94bab26834d9a52bccb646bcf9, type: 3}
+  name: Chop
+  cost:
+    Energy: 1
+    Classes: []
+  Once: 0
+  Temporary: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283240145354773
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2
+          Unit: 7
+          Range: 2
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 8300000, guid: 89837be0511f17547bb0a8ca2cf8a6aa, type: 3}
+        confirmOnePossibleTile: 1
+        Damage: 2
+    - rid: 1776283240145354774
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2
+          Unit: 7
+          Range: 2
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 8300000, guid: ab4bab60b8427eb4098e017fa576b8fa, type: 3}
+        confirmOnePossibleTile: 0
+        Damage: 2

@@ -143,13 +143,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Wand
   Icon: {fileID: 21300000, guid: 1d502d64599815443a2ba29ccc8fc1a3, type: 3}
-  Card: {fileID: 0}
+  Speed: 0
   MaxLife: 0
   Type: 8
+  Resources:
+    Energy: 0
+    Classes: []
 --- !u!82 &9078632913478803258
 AudioSource:
   m_ObjectHideFlags: 0
@@ -318,7 +319,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 1
-  Skill: {fileID: 11400000, guid: 3c8d58592181cf7469dadc1c880ac4af, type: 2}
+  Skill:
+    Icon: {fileID: 0}
+    SkippableWithInput: 0
+    NewCardPrefab: {fileID: 0}
+    NewCardInitialState: 0
   Player: 0
   GiveToTriggerer: 1
 --- !u!114 &2455776158606294598
@@ -428,14 +433,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Players:
-  - bringYourOwnDeck: 1
-    deck: {fileID: 0}
+  - bringYourOwnDeck: 0
+    deck: {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
     Team: 0
     Color: {r: 0, g: 0.525753, b: 1, a: 1}
     slot: 0
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
     OnLooseTrigger: {fileID: 3027569407111047263}
-    OnInvalidQueueTrigger: {fileID: 5777978081313184389}
   - bringYourOwnDeck: 0
     deck: {fileID: 11400000, guid: 60c42eb91d14854449a63e9abc3b72d8, type: 2}
     Team: 1
@@ -443,7 +447,6 @@ MonoBehaviour:
     slot: 2
     LooseCondition: {fileID: 11400000, guid: f82772703cfe17b44bb6c057ffe4e8af, type: 2}
     OnLooseTrigger: {fileID: 3027569407111047263}
-    OnInvalidQueueTrigger: {fileID: 5777978081313184389}
 --- !u!1 &2827465006358541365
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,13 +493,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Wand
   Icon: {fileID: 21300000, guid: 1d502d64599815443a2ba29ccc8fc1a3, type: 3}
-  Card: {fileID: 0}
+  Speed: 0
   MaxLife: 0
   Type: 8
+  Resources:
+    Energy: 0
+    Classes: []
 --- !u!82 &3517274364103038855
 AudioSource:
   m_ObjectHideFlags: 0
@@ -639,13 +643,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Wand
   Icon: {fileID: 21300000, guid: 1d502d64599815443a2ba29ccc8fc1a3, type: 3}
-  Card: {fileID: 0}
+  Speed: 0
   MaxLife: 0
   Type: 8
+  Resources:
+    Energy: 0
+    Classes: []
 --- !u!82 &4457668291515611535
 AudioSource:
   m_ObjectHideFlags: 0
@@ -788,13 +793,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cd2d30a1d44841b55b323845d2fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Rank: 0
   Name: Wand
   Icon: {fileID: 21300000, guid: 1d502d64599815443a2ba29ccc8fc1a3, type: 3}
-  Card: {fileID: 0}
+  Speed: 0
   MaxLife: 0
   Type: 8
+  Resources:
+    Energy: 0
+    Classes: []
 --- !u!82 &5485968398324724962
 AudioSource:
   m_ObjectHideFlags: 0

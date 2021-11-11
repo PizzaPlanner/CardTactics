@@ -10,6 +10,7 @@ public class Map : MonoBehaviour
     public int MaxPartySize => Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired || x.Slot == PlayerInfo.SlotType.PlayerOptional);
 
     List<Tile> Tiles;
+    public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
     List<int> revealedAreas;
 
     public List<(PlayerInfo player, Trigger trigger)> CheckTriggers()
@@ -117,13 +118,26 @@ public class Map : MonoBehaviour
         return Tiles.FirstOrDefault(x => x.Unit == unit);
     }
 
-    public void ShowTileIndicators()
+    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns)
     {
         foreach (var tile in Tiles)
-            tile?.SetIndicatorVisible(true);
+        {
+            tile.CurrentIndicator = TargetIndicator.Hidden;
+            foreach (var pattern in patterns)
+            {
+                if (pattern.Tiles.Contains(tile))
+                {
+                    tile.CurrentIndicator = pattern.Selectable ? TargetIndicator.Valid : TargetIndicator.Invalid;
+                    tile.SetIndicatorVisible(true, pattern.Tiles.Contains(Tile.Hovered));
+                    if (!pattern.UnselectableTiles.Contains(tile))
+                        tile.PrimaryPattern = pattern;
+                    break;
+                }
+            }
+        }
     }
 
-    public Tile[] ShowSpawnTiles(SelectionFilter filter, PlayerInfo player)
+    public Tile[] GetSpawnTiles(SelectionFilter filter, PlayerInfo player)
     {
         var id = 0;
         for (int i = 0; i < Players.Length; i++)
@@ -146,26 +160,15 @@ public class Map : MonoBehaviour
         return valid.ToArray();
     }
 
-    public Tile[] ShowPlacementTiles(SelectionFilter filter, PlayerInfo player)
-    {
-        List<Tile> valid = new List<Tile>();
-        foreach (var tile in Tiles)
-        {
-            if (tile == null) continue;
-            if (TileMatches(tile, filter, player))
-                valid.Add(tile);
-        }
-        return valid.ToArray();
-    }
-
     public void HideTileSelectionPreview()
     {
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
-            tile.SetIndicator(TargetIndicator.Hidden);
+            tile.CurrentIndicator = TargetIndicator.Hidden;
             tile.ClearPathingInfo();
-            tile.SetIndicatorVisible(false);
+            tile.SetIndicatorVisible(false, false);
+            tile.PrimaryPattern = null;
         }
     }
 
@@ -196,58 +199,8 @@ public class Map : MonoBehaviour
             validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }
 
-        tile.SetIndicator(validTarget ? TargetIndicator.Valid : TargetIndicator.Invalid);
+        // tile.SetIndicator(validTarget ? TargetIndicator.Valid : TargetIndicator.Invalid);
         return validTarget;
-    }
-
-    public Tile[] ShowRange(Tile origin, int minRange, int maxRange, SelectionFilter filter, PlayerInfo player)
-    {
-        List<Tile> valid = new List<Tile>();
-        List<Tile> rangeTiles = new List<Tile>();
-        foreach (var tile in Tiles)
-        {
-            if (tile == null || !tile.gameObject.activeSelf) continue;
-
-            // Check range
-            if (Tile.Distance(origin, tile) > maxRange || Tile.Distance(origin, tile) < minRange)
-            {
-                tile.SetIndicator(TargetIndicator.Hidden);
-                continue;
-            }
-
-            // Check TargetType
-            if (TileMatches(tile, filter, player))
-            {
-                valid.Add(tile);
-                rangeTiles.Add(tile);
-            }
-        }
-        if (filter.Range == RangeFilter.Pathfinding)
-        {
-            foreach (var tile in rangeTiles)
-            {
-                if (!Tile.FindPath(origin, tile, maxRange, rangeTiles))
-                {
-                    tile.SetIndicator(TargetIndicator.Invalid);
-                    valid.Remove(tile);
-                }
-            }
-        }
-        else if (filter.Range == RangeFilter.SightUnblocked)
-        {
-            foreach (var tile in rangeTiles)
-            {
-                var start = origin.transform.position + Vector3.up * 1.5f;
-                var finish = tile.transform.position + Vector3.up * 0.5f;
-                if (!Physics.Raycast(start, finish - start, out var hit) || hit.transform.gameObject != tile.gameObject)
-                {
-                    valid.Remove(tile);
-                }
-            }
-        }
-        if (!valid.Contains(origin))
-            origin.SetIndicator(TargetIndicator.Origin);
-        return valid.ToArray();
     }
 
 #if UNITY_EDITOR

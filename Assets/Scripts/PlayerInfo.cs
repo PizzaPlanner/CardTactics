@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -47,12 +49,12 @@ public class PlayerInfo
     public LooseCondition LooseCondition;
     public Trigger OnLooseTrigger;
 
-    internal void AIDecide(Card card, Skill skill, Tile[] validTiles)
+    internal void AIDecide(Card card, Skill skill, IEnumerable<ITilePattern> validPatterns)
     {
-        if (validTiles.Length == 1)
-            card.SkillTarget = validTiles[0];
+        if (validPatterns.Count() == 1)
+            card.SkillTarget = validPatterns.First();
         else
-            card.SkillTarget = validTiles[UnityEngine.Random.RandomRange(0, validTiles.Length)];
+            card.SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
     }
 
     public bool Initialize(Lobby lobby)

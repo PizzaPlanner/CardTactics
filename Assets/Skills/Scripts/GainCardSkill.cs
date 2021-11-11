@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,14 +18,15 @@ public class GainCardSkill : Skill
 
     protected override bool AutoSelectOnOnePossibleTile => true;
 
-    protected override Tile[] OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
         Player = player;
-        return map.ShowRange(SourceTile, 0, 0, SelectionFilters.Self, player);
+        return new[] { new SingleTilePattern { Target = SourceTile }.Build(map, SourceTile, player, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    protected override IEnumerator OnPreview()
+    protected override IEnumerator OnPreview(ITilePattern pattern)
     {
+        OutTile = pattern.Tiles.First();
         yield return ShowGetAnimation(NewCardPrefab);
     }
 
