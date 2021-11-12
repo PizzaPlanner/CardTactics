@@ -127,11 +127,14 @@ public class Map : MonoBehaviour
             {
                 if (pattern.Tiles.Contains(tile))
                 {
+                    if (pattern.UnselectableTiles.Contains(tile))
+                        continue;
+                    if (tile.PrimaryPattern != null)
+                        break;
+
+                    tile.PrimaryPattern = pattern;
                     tile.CurrentIndicator = pattern.Selectable ? TargetIndicator.Valid : TargetIndicator.Invalid;
                     tile.SetIndicatorVisible(true, pattern.Tiles.Contains(Tile.Hovered));
-                    if (!pattern.UnselectableTiles.Contains(tile))
-                        tile.PrimaryPattern = pattern;
-                    break;
                 }
             }
         }

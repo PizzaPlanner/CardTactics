@@ -24,14 +24,16 @@ public class DashSkill : Skill
 
     protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
+        var tilesByDistance = ((LinePattern)targetPattern).TilesByDistance;
         var prevTile = SourceTile;
-        foreach (var tile in targetPattern.Tiles)
-            if (tile.Unit == null)
-            {
-                yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeType);
-                prevTile = tile;
-            }
-        OutTile = targetPattern.Tiles.Last(x => x.CurrentIndicator == TargetIndicator.Valid);
+        foreach (var tile in tilesByDistance)
+        {
+            if (tile.Unit != null)
+                break;
+            yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeType);
+            prevTile = tile;
+            OutTile = tile;
+        }
     }
 
     protected override void OnUse()

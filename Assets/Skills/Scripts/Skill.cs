@@ -162,7 +162,7 @@ public abstract class Skill
 
         SourceTile = inputTile;
 
-        validPatterns = OnActivate(map, player, card).Where(x => x.Tiles.Any());
+        validPatterns = OnActivate(map, player, card).Where(x => x.Tiles.Any() && x.Selectable);
         var hasAny = validPatterns.Any();
         PlayProgress = hasAny ? Progress.Now : Progress.Failed;
         if (!hasAny)

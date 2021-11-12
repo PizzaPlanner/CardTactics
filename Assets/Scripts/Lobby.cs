@@ -42,13 +42,16 @@ public class Lobby
 
     public static Lobby Current;
 
-    class HumanPlayer
+    public class HumanPlayer
     {
         public Deck Deck;
         public bool IsLocal;
         public List<string> Achievements;
         public PlayerInfo Player;
     }
+
+    public HumanPlayer LocalPlayer => Players.First(x => x.IsLocal);
+    public IEnumerable<HumanPlayer> AllPlayers => Players;
 
     List<HumanPlayer> Players;
     public int PlayerCount => Players.Count;

@@ -34,7 +34,7 @@
 }
 
 .text-color-overbudget {
-    color: rgba(197, 20, 20, 255);
+    color: rgb(197, 20, 20);
 }
 
 .carditem-selectable:disabled .color-default-text {
@@ -195,4 +195,11 @@
 
 .helper-playcard {
     display: none;
+}
+
+.decklist {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }

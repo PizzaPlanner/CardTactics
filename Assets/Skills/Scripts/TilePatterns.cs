@@ -33,13 +33,14 @@ public struct SpawnPatternBuilder : ITilePatternBuilder
 
 public struct PathPatternBuilder : ITilePatternBuilder
 {
-    public int MaxRange;
+    public int MinRange, MaxRange;
     public IEnumerable<ITilePattern> Patterns(Map map, Tile origin, PlayerInfo player, SelectionFilter filter)
     {
+        var min = MinRange;
         var max = MaxRange;
         return map.VisibleTiles
         .Where(x => Tile.Distance(origin, x) <= max)
-        .Select(x => new PathPattern { MaxLength = max, Target = x }.Build(map, origin, player, filter));
+        .Select(x => new PathPattern { MinLength = min, MaxLength = max, Target = x }.Build(map, origin, player, filter));
     }
 }
 
@@ -83,7 +84,8 @@ public struct LinePattern : ITilePattern
     public Vector2Int Offset, Size;
 
     public bool Selectable { get; private set; }
-    public IEnumerable<Tile> Tiles { get; private set; }
+    public IEnumerable<Tile> Tiles => TilesByDistance;
+    public Tile[] TilesByDistance { get; private set; }
     public ITilePattern Build(Map map, Tile origin, PlayerInfo player, SelectionFilter filter)
     {
         var tiles = new List<Tile>();
@@ -95,7 +97,7 @@ public struct LinePattern : ITilePattern
         t.Position.y >= Mathf.Min(start.y, end.y) &&
         t.Position.y <= Mathf.Max(start.y, end.y)).ToList();
         tiles.Sort((x, y) => Tile.Distance(origin, x).CompareTo(Tile.Distance(origin, y)));
-        Tiles = tiles;
+        TilesByDistance = tiles.ToArray();
         Selectable = Tiles.Count(x => map.TileMatches(x, filter, player)) > 0;
         return this;
     }
@@ -121,7 +123,7 @@ public struct RectPattern : ITilePattern
 
 public struct PathPattern : ITilePattern
 {
-    public int MaxLength;
+    public int MinLength, MaxLength;
     public Tile Target;
 
     public bool Selectable { get; private set; }
@@ -131,12 +133,12 @@ public struct PathPattern : ITilePattern
     public ITilePattern Build(Map map, Tile origin, PlayerInfo player, SelectionFilter filter)
     {
         var length = MaxLength;
-        var validTiles = map.VisibleTiles.Where(x => Tile.Distance(origin, x) <= length && x.CurrentIndicator != TargetIndicator.Invalid && map.TileMatches(x, filter, player)).ToList();
+        var validTiles = map.VisibleTiles.Where(x => Tile.Distance(origin, x) <= length && map.TileMatches(x, filter, player)).ToList();
         if (!Tile.FindPath(origin, Target, length, validTiles))
             return new EmptyPattern().Build(map, origin, player, filter);
 
         Tiles = Target.Pathing.LastCalculatedPath;
-        Selectable = true;
+        Selectable = Tiles.Count() > MinLength;
         return this;
     }
 }

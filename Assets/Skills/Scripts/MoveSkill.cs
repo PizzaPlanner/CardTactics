@@ -26,9 +26,9 @@ public class MoveSkill : Skill, ICancelable
         unit = SourceTile.Unit;
         rotation = SourceTile.Facing;
         if (RangeType == RangeFilter.Pathfinding)
-            return new PathPatternBuilder { MaxRange = Range }.Patterns(map, SourceTile, player, filter);
+            return new PathPatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(map, SourceTile, player, filter);
         else
-            return new RangePatternBuilder { MaxRange = Range }.Patterns(map, SourceTile, player, filter);
+            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(map, SourceTile, player, filter);
     }
 
     protected override IEnumerator OnPreview(ITilePattern targetPattern)

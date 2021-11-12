@@ -63,7 +63,7 @@ public class Tile : MonoBehaviour
     public static Tile Hovered { get; private set; }
     public List<Tile> Neighbours;
 
-    public PathingData Pathing;
+    [ShowInInspector] public PathingData Pathing;
 
     [SerializeField]
     [ChildGameObjectsOnly]
@@ -243,22 +243,34 @@ public class Tile : MonoBehaviour
         PathingIndicator.gameObject.SetActive(visible);
         if (visible)
         {
-            var left = true;
-            var right = true;
-            var top = true;
-            var bottom = true;
+            PIBorderLeft.gameObject.SetActive(true);
+            PIBorderRight.gameObject.SetActive(true);
+            PIBorderTop.gameObject.SetActive(true);
+            PIBorderBottom.gameObject.SetActive(true);
             foreach (var nb in Neighbours)
             {
                 if (nb.CurrentIndicator != CurrentIndicator || nb.CurrentIndicator == TargetIndicator.Hidden) continue;
-                if (nb.Position.x > Position.x) right = false;
-                else if (nb.Position.x < Position.x) left = false;
-                if (nb.Position.y < Position.y) bottom = false;
-                if (nb.Position.y > Position.y) top = false;
+                if (nb.Position.x > Position.x)
+                {
+                    PIBorderRight.gameObject.SetActive(false);
+                    nb.PIBorderLeft.gameObject.SetActive(false);
+                }
+                else if (nb.Position.x < Position.x)
+                {
+                    PIBorderLeft.gameObject.SetActive(false);
+                    nb.PIBorderRight.gameObject.SetActive(false);
+                }
+                if (nb.Position.y < Position.y)
+                {
+                    PIBorderBottom.gameObject.SetActive(false);
+                    nb.PIBorderTop.gameObject.SetActive(false);
+                }
+                else if (nb.Position.y > Position.y)
+                {
+                    PIBorderTop.gameObject.SetActive(false);
+                    nb.PIBorderBottom.gameObject.SetActive(false);
+                }
             }
-            PIBorderLeft.gameObject.SetActive(left);
-            PIBorderRight.gameObject.SetActive(right);
-            PIBorderTop.gameObject.SetActive(top);
-            PIBorderBottom.gameObject.SetActive(bottom);
             PaintIndicator(highlightPattern);
         }
     }
