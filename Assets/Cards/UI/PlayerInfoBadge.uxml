@@ -5,7 +5,7 @@
         <ui:VisualElement style="align-items: center; flex-direction: column;">
             <ui:VisualElement name="ActiveMarker" style="background-image: url(&apos;project://database/Assets/SkillPreviewProgress_Done.png?fileID=21300000&amp;guid=47761a728805bc7438646507fa78a043&amp;type=3#SkillPreviewProgress_Done&apos;); width: 50px; height: 62px; -unity-slice-left: 1; -unity-slice-top: 1; -unity-slice-right: 1; -unity-slice-bottom: 1; margin-right: 10px; rotate: 90deg;" />
             <ui:Instance template="UnitItem" name="UnitItem" style="align-items: center;">
-                <ResourcePanel style="position: absolute; top: 0; justify-content: space-between; right: -22px; left: -22px;">
+                <ResourcePanel picking-mode="Ignore" style="position: absolute; top: 0; justify-content: space-between; right: -22px; left: -22px;">
                     <ui:VisualElement class="resource-panel-group">
                         <CostIcon />
                         <CostIcon />
@@ -20,7 +20,7 @@
                     </ui:VisualElement>
                 </ResourcePanel>
             </ui:Instance>
-            <ui:VisualElement name="NewMarker" style="position: absolute; top: 30px; width: 100px; height: 100px; left: 30px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_resources/Quest_118.png?fileID=21300000&amp;guid=e1ec4925824a4f843bcce6fd988d7109&amp;type=3#Quest_118&apos;); display: none;" />
+            <ui:VisualElement name="NewMarker" picking-mode="Ignore" style="position: absolute; top: 30px; width: 100px; height: 100px; left: 30px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_resources/Quest_118.png?fileID=21300000&amp;guid=e1ec4925824a4f843bcce6fd988d7109&amp;type=3#Quest_118&apos;); display: none;" />
         </ui:VisualElement>
     </PlayerInfoBadge>
 </ui:UXML>
