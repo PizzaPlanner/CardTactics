@@ -172,7 +172,6 @@ public abstract class Card : ScriptableObject, IPlayable
         {
             var prog = Skills2[j].Skill.PlayProgress;
             Skills2[j].Skill.Reset();
-            Debug.Log("Resetting skill " + j);
             if (prog == Skill.Progress.Queued ||
                 prog == Skill.Progress.Skipped)
             {

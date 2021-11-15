@@ -68,7 +68,6 @@ public struct SingleTilePattern : ITilePattern
     {
         Tiles = new Tile[] { Target };
         Selectable = map.TileMatches(Target, filter, player);
-        Debug.Log("STP SELECTAGLE: " + Selectable);
         return this;
     }
 }

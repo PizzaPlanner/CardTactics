@@ -14,9 +14,13 @@ public class CardItem : VisualElement
             this.Query<Label>("Name").ForEach(x => x.text = card.Name);
             this.Query<Label>("Description").ForEach(x => x.text = GetDescription(card));
 
-            this.Query(null, "filter-actioncard").ForEach(x => x.style.display = card is ActionCard ? DisplayStyle.Flex : DisplayStyle.None);
-            this.Query(null, "filter-unitcard").ForEach(x => x.style.display = card is UnitCard ? DisplayStyle.Flex : DisplayStyle.None);
-            this.Query(null, "filter-itemcard").ForEach(x => x.style.display = card is ItemCard ? DisplayStyle.Flex : DisplayStyle.None);
+            this.Query(null, "filter-actioncard").ForEach(x => x.style.display = DisplayStyle.None);
+            this.Query(null, "filter-unitcard").ForEach(x => x.style.display = DisplayStyle.None);
+            this.Query(null, "filter-itemcard").ForEach(x => x.style.display = DisplayStyle.None);
+
+            this.Query(null, "filter-actioncard").ForEach(x => { if (card is ActionCard) x.style.display = DisplayStyle.Flex; });
+            this.Query(null, "filter-unitcard").ForEach(x => { if (card is UnitCard) x.style.display = DisplayStyle.Flex; });
+            this.Query(null, "filter-itemcard").ForEach(x => { if (card is ItemCard) x.style.display = DisplayStyle.Flex; });
 
             this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter());
             this.RegisterCallback<MouseLeaveEvent>(_ => OnMouseLeave());
@@ -29,6 +33,7 @@ public class CardItem : VisualElement
             {
                 this.Query<Label>("Life").ForEach(x => x.text = ucard.UnitReference.MaxLife.ToString());
                 this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
+                this.Query<ResourcePanel>().ForEach(x => x.Resources = ucard.UnitReference.Resources);
             }
         }
     }

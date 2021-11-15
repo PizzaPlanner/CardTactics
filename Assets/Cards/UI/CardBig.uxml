@@ -11,10 +11,6 @@
         </ui:VisualElement>
         <ui:VisualElement name="LowerPart" style="align-items: stretch; justify-content: flex-end; -unity-background-scale-mode: stretch-to-fill; position: absolute; top: 0; bottom: 0; background-image: url(&apos;project://database/Assets/Card_Bottom_Fade.png?fileID=2800000&amp;guid=f77a6e8baeb9daa45b7bbf91f51feb98&amp;type=3#Card_Bottom_Fade&apos;); right: 0; left: 0; padding-bottom: 20px;">
             <ui:VisualElement name="StatsPanel" class="filter-unitcard" style="flex-direction: row; width: 100%; justify-content: space-around;">
-                <ui:VisualElement name="Energy" style="flex-direction: row; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Icon_BG.png?fileID=2800000&amp;guid=55f4616714029ea488683c7e7dafcbe2&amp;type=3#Icon_BG&apos;); height: 64px; width: 64px;">
-                    <ui:VisualElement style="position: absolute; left: 11px; top: 11px; right: 11px; bottom: 11px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_nobg/Shamanskill_03_nobg.png?fileID=21300000&amp;guid=a132b637f97ce7e40a3e14cf8ea4eba2&amp;type=3#Shamanskill_03_nobg&apos;); rotate: 315deg;" />
-                    <ui:Label text="8" name="Energy" class="color-default-text text-shadow-strong" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 40px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
-                </ui:VisualElement>
                 <ui:VisualElement name="Speed" style="flex-direction: row; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Icon_BG.png?fileID=2800000&amp;guid=55f4616714029ea488683c7e7dafcbe2&amp;type=3#Icon_BG&apos;); height: 64px; width: 64px;">
                     <ui:VisualElement style="position: absolute; left: 11px; top: 11px; right: 11px; bottom: 11px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_nobg/Shamanskill_42_nobg.png?fileID=21300000&amp;guid=7945c694d9f570f4191734294855e361&amp;type=3#Shamanskill_42_nobg&apos;); rotate: 315deg;" />
                     <ui:Label text="8" name="Speed" class="color-default-text text-shadow-strong" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 40px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
@@ -24,6 +20,21 @@
                     <ui:Label text="8" name="Life" class="color-default-text text-shadow-strong" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 40px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
                 </ui:VisualElement>
             </ui:VisualElement>
+            <ResourcePanel class="resource-panel--card filter-unitcard filter-itemcard" style="flex-direction: row; flex-wrap: wrap; justify-content: center;">
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon />
+                    <CostIcon />
+                    <CostIcon />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon />
+                    <CostIcon />
+                    <CostIcon />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon class="cost-icon--requirement" />
+                </ui:VisualElement>
+            </ResourcePanel>
             <ui:VisualElement name="NamePanel">
                 <ui:Label text="This is some Name" display-tooltip-when-elided="true" name="Name" class="color-default-text" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 25px; -unity-font-style: bold;" />
             </ui:VisualElement>
