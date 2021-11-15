@@ -68,14 +68,8 @@ public struct SingleTilePattern : ITilePattern
     {
         Tiles = new Tile[] { Target };
         Selectable = map.TileMatches(Target, filter, player);
-
+        Debug.Log("STP SELECTAGLE: " + Selectable);
         return this;
-    }
-
-    public bool Valid(Map map, SelectionFilter filter, PlayerInfo player)
-    {
-        // Make sure to call TileMatches on every tile in pattern!
-        return Tiles.Count(x => map.TileMatches(x, filter, player)) > 0;
     }
 }
 

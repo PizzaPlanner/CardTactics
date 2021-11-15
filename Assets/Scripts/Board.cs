@@ -219,7 +219,7 @@ public class Board : MonoBehaviour
         foreach (var unit in FindObjectsOfType<Unit>())
             if (unit.Player != null && RegisteredPlayers.Contains(unit.Player))
             {
-                unit.Resources.EnergySpent = 0;
+                unit.Resources.Refresh();
                 playables.Add(unit);
             }
         playables.Sort((x, y) => Unit.CompareSpeed(x, y));

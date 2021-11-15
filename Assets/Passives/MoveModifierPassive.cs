@@ -9,13 +9,13 @@ public class MoveModifierPassive : Passive
     List<MoveSkill> affected = new List<MoveSkill>();
 
     public override string Description => $"Every movement of type {RangeFilter} is increased by {Modifier}";
-
+    protected override TargetType Target => TargetType.Player;
     public RangeFilter RangeFilter;
     public int Modifier;
 
-    public override void OnRoundStart(Map map, PlayerInfo player)
+    public override void OnRoundStart()
     {
-        foreach (var card in player.Deck.All)
+        foreach (var card in TargetPlayer.Deck.All)
         {
             if (card is not ActionCard acard || acard.Skills.Count() == 0) continue;
             foreach (var skill in card.Skills)

@@ -10,6 +10,8 @@ public class AdditionalCardPassive : Passive
 
     public override string Description => $"At the start of each turn, gain {CardPrefab.Name}{(OneCardPerPassive ? ", if you don't already have one." : ".")}";
 
+    protected override TargetType Target => TargetType.Player;
+
     public override List<Card> GetRelatedCards()
     {
         var list = base.GetRelatedCards();
@@ -18,15 +20,15 @@ public class AdditionalCardPassive : Passive
         return list;
     }
 
-    public override void OnRoundStart(Map map, PlayerInfo player)
+    public override void OnRoundStart()
     {
         if (OneCardPerPassive)
         {
-            foreach (var card in player.Deck.All)
+            foreach (var card in TargetPlayer.Deck.All)
             {
                 if (card.Source == Source && card.State != Card.CardState.Destroyed) return;
             }
         }
-        player.Deck.ExtendWith(CardPrefab, Source, InitialState);
+        TargetPlayer.Deck.ExtendWith(CardPrefab, Source, InitialState);
     }
 }

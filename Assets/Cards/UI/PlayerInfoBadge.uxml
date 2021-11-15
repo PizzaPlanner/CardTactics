@@ -1,22 +1,26 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <ui:Template name="UnitItem" src="project://database/Assets/Cards/UI/UnitItem.uxml?fileID=9197481963319205126&amp;guid=26805b5f1c472734bbd37880d504ef40&amp;type=3#UnitItem" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <PlayerInfoBadge picking-mode="Ignore" class="unit-badge unit-badge--current" style="align-items: flex-start; flex-direction: column; justify-content: flex-start; padding-bottom: 20px;">
-        <ui:VisualElement style="align-items: center; flex-direction: row;">
-            <ui:VisualElement name="ActiveMarker" style="background-image: url(&apos;project://database/Assets/SkillPreviewProgress_Done.png?fileID=21300000&amp;guid=47761a728805bc7438646507fa78a043&amp;type=3#SkillPreviewProgress_Done&apos;); width: 50px; height: 87px; -unity-slice-left: 1; -unity-slice-top: 1; -unity-slice-right: 1; -unity-slice-bottom: 1; margin-right: 10px;" />
+    <PlayerInfoBadge picking-mode="Ignore" class="unit-badge unit-badge--current" style="align-items: center; flex-direction: column; justify-content: flex-start; padding-left: 20px; padding-right: 20px;">
+        <ui:VisualElement style="align-items: center; flex-direction: column;">
+            <ui:VisualElement name="ActiveMarker" style="background-image: url(&apos;project://database/Assets/SkillPreviewProgress_Done.png?fileID=21300000&amp;guid=47761a728805bc7438646507fa78a043&amp;type=3#SkillPreviewProgress_Done&apos;); width: 50px; height: 62px; -unity-slice-left: 1; -unity-slice-top: 1; -unity-slice-right: 1; -unity-slice-bottom: 1; margin-right: 10px; rotate: 90deg;" />
             <ui:Instance template="UnitItem" name="UnitItem" style="align-items: center;">
-                <ui:VisualElement name="Energy" class="filter-actioncard" style="flex-direction: row; position: absolute; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Icon_BG.png?fileID=2800000&amp;guid=55f4616714029ea488683c7e7dafcbe2&amp;type=3#Icon_BG&apos;); height: 64px; width: 64px; top: -30px;">
-                    <ui:VisualElement style="position: absolute; left: 10px; top: 10px; right: 10px; bottom: 10px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_nobg/Shamanskill_03_nobg.png?fileID=21300000&amp;guid=a132b637f97ce7e40a3e14cf8ea4eba2&amp;type=3#Shamanskill_03_nobg&apos;); rotate: 315deg;" />
-                    <ui:Label text="8" name="Energy" class="color-default-text text-shadow-strong" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 40px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
-                </ui:VisualElement>
-                <ResourcePanel style="position: absolute; right: -30px; scale: 0.6 0.6; justify-content: center; top: -50px; bottom: -50px;">
-                    <CostIcon />
-                    <CostIcon />
-                    <CostIcon />
-                    <CostIcon />
+                <ResourcePanel style="position: absolute; top: 0; justify-content: space-between; right: -22px; left: -22px;">
+                    <ui:VisualElement class="resource-panel-group">
+                        <CostIcon />
+                        <CostIcon />
+                        <CostIcon />
+                        <CostIcon />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="resource-panel-group">
+                        <CostIcon />
+                        <CostIcon />
+                        <CostIcon />
+                        <CostIcon />
+                    </ui:VisualElement>
                 </ResourcePanel>
             </ui:Instance>
-            <ui:VisualElement name="NewMarker" style="position: absolute; top: 30px; width: 100px; height: 100px; left: 30px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_resources/Quest_118.png?fileID=21300000&amp;guid=e1ec4925824a4f843bcce6fd988d7109&amp;type=3#Quest_118&apos;);" />
+            <ui:VisualElement name="NewMarker" style="position: absolute; top: 30px; width: 100px; height: 100px; left: 30px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_resources/Quest_118.png?fileID=21300000&amp;guid=e1ec4925824a4f843bcce6fd988d7109&amp;type=3#Quest_118&apos;); display: none;" />
         </ui:VisualElement>
     </PlayerInfoBadge>
 </ui:UXML>

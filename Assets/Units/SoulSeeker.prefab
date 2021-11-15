@@ -53,9 +53,13 @@ MonoBehaviour:
   MaxLife: 8
   Type: 1
   Resources:
-    Energy: 2
     Classes:
     - {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    Resources:
+    - Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+      Total: 2
+    - Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+      Total: 1
 --- !u!82 &1222922040391292849
 AudioSource:
   m_ObjectHideFlags: 0

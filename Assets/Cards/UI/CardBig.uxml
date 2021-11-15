@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <CardItem style="width: 260px; height: 440px; align-items: center;">
+    <CardItem style="width: 260px; height: 400px; align-items: center;">
         <ui:VisualElement name="PlayText" class="helper-playcard" style="position: absolute; top: -40px; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: center;">
             <ui:VisualElement style="background-image: url(&apos;project://database/Assets/3rdParty/Controller%20Icons%20Pack%20(by%20NullSave)/Textures/Filled/64/mouse_left.png?fileID=2800000&amp;guid=99015ae45bcdf27439bf40af93a1d817&amp;type=3#mouse_left&apos;); width: 24px; height: 24px;" />
             <ui:Label text="Play it" class="text-shadow color-default-text" style="-unity-font-style: bold; font-size: 18px;" />
@@ -32,14 +32,20 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Border" style="background-image: url(&apos;project://database/Assets/Card_Border.png?fileID=21300000&amp;guid=248332c67d33f494ea5c899d68baa89e&amp;type=3#Card_Border&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center;">
-            <ui:VisualElement name="Energy" class="filter-actioncard" style="flex-direction: row; position: absolute; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Icon_BG.png?fileID=2800000&amp;guid=55f4616714029ea488683c7e7dafcbe2&amp;type=3#Icon_BG&apos;); height: 64px; width: 64px; top: -30px; left: 10px;">
-                <ui:VisualElement style="position: absolute; left: 10px; top: 10px; right: 10px; bottom: 10px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_nobg/Shamanskill_03_nobg.png?fileID=21300000&amp;guid=a132b637f97ce7e40a3e14cf8ea4eba2&amp;type=3#Shamanskill_03_nobg&apos;); rotate: 315deg;" />
-                <ui:Label text="8" name="Energy" class="color-default-text text-shadow-strong" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 40px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
-            </ui:VisualElement>
-            <ResourcePanel class="filter-actioncard" style="position: absolute; left: -10px; top: 20px; scale: 0.75 0.75;">
-                <CostIcon />
-                <CostIcon />
-                <CostIcon />
+            <ResourcePanel class="filter-actioncard resource-panel--card" style="position: absolute; left: -22px; top: -22px; flex-direction: column;">
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon />
+                    <CostIcon />
+                    <CostIcon />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon />
+                    <CostIcon />
+                    <CostIcon />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel-group">
+                    <CostIcon class="cost-icon--requirement" />
+                </ui:VisualElement>
             </ResourcePanel>
         </ui:VisualElement>
     </CardItem>

@@ -24,12 +24,10 @@ public class CardItem : VisualElement
             if (card is ActionCard acard)
             {
                 this.Query<ResourcePanel>().ForEach(x => x.Resources = acard.Cost);
-                this.Query<Label>("Energy").ForEach(x => x.text = (acard.Cost.Energy - acard.Cost.EnergySpent).ToString());
             }
             else if (card is UnitCard ucard)
             {
                 this.Query<Label>("Life").ForEach(x => x.text = ucard.UnitReference.MaxLife.ToString());
-                this.Query<Label>("Energy").ForEach(x => x.text = ucard.UnitReference.Resources.Energy.ToString());
                 this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
             }
         }

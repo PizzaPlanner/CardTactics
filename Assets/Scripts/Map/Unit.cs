@@ -1,19 +1,94 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+public enum ResourceState
+{
+    Available,
+    Used,
+    Destroyed
+}
+
+[System.Serializable]
+public struct Resource
+{
+    public CardClass Type;
+    public int Available => Total - Used;
+    [NonSerialized] public int Used;
+    // [NonSerialized] public int NonRefreshable;
+    public int Total;
+}
 
 [System.Serializable]
 public class ResourceInfo
 {
-    public int Energy;
-    public int EnergySpent { get; set; }
-    public CardClass[] Classes;
+    public List<Resource> Resources;
 
     public bool CanAfford(ResourceInfo other)
     {
-        var classes = Classes;
-        return Energy - EnergySpent >= other.Energy && other.Classes.Count(x => !classes.Contains(x)) == 0;
+        foreach (var res in other.Resources)
+            if (!Resources.Any(x => x.Type == res.Type && x.Available >= res.Available)) return false;
+        return true;
+    }
+
+    public void Spend(ResourceInfo other)
+    {
+        foreach (var otherRes in other.Resources)
+            for (int i = 0; i < Resources.Count; i++)
+                if (Resources[i].Type == otherRes.Type)
+                    Resources[i] = new Resource
+                    {
+                        Type = Resources[i].Type,
+                        Total = Resources[i].Total,
+                        Used = Resources[i].Used + otherRes.Available,
+                        // NonRefreshable = Resources[i].NonRefreshable
+                    };
+    }
+
+    public void Refresh()
+    {
+        for (int i = 0; i < Resources.Count; i++)
+            Resources[i] = new Resource
+            {
+                Type = Resources[i].Type,
+                Total = Resources[i].Total,
+                Used = 0,
+            };
+    }
+
+    public void Add(CardClass type, int amount)
+    {
+        bool found = false;
+        for (int i = 0; i < Resources.Count; i++)
+            if (Resources[i].Type == type)
+            {
+                var r2 = Resources[i];
+                r2.Total += amount;
+                Resources[i] = r2;
+                found = true;
+                break;
+            }
+        if (!found)
+            Resources.Add(new Resource { Type = type, Total = amount });
+    }
+
+    public void Remove(CardClass type, int amount)
+    {
+        for (int i = 0; i < Resources.Count; i++)
+            if (Resources[i].Type == type && amount > 0)
+            {
+                var r2 = Resources[i];
+                r2.Total -= amount;
+                amount = -r2.Total;
+                Resources[i] = r2;
+                if (r2.Total <= 0)
+                {
+                    Resources.Remove(r2);
+                    i--;
+                }
+            }
     }
 }
 

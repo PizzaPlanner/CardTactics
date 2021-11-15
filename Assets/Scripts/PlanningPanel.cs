@@ -81,17 +81,7 @@ public class PlanningPanel : MonoBehaviour
         {
             if (x.Card is ActionCard card)
             {
-                var energy = unit.Resources.Energy - unit.Resources.EnergySpent;
-                var hasEnergy = energy >= card.Cost.Energy;
                 x.Query<ResourcePanel>().ForEach(x => x.SetAffordable(unit.Resources));
-                x.Query<Label>("Energy").ForEach(x =>
-                {
-                    x.text = card.Cost.Energy.ToString();
-                    if (hasEnergy)
-                        x.RemoveFromClassList("text-color-overbudget");
-                    else
-                        x.AddToClassList("text-color-overbudget");
-                });
                 x.SetEnabled(unit.Resources.CanAfford(card.Cost));
             }
         });

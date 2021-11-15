@@ -30,7 +30,10 @@ public abstract class Card : ScriptableObject, IPlayable
         yield return PlaySkills(map, unit, player, true);
         yield return new WaitForSeconds(board.CardPlayPostTime);
         CardTooltip.Hide();
-        State = StateOnPlayed;
+        if (Skills.Count(x => x is Passive) > 0)
+            State = CardState.Active;
+        else
+            State = StateOnPlayed;
     }
 
     public void Destroy() { State = CardState.Destroyed; }
@@ -55,7 +58,16 @@ public abstract class Card : ScriptableObject, IPlayable
         {
             skill.Prepare();
             if (State == CardState.Active && skill is Passive passive)
-                passive.OnRoundStart(map, player);
+            {
+                Debug.Log("Triggering Passive with RL: " + passive.RoundsLeft);
+                if (passive.RoundsLeft >= 0 && passive.RoundsLeft-- == 0)
+                {
+                    passive.OnPassiveEnd();
+                    State = StateOnPlayed;
+                }
+                else
+                    passive.OnRoundStart();
+            }
         }
     }
 

@@ -10,6 +10,7 @@ public static class SelectionFilters
     public static SelectionFilter Self { get; } = new SelectionFilter { Unit = UnitFilter.Commander, Tile = TileFilter.Self };
     public static SelectionFilter AnyEnemy { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment, Tile = TileFilter.Enemy };
     public static SelectionFilter AnyUnit { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment };
+    public static SelectionFilter Everything { get; } = new SelectionFilter { Tile = 0, Range = RangeFilter.Any };
     public static SelectionFilter Empty { get; } = new SelectionFilter { Tile = TileFilter.Empty, Range = RangeFilter.Any };
 }
 

@@ -190,8 +190,8 @@ public class Map : MonoBehaviour
     {
         if (!tile.gameObject.activeSelf)
             return false;
-        var validTarget = ((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null);
-        if (tile.Unit != null || tile.HasObstacle)
+        var validTarget = (((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null)) || filter.Tile == 0;
+        if (filter.Unit > 0 && (tile.Unit != null || tile.HasObstacle))
         {
             var isObstacle = tile.HasObstacle || tile.Unit.Player == null;
             validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;

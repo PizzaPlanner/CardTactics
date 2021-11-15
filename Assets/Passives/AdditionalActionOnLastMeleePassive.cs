@@ -10,10 +10,11 @@ public class AdditionalActionOnLastMeleePassive : Passive
     public int Condition;
 
     public override string Description => $"Whenever the last action of a card is a melee attack, you may {Skill.Description} afterwards.";
+    protected override TargetType Target => TargetType.Player;
 
-    public override void OnRoundStart(Map map, PlayerInfo player)
+    public override void OnRoundStart()
     {
-        foreach (var card in player.Deck.All)
+        foreach (var card in TargetPlayer.Deck.All)
         {
             if (card is not ActionCard acard || acard.Skills.Count() == 0) continue;
             if (acard.Skills.Last() is not AttackSkill askl || askl.MaxRange != 1) continue;

@@ -6,12 +6,16 @@
 }
 
 .cost-icon {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     background-image: url('project://database/Assets/Icon_BG.png?fileID=2800000&guid=55f4616714029ea488683c7e7dafcbe2&type=3#Icon_BG');
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     align-items: center;
     justify-content: center;
+}
+
+.cost-icon--requirement {
+    background-image: url('project://database/Assets/3rdParty/GUI_Parts/Gui_parts/lil_roundframe_ready.png?fileID=2800000&guid=76a827c0b7b700d4fa9e135b970a64b1&type=3#lil_roundframe_ready');
 }
 
 .cost-icon--big {
@@ -117,9 +121,16 @@
 }
 
 .resource-panel {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 
 .resource-panel-group {
+    flex-direction: column;
+}
+
+.resource-panel--card > .resource-panel-group {
     flex-direction: row;
 }
 

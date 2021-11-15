@@ -37,7 +37,6 @@ public class TurnPanel : MonoBehaviour
         border.style.borderBottomColor = player.Color;
         var resources = badge.Q<ResourcePanel>();
         resources.Resources = unit.Resources;
-        badge.Q<Label>("Energy").text = (unit.Resources.Energy - unit.Resources.EnergySpent).ToString();
         badge.SetEnabled(false);
         OnTurnEnd(unit);
     }
@@ -63,7 +62,6 @@ public class TurnPanel : MonoBehaviour
             x.SetEnabled(true);
             var res = x.UnitItem.Unit.Resources;
             x.Q<ResourcePanel>().Resources = res;
-            x.Q<Label>("Energy").text = (res.Energy - res.EnergySpent).ToString();
         });
         SortBadges();
         onComplete?.Invoke();
@@ -75,7 +73,6 @@ public class TurnPanel : MonoBehaviour
         {
             var res = x.UnitItem.Unit.Resources;
             x.Q<ResourcePanel>().Resources = res;
-            x.Q<Label>("Energy").text = (res.Energy - res.EnergySpent).ToString();
         });
     }
 

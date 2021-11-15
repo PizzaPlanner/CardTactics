@@ -6,6 +6,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Card/Action")]
 public class ActionCard : Card
 {
+    public enum UseType
+    {
+        Default,
+        Once,
+        Temporary
+    }
+
     [SerializeField] Sprite icon;
     [SerializeField] new string name;
     [SerializeField] ResourceInfo cost;
@@ -22,7 +29,7 @@ public class ActionCard : Card
     protected override void OnPlay(Board board, Map map, Unit unit, PlayerInfo player)
     {
         if (unit != null)
-            unit.Resources.EnergySpent += Cost.Energy;
+            unit.Resources.Spend(Cost);
     }
 
     protected override CardState StateOnPlayed => Once || Temporary ? CardState.Destroyed : CardState.Played;

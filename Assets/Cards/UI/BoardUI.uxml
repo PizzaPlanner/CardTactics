@@ -5,8 +5,8 @@
         <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; justify-content: center; flex-direction: row; padding-bottom: 10px; bottom: -200px;" />
         <ui:Button text="End Turn" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 150px; right: 50px; height: 128px;" />
     </ui:VisualElement>
-    <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 10px; left: 0; bottom: 0; padding-left: 10px;">
-        <ui:VisualElement name="ReadyPanel" style="flex-direction: column; align-items: flex-start; justify-content: center;" />
+    <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 30px; left: 0; padding-left: 10px; right: 0;">
+        <ui:VisualElement name="ReadyPanel" style="flex-direction: row; align-items: flex-start; justify-content: center;" />
     </ui:VisualElement>
     <ui:Instance template="CardBig" name="TooltipCard" style="position: absolute; right: 0; justify-content: center; top: 0; bottom: 0; padding-right: 20px;" />
     <ui:VisualElement name="TurnAnnouncer" style="position: absolute; top: 35%; left: 25%; right: 25%; height: 100px; background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/name_bar3.png?fileID=21300000&amp;guid=12eaceb7341922b4398ff20c8bbcff90&amp;type=3#name_bar3&apos;); justify-content: center; opacity: 0.75; display: none;">

@@ -24,16 +24,13 @@ public class CostIcon : VisualElement
     }
 
     CardClass cls;
-
-    public void Set(CardClass cardClass)
-    {
-        Class = cardClass;
-    }
+    public int Rank { get => rank; set { rank = value; if (value == -1) AddToClassList("cost-icon--requirement"); } }
+    int rank;
 
     public void SetCostColor(ResourceInfo resources)
     {
         if (Class == null) return;
-        bool affordable = resources.Classes.Contains(Class);
+        bool affordable = resources.Resources.Sum(x => x.Type == Class ? x.Available : 0) > Rank && resources.Resources.Any(x => x.Type == Class);
         RemoveFromClassList(affordable ? "cost-icon--overbudget" : "cost-icon--affordable");
         AddToClassList(affordable ? "cost-icon--affordable" : "cost-icon--overbudget");
     }
