@@ -13,8 +13,12 @@ public class ActionCard : Card
         Temporary
     }
 
-    [SerializeField] Sprite icon;
+    [HideLabel]
     [SerializeField] new string name;
+    [HideLabel]
+    [SerializeField] Sprite icon;
+
+    [HideLabel]
     [SerializeField] ResourceInfo cost;
 
     public bool Once;
