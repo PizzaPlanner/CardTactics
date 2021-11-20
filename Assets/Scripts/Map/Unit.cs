@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public enum ResourceState
@@ -14,16 +15,17 @@ public enum ResourceState
 [System.Serializable]
 public struct Resource
 {
+    [TableColumnWidth(25)]
+    public int Total;
     public CardClass Type;
     public int Available => Total - Used;
     [NonSerialized] public int Used;
-    // [NonSerialized] public int NonRefreshable;
-    public int Total;
 }
 
 [System.Serializable]
 public class ResourceInfo
 {
+    [TableList(AlwaysExpanded = true)]
     public List<Resource> Resources;
 
     public bool CanAfford(ResourceInfo other)
@@ -60,6 +62,7 @@ public class ResourceInfo
 
     public void Add(CardClass type, int amount)
     {
+        Debug.Log("Add " + type.Name);
         bool found = false;
         for (int i = 0; i < Resources.Count; i++)
             if (Resources[i].Type == type)

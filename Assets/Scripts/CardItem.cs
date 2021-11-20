@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -22,9 +23,6 @@ public class CardItem : VisualElement
             this.Query(null, "filter-unitcard").ForEach(x => { if (card is UnitCard) x.style.display = DisplayStyle.Flex; });
             this.Query(null, "filter-itemcard").ForEach(x => { if (card is ItemCard) x.style.display = DisplayStyle.Flex; });
 
-            this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter());
-            this.RegisterCallback<MouseLeaveEvent>(_ => OnMouseLeave());
-
             if (card is ActionCard acard)
             {
                 this.Query<ResourcePanel>().ForEach(x => x.Resources = acard.Cost);
@@ -39,24 +37,20 @@ public class CardItem : VisualElement
     }
     Card card;
 
-    void OnMouseEnter()
+    public CardItem()
     {
-        CardTooltip.Show(Card);
+        this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter?.Invoke());
+        this.RegisterCallback<MouseLeaveEvent>(_ => OnMouseLeave?.Invoke());
     }
 
-    void OnMouseLeave()
-    {
-        CardTooltip.Hide();
-    }
+    public Action OnMouseEnter, OnMouseLeave;
 
     static string GetDescription(Card card)
     {
         var descriptions = new List<string>();
-        for (int i = 0; i < card.Skills2.Length; i++)
-        {
-            if (card.Skills2[i].Skill.Description != null)
-                descriptions.Add(card.Skills2[i].Skill.Description);
-        }
+        foreach (var skill in card.Skills)
+            if (skill.Description != null)
+                descriptions.Add(skill.Description);
         return string.Join("\n", descriptions);
     }
 

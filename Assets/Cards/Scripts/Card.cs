@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class Card : ScriptableObject, IPlayable
 {
@@ -87,22 +88,24 @@ public abstract class Card : ScriptableObject, IPlayable
     {
         State = initialState;
         Source = source;
-        for (int i = 0; i < Skills2.Length; i++)
+        for (int i = 0; i < skills.Length; i++)
         {
-            Skills2[i].Skill.Source = this;
+            skills[i].Skill.Source = this;
         }
         OnInit();
     }
 
-    public SkillInfo[] Skills2;
+    [FormerlySerializedAs("Skills2")]
+    [SerializeField]
+    SkillInfo[] skills;
 
-    public IEnumerable<Skill> Skills => Skills2.Select(x => x.Skill);
+    public IEnumerable<Skill> Skills => skills?.Select(x => x.Skill) ?? new Skill[0];
 
     public void ExtendWith(SkillInfo newSkill, int index)
     {
-        var listS = Skills2.ToList();
+        var listS = skills.ToList();
         listS.Insert(index, newSkill);
-        Skills2 = listS.ToArray();
+        skills = listS.ToArray();
     }
 
     public ITilePattern SkillTarget { get; set; }
@@ -112,33 +115,33 @@ public abstract class Card : ScriptableObject, IPlayable
 
     protected IEnumerator PlaySkills(Map map, Unit unit, PlayerInfo player, bool autocompleteIfPossible)
     {
-        if (Skills2.Length == 0)
+        if (skills.Length == 0)
             WantComplete = true;
-        for (int i = 0; i <= Skills2.Length; i++)
+        for (int i = 0; i <= skills.Length; i++)
         {
-            if (i < Skills2.Length)
+            if (i < skills.Length)
             {
                 SkillTarget = null;
                 WantSkillSkip = false;
                 WantComplete = autocompleteIfPossible;
                 WantReset = false;
-                if (Skills2[i].CanUse(map.TileOf(unit), Skills2.ToList().GetRange(0, i), out var inputTile)
-                && Skills2[i].Skill.Activate(map, player, this, inputTile, out var validPatterns))
+                if (skills[i].CanUse(map.TileOf(unit), skills.ToList().GetRange(0, i), out var inputTile)
+                && skills[i].Skill.Activate(map, player, this, inputTile, out var validPatterns))
                 {
                     if (!player.IsAI && SkillTarget == null)
                         map.ShowTileIndicators(validPatterns);
 
-                    yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && Skills2[i].Skill.IsOptional));
+                    yield return new WaitUntil(() => SkillTarget != null || WantReset || (WantSkillSkip && skills[i].Skill.IsOptional));
 
                     if (SkillTarget != null)
                     {
-                        yield return Skills2[i].Skill.Preview(SkillTarget);
+                        yield return skills[i].Skill.Preview(SkillTarget);
                         if (player.IsAI)
                             WantComplete = true;
                     }
                     else if (WantSkillSkip)
                     {
-                        Skills2[i].Skill.Skip();
+                        skills[i].Skill.Skip();
                     }
                     else if (WantReset)
                     {
@@ -168,10 +171,10 @@ public abstract class Card : ScriptableObject, IPlayable
 
     int PartialReset()
     {
-        for (int j = Skills2.Length - 1; j >= 0; j--)
+        for (int j = skills.Length - 1; j >= 0; j--)
         {
-            var prog = Skills2[j].Skill.PlayProgress;
-            Skills2[j].Skill.Reset();
+            var prog = skills[j].Skill.PlayProgress;
+            skills[j].Skill.Reset();
             if (prog == Skill.Progress.Queued ||
                 prog == Skill.Progress.Skipped)
             {

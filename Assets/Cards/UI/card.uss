@@ -204,3 +204,7 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+#CardPanel CardItem {
+    margin-right: -57px;
+}

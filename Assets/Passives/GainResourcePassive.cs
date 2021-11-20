@@ -1,12 +1,14 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
 public class GainResourcePassive : Passive
 {
+    [HideLabel]
     [SerializeField] CardClass Class;
     [SerializeField] int Amount;
 
-    public override string Description => $"This unit can use Cards that require {Class.Name}";
+    public override string Description => $"A unit can use Cards that require {Class.Name}";
     protected override TargetType Target => TargetType.Unit;
 
     public override void OnActivation()

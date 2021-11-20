@@ -12,19 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Slash
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
-  - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
-  Dependencies: 0000000001000000
-  Conditions: 0000000000000000
-  icon: {fileID: 21300000, guid: 8e0bc87a0991fb646ad0f0834130139d, type: 3}
-  name: Slash
-  speed: 22
+  skills:
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 0
+    Skill:
+      rid: 1776283482041090278
+  name: Smash
+  icon: {fileID: 21300000, guid: d957922172f4497409aca2c642d43a7c, type: 3}
   cost:
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    Cost: 1
-  - Class: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
-    Cost: 1
-  Once: 0
+    Resources:
+    - Total: 0
+      Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    - Total: 1
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+  Once: 1
   Temporary: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283482041090278
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2
+          Unit: 7
+          Range: 0
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 0}
+        confirmOnePossibleTile: 1
+        Damage: 7

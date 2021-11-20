@@ -71,6 +71,8 @@ public class PlanningPanel : MonoBehaviour
             var cx = cardPanel[idx].Q<CardItem>();
             cx.AddToClassList("carditem-selectable");
             cx.Card = card;
+            cx.OnMouseEnter = () => CardTooltip.Show(card);
+            cx.OnMouseLeave = () => CardTooltip.Hide();
             if (playable)
                 cx.RegisterCallback<MouseDownEvent>((_) =>
                 {

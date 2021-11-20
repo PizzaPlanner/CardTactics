@@ -12,28 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Brute_Chop
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Skills2:
+  skills:
   - Conditions: 
     SourceTileInput: 1
     TileOutput: 2
     Skill:
-      rid: 1776283240145354773
+      rid: 1776283482041090075
   - Conditions: 
     SourceTileInput: 1
     TileOutput: 3
     Skill:
-      rid: 1776283240145354774
-  icon: {fileID: 21300000, guid: f6a67d94bab26834d9a52bccb646bcf9, type: 3}
+      rid: 1776283482041090076
   name: Chop
+  icon: {fileID: 21300000, guid: f6a67d94bab26834d9a52bccb646bcf9, type: 3}
   cost:
-    Energy: 1
-    Classes: []
+    Resources: []
   Once: 0
   Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 1776283240145354773
+    - rid: 1776283482041090075
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
@@ -47,7 +46,7 @@ MonoBehaviour:
         Sound: {fileID: 8300000, guid: 89837be0511f17547bb0a8ca2cf8a6aa, type: 3}
         confirmOnePossibleTile: 1
         Damage: 2
-    - rid: 1776283240145354774
+    - rid: 1776283482041090076
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}

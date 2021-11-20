@@ -12,22 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Quick Attack
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
-  - {fileID: 11400000, guid: 100325aba44c03645bb1b4a371032df3, type: 2}
-  - {fileID: 11400000, guid: c13e6466756201d44abad4fe4e5e08d5, type: 2}
-  Dependencies: 000000000100000002000000
-  Conditions: 000000000000000001000000
-  icon: {fileID: 21300000, guid: 2663966faa5210646b09c3cf37c31dac, type: 3}
+  skills:
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 2
+    Skill:
+      rid: 1776283482041090273
+  - Conditions: 02000000
+    SourceTileInput: 1
+    TileOutput: 0
+    Skill:
+      rid: 1776283482041090274
   name: Quickattack
-  speed: 2
+  icon: {fileID: 21300000, guid: 2663966faa5210646b09c3cf37c31dac, type: 3}
   cost:
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    Cost: 1
-  - Class: {fileID: 11400000, guid: 99c77286f7d4a0c43900cab078aa9515, type: 2}
-    Cost: 1
-  - Class: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
-    Cost: 0
+    Resources:
+    - Total: 0
+      Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    - Total: 1
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Once: 0
   Temporary: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283482041090273
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2
+          Unit: 7
+          Range: 0
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 0}
+        confirmOnePossibleTile: 1
+        Damage: 2
+    - rid: 1776283482041090274
+      type: {class: DashSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 0
+        MaxRange: 2
+        RangeType: 1

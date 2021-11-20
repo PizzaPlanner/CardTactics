@@ -12,29 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Brute_ThrowSword
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Skills2:
+  skills:
   - Conditions: 
     SourceTileInput: 1
     TileOutput: 2
     Skill:
-      rid: 1776283225038258254
+      rid: 1776283482041090215
   - Conditions: 
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 1776283225038258255
+      rid: 1776283482041090216
+  - Conditions: 
+    SourceTileInput: 2
+    TileOutput: 0
+    Skill:
+      rid: 1776283482041090217
+  name: Throw Blade
   icon: {fileID: 21300000, guid: eea717ea89df3f04781e8d2b413d1c7a, type: 3}
-  name: Throw
   cost:
-    Energy: 1
-    Classes:
-    - {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+    Resources:
+    - Total: 1
+      Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
   Once: 0
   Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 1776283225038258254
+    - rid: 1776283482041090215
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
@@ -48,10 +53,18 @@ MonoBehaviour:
         Sound: {fileID: 0}
         confirmOnePossibleTile: 1
         Damage: 2
-    - rid: 1776283225038258255
+    - rid: 1776283482041090216
+      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 0
+        numberOfRounds: 2
+        Class: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+        Amount: -1
+    - rid: 1776283482041090217
       type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 21300000, guid: cc7dc814361091f4297a5ab73e1dba14, type: 3}
+        Icon: {fileID: 0}
         SkippableWithInput: 0
-        NewCardPrefab: {fileID: 11400000, guid: 61a8b587a1c22e943b7f599380909948, type: 2}
-        NewCardInitialState: 3
+        NewCardPrefab: {fileID: 11400000}
+        NewCardInitialState: 0

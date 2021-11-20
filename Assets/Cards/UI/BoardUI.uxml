@@ -13,7 +13,13 @@
                 </ui:VisualElement>
             </ResourcePanel>
         </ui:VisualElement>
-        <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; justify-content: center; flex-direction: row; padding-bottom: 10px; bottom: -200px;" />
+        <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; justify-content: center; flex-direction: row; padding-bottom: 10px; bottom: -200px;">
+            <ui:Instance template="CardBig" name="CardBig" />
+            <ui:Instance template="CardBig" name="CardBig" />
+            <ui:Instance template="CardBig" name="CardBig" />
+            <ui:Instance template="CardBig" name="CardBig" />
+            <ui:Instance template="CardBig" name="CardBig" />
+        </ui:VisualElement>
         <ui:Button text="End Turn" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 150px; right: 50px; height: 128px;" />
     </ui:VisualElement>
     <ui:VisualElement style="position: absolute; top: 0; align-items: center; justify-content: center; flex-direction: row; padding-top: 30px; left: 0; padding-left: 10px; right: 0;">
