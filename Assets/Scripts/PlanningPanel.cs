@@ -14,7 +14,7 @@ public class PlanningPanel : MonoBehaviour
 
     AudioSource audio;
 
-    VisualElement cardPanel, planningPanel, resourcePanel;
+    VisualElement cardPanel, planningPanel, unitPanel;
 
     void Awake()
     {
@@ -22,6 +22,7 @@ public class PlanningPanel : MonoBehaviour
         planningPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("PlanningPanel");
         Debug.Assert(planningPanel != null, this);
         cardPanel = planningPanel.Q("CardPanel");
+        unitPanel = planningPanel.Q("CurrentUnit");
         planningPanel.Q<Button>("Confirm").clicked += OnEndTurn;
         Hide();
     }
@@ -53,8 +54,14 @@ public class PlanningPanel : MonoBehaviour
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-        onPlayWrapper = onPlay;
-        onEndTurnWrapper = onEndTurn;
+        var board = FindObjectOfType<Board>();
+        var playable = board.CurrentUnit == unit && unit.Player.IsLocal && board.CurrentStage == Board.Stage.Plan;
+        planningPanel.Q<Button>("Confirm").SetEnabled(playable);
+        if (playable)
+        {
+            onEndTurnWrapper ??= onEndTurn;
+            onPlayWrapper ??= onPlay;
+        }
 
         var doc = FindObjectOfType<UIDocument>();
         cardPanel.Clear();
@@ -64,13 +71,17 @@ public class PlanningPanel : MonoBehaviour
             var cx = cardPanel[idx].Q<CardItem>();
             cx.AddToClassList("carditem-selectable");
             cx.Card = card;
-            cx.RegisterCallback<MouseDownEvent>((_) =>
-            {
-                audio.PlayOneShot(SelectSound);
-                OnConfirm(card);
-            });
+            if (playable)
+                cx.RegisterCallback<MouseDownEvent>((_) =>
+                {
+                    audio.PlayOneShot(SelectSound);
+                    OnConfirm(card);
+                });
         }
         CalculateValidCards(unit);
+
+        unitPanel.Q<UnitItem>().Unit = unit;
+        unitPanel.Q<ResourcePanel>().Resources = unit.Resources;
 
         planningPanel.style.display = DisplayStyle.Flex;
     }

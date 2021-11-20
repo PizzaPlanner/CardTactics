@@ -1,7 +1,18 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="UnitItemPlanning" src="project://database/Assets/Cards/UI/UnitItemPlanning.uxml?fileID=9197481963319205126&amp;guid=cff32862e11b4ed45a2121d13526a2b2&amp;type=3#UnitItemPlanning" />
     <ui:Template name="CardBig" src="project://database/Assets/Cards/UI/CardBig.uxml?fileID=9197481963319205126&amp;guid=29a9371bab04ae14aa88f1bec4eb9fbc&amp;type=3#CardBig" />
     <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
     <ui:VisualElement name="PlanningPanel" picking-mode="Ignore" style="position: absolute; bottom: 0; left: 0; right: 0; top: 0; align-items: center; justify-content: flex-end;">
+        <ui:VisualElement name="CurrentUnit" style="flex-direction: row; position: absolute; bottom: 0; left: 0;">
+            <ui:Instance template="UnitItemPlanning" name="UnitItemPlanning" />
+            <ResourcePanel class="resource-panel--card" style="flex-direction: column; justify-content: flex-end; margin-bottom: 30px;">
+                <ui:VisualElement class="resource-panel-group" style="flex-direction: row;">
+                    <CostIcon />
+                    <CostIcon />
+                    <CostIcon />
+                </ui:VisualElement>
+            </ResourcePanel>
+        </ui:VisualElement>
         <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; justify-content: center; flex-direction: row; padding-bottom: 10px; bottom: -200px;" />
         <ui:Button text="End Turn" display-tooltip-when-elided="true" name="Confirm" class="button-menu" style="position: absolute; bottom: 150px; right: 50px; height: 128px;" />
     </ui:VisualElement>

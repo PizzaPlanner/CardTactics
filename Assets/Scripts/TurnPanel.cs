@@ -28,6 +28,10 @@ public class TurnPanel : MonoBehaviour
         readyBadgeAsset.CloneTree(readyPanel, out int idx, out int _);
         var badge = readyPanel[idx].Q<PlayerInfoBadge>();
         var player = unit.Player;
+        badge.RegisterCallback<MouseDownEvent>((_) =>
+        {
+            GameObject.FindObjectOfType<PlanningPanel>(false).Show(player, unit, null, null);
+        });
 
         badge.UnitItem.Unit = unit;
         var border = badge.UnitItem.Q("Border");
@@ -35,8 +39,6 @@ public class TurnPanel : MonoBehaviour
         border.style.borderLeftColor = player.Color;
         border.style.borderRightColor = player.Color;
         border.style.borderBottomColor = player.Color;
-        var resources = badge.Q<ResourcePanel>();
-        resources.Resources = unit.Resources;
         badge.SetEnabled(false);
         OnTurnEnd(unit);
     }
@@ -60,8 +62,6 @@ public class TurnPanel : MonoBehaviour
         readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
         {
             x.SetEnabled(true);
-            var res = x.UnitItem.Unit.Resources;
-            x.Q<ResourcePanel>().Resources = res;
         });
         SortBadges();
         onComplete?.Invoke();
@@ -69,11 +69,11 @@ public class TurnPanel : MonoBehaviour
 
     public void OnPlayablePlayed()
     {
-        readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
-        {
-            var res = x.UnitItem.Unit.Resources;
-            x.Q<ResourcePanel>().Resources = res;
-        });
+        // readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
+        // {
+        //     var res = x.UnitItem.Unit.Resources;
+        //     x.Q<ResourcePanel>().Resources = res;
+        // });
     }
 
     internal IEnumerator OnTurnStart(Unit unit, Action onComplete)

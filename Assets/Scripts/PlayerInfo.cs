@@ -44,6 +44,9 @@ public class PlayerInfo
     public PlayerState State;
 
     public SlotType Slot => slot;
+
+    [NonSerialized] public bool IsLocal;
+
     [SerializeField] SlotType slot;
 
     public LooseCondition LooseCondition;

@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public enum TargetIndicator
 {
@@ -99,6 +100,10 @@ public class Tile : MonoBehaviour
         if (Hovered != null || EventSystem.current.IsPointerOverGameObject())
             return;
         Hovered = this;
+        if (Unit != null)
+            FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
+            .Where(x => x.UnitItem.Unit == Unit)
+            .ForEach(x => x.AddToClassList("unit-badge--hovered"));
         SelectionIndicator.SetActive(true);
         if (PrimaryPattern != null)
         {
@@ -119,6 +124,10 @@ public class Tile : MonoBehaviour
         if (Hovered != this)
             return;
         Hovered = null;
+        if (Unit != null)
+            FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
+            .Where(x => x.UnitItem.Unit == Unit)
+            .ForEach(x => x.RemoveFromClassList("unit-badge--hovered"));
         SelectionIndicator.SetActive(false);
         if (PrimaryPattern != null)
         {

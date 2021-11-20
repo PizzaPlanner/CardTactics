@@ -93,6 +93,7 @@ public class Lobby
         var p = Players.FirstOrDefault(x => x.Player == null);
         if (p == null) return false;
         p.Player = playerInfo;
+        playerInfo.IsLocal = p.IsLocal;
         return true;
     }
 
