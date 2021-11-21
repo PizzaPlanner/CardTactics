@@ -5,6 +5,6 @@ public class LooseConditionCommanderDead : LooseCondition
 {
     public override bool Check(Map map, PlayerInfo player)
     {
-        return player.Deck.Commander.State == Card.CardState.Destroyed;
+        return player.Deck.Commander == null;
     }
 }

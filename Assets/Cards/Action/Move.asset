@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
+  m_Name: Move
+  m_EditorClassIdentifier: 
+  skills:
+  - Conditions: 
+    SourceTileInput: 1
+    TileOutput: 2
+    Skill:
+      rid: 1776283499621253225
+  - Conditions: 
+    SourceTileInput: 2
+    TileOutput: 0
+    Skill:
+      rid: 1776283499621253226
+  name: Forward!
+  icon: {fileID: 21300000, guid: 95409f6c8043bce4bbfa22081ac4a85a, type: 3}
+  cost:
+    Resources:
+    - Total: 1
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+  Once: 0
+  Temporary: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283499621253225
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 0
+        TargetFilter:
+          Tile: 20
+          Unit: 7
+          Range: 0
+        confirmOnePossibleTile: 0
+    - rid: 1776283499621253226
+      type: {class: MoveSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Icon: {fileID: 0}
+        SkippableWithInput: 1
+        Range: 2
+        RangeType: 1

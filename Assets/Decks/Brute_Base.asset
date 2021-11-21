@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
   m_Name: Brute_Base
   m_EditorClassIdentifier: 
+  commanderPrefab: {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
   Cards:
-  - {fileID: 11400000, guid: 5e05f1e2617ddf548a8e8b9a401d7b2d, type: 2}
   - {fileID: 11400000, guid: e397660daee2152458b93787add38a6a, type: 2}
   - {fileID: 11400000, guid: 4a11e22061ffa0247874d360d2e636ca, type: 2}
   - {fileID: 11400000, guid: 1bb5cf9554ad6e9468fd78e49cb1a5c3, type: 2}
   - {fileID: 11400000, guid: 77b242573d5b0f842a26da47815ef776, type: 2}
   - {fileID: 11400000, guid: 067f3a80c7e0d744bacf2d37da18b13c, type: 2}
+  - {fileID: 11400000, guid: 92fd2c70933d41448a94ac96b4230aa6, type: 2}
+  - {fileID: 11400000, guid: f5bed3d26a19efd419e943b3d46aa7ea, type: 2}

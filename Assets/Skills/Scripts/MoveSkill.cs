@@ -13,7 +13,7 @@ public class MoveSkill : Skill, ICancelable
     Unit unit;
     Facing rotation;
 
-    public override string Description => $"{(RangeType == RangeFilter.Pathfinding ? "Move" : "Jump")} {Range}";
+    public override string Description => $"{(RangeType == RangeFilter.Path ? "Move" : "Jump")} {Range}";
 
     protected override bool AutoSelectOnOnePossibleTile => false;
 
@@ -25,7 +25,7 @@ public class MoveSkill : Skill, ICancelable
             return new ITilePattern[0];
         unit = SourceTile.Unit;
         rotation = SourceTile.Facing;
-        if (RangeType == RangeFilter.Pathfinding)
+        if (RangeType == RangeFilter.Path)
             return new PathPatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(map, SourceTile, player, filter);
         else
             return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(map, SourceTile, player, filter);

@@ -13,36 +13,38 @@ MonoBehaviour:
   m_Name: Brute_Charge
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   skills:
-  - Conditions: 
-    SourceTileInput: 1
+  - SourceTileInput: 1
     TileOutput: 1
+    Conditions: 
     Skill:
-      rid: 1776283482041090284
-  - Conditions: 
-    SourceTileInput: 1
+      rid: 1776283502214906274
+  - SourceTileInput: 1
     TileOutput: 0
+    Conditions: 
     Skill:
-      rid: 1776283482041090285
-  name: Charge
+      rid: 1776283502214906275
+  passives: []
   icon: {fileID: 21300000, guid: b016e709ed3184943872f39ca02608ba, type: 3}
+  name: Charge
+  Type: 0
   cost:
-    Resources: []
-  Once: 0
-  Temporary: 0
+    Resources:
+    - Total: 2
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    - Total: 0
+      Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 1776283482041090284
+    - rid: 1776283502214906274
       type: {class: DashSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 21300000, guid: 50061b05898d775499c41984d3ca99eb, type: 3}
         SkippableWithInput: 0
         MaxRange: 4
         RangeType: 2
-    - rid: 1776283482041090285
+    - rid: 1776283502214906275
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 21300000, guid: f742aa32737423346b5593e68ef83d2a, type: 3}
         SkippableWithInput: 1
         Filter:
           Tile: 2
@@ -50,6 +52,6 @@ MonoBehaviour:
           Range: 2
         MinRange: 1
         MaxRange: 1
-        Sound: {fileID: 8300000, guid: 665a0fcb03c104c46a59aa4149375012, type: 3}
+        Sound: {fileID: 8300000, guid: f2bb59d9a4cccc74bb689a53aba53373, type: 3}
         confirmOnePossibleTile: 1
         Damage: 2

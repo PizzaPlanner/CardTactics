@@ -12,32 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Sorrow
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills2:
-  - Conditions: 
-    SourceTileInput: 1
+  skills:
+  - SourceTileInput: 1
     TileOutput: 0
+    Conditions: 
     Skill:
-      rid: 1776283050534502456
+      rid: 1776283502214906297
+  passives: []
   icon: {fileID: 21300000, guid: a701eaa02915c794796463d6eb6a829a, type: 3}
   name: Sorrow
-  cost: []
-  Once: 1
-  Temporary: 1
+  Type: 2
+  cost:
+    Resources: []
   references:
     version: 2
     RefIds:
-    - rid: 1776283050534502456
+    - rid: 1776283502214906297
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 21300000, guid: 60ad9b388a610d742b43170d2a71521a, type: 3}
         SkippableWithInput: 0
         Filter:
           Tile: 16
-          Unit: 15
+          Unit: 7
           Range: 0
         MinRange: 0
         MaxRange: 0
-        Sound: {fileID: 8300000, guid: 87fecfcb30dec0d468dd9cf7050b6c91, type: 3}
+        Sound: {fileID: 8300000, guid: bffd04c63c968ad4fb0e13f0e411bace, type: 3}
         confirmOnePossibleTile: 0
-        Damage: 5
+        Damage: 4

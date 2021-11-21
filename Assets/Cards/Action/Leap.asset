@@ -12,27 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Leap
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Skills2:
+  skills:
   - Conditions: 
     SourceTileInput: 1
     TileOutput: 0
     Skill:
-      rid: 1776283364759699933
-  icon: {fileID: 21300000, guid: 6d8a6ce5aad4a744bb8febc5624e15a5, type: 3}
+      rid: 1776283502214906252
+  passives: []
   name: Leap
+  icon: {fileID: 21300000, guid: 6d8a6ce5aad4a744bb8febc5624e15a5, type: 3}
   cost:
     Resources:
-    - Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-      Total: 1
+    - Total: 1
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   Once: 0
   Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 1776283364759699933
+    - rid: 1776283502214906252
       type: {class: MoveSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 21300000, guid: 248e0c0ee3ca1184cae692996a197183, type: 3}
-        SkippableWithInput: 0
+        SkippableWithInput: 1
         Range: 2
         RangeType: 0

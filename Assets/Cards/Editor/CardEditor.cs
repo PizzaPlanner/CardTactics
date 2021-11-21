@@ -42,7 +42,6 @@ public class CardEditor : EditorWindow
         cardItem.RegisterCallback<MouseDownEvent>((_) => Edit(cardItem));
         try
         {
-
             cardItem.Card = card;
         }
         catch { }
@@ -56,15 +55,6 @@ public class CardEditor : EditorWindow
         edited = item;
         var card = item.Card;
         inspector.contentContainer.Clear();
-        if (card.Icon != null)
-        {
-            var img = new VisualElement();
-            img.style.backgroundImage = new StyleBackground(card.Icon);
-            img.style.height = 64;
-            img.style.width = 64;
-            inspector.contentContainer.Add(img);
-        }
-        inspector.contentContainer.Add(new Label(card.Name));
         inspector.contentContainer.Add(new InspectorElement(card));
         try
         {

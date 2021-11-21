@@ -34,13 +34,13 @@ public class PlayableQueue
         {
             if (card.State != Card.CardState.Unplayed)
             {
-                Debug.LogError($"Failed to Queue {card.Name}: State is {card.State}");
+                Debug.LogError($"[Board] Failed to Queue {card.Name}: State is {card.State}");
                 return;
             }
-            Debug.Log($"Queued {card.Name} for {player.Name}");
+            Debug.Log($"[Board] Queued {card.Name} for {player.Name}");
         }
         else
-            Debug.Log($"Queued {playable.GetType().Name} for {player.Name}");
+            Debug.Log($"[Board] Queued {playable.GetType().Name} for {player.Name}");
 
         if (priorizeNext)
         {
@@ -117,7 +117,9 @@ public class Board : MonoBehaviour
             return false;
 
         player.State = PlayerInfo.PlayerState.Active;
-        Playables.InsertFirst(player, null, player.Deck.Commander);
+        var placeCard = new UnitCard { UnitReference = player.Deck.Commander };
+        placeCard.Init();
+        Playables.InsertFirst(player, null, placeCard);
         return true;
     }
 
@@ -135,7 +137,7 @@ public class Board : MonoBehaviour
         var unit = info.Unit;
         if (player != null && player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
         {
-            Debug.Log($"{player.Name} is dead. skipped {playable.GetType().Name}");
+            Debug.Log($"[Board] {player.Name} is dead. skipped {playable.GetType().Name}");
             return;
         }
 
@@ -284,7 +286,7 @@ public class Board : MonoBehaviour
     {
         if (!WaitingForAction)
         {
-            Debug.Log("-- " + CurrentStage + " --");
+            Debug.Log("[Board] -- " + CurrentStage + " --");
             switch (CurrentStage)
             {
                 case Stage.PreparePlan:

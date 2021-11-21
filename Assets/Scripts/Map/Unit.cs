@@ -15,7 +15,6 @@ public enum ResourceState
 [System.Serializable]
 public struct Resource
 {
-    [TableColumnWidth(25)]
     public int Total;
     public CardClass Type;
     public int Available => Total - Used;
@@ -62,7 +61,7 @@ public class ResourceInfo
 
     public void Add(CardClass type, int amount)
     {
-        Debug.Log("Add " + type.Name);
+        Debug.Log($"Add {amount} {type.Name}");
         bool found = false;
         for (int i = 0; i < Resources.Count; i++)
             if (Resources[i].Type == type)
@@ -194,7 +193,7 @@ public class Unit : MonoBehaviour
             var from = tiles[current];
             var to = tiles[++current];
 
-            if (type == RangeFilter.Pathfinding)
+            if (type == RangeFilter.Path)
             {
                 transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
                 while (Vector3.Distance(transform.position, to.UnitAnchor) > MOVEMENT_SPEED * Time.deltaTime)

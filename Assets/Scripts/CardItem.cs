@@ -47,11 +47,7 @@ public class CardItem : VisualElement
 
     static string GetDescription(Card card)
     {
-        var descriptions = new List<string>();
-        foreach (var skill in card.Skills)
-            if (skill.Description != null)
-                descriptions.Add(skill.Description);
-        return string.Join("\n", descriptions);
+        return card.GetDescription();
     }
 
 

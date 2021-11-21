@@ -24,6 +24,7 @@ public abstract class Card : ScriptableObject, IPlayable
 
     public IEnumerator Play(Board board, Map map, Unit unit, PlayerInfo player)
     {
+        Debug.Log("[Card] Play " + Name);
         State = CardState.Current;
         CardTooltip.Show(this);
         OnPlay(board, map, unit, player);
@@ -31,10 +32,9 @@ public abstract class Card : ScriptableObject, IPlayable
         yield return PlaySkills(map, unit, player, true);
         yield return new WaitForSeconds(board.CardPlayPostTime);
         CardTooltip.Hide();
-        if (Skills.Count(x => x is Passive) > 0)
-            State = CardState.Active;
-        else
-            State = StateOnPlayed;
+        State = StateOnPlayed;
+        foreach (var passive in passives)
+            passive.OnCardRemoved(unit);
     }
 
     public void Destroy() { State = CardState.Destroyed; }
@@ -53,27 +53,31 @@ public abstract class Card : ScriptableObject, IPlayable
         return list;
     }
 
-    public virtual void OnRoundStart(Map map, PlayerInfo player)
+    public virtual void OnRoundStart(Map map, PlayerInfo player, Unit unit)
     {
         foreach (var skill in Skills)
-        {
             skill.Prepare();
-            if (State == CardState.Active && skill is Passive passive)
-            {
-                Debug.Log("Triggering Passive with RL: " + passive.RoundsLeft);
-                if (passive.RoundsLeft >= 0 && passive.RoundsLeft-- == 0)
-                {
-                    passive.OnPassiveEnd();
-                    State = StateOnPlayed;
-                }
-                else
-                    passive.OnRoundStart();
-            }
-        }
+        foreach (var passive in passives)
+            passive.OnTurnStart(unit);
     }
 
-    public virtual void OnRoundEnd(Map map, PlayerInfo player)
+    public virtual string GetDescription()
     {
+        var descriptions = new List<string>();
+        if (passives != null)
+            foreach (var skill in passives)
+                if (skill.Description != null)
+                    descriptions.Add(skill.Description);
+        foreach (var skill in Skills)
+            if (skill.Description != null)
+                descriptions.Add(skill.Description);
+        return string.Join("\n", descriptions);
+    }
+
+    public virtual void OnRoundEnd(Map map, PlayerInfo player, Unit unit)
+    {
+        foreach (var passive in passives)
+            passive.OnTurnEnd(unit);
         if (State == CardState.Played)
             State = CardState.Unplayed;
     }
@@ -88,16 +92,28 @@ public abstract class Card : ScriptableObject, IPlayable
     {
         State = initialState;
         Source = source;
-        for (int i = 0; i < skills.Length; i++)
-        {
-            skills[i].Skill.Source = this;
-        }
+
+        if (skills == null)
+            skills = new SkillInfo[0];
+        if (passives == null)
+            passives = new Passive[0];
+
+        foreach (var skill in skills)
+            skill.Skill.Source = this;
+        foreach (var passive in passives)
+            passive.OnCardCreated(this);
+
         OnInit();
     }
 
-    [FormerlySerializedAs("Skills2")]
     [SerializeField]
+    [TableList(AlwaysExpanded = true)]
     SkillInfo[] skills;
+
+    [SerializeReference]
+    [TableList(AlwaysExpanded = true)]
+    Passive[] passives;
+
 
     public IEnumerable<Skill> Skills => skills?.Select(x => x.Skill) ?? new Skill[0];
 
@@ -128,6 +144,7 @@ public abstract class Card : ScriptableObject, IPlayable
                 if (skills[i].CanUse(map.TileOf(unit), skills.ToList().GetRange(0, i), out var inputTile)
                 && skills[i].Skill.Activate(map, player, this, inputTile, out var validPatterns))
                 {
+                    Debug.Log($"[Card] Use Skill {skills[i].Skill.GetType().Name}: <color=green>OK</color>");
                     if (!player.IsAI && SkillTarget == null)
                         map.ShowTileIndicators(validPatterns);
 
@@ -148,6 +165,8 @@ public abstract class Card : ScriptableObject, IPlayable
                         i = PartialReset();
                     }
                 }
+                else
+                    Debug.Log($"[Card] Use Skill {skills[i].Skill.GetType().Name}: <color=red>Condition Failed</color>");
                 map.HideTileSelectionPreview();
             }
             else

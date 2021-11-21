@@ -7,9 +7,9 @@ using UnityEngine;
 
 public static class SelectionFilters
 {
-    public static SelectionFilter Self { get; } = new SelectionFilter { Unit = UnitFilter.Commander, Tile = TileFilter.Self };
-    public static SelectionFilter AnyEnemy { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment, Tile = TileFilter.Enemy };
-    public static SelectionFilter AnyUnit { get; } = new SelectionFilter { Unit = ~UnitFilter.Environment };
+    public static SelectionFilter Self { get; } = new SelectionFilter { Unit = UnitFilter.Unit, Tile = TileFilter.Self };
+    public static SelectionFilter AnyEnemy { get; } = new SelectionFilter { Unit = ~UnitFilter.Map, Tile = TileFilter.Enemy };
+    public static SelectionFilter AnyUnit { get; } = new SelectionFilter { Unit = ~UnitFilter.Map };
     public static SelectionFilter Everything { get; } = new SelectionFilter { Tile = 0, Range = RangeFilter.Any };
     public static SelectionFilter Empty { get; } = new SelectionFilter { Tile = TileFilter.Empty, Range = RangeFilter.Any };
 }
@@ -18,12 +18,15 @@ public static class SelectionFilters
 public struct SelectionFilter
 {
     [EnumToggleButtons]
+    [GUIColor(0.8f, 0.5f, 0.5f)]
     [HideLabel]
     public TileFilter Tile;
     [EnumToggleButtons]
+    [GUIColor(0.5f, 0.8f, 0.5f)]
     [HideLabel]
     public UnitFilter Unit;
     [EnumToggleButtons]
+    [GUIColor(0.5f, 0.5f, 0.8f)]
     [HideLabel]
     public RangeFilter Range;
 }
@@ -35,23 +38,26 @@ public enum TileFilter
     Enemy = 2,
     Ally = 4,
     Obstacle = 8,
-    Self = 16
+    Self = 16,
+    All = int.MaxValue
 }
 
 [System.Flags]
 public enum UnitFilter
 {
-    Commander = 1,
+    Unit = 1,
     Summon = 2,
     Illusion = 4,
-    Environment = 8
+    Map = 8,
+    All = int.MaxValue
 }
 
 public enum RangeFilter
 {
     Any = 0,
-    Pathfinding = 1,
-    SightUnblocked = 2
+    Path = 1,
+    Sight = 2,
+    All = int.MaxValue
 }
 
 public interface ICancelable
@@ -70,23 +76,29 @@ public enum SkillChain
     F = 6
 }
 
-[System.Serializable]
+[Serializable]
 public class SkillInfo
 {
-    [LabelText("If")]
-    public SkillChain[] Conditions;
 
-    [HorizontalGroup(5)]
+    [VerticalGroup("Skill")]
+    [HorizontalGroup("Skill/Horizontal", 5)]
     [HideLabel]
     [SuffixLabel("->")]
     [LabelWidth(10)]
     public SkillChain SourceTileInput;
 
-    [HorizontalGroup(5)]
+    [VerticalGroup("Skill")]
+    [HorizontalGroup("Skill/Horizontal", 5)]
     [HideLabel]
     public SkillChain TileOutput;
 
+    [VerticalGroup("Skill")]
+    [HorizontalGroup("Skill/Horizontal")]
+    [LabelText("If")]
+    public SkillChain[] Conditions;
+
     [HideLabel]
+    [VerticalGroup("Skill")]
     [SerializeReference]
     public Skill Skill;
 
@@ -95,22 +107,20 @@ public class SkillInfo
     {
         if (SourceTileInput == SkillChain._) return null;
         var wanted = SourceTileInput;
-        var inputInfo = previousSkills.Where(x => x.TileOutput == wanted).LastOrDefault();
+        var inputInfo = previousSkills.LastOrDefault(x => x.TileOutput == wanted);
         if (wanted == SkillChain.A && inputInfo == null)
             return origin;
         return inputInfo?.GetOutputTile();
     }
 
-    public Tile GetOutputTile()
-    {
-        return Skill.PlayProgress == Skill.Progress.Queued ? Skill.OutTile : Skill.SourceTile;
-    }
+    public Tile GetOutputTile() => Skill.OutTile;
 
     public bool CanUse(Tile origin, IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
     {
         inputTile = null;
-        foreach (var condition in Conditions)
-            if (previousSkills.Where(x => x.TileOutput == condition).LastOrDefault()?.Skill.PlayProgress != Skill.Progress.Queued) return false;
+        if (Conditions != null)
+            foreach (var condition in Conditions)
+                if (previousSkills.LastOrDefault(x => x.TileOutput == condition)?.Skill.PlayProgress != Skill.Progress.Queued) return false;
         if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, previousSkills)) == null) return false;
         return true;
     }
@@ -127,10 +137,6 @@ public abstract class Skill
         Failed,
         Now
     }
-
-    [PreviewField(32)]
-    [AssetSelector(Paths = "Assets/3rdParty/64 flat icons/png/64px", FlattenTreeView = true)]
-    public Sprite Icon;
 
     public Card Source { get; set; }
     public abstract string Description { get; }
@@ -186,6 +192,7 @@ public abstract class Skill
     {
         IsPreviewed = true;
         yield return OnPreview(target);
+        if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
         PlayProgress = Progress.Queued;
         autoSelectIgnored = false;
     }

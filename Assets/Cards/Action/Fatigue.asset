@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Fatigue
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: 4cbeb635408ed21459af539cfa32c490, type: 2}
-  Dependencies: 00000000
-  Conditions: 00000000
-  icon: {fileID: 21300000, guid: ef7b1601560ca7d4881bed162b0cd2ef, type: 3}
+  skills: []
+  passives: []
   name: Fatigue
-  speed: 99
-  cost: []
+  icon: {fileID: 21300000, guid: ef7b1601560ca7d4881bed162b0cd2ef, type: 3}
+  cost:
+    Resources: []
   Once: 1
   Temporary: 1
+  references:
+    version: 2
+    RefIds: []

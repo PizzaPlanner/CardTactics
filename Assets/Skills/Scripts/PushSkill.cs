@@ -27,7 +27,7 @@ public class PushSkill : Skill
         {
             if (tile.Unit != null)
                 break;
-            yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeFilter.Pathfinding);
+            yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeFilter.Path);
             prevTile = tile;
             OutTile = tile;
         }

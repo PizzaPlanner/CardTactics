@@ -102,12 +102,6 @@
     display: none;
 }
 
-.carditem-selectable:active {
-    transition-duration: 50ms;
-    transition-timing-function: linear;
-    scale: 0.95 0.95;
-}
-
 .carditem-selectable:disabled {
     opacity: 1;
     border-left-color: rgb(195, 54, 54);
@@ -203,8 +197,4 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-#CardPanel CardItem {
-    margin-right: -57px;
 }

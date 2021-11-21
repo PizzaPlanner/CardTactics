@@ -8,9 +8,9 @@ using UnityEngine.Assertions;
 [CreateAssetMenu]
 public class Deck : ScriptableObject
 {
+    [SerializeField] Unit commanderPrefab;
     [SerializeField] Card[] Cards;
-
-    public UnitCard Commander => Cards.First(x => x is UnitCard) as UnitCard;
+    [NonSerialized] public Unit Commander;
 
     public IEnumerable<Card> All => Cards;
     public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
@@ -20,19 +20,24 @@ public class Deck : ScriptableObject
     public void OnRoundStart(Map map, PlayerInfo player)
     {
         foreach (var card in Cards)
-            card.OnRoundStart(map, player);
+            card.OnRoundStart(map, player, Commander);
     }
 
     public void OnRoundEnd(Map map, PlayerInfo player)
     {
         foreach (var card in Cards)
-            card.OnRoundEnd(map, player);
+            card.OnRoundEnd(map, player, Commander);
     }
 
     public static Deck Create(Deck prefab)
     {
         var deck = Deck.Instantiate(prefab);
         deck.Cards = new Card[0];
+        if (deck.Commander == null)
+        {
+            deck.Commander = Instantiate(prefab.commanderPrefab.gameObject).GetComponent<Unit>();
+            deck.Commander.gameObject.SetActive(false);
+        }
         foreach (var card in prefab.Cards)
             deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Unplayed);
 

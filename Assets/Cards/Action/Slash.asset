@@ -13,28 +13,27 @@ MonoBehaviour:
   m_Name: Slash
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   skills:
-  - Conditions: 
-    SourceTileInput: 1
+  - SourceTileInput: 1
     TileOutput: 0
+    Conditions: 
     Skill:
-      rid: 1776283482041090278
-  name: Smash
+      rid: 1776283502214906282
+  passives: []
   icon: {fileID: 21300000, guid: d957922172f4497409aca2c642d43a7c, type: 3}
+  name: Smash
+  Type: 1
   cost:
     Resources:
     - Total: 0
       Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Once: 1
-  Temporary: 0
   references:
     version: 2
     RefIds:
-    - rid: 1776283482041090278
+    - rid: 1776283502214906282
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        Icon: {fileID: 0}
         SkippableWithInput: 0
         Filter:
           Tile: 2
@@ -42,6 +41,6 @@ MonoBehaviour:
           Range: 0
         MinRange: 1
         MaxRange: 1
-        Sound: {fileID: 0}
+        Sound: {fileID: 8300000, guid: efed935f5c2042c40a056ec2b2f374f5, type: 3}
         confirmOnePossibleTile: 1
-        Damage: 7
+        Damage: 5

@@ -28,7 +28,7 @@ public class AttackSkill : Skill
 
     protected override IEnumerator OnPreview(ITilePattern targetPattern)
     {
-        var OutTile = targetPattern.Tiles.First();
+        OutTile = targetPattern.Tiles.First();
         Animator sourceAnimator = SourceTile.Unit.GetComponentInChildren<Animator>();
         Animator targetAnimator = OutTile.Unit.GetComponentInChildren<Animator>();
         previewFacing = SourceTile.Facing;

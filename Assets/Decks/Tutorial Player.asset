@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
   m_Name: Tutorial Player
   m_EditorClassIdentifier: 
+  commanderPrefab: {fileID: 5882492422521109190, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
   Cards:
-  - {fileID: 11400000, guid: 54928dd0b82bf994e83cc9e59849934f, type: 2}
   - {fileID: 11400000, guid: 96ddc092a6441cc479f15607c27a2368, type: 2}

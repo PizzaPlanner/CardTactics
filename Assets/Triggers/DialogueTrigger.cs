@@ -18,7 +18,7 @@ public class DialogueTrigger : Trigger
         foreach (var line in Lines)
         {
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
-            yield return ui.Set(map.Players[line.Speaker].Deck.Commander.UnitReference, line.Text);
+            yield return ui.Set(map.Players[line.Speaker].Deck.Commander, line.Text);
         }
     }
 }

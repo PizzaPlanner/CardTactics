@@ -20,13 +20,14 @@ public class GainCardSkill : Skill
 
     protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
     {
-        Player = player;
         return new[] { new SingleTilePattern { Target = SourceTile }.Build(map, SourceTile, player, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
     protected override IEnumerator OnPreview(ITilePattern pattern)
     {
         OutTile = pattern.Tiles.First();
+        if (OutTile.Unit == null) yield break;
+        Player = OutTile.Unit.Player;
         yield return ShowGetAnimation(NewCardPrefab);
     }
 

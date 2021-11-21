@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5814881731473810615
 Transform:
   m_ObjectHideFlags: 0
@@ -53,13 +53,11 @@ MonoBehaviour:
   MaxLife: 5
   Type: 2
   Resources:
-    Classes:
-    - {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
     Resources:
-    - Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-      Total: 1
-    - Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
-      Total: 1
+    - Total: 1
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    - Total: 1
+      Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
 --- !u!82 &8942890046518652142
 AudioSource:
   m_ObjectHideFlags: 0
