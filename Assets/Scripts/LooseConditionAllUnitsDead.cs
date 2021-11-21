@@ -7,5 +7,4 @@ public class LooseConditionAllUnitsDead : LooseCondition
     {
         return map.GetPlayerTiles(player).Length == 0;
     }
-
 }

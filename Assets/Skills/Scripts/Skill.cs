@@ -151,7 +151,6 @@ public abstract class Skill
 
     [SerializeField] bool SkippableWithInput;
     protected abstract bool AutoSelectOnOnePossibleTile { get; }
-    bool autoSelectIgnored;
 
     public Progress PlayProgress { get; private set; }
 
@@ -175,7 +174,7 @@ public abstract class Skill
         if (!hasAny)
             return false;
 
-        if (AutoSelectOnOnePossibleTile && !autoSelectIgnored && card != null)
+        if (AutoSelectOnOnePossibleTile && validPatterns.Count() == 1 && card != null)
         {
             card.SkillTarget = validPatterns.First();
         }
@@ -194,7 +193,6 @@ public abstract class Skill
         yield return OnPreview(target);
         if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
         PlayProgress = Progress.Queued;
-        autoSelectIgnored = false;
     }
 
     public void Reset()
@@ -204,7 +202,6 @@ public abstract class Skill
             cancelable.OnCancel();
         IsPreviewed = false;
         PlayProgress = Progress.Pending;
-        autoSelectIgnored = true;
     }
 
     protected abstract IEnumerator OnPreview(ITilePattern targetPattern);
@@ -219,7 +216,6 @@ public abstract class Skill
     internal void Skip()
     {
         PlayProgress = Progress.Skipped;
-        autoSelectIgnored = false;
         IsPreviewed = false;
     }
 

@@ -65,14 +65,27 @@ public class PlanningPanel : MonoBehaviour
 
         var doc = FindObjectOfType<UIDocument>();
         cardPanel.Clear();
+        var map = FindObjectOfType<Map>();
         foreach (var card in unplayed)
         {
             cardAsset.CloneTree(cardPanel, out int idx, out int _);
             var cx = cardPanel[idx].Q<CardItem>();
             cx.AddToClassList("carditem-selectable");
             cx.Card = card;
-            cx.OnMouseEnter = () => CardTooltip.Show(card);
-            cx.OnMouseLeave = () => CardTooltip.Hide();
+            var firstSkill = card.Skills.FirstOrDefault();
+            if (firstSkill != null && firstSkill.Activate(map, player, card, map.TileOf(unit), out var validPatterns))
+            {
+                cx.OnMouseEnter = () =>
+                {
+                    CardTooltip.Show(card);
+                    map.ShowTileIndicators(validPatterns);
+                };
+            }
+            else
+                cx.OnMouseEnter = () => CardTooltip.Show(card);
+
+            cx.OnMouseLeave = () => { CardTooltip.Hide(); map.HideTileSelectionPreview(); };
+
             if (playable)
                 cx.RegisterCallback<MouseDownEvent>((_) =>
                 {

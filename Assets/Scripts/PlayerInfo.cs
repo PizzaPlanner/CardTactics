@@ -54,10 +54,7 @@ public class PlayerInfo
 
     internal void AIDecide(Card card, Skill skill, IEnumerable<ITilePattern> validPatterns)
     {
-        if (validPatterns.Count() == 1)
-            card.SkillTarget = validPatterns.First();
-        else
-            card.SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
+        card.SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
     }
 
     public bool Initialize(Lobby lobby)
