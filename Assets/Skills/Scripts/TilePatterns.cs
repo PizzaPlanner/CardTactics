@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 public struct CrosshairPatternBuilder : ITilePatternBuilder
@@ -8,10 +9,10 @@ public struct CrosshairPatternBuilder : ITilePatternBuilder
     public int Length;
     public IEnumerable<ITilePattern> Patterns(Map map, Tile origin, PlayerInfo player, SelectionFilter filter)
     {
-        yield return new LinePattern { Offset = new Vector2Int(Offset, 0), Size = new Vector2Int(Length, 0) }.Build(map, origin, player, filter);
-        yield return new LinePattern { Offset = new Vector2Int(-Offset, 0), Size = new Vector2Int(-Length, 0) }.Build(map, origin, player, filter);
-        yield return new LinePattern { Offset = new Vector2Int(0, Offset), Size = new Vector2Int(0, Length) }.Build(map, origin, player, filter);
-        yield return new LinePattern { Offset = new Vector2Int(0, -Offset), Size = new Vector2Int(0, -Length) }.Build(map, origin, player, filter);
+        yield return new LinePattern { Offset = new Vector2Int(Offset, 0), Length = Length }.Build(map, origin, player, filter);
+        yield return new LinePattern { Offset = new Vector2Int(-Offset, 0), Length = Length }.Build(map, origin, player, filter);
+        yield return new LinePattern { Offset = new Vector2Int(0, Offset), Length = Length }.Build(map, origin, player, filter);
+        yield return new LinePattern { Offset = new Vector2Int(0, -Offset), Length = Length }.Build(map, origin, player, filter);
     }
 }
 
@@ -74,16 +75,18 @@ public struct SingleTilePattern : ITilePattern
 
 public struct LinePattern : ITilePattern
 {
-    public Vector2Int Offset, Size;
+    public Vector2Int Offset;
+    public int Length;
 
     public bool Selectable { get; private set; }
     public IEnumerable<Tile> Tiles => TilesByDistance;
     public Tile[] TilesByDistance { get; private set; }
     public ITilePattern Build(Map map, Tile origin, PlayerInfo player, SelectionFilter filter)
     {
+        int sign(int x) => x == 0 ? 0 : (int)Mathf.Sign(x);
         var tiles = new List<Tile>();
         var start = Offset + new Vector2Int(origin.Position.x, origin.Position.y);
-        var end = start + Size;
+        var end = start + new Vector2Int(sign(Offset.x) * (Length - 1), sign(Offset.y) * (Length - 1));
         tiles = map.VisibleTiles.Where(t =>
         t.Position.x >= Mathf.Min(start.x, end.x) &&
         t.Position.x <= Mathf.Max(start.x, end.x) &&
@@ -106,7 +109,7 @@ public struct RectPattern : ITilePattern
     {
         var min = Offset + new Vector2Int(origin.Position.x, origin.Position.y);
         var max = min + Size;
-        Tiles = map.VisibleTiles.Where(t => t.Position.x >= min.x && t.Position.x <= max.x && t.Position.y >= min.y && t.Position.y <= max.y);
+        Tiles = map.VisibleTiles.Where(t => t.Position.x >= min.x && t.Position.x < max.x && t.Position.y >= min.y && t.Position.y < max.y);
         if (Tiles.Count(x => map.TileMatches(x, filter, player)) == 0)
             return new EmptyPattern();
         Selectable = true;

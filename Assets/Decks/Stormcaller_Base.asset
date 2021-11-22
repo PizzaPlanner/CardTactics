@@ -10,10 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
-  m_Name: Mage_Base
+  m_Name: Stormcaller_Base
   m_EditorClassIdentifier: 
   commanderPrefab: {fileID: 7360946247754838574, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
   Cards:
-  - {fileID: 11400000, guid: 8efa2bf928fafcd4b912605f18641654, type: 2}
   - {fileID: 11400000, guid: b7c933e46f821774788f1283dd52ccbe, type: 2}
-  - {fileID: 11400000, guid: 8efa2bf928fafcd4b912605f18641654, type: 2}
+  - {fileID: 11400000, guid: 5b91c8826f9284847b5b63d023f7a8ef, type: 2}
+  - {fileID: 11400000, guid: 5b91c8826f9284847b5b63d023f7a8ef, type: 2}
+  - {fileID: 11400000, guid: 24c77ae992fd2f1479092269250509e7, type: 2}
+  - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
+  - {fileID: 11400000, guid: 09ec919b0fe80e44e90f1b913289dff0, type: 2}

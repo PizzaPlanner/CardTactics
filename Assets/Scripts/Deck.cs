@@ -17,16 +17,28 @@ public class Deck : ScriptableObject
     public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
     public IEnumerable<ActionCard> Playable(Unit currentUnit) => Unplayed.Where(x => x is ActionCard acard && currentUnit.Resources.CanAfford(acard.Cost)).Cast<ActionCard>();
 
-    public void OnRoundStart(Map map, PlayerInfo player)
+    public void OnRoundStart(Map map)
     {
         foreach (var card in Cards)
-            card.OnRoundStart(map, player, Commander);
+            card.OnRoundStart(map, Commander);
     }
 
-    public void OnRoundEnd(Map map, PlayerInfo player)
+    public void OnRoundEnd(Map map)
     {
         foreach (var card in Cards)
-            card.OnRoundEnd(map, player, Commander);
+            card.OnRoundEnd(map, Commander);
+    }
+
+    public void OnTurnStart(Map map)
+    {
+        foreach (var card in Cards)
+            card.OnTurnStart(map, Commander);
+    }
+
+    public void OnTurnEnd(Map map)
+    {
+        foreach (var card in Cards)
+            card.OnTurnEnd(map, Commander);
     }
 
     public static Deck Create(Deck prefab)

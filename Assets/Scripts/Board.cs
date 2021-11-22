@@ -66,7 +66,7 @@ public class Board : MonoBehaviour
     public enum Stage
     {
         Setup,
-        PreparePlan,
+        StartTurn,
         Plan,
         Play,
         EndTurn,
@@ -91,7 +91,7 @@ public class Board : MonoBehaviour
     [ShowInInspector]
     public PlayableQueue Playables { get; } = new();
 
-    IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.State == PlayerInfo.PlayerState.Active);
+    IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.IsAlive);
 
     [SerializeField]
     Card OnNoCardsPlayed;
@@ -109,20 +109,6 @@ public class Board : MonoBehaviour
         WaitingForAction = true;
     }
 
-    public bool Register(PlayerInfo player)
-    {
-        if (player.State != PlayerInfo.PlayerState.Hidden) return false;
-        player.State = PlayerInfo.PlayerState.Dead;
-        if (!player.Initialize(lobby))
-            return false;
-
-        player.State = PlayerInfo.PlayerState.Active;
-        var placeCard = new UnitCard { UnitReference = player.Deck.Commander };
-        placeCard.Init();
-        Playables.InsertFirst(player, null, placeCard);
-        return true;
-    }
-
     public void StartGame()
     {
         CurrentStage = Stage.Events;
@@ -135,7 +121,7 @@ public class Board : MonoBehaviour
         var player = info.Player;
         var playable = info.Playable;
         var unit = info.Unit;
-        if (player != null && player.State == PlayerInfo.PlayerState.Dead && playable is not Trigger)
+        if (player != null && !player.IsAlive && playable is not Trigger)
         {
             Debug.Log($"[Board] {player.Name} is dead. skipped {playable.GetType().Name}");
             return;
@@ -174,8 +160,7 @@ public class Board : MonoBehaviour
             foreach (var unit in FindObjectsOfType<Unit>())
                 if (unit.Player == player)
                     Destroy(unit);
-            player.State = PlayerInfo.PlayerState.Dead;
-            Playables.InsertFirst(player, CurrentUnit, player.OnLooseTrigger);
+            Playables.InsertFirst(player, CurrentUnit, player.Team.OnLooseTrigger);
         }
 
         if (!Playables.Empty)
@@ -183,7 +168,7 @@ public class Board : MonoBehaviour
         else if (CurrentUnit != null)
             CurrentStage = Stage.Plan;
         else if (playableUnits.Count() > 0)
-            CurrentStage = Stage.PreparePlan;
+            CurrentStage = Stage.StartTurn;
         else if (RegisteredPlayers.Count() > 0)
             CurrentStage = Stage.StartRound;
         else
@@ -198,7 +183,7 @@ public class Board : MonoBehaviour
     void OnEnd()
     {
         WaitingForAction = true;
-        var survivors = Map.Players.Where(x => !x.LooseCondition.Check(Map, x)).Select(x => x.Team).Distinct();
+        var survivors = Map.Players.Where(x => !x.Team.LooseCondition.Check(Map, x.Team)).Select(x => x.Team).Distinct();
         foreach (var player in Map.Players.Where(x => !x.IsAI && survivors.Contains(x.Team) && survivors.Count() == 1))
             lobby.Award($"Victory:{Map.name}", player);
         lobby.Award($"Finished:{Map.name}");
@@ -213,8 +198,8 @@ public class Board : MonoBehaviour
     {
         foreach (var player in RegisteredPlayers)
         {
-            player.Deck.OnRoundEnd(Map, player);
-            player.Deck.OnRoundStart(Map, player);
+            player.Deck.OnRoundEnd(Map);
+            player.Deck.OnRoundStart(Map);
         }
 
         playableUnits.Clear();
@@ -232,7 +217,7 @@ public class Board : MonoBehaviour
         }
 
         if (playableUnits.Count() > 0)
-            CurrentStage = Stage.PreparePlan;
+            CurrentStage = Stage.StartTurn;
         else
             CurrentStage = Stage.End;
 
@@ -243,18 +228,29 @@ public class Board : MonoBehaviour
     void OnEndTurn()
     {
         turnPanel.OnTurnEnd(CurrentUnit);
+        Debug.Log($"[Board] End Turn of {CurrentUnit.Name}");
+        if (CurrentUnit.Player != null)
+            CurrentUnit.Player.Deck.OnTurnEnd(Map);
         CurrentUnit = null;
-        CurrentStage = Stage.Events;
+        if (Playables.Empty)
+            CurrentStage = Stage.Events;
+        else
+            CurrentStage = Stage.Play;
     }
 
-    void OnPreparePlan()
+    void OnStartTurn()
     {
         CurrentUnit = playableUnits.Dequeue();
+        Debug.Log($"[Board] Start Turn of {CurrentUnit.Name}");
         cardsPlayedForCurrentUnit = 0;
         WaitingForAction = true;
         StartCoroutine(turnPanel.OnTurnStart(CurrentUnit, onComplete: Resume));
-
-        CurrentStage = Stage.Plan;
+        if (CurrentUnit.Player != null)
+            CurrentUnit.Player.Deck.OnTurnStart(Map);
+        if (Playables.Empty)
+            CurrentStage = Stage.Plan;
+        else
+            CurrentStage = Stage.Play;
     }
 
     int cardsPlayedForCurrentUnit;
@@ -289,8 +285,8 @@ public class Board : MonoBehaviour
             Debug.Log("[Board] -- " + CurrentStage + " --");
             switch (CurrentStage)
             {
-                case Stage.PreparePlan:
-                    OnPreparePlan(); break;
+                case Stage.StartTurn:
+                    OnStartTurn(); break;
                 case Stage.Plan:
                     OnPlan(); break;
                 case Stage.Play:
@@ -378,16 +374,18 @@ public class Board : MonoBehaviour
         Resume();
     }
 
+    List<PlayerInfo> deadPlayers = new List<PlayerInfo>();
     List<PlayerInfo> CheckDeath(Map map)
     {
-        var deadPlayers = new List<PlayerInfo>();
-        foreach (var player in RegisteredPlayers)
+        var dead = new List<PlayerInfo>();
+        foreach (var player in map.Players)
         {
-            if (player.LooseCondition.Check(map, player))
+            if (!deadPlayers.Contains(player) && player.Team.LooseCondition.Check(map, player.Team))
             {
+                dead.Add(player);
                 deadPlayers.Add(player);
             }
         }
-        return deadPlayers;
+        return dead;
     }
 }

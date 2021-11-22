@@ -5,13 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Grid))]
 public class Map : MonoBehaviour
 {
-    [SerializeField] public PlayerInfo[] Players;
-    public int MinPartySize => Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired);
-    public int MaxPartySize => Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired || x.Slot == PlayerInfo.SlotType.PlayerOptional);
+    public IEnumerable<PlayerInfo> Players => Teams.SelectMany(x => x.RegisteredPlayers);
+    public int MinPartySize => Teams.Sum(x => x.MinPlayers);
+    public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
 
     List<Tile> Tiles;
     public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
-    List<int> revealedAreas;
+
+    public Team[] Teams;
 
     public List<(PlayerInfo player, Trigger trigger)> CheckTriggers()
     {
@@ -22,13 +23,6 @@ public class Map : MonoBehaviour
                 l.Add((tile.Unit?.Player ?? null, tcomp.Trigger));
         }
         return l;
-    }
-
-    internal IEnumerable<PlayerInfo> GetSpawnablePlayers()
-    {
-        foreach (var spawn in GetComponentsInChildren<SpawnLocation>())
-            if (spawn.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length && (!spawn.TryGetComponent<Area>(out var area) || (revealedAreas?.Contains(area.Id) ?? false)))
-                yield return Players[owner.Id];
     }
 
     public void ShowMarker(int id)
@@ -47,29 +41,6 @@ public class Map : MonoBehaviour
             if (marker.Id == id)
                 marker.GetComponent<Tile>().SetMarker(false);
         }
-    }
-
-    public void RevealArea(Board board, int area)
-    {
-        if (revealedAreas == null)
-            revealedAreas = new List<int>();
-        revealedAreas.Add(area);
-
-        foreach (var thing in GetComponentsInChildren<Area>(true))
-            if (thing.Id == area)
-            {
-                thing.gameObject.SetActive(true);
-                TryRegisterSpawn(board, thing);
-            }
-    }
-
-    void TryRegisterSpawn(Board board, Component thing)
-    {
-        if (thing.TryGetComponent<SpawnLocation>(out var spawn)
-                && spawn.InstantCommanderSpawn
-                && thing.TryGetComponent<Owner>(out var owner)
-                && Players[owner.Id].State == PlayerInfo.PlayerState.Hidden)
-            board.Register(Players[owner.Id]);
     }
 
     IEnumerable<T> Get<T>(int x, int y, int zMin, int zMax) => GetComponentsInChildren<GridPosition>()
@@ -98,19 +69,35 @@ public class Map : MonoBehaviour
                 tile.Neighbours.Add(neighbour);
             }
 
-            if (tile.TryGetComponent<UnitSpawn>(out var spawn))
+            if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
             {
-                var instance = Instantiate(spawn.Prefab);
-                if (thing.TryGetComponent<Owner>(out var owner) && owner.Id < Players.Length)
-                    instance.Player = Players[owner.Id];
-                tile.Place(instance, spawn.Facing);
+                var instance = Instantiate(uspawn.Prefab);
+                Debug.Log("[Board] Spawning prop " + instance.Name);
+                tile.Place(instance, uspawn.Facing);
+            }
+            else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
+            {
+                Unit instance = Teams[owner.Id].SpawnNew();
+                if (instance != null)
+                {
+                    Debug.Log("[Board] Spawning unit " + instance.Name);
+                    tile.Place(instance, spawn.Facing);
+                }
             }
         }
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
-            else
-                TryRegisterSpawn(board, tile);
+
+        foreach (var team in Teams)
+            team.Init(board);
+    }
+
+    public void RevealArea(int areaId)
+    {
+        foreach (var tile in Tiles)
+            if (tile.TryGetComponent<Area>(out var area) && area.Id == areaId)
+                tile.gameObject.SetActive(true);
     }
 
     internal Tile TileOf(Unit unit)
@@ -142,20 +129,10 @@ public class Map : MonoBehaviour
 
     public Tile[] GetSpawnTiles(SelectionFilter filter, PlayerInfo player)
     {
-        var id = 0;
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == player)
-            {
-                id = i;
-                break;
-            }
-        }
-
         List<Tile> valid = new List<Tile>();
         foreach (var owner in GetComponentsInChildren<Owner>())
         {
-            if (owner.Id != id || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
+            if (Teams[owner.Id] != player.Team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
             var tile = owner.GetComponent<Tile>();
             if (TileMatches(tile, filter, player))
                 valid.Add(tile);

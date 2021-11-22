@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -18,7 +19,7 @@ public class DialogueTrigger : Trigger
         foreach (var line in Lines)
         {
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
-            yield return ui.Set(map.Players[line.Speaker].Deck.Commander, line.Text);
+            yield return ui.Set(map.Players.ToArray()[line.Speaker].Deck.Commander, line.Text);
         }
     }
 }

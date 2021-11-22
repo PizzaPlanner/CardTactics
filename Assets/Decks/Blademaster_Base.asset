@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
-  m_Name: Brute_Base
+  m_Name: Blademaster_Base
   m_EditorClassIdentifier: 
   commanderPrefab: {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
   Cards:

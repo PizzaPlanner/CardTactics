@@ -18,30 +18,51 @@ public class GainResourcePassive : Passive
 
     [SerializeField] GainType Type;
 
-    public override string Description => Type == GainType.ForDuration ? $"Gain {Amount} {Class.Name}" : Type == GainType.DuringTurn ? $"Gain {Amount} {Class.Name} during your Turn" : $"Gain {Amount} {Class.Name} at the start of each Turn";
+    public override string Description => $"{(Amount > 0 ? "Gain" : "Lose")} {Mathf.Abs(Amount)} {Class.Name}{(Type == GainType.DuringTurn ? " for your Turn" : Type == GainType.GainOnTurn ? " every Turn" : "")}";
 
     protected override void OnRemoved(Unit unit)
     {
-        if (Type == GainType.ForDuration)
-            unit.Resources.Remove(Class, Amount);
+        if (!gained) return;
+        if (Type == GainType.ForDuration || Type == GainType.DuringTurn)
+        {
+            if (Amount < 0)
+                unit.Resources.Add(Class, -Amount);
+            else
+                unit.Resources.Remove(Class, Amount);
+            gained = false;
+        }
     }
 
     bool gained;
     public override void OnTurnStart(Unit unit)
     {
-        Debug.Log("Add something for " + unit.gameObject.name);
-        if (Type == GainType.DuringTurn || Type == GainType.GainOnTurn)
-            unit.Resources.Add(Class, Amount);
-        else if (Type == GainType.ForDuration && !gained)
+        if (Type == GainType.GainOnTurn)
         {
-            unit.Resources.Add(Class, Amount);
+            if (Amount < 0)
+                unit.Resources.Remove(Class, -Amount);
+            else
+                unit.Resources.Add(Class, Amount);
+        }
+        else if (!gained && (Type == GainType.ForDuration || Type == GainType.DuringTurn))
+        {
+            if (Amount < 0)
+                unit.Resources.Remove(Class, -Amount);
+            else
+                unit.Resources.Add(Class, Amount);
             gained = true;
         }
     }
 
     public override void OnTurnEnd(Unit unit)
     {
+        if (!gained) return;
         if (Type == GainType.DuringTurn)
-            unit.Resources.Remove(Class, Amount);
+        {
+            if (Amount < 0)
+                unit.Resources.Add(Class, -Amount);
+            else
+                unit.Resources.Remove(Class, Amount);
+            gained = false;
+        }
     }
 }

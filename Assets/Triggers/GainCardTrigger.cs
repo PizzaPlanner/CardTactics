@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -13,13 +14,13 @@ public class GainCardTrigger : Trigger
 
     protected override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
     {
-        if (!GiveToTriggerer && (Player < 0 || Player >= map.Players.Length))
+        if (!GiveToTriggerer && (Player < 0 || Player >= map.Players.Count()))
         {
             Debug.LogWarning("Invalid Target for GainCardTrigger. Skipped.");
             yield break;
         }
 
-        Skill.Player = GiveToTriggerer ? player : map.Players[Player];
+        Skill.Player = GiveToTriggerer ? player : map.Players.ToArray()[Player];
         yield return GainCardSkill.ShowGetAnimation(Skill.CardPrefab);
         Skill.Use();
     }

@@ -53,31 +53,28 @@ public abstract class Card : ScriptableObject, IPlayable
         return list;
     }
 
-    public virtual void OnRoundStart(Map map, PlayerInfo player, Unit unit)
+    public virtual void OnRoundStart(Map map, Unit unit)
     {
         foreach (var skill in Skills)
             skill.Prepare();
-        foreach (var passive in passives)
-            passive.OnTurnStart(unit);
     }
 
-    public virtual string GetDescription()
+    public virtual void OnTurnStart(Map map, Unit unit)
     {
-        var descriptions = new List<string>();
-        if (passives != null)
-            foreach (var skill in passives)
-                if (skill.Description != null)
-                    descriptions.Add(skill.Description);
-        foreach (var skill in Skills)
-            if (skill.Description != null)
-                descriptions.Add(skill.Description);
-        return string.Join("\n", descriptions);
+        if (State == CardState.Unplayed)
+            foreach (var passive in passives)
+                passive.OnTurnStart(unit);
     }
 
-    public virtual void OnRoundEnd(Map map, PlayerInfo player, Unit unit)
+    public virtual void OnTurnEnd(Map map, Unit unit)
     {
-        foreach (var passive in passives)
-            passive.OnTurnEnd(unit);
+        if (State == CardState.Unplayed)
+            foreach (var passive in passives)
+                passive.OnTurnEnd(unit);
+    }
+
+    public virtual void OnRoundEnd(Map map, Unit unit)
+    {
         if (State == CardState.Played)
             State = CardState.Unplayed;
     }
@@ -122,6 +119,23 @@ public abstract class Card : ScriptableObject, IPlayable
         var listS = skills.ToList();
         listS.Insert(index, newSkill);
         skills = listS.ToArray();
+    }
+
+    public virtual string GetDescription()
+    {
+        var descriptions = new List<string>();
+        if (passives != null && passives.Length > 1)
+        {
+            descriptions.Add("While in your Hand:");
+            foreach (var skill in passives)
+                if (skill.Description != null)
+                    descriptions.Add(skill.Description);
+            descriptions.Add("--------");
+        }
+        foreach (var skill in Skills)
+            if (skill.Description != null)
+                descriptions.Add(skill.Description);
+        return string.Join("\n", descriptions);
     }
 
     public ITilePattern SkillTarget { get; set; }

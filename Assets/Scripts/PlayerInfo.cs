@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerInfo
+public class PlayerInfo : MonoBehaviour
 {
     public enum SlotType
     {
@@ -14,17 +14,6 @@ public class PlayerInfo
         AI
     }
 
-    public enum PlayerState
-    {
-        Hidden,
-        Active,
-        Dead
-    }
-
-    [HideIf("IsAI")]
-    [SerializeField] bool bringYourOwnDeck;
-
-    [HideIf("bringYourOwnDeck")]
     [HideIf("Deck")]
     [SerializeField] Deck deck;
 
@@ -33,31 +22,29 @@ public class PlayerInfo
     [ShowIf("Deck")]
     [NonSerialized]
     public Deck Deck;
-    public int Team;
-    public bool IsAI => Slot == SlotType.AI;
-    public Color Color;
 
-    public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Color)}>{Deck.Commander.Name}</color>";
-
-    [ShowInInspector]
     [NonSerialized]
-    public PlayerState State;
+    public Team Team;
+    public bool IsAI => Slot == SlotType.AI;
+    public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Team.Color)}>{Deck.Commander.Name}</color>";
 
     public SlotType Slot => slot;
+
+    [ShowInInspector]
+    public bool IsAlive => Team != null && Deck.Commander != null;
 
     [NonSerialized] public bool IsLocal;
 
     [SerializeField] SlotType slot;
 
-    public LooseCondition LooseCondition;
-    public Trigger OnLooseTrigger;
+    public Trigger OnDead;
 
     internal void AIDecide(Card card, Skill skill, IEnumerable<ITilePattern> validPatterns)
     {
         card.SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
     }
 
-    public bool Initialize(Lobby lobby)
+    public bool Initialize(Lobby lobby, Team team)
     {
         if (Slot == SlotType.PlayerRequired && !lobby.AssignPlayer(this))
         {
@@ -68,14 +55,14 @@ public class PlayerInfo
             if (!lobby.AssignPlayer(this))
                 return false;
 
-        if (bringYourOwnDeck && lobby.DeckOf(this) == null) return false;
+        if (deck == null && lobby.DeckOf(this) == null) return false;
 
-        if (bringYourOwnDeck)
+        if (deck == null)
             Deck = Deck.Create(lobby.DeckOf(this));
         else if (Deck == null)
             Deck = Deck.Create(deck);
 
-        State = PlayerState.Hidden;
+        Team = team;
         return true;
     }
 }

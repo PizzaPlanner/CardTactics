@@ -12,15 +12,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Mage_Storm
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Skills2: []
+  skills:
+  - SourceTileInput: 1
+    TileOutput: 2
+    Conditions: 
+    Skill:
+      rid: 1776283524840817169
+  - SourceTileInput: 2
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 1776283524840817170
+  - SourceTileInput: 1
+    TileOutput: 3
+    Conditions: 
+    Skill:
+      rid: 1776283524840817171
+  - SourceTileInput: 3
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 1776283524840817172
+  - SourceTileInput: 1
+    TileOutput: 4
+    Conditions: 
+    Skill:
+      rid: 1776283524840817173
+  - SourceTileInput: 4
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 1776283524840817174
+  passives: []
   icon: {fileID: 21300000, guid: 18901b897df0f664dbdc34927f5c0228, type: 3}
   name: Storm
+  Type: 2
   cost:
     Resources:
-    - Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
-      Total: 1
-  Once: 1
-  Temporary: 0
+    - Total: 1
+      Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1776283524840817169
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        TargetFilter:
+          Tile: 2
+          Unit: 2147483647
+          Range: 0
+        confirmOnePossibleTile: 0
+        maxRange: 3
+        selectAtRandom: 1
+        randomOnlySelectableTiles: 1
+    - rid: 1776283524840817170
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2147483618
+          Unit: 2147483647
+          Range: 0
+        MinRange: 0
+        MaxRange: 0
+        Sound: {fileID: 8300000, guid: c7e839cb216494640b92e782eaf76702, type: 3}
+        confirmOnePossibleTile: 0
+        Damage: 2
+    - rid: 1776283524840817171
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        TargetFilter:
+          Tile: 2
+          Unit: 2147483647
+          Range: 0
+        confirmOnePossibleTile: 0
+        maxRange: 4
+        selectAtRandom: 1
+        randomOnlySelectableTiles: 1
+    - rid: 1776283524840817172
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2147483618
+          Unit: 2147483647
+          Range: 0
+        MinRange: 0
+        MaxRange: 0
+        Sound: {fileID: 8300000, guid: c7e839cb216494640b92e782eaf76702, type: 3}
+        confirmOnePossibleTile: 0
+        Damage: 2
+    - rid: 1776283524840817173
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        TargetFilter:
+          Tile: 2
+          Unit: 2147483647
+          Range: 0
+        confirmOnePossibleTile: 0
+        maxRange: 5
+        selectAtRandom: 1
+        randomOnlySelectableTiles: 1
+    - rid: 1776283524840817174
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        Filter:
+          Tile: 2147483618
+          Unit: 2147483647
+          Range: 0
+        MinRange: 0
+        MaxRange: 0
+        Sound: {fileID: 8300000, guid: c7e839cb216494640b92e782eaf76702, type: 3}
+        confirmOnePossibleTile: 0
+        Damage: 2

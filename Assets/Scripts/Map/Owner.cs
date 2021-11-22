@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 [RequireComponent(typeof(GridPosition))]
 public class Owner : MonoBehaviour
@@ -10,8 +11,8 @@ public class Owner : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         if (map == null) map = GetComponentInParent<Map>();
-        if (Id < map.Players.Length)
-            UnityEditor.Handles.color = map.Players[Id].Color;
+        if (Id < map.Teams.Length)
+            UnityEditor.Handles.color = map.Teams[Id].Color;
         else
             UnityEditor.Handles.color = Color.black;
 

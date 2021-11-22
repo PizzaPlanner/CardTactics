@@ -25,7 +25,7 @@ public class Hubworld : MonoBehaviour
         var prefab = Maps[i].MapPrefab;
         if (lobby.PlayerCount < prefab.MinPartySize || lobby.PlayerCount > prefab.MaxPartySize)
         {
-            Debug.LogError("Can not start this map with Party Size " + lobby.PlayerCount);
+            Debug.LogError($"Can not start this map with Party Size {lobby.PlayerCount}. Required: {prefab.MinPartySize} to {prefab.MaxPartySize}");
             return;
         }
 

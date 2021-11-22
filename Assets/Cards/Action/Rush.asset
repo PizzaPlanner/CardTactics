@@ -12,18 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Rush
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Skills:
-  - {fileID: 11400000, guid: ffc2a19bdc6bdc44daab95994759f1a5, type: 2}
-  - {fileID: 11400000, guid: c13e6466756201d44abad4fe4e5e08d5, type: 2}
-  - {fileID: 11400000, guid: 2a8e5cb09f85af8498135e09ae4f5ffa, type: 2}
-  Dependencies: 000000000100000001000000
-  Conditions: 000000000000000001000000
-  icon: {fileID: 21300000, guid: 99b89a5b734a2a343b69c05a373475ae, type: 3}
-  name: Rush
-  speed: 5
+  skills:
+  - SourceTileInput: 1
+    TileOutput: 1
+    Conditions: 
+    Skill:
+      rid: 1776283524840817159
+  - SourceTileInput: 1
+    TileOutput: 1
+    Conditions: 
+    Skill:
+      rid: 1776283524840817160
+  - SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 1776283524840817161
+  passives: []
+  icon: {fileID: 21300000, guid: 586b1944535a99349b317a36561ed36d, type: 3}
+  name: Ride the Lightning
+  Type: 0
   cost:
-  - Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    Cost: 1
-  Once: 0
-  Temporary: 0
+    Resources:
+    - Total: 1
+      Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283524840817159
+      type: {class: DashSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        MaxRange: 2
+        RangeType: 2
+    - rid: 1776283524840817160
+      type: {class: DashSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        MaxRange: 2
+        RangeType: 2
+    - rid: 1776283524840817161
+      type: {class: DashSkill, ns: , asm: Assembly-CSharp}
+      data:
+        SkippableWithInput: 0
+        MaxRange: 1
+        RangeType: 2

@@ -115,8 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db907135f2dc79b4291ba252f51a7e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EditorImage: {fileID: 2800000, guid: 23edd2c0a714f8448bb8d7e472920ba3, type: 3}
-  Area: 0
   Unit: {fileID: 0}
   Neighbours: []
   Marker: {fileID: 5788721188652628779}
@@ -145,7 +143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Position: {x: 0, y: 0, z: 0}
-  GridLayout: {fileID: 0}
   Height: 0
 --- !u!1 &2666683480372245163
 GameObject:

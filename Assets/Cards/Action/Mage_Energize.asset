@@ -13,32 +13,50 @@ MonoBehaviour:
   m_Name: Mage_Energize
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   skills:
-  - Conditions: 
-    SourceTileInput: 1
+  - SourceTileInput: 1
     TileOutput: 0
+    Conditions: 
     Skill:
-      rid: 1776283364759699932
-  name: Energize
-  icon: {fileID: 21300000, guid: 2762221fccdcdbb4e9ba7ca5a284a0a0, type: 3}
+      rid: 1776283524840817459
+  passives:
+  - rid: 1776283524840817460
+  - rid: 1776283524840817461
+  - rid: 1776283524840817462
+  icon: {fileID: 21300000, guid: 571fa2abc8a03e545a2bb15e9d1d916d, type: 3}
+  name: Charged
+  Type: 1
   cost:
     Resources:
     - Total: 1
-      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    - Total: 0
-      Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
-  Once: 0
-  Temporary: 0
+      Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 1776283364759699932
+    - rid: 1776283524840817459
       type: {class: HealSkill, ns: , asm: Assembly-CSharp}
       data:
         SkippableWithInput: 0
         Filter:
           Tile: 16
-          Unit: 7
+          Unit: 2147483647
           Range: 0
         MinRange: 0
         MaxRange: 0
-        Heal: 1
+        Heal: 2
+    - rid: 1776283524840817460
+      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
+      data:
+        Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
+        Amount: 1
+        Type: 1
+    - rid: 1776283524840817461
+      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
+      data:
+        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+        Amount: -1
+        Type: 1
+    - rid: 1776283524840817462
+      type: {class: PlayCardPassive, ns: , asm: Assembly-CSharp}
+      data:
+        Card: {fileID: 11400000, guid: e04b7b7db5cafc84ab309c5b9b20637c, type: 2}
+        When: 1

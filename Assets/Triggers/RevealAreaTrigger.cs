@@ -9,7 +9,7 @@ public class RevealAreaTrigger : Trigger
     protected override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
     {
         yield return new WaitForSeconds(0.1f);
-        map.RevealArea(board, Area);
+        map.RevealArea(Area);
         yield return new WaitForSeconds(0.5f);
     }
 }

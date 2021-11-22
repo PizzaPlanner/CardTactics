@@ -83,6 +83,7 @@ public class ResourceInfo
             {
                 var r2 = Resources[i];
                 r2.Total -= amount;
+                r2.Used = Mathf.Max(0, r2.Used - amount);
                 amount = -r2.Total;
                 Resources[i] = r2;
                 if (r2.Total <= 0)

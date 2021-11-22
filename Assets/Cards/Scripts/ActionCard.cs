@@ -54,11 +54,11 @@ public class ActionCard : Card
 
     protected override CardState StateOnPlayed => Type == UseType.Once || Type == UseType.Temporary ? CardState.Destroyed : CardState.Played;
 
-    public override void OnRoundEnd(Map map, PlayerInfo player, Unit unit)
+    public override void OnRoundEnd(Map map, Unit unit)
     {
         if (Type == UseType.Temporary && State == CardState.Unplayed) Destroy();
         if (State == CardState.Active && Type == UseType.Once) Destroy();
-        base.OnRoundEnd(map, player, unit);
+        base.OnRoundEnd(map, unit);
     }
 
     public override string GetDescription()

@@ -9,7 +9,7 @@
         <ui:VisualElement name="UpperPart" style="width: 100%; height: 100%; align-items: center; visibility: visible; border-bottom-width: 1px; border-bottom-color: rgba(89, 89, 61, 0.72); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-left-color: rgba(89, 89, 61, 0.72); border-right-color: rgba(89, 89, 61, 0.72); border-top-color: rgba(89, 89, 61, 0.72);">
             <ui:VisualElement name="Icon" style="background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_standart/Druideskill_31.png?fileID=21300000&amp;guid=105cef2be8bfbb24999a39cdf37f7a03&amp;type=3#Druideskill_31&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop;" />
         </ui:VisualElement>
-        <ui:VisualElement name="LowerPart" style="align-items: stretch; justify-content: flex-end; -unity-background-scale-mode: stretch-to-fill; position: absolute; top: 0; bottom: 0; background-image: url(&apos;project://database/Assets/Card_Bottom_Fade.png?fileID=2800000&amp;guid=f77a6e8baeb9daa45b7bbf91f51feb98&amp;type=3#Card_Bottom_Fade&apos;); right: 0; left: 0; padding-bottom: 20px;">
+        <ui:VisualElement name="LowerPart" style="align-items: stretch; justify-content: flex-end; position: absolute; top: 0; bottom: 0; right: 0; left: 0;">
             <ui:VisualElement name="StatsPanel" class="filter-unitcard" style="flex-direction: row; width: 100%; justify-content: space-around;">
                 <ui:VisualElement name="Speed" style="flex-direction: row; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Icon_BG.png?fileID=2800000&amp;guid=55f4616714029ea488683c7e7dafcbe2&amp;type=3#Icon_BG&apos;); height: 64px; width: 64px;">
                     <ui:VisualElement style="position: absolute; left: 11px; top: 11px; right: 11px; bottom: 11px; background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/500_skillicons/Skill_nobg/Shamanskill_42_nobg.png?fileID=21300000&amp;guid=7945c694d9f570f4191734294855e361&amp;type=3#Shamanskill_42_nobg&apos;); rotate: 315deg;" />
@@ -35,10 +35,10 @@
                     <CostIcon class="cost-icon--requirement" />
                 </ui:VisualElement>
             </ResourcePanel>
-            <ui:VisualElement name="NamePanel">
+            <ui:VisualElement name="NamePanel" style="background-image: url(&apos;project://database/Assets/background_fade.png?fileID=2800000&amp;guid=28eba2104e378a34badf867d0376f5ac&amp;type=3#background_fade&apos;); margin-top: -35px; padding-top: 35px;">
                 <ui:Label text="This is some Name" display-tooltip-when-elided="true" name="Name" class="color-default-text" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 25px; -unity-font-style: bold;" />
             </ui:VisualElement>
-            <ui:VisualElement style="justify-content: flex-end; padding-top: 6px;">
+            <ui:VisualElement style="justify-content: flex-end; padding-top: 6px; padding-bottom: 20px; background-image: url(&apos;project://database/Assets/background_dark.png?fileID=2800000&amp;guid=a67a2b2981449ab4ea3d9499ae3731bf&amp;type=3#background_dark&apos;);">
                 <ui:Label text="This text kind of describes what&apos;s going on. Potentially verry long." display-tooltip-when-elided="true" name="Description" class="color-default-text" style="-unity-text-align: lower-center; white-space: normal; font-size: 18px; -unity-font-style: normal;" />
             </ui:VisualElement>
         </ui:VisualElement>

@@ -35,10 +35,10 @@ public class TurnPanel : MonoBehaviour
 
         badge.UnitItem.Unit = unit;
         var border = badge.UnitItem.Q("Border");
-        border.style.borderTopColor = player.Color;
-        border.style.borderLeftColor = player.Color;
-        border.style.borderRightColor = player.Color;
-        border.style.borderBottomColor = player.Color;
+        border.style.borderTopColor = player.Team.Color;
+        border.style.borderLeftColor = player.Team.Color;
+        border.style.borderRightColor = player.Team.Color;
+        border.style.borderBottomColor = player.Team.Color;
         badge.SetEnabled(false);
         OnTurnEnd(unit);
     }
@@ -79,7 +79,7 @@ public class TurnPanel : MonoBehaviour
     internal IEnumerator OnTurnStart(Unit unit, Action onComplete)
     {
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.AddToClassList("unit-badge--current"));
-        turnAnnouncer.Q<Label>().text = $"Turn of <color=#{ColorUtility.ToHtmlStringRGB(unit.Player.Color)}>{unit.Name}</color>";
+        turnAnnouncer.Q<Label>().text = $"Turn of <color=#{ColorUtility.ToHtmlStringRGB(unit.Player.Team.Color)}>{unit.Name}</color>";
         turnAnnouncer.style.display = DisplayStyle.Flex;
         yield return new WaitForSeconds(turnAnnouncerTime);
         turnAnnouncer.style.display = DisplayStyle.None;
