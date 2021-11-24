@@ -109,7 +109,6 @@ public class Unit : MonoBehaviour
     public float Life { get; private set; }
     public float LifePreview { get; private set; }
     public PlayerInfo Player { get; set; }
-    public UnitCard Card { get; set; }
 
     static int spawnCounter;
     int counter;
@@ -125,7 +124,6 @@ public class Unit : MonoBehaviour
             OnLifeChange?.Invoke(Life, MaxLife);
             if (Life <= 0)
             {
-                Card?.Destroy();
                 Destroy(gameObject);
             }
         }

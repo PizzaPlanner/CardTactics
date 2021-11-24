@@ -9,31 +9,31 @@ public class PushSkill : Skill
 
     public override string Description => $"Push {Tiles}";
 
-    protected override bool AutoSelectOnOnePossibleTile => true;
+    public override bool AutoSelectOnOnePossibleTile => true;
 
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var filter = SelectionFilters.AnyUnit;
-        if (SourceTile.Unit == null)
+        if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new RangePatternBuilder { MinRange = 1, MaxRange = MaxRange }.Patterns(map, SourceTile, player, filter);
+        return new RangePatternBuilder
+        {
+            MinRange = 1,
+            MaxRange = MaxRange
+        }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
     }
 
-    protected override IEnumerator OnPreview(ITilePattern targetPattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        var tilesByDistance = ((LinePattern)targetPattern).TilesByDistance;
-        var prevTile = SourceTile;
+        var tilesByDistance = ((LinePattern)ctx.SkillTarget).TilesByDistance;
+        var prevTile = ctx.SourceTile;
         foreach (var tile in tilesByDistance)
         {
             if (tile.Unit != null)
                 break;
             yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeFilter.Path);
             prevTile = tile;
-            OutTile = tile;
+            ctx.OutTile = tile;
         }
-    }
-
-    protected override void OnUse()
-    {
     }
 }

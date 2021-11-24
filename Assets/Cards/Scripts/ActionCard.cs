@@ -46,19 +46,19 @@ public class ActionCard : Card
 
     public override string Name => name;
 
-    protected override void OnPlay(Board board, Map map, Unit unit, PlayerInfo player)
+    public override void OnPlay(CardContext context)
     {
-        if (unit != null)
-            unit.Resources.Spend(Cost);
+        if (context.Unit != null)
+            context.Unit.Resources.Spend(Cost);
     }
 
-    protected override CardState StateOnPlayed => Type == UseType.Once || Type == UseType.Temporary ? CardState.Destroyed : CardState.Played;
+    public override CardState StateOnPlayed => Type == UseType.Once || Type == UseType.Temporary ? CardState.Destroyed : CardState.Played;
 
-    public override void OnRoundEnd(Map map, Unit unit)
+    public override void OnRoundEnd(CardContext ctx)
     {
-        if (Type == UseType.Temporary && State == CardState.Unplayed) Destroy();
-        if (State == CardState.Active && Type == UseType.Once) Destroy();
-        base.OnRoundEnd(map, unit);
+        if (Type == UseType.Temporary && ctx.State == CardState.Unplayed) ctx.State = CardState.Destroyed;
+        if (ctx.State == CardState.Active && Type == UseType.Once) ctx.State = CardState.Destroyed;
+        base.OnRoundEnd(ctx);
     }
 
     public override string GetDescription()

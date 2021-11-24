@@ -11,32 +11,29 @@ public class DashSkill : Skill
 
     public override string Description => $"Dash {MaxRange}";
 
-    protected override bool AutoSelectOnOnePossibleTile => false;
+    public override bool AutoSelectOnOnePossibleTile => false;
 
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
-        if (SourceTile.Unit == null)
+        if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(map, SourceTile, player, filter);
+        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
     }
 
-    protected override IEnumerator OnPreview(ITilePattern targetPattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        var tilesByDistance = ((LinePattern)targetPattern).TilesByDistance;
-        var prevTile = SourceTile;
+        var tilesByDistance = ((LinePattern)ctx.SkillTarget).TilesByDistance;
+        var prevTile = ctx.SourceTile;
         foreach (var tile in tilesByDistance)
         {
             if (tile.Unit != null)
                 break;
             yield return prevTile.Unit.Move(prevTile, new EmptyPattern(), tile, RangeType);
             prevTile = tile;
-            OutTile = tile;
+            ctx.OutTile = tile;
         }
     }
 
-    protected override void OnUse()
-    {
-    }
 }

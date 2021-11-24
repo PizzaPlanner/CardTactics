@@ -23,30 +23,30 @@ public class Team
     public int MinPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired);
     public int MaxPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired || x.Slot == PlayerInfo.SlotType.PlayerOptional);
 
-    public void Init(Board board)
+    public void Init(Board board, Map map)
     {
         if (CopyPerSpawn || Players == null) return;
 
         foreach (var player in Players)
         {
-            if (!player.Initialize(Lobby.Current, this))
+            if (!player.Initialize(Lobby.Current, this, map))
                 continue;
 
             if (registeredPlayers == null)
                 registeredPlayers = new List<PlayerInfo>();
             registeredPlayers.Add(player);
-            var placeCard = new UnitCard { UnitReference = player.Deck.Commander };
-            placeCard.Init();
-            board.Playables.InsertFirst(player, null, placeCard);
+            var placeSkill = new PlaceSkill { reference = player.Deck.Commander };
+            var skillInfo = new SkillInfo { Skill = placeSkill };
+            board.Playables.InsertFirst(new SkillContext(skillInfo, player));
         }
     }
 
-    internal Unit SpawnNew()
+    internal Unit SpawnNew(Map map)
     {
         if (CopyPerSpawn && PlayerTemplate != null)
         {
             var player = PlayerInfo.Instantiate(PlayerTemplate);
-            if (!player.Initialize(Lobby.Current, this))
+            if (!player.Initialize(Lobby.Current, this, map))
                 return null;
 
             if (registeredPlayers == null)

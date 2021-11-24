@@ -20,48 +20,48 @@ public class GainResourcePassive : Passive
 
     public override string Description => $"{(Amount > 0 ? "Gain" : "Lose")} {Mathf.Abs(Amount)} {Class.Name}{(Type == GainType.DuringTurn ? " for your Turn" : Type == GainType.GainOnTurn ? " every Turn" : "")}";
 
-    protected override void OnRemoved(Unit unit)
+    protected override void OnRemoved(CardContext ctx)
     {
         if (!gained) return;
         if (Type == GainType.ForDuration || Type == GainType.DuringTurn)
         {
             if (Amount < 0)
-                unit.Resources.Add(Class, -Amount);
+                ctx.Unit.Resources.Add(Class, -Amount);
             else
-                unit.Resources.Remove(Class, Amount);
+                ctx.Unit.Resources.Remove(Class, Amount);
             gained = false;
         }
     }
 
     bool gained;
-    public override void OnTurnStart(Unit unit)
+    public override void OnTurnStart(CardContext ctx)
     {
         if (Type == GainType.GainOnTurn)
         {
             if (Amount < 0)
-                unit.Resources.Remove(Class, -Amount);
+                ctx.Unit.Resources.Remove(Class, -Amount);
             else
-                unit.Resources.Add(Class, Amount);
+                ctx.Unit.Resources.Add(Class, Amount);
         }
         else if (!gained && (Type == GainType.ForDuration || Type == GainType.DuringTurn))
         {
             if (Amount < 0)
-                unit.Resources.Remove(Class, -Amount);
+                ctx.Unit.Resources.Remove(Class, -Amount);
             else
-                unit.Resources.Add(Class, Amount);
+                ctx.Unit.Resources.Add(Class, Amount);
             gained = true;
         }
     }
 
-    public override void OnTurnEnd(Unit unit)
+    public override void OnTurnEnd(CardContext ctx)
     {
         if (!gained) return;
         if (Type == GainType.DuringTurn)
         {
             if (Amount < 0)
-                unit.Resources.Add(Class, -Amount);
+                ctx.Unit.Resources.Add(Class, -Amount);
             else
-                unit.Resources.Remove(Class, Amount);
+                ctx.Unit.Resources.Remove(Class, Amount);
             gained = false;
         }
     }

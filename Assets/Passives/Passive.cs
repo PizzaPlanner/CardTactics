@@ -1,16 +1,12 @@
 [System.Serializable]
 public abstract class Passive
 {
-    public Card Source { get; private set; }
+    public Card Source;
     public abstract string Description { get; }
-    public void OnCardCreated(Card card)
-    {
-        Source = card;
-    }
-    public void OnCardRemoved(Unit unit) { OnRemoved(unit); }
+    public void OnCardRemoved(CardContext ctx) { OnRemoved(ctx); }
 
-    protected virtual void OnRemoved(Unit unit) { }
+    protected virtual void OnRemoved(CardContext ctx) { }
 
-    public virtual void OnTurnStart(Unit unit) { }
-    public virtual void OnTurnEnd(Unit unit) { }
+    public virtual void OnTurnStart(CardContext ctx) { }
+    public virtual void OnTurnEnd(CardContext ctx) { }
 }

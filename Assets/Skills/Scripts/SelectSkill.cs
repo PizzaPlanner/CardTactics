@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
-public class SelectSkill : Skill, ICancelable
+public class SelectSkill : Skill
 {
     [SerializeField] SelectionFilter TargetFilter;
     [SerializeField] bool confirmOnePossibleTile;
@@ -16,32 +16,26 @@ public class SelectSkill : Skill, ICancelable
 
     public override string Description => TargetFilter.Equals(SelectionFilters.Self) ? null : $"Select {TargetFilter}";
 
-    protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
+    public override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange })).Patterns(map, SourceTile, player, TargetFilter);
+        var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange }))
+            .Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, TargetFilter);
         if (selectAtRandom)
         {
             if (randomOnlySelectableTiles)
                 patterns = patterns.Where(x => x.Selectable);
-            return patterns.Any() ? new ITilePattern[] { patterns.ToArray()[Random.Range(0, patterns.Count())] } : new ITilePattern[0];
+            return patterns.Any() ? new ITilePattern[] { patterns.ToArray()[Random.Range(0, patterns.Count())]
+} : new ITilePattern[0];
         }
         else
             return patterns;
     }
 
-    protected override IEnumerator OnPreview(ITilePattern targetPattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        OutTile = targetPattern.Tiles.First();
+        ctx.OutTile = ctx.SkillTarget.Tiles.First();
         yield return null;
-    }
-
-    protected override void OnUse()
-    {
-    }
-
-    public void OnCancel()
-    {
     }
 }

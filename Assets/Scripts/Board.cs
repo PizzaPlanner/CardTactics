@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -21,42 +21,37 @@ public class PlayableQueue
 
     public bool Empty => queue.Count == 0;
 
-    readonly Queue<PlayableWithInfo> queue;
+    readonly Queue<IPlayableContext> queue;
 
-    public PlayableWithInfo Dequeue() => queue.Dequeue();
-    public void Enqueue(PlayerInfo player, Unit unit, IPlayable playable) => Enqueue(player, unit, playable, false);
-    public void InsertFirst(PlayerInfo player, Unit unit, IPlayable playable) => Enqueue(player, unit, playable, true);
+    public IPlayableContext Dequeue() => queue.Dequeue();
+    public void Enqueue(IPlayableContext context) => Enqueue(context, false);
+    public void InsertFirst(IPlayableContext context) => Enqueue(context, true);
 
 
-    void Enqueue(PlayerInfo player, Unit unit, IPlayable playable, bool priorizeNext)
+    void Enqueue(IPlayableContext context, bool priorizeNext)
     {
-        if (playable is Card card)
+        if (context is CardContext card)
         {
-            if (card.State != Card.CardState.Unplayed)
+            if (card.State != CardState.Unplayed)
             {
-                Debug.LogError($"[Board] Failed to Queue {card.Name}: State is {card.State}");
+                Debug.LogError($"[Board] Failed to Queue {card.Target.Name}: State is {card.State}");
                 return;
             }
-            Debug.Log($"[Board] Queued {card.Name} for {player.Name}");
+            Debug.Log($"[Board] Queued {card.Target.Name} for {card.Unit.Player.Name}");
         }
         else
-            Debug.Log($"[Board] Queued {playable.GetType().Name} for {player.Name}");
+            Debug.Log($"[Board] Queued {context.GetType().Name}");
 
         if (priorizeNext)
         {
             var old = queue.ToArray();
             queue.Clear();
-            queue.Enqueue(new PlayableWithInfo
-            {
-                Player = player,
-                Unit = unit,
-                Playable = playable
-            });
+            queue.Enqueue(context);
             foreach (var item in old)
                 queue.Enqueue(item);
         }
         else
-            queue.Enqueue(new PlayableWithInfo { Player = player, Unit = unit, Playable = playable });
+            queue.Enqueue(context);
     }
 }
 
@@ -117,21 +112,14 @@ public class Board : MonoBehaviour
 
     void OnPlay()
     {
-        var info = Playables.Dequeue();
-        var player = info.Player;
-        var playable = info.Playable;
-        var unit = info.Unit;
-        if (player != null && !player.IsAlive && playable is not Trigger)
-        {
-            Debug.Log($"[Board] {player.Name} is dead. skipped {playable.GetType().Name}");
-            return;
-        }
+        var ctx = Playables.Dequeue();
 
         IEnumerator PlayAndResume()
         {
-            currentPlayable = playable;
-            yield return playable.Play(this, Map, unit, player);
-            currentPlayable = null;
+            currentContext = ctx;
+            yield return new WaitForEndOfFrame();
+            yield return ctx.Play();
+            currentContext = null;
             if (CurrentStage != Stage.End)
             {
                 if (!Playables.Empty)
@@ -153,14 +141,14 @@ public class Board : MonoBehaviour
         if (triggers.Count > 0)
         {
             foreach (var trigger in triggers)
-                Playables.Enqueue(trigger.player, CurrentUnit, trigger.trigger);
+                Playables.Enqueue(new TriggerContext(trigger.player, CurrentUnit, Map, this, trigger.trigger));
         }
         foreach (var player in CheckDeath(Map))
         {
             foreach (var unit in FindObjectsOfType<Unit>())
                 if (unit.Player == player)
                     Destroy(unit);
-            Playables.InsertFirst(player, CurrentUnit, player.Team.OnLooseTrigger);
+            Playables.InsertFirst(new TriggerContext(player, CurrentUnit, Map, this, player.Team.OnLooseTrigger));
         }
 
         if (!Playables.Empty)
@@ -198,8 +186,8 @@ public class Board : MonoBehaviour
     {
         foreach (var player in RegisteredPlayers)
         {
-            player.Deck.OnRoundEnd(Map);
-            player.Deck.OnRoundStart(Map);
+            player.Deck.OnRoundEnd();
+            player.Deck.OnRoundStart();
         }
 
         playableUnits.Clear();
@@ -230,7 +218,7 @@ public class Board : MonoBehaviour
         turnPanel.OnTurnEnd(CurrentUnit);
         Debug.Log($"[Board] End Turn of {CurrentUnit.Name}");
         if (CurrentUnit.Player != null)
-            CurrentUnit.Player.Deck.OnTurnEnd(Map);
+            CurrentUnit.Player.Deck.OnTurnEnd();
         CurrentUnit = null;
         if (Playables.Empty)
             CurrentStage = Stage.Events;
@@ -246,7 +234,7 @@ public class Board : MonoBehaviour
         WaitingForAction = true;
         StartCoroutine(turnPanel.OnTurnStart(CurrentUnit, onComplete: Resume));
         if (CurrentUnit.Player != null)
-            CurrentUnit.Player.Deck.OnTurnStart(Map);
+            CurrentUnit.Player.Deck.OnTurnStart();
         if (Playables.Empty)
             CurrentStage = Stage.Plan;
         else
@@ -264,7 +252,7 @@ public class Board : MonoBehaviour
             PlayerPrepare(player);
     }
 
-    IPlayable currentPlayable;
+    IPlayableContext currentContext;
     public void Resume()
     {
         WaitingForAction = false;
@@ -301,16 +289,12 @@ public class Board : MonoBehaviour
                     OnEnd(); break;
             }
         }
-        else if (CurrentStage == Stage.Play && !EventSystem.current.IsPointerOverGameObject() && currentPlayable is Card currentCard)
+        else if (CurrentStage == Stage.Play && !EventSystem.current.IsPointerOverGameObject())
         {
             if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
             {
                 if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid)
-                    currentCard.SkillTarget = Tile.Hovered.PrimaryPattern;
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                currentCard.WantReset = true;
+                    Map.OnTileSelection?.Invoke(Tile.Hovered.PrimaryPattern);
             }
         }
 
@@ -333,10 +317,10 @@ public class Board : MonoBehaviour
 
     void AIPrepare(PlayerInfo aiPlayer)
     {
-        if (aiPlayer.Deck.Playable(CurrentUnit).Count() > 0)
+        if (aiPlayer.Deck.Playable.Count() > 0)
         {
-            var rnd = Random.Range(0, aiPlayer.Deck.Playable(CurrentUnit).Count());
-            SetPlayerReady(aiPlayer, aiPlayer.Deck.Playable(CurrentUnit).ToArray()[rnd]);
+            var rnd = Random.Range(0, aiPlayer.Deck.Playable.Count());
+            SetPlayerReady(aiPlayer, aiPlayer.Deck.Playable.ToArray()[rnd]);
         }
         else
             SetPlayerDone(aiPlayer);
@@ -344,7 +328,7 @@ public class Board : MonoBehaviour
 
     void PlayerPrepare(PlayerInfo player)
     {
-        if (player.Deck.Playable(CurrentUnit).Count() > 0)
+        if (player.Deck.Playable.Count() > 0)
             GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, CurrentUnit,
             onPlay: (card) => SetPlayerReady(player, card),
             onEndTurn: () => SetPlayerDone(player));
@@ -357,18 +341,17 @@ public class Board : MonoBehaviour
         if (cardsPlayedForCurrentUnit == 0)
         {
             Debug.LogWarning($"{CurrentUnit.Name} ended without playing a Card!");
-            var onNoCardsInstance = Instantiate(OnNoCardsPlayed);
-            onNoCardsInstance.Init();
-            Playables.InsertFirst(player, CurrentUnit, onNoCardsInstance);
+            var oncp = new CardContext(OnNoCardsPlayed, Map, CurrentUnit, CardState.Unplayed);
+            Playables.InsertFirst(oncp);
         }
 
         CurrentStage = Stage.EndTurn;
         Resume();
     }
 
-    public void SetPlayerReady(PlayerInfo player, Card card)
+    public void SetPlayerReady(PlayerInfo player, CardContext card)
     {
-        Playables.Enqueue(player, CurrentUnit, card);
+        Playables.Enqueue(card);
         cardsPlayedForCurrentUnit++;
         CurrentStage = Stage.Play;
         Resume();
@@ -387,5 +370,10 @@ public class Board : MonoBehaviour
             }
         }
         return dead;
+    }
+
+    internal CardContext CreateFakeCardContext()
+    {
+        return new CardContext(new ActionCard(), Map, null, CardState.Unplayed);
     }
 }

@@ -60,9 +60,86 @@ public enum RangeFilter
     All = int.MaxValue
 }
 
-public interface ICancelable
+[System.Serializable]
+public class SkillContext : IPlayableContext
 {
-    void OnCancel();
+    public SkillInfo Target { get; set; }
+    public ITilePattern SkillTarget;
+    public Tile OutTile, SourceTile;
+    Tile OriginTile;
+    public CardContext Source;
+    public bool WantSkillSkip { get; set; }
+    public bool WantComplete { get; set; }
+    public bool WantReset { get; set; }
+    public Skill.Progress PlayProgress;
+    public PlayerInfo Player;
+
+    public SkillContext(SkillInfo target, CardContext source, PlayerInfo player, Tile sourceTile)
+    {
+        Target = target;
+        Player = player;
+        Source = source;
+        OriginTile = sourceTile;
+    }
+
+    public SkillContext(SkillInfo target, PlayerInfo player, Tile sourceTile = null)
+    {
+        Target = target;
+        Player = player;
+        Source = Board.FindObjectOfType<Board>().CreateFakeCardContext();
+        OriginTile = sourceTile;
+    }
+
+    public bool Preview(out IEnumerable<ITilePattern> validPatterns)
+    {
+        var map = Source.Map;
+        var player = Player;
+        if (Target.CanUse(OriginTile, Source, out SourceTile)
+            && Target.Skill.Activate(this, out validPatterns))
+        {
+            map.ShowTileIndicators(validPatterns, (itp) => SkillTarget = itp);
+            return true;
+        }
+        validPatterns = new ITilePattern[0];
+        return false;
+    }
+
+    public IEnumerator Play()
+    {
+        var map = Source.Map;
+        var player = Player;
+        if (Target.CanUse(OriginTile, Source, out SourceTile)
+            && Target.Skill.Activate(this, out var validPatterns))
+        {
+            Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color>");
+            if (Target.Skill.AutoSelectOnOnePossibleTile && validPatterns.Count() == 1)
+                SkillTarget = validPatterns.First();
+            else if (player.IsAI)
+                SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
+            else if (player.IsLocal)
+                map.ShowTileIndicators(validPatterns, (itp) => SkillTarget = itp);
+            else
+                Debug.Log("[Board] Waiting for remote Player to use Skill...");
+
+            yield return new WaitUntil(() => SkillTarget != null || (WantSkillSkip && Target.Skill.IsOptional));
+
+            if (SkillTarget != null)
+            {
+                yield return Target.Skill.OnPreview(this);
+                if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
+                PlayProgress = global::Skill.Progress.Queued;
+                if (player.IsAI)
+                    WantComplete = true;
+            }
+            else if (WantSkillSkip)
+            {
+                PlayProgress = global::Skill.Progress.Skipped;
+            }
+        }
+        else
+            Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=red>Condition Failed</color>");
+        map.HideTileSelectionPreview();
+    }
 }
 
 public enum SkillChain
@@ -77,7 +154,7 @@ public enum SkillChain
 }
 
 [Serializable]
-public class SkillInfo
+public class SkillInfo : IPlayable
 {
 
     [VerticalGroup("Skill")]
@@ -103,25 +180,26 @@ public class SkillInfo
     public Skill Skill;
 
 
-    public Tile GetInputTile(Tile origin, IEnumerable<SkillInfo> previousSkills)
+    Tile GetInputTile(Tile origin, CardContext ctx)
     {
+        var previous = ctx.PreviousContexts;
         if (SourceTileInput == SkillChain._) return null;
         var wanted = SourceTileInput;
-        var inputInfo = previousSkills.LastOrDefault(x => x.TileOutput == wanted);
+        var inputInfo = ctx.PreviousContexts.LastOrDefault(x => x.Target.TileOutput == wanted);
         if (wanted == SkillChain.A && inputInfo == null)
             return origin;
-        return inputInfo?.GetOutputTile();
+        return inputInfo?.OutTile;
     }
 
-    public Tile GetOutputTile() => Skill.OutTile;
-
-    public bool CanUse(Tile origin, IEnumerable<SkillInfo> previousSkills, out Tile inputTile)
+    public bool CanUse(Tile origin, CardContext ctx, out Tile inputTile)
     {
         inputTile = null;
+        if (ctx.PreviousContexts.Any(x => x.Target == this))
+            return false;
         if (Conditions != null)
             foreach (var condition in Conditions)
-                if (previousSkills.LastOrDefault(x => x.TileOutput == condition)?.Skill.PlayProgress != Skill.Progress.Queued) return false;
-        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, previousSkills)) == null) return false;
+                if (ctx.PreviousContexts.LastOrDefault(x => x.Target.TileOutput == condition)?.PlayProgress != Skill.Progress.Queued) return false;
+        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, ctx)) == null) return false;
         return true;
     }
 }
@@ -140,84 +218,23 @@ public abstract class Skill
 
     public Card Source { get; set; }
     public abstract string Description { get; }
-
-    public ITilePattern TargetPattern { get; private set; }
-    public Tile SourceTile { get; private set; }
-    public Tile OutTile { get; protected set; }
     public bool IsOptional => SkippableWithInput;
-    public bool IsPreviewed { get; private set; }
-
-    public Tile[] ValidTiles { get; protected set; }
 
     [SerializeField] bool SkippableWithInput;
-    protected abstract bool AutoSelectOnOnePossibleTile { get; }
+    public abstract bool AutoSelectOnOnePossibleTile { get; }
 
-    public Progress PlayProgress { get; private set; }
 
-    public virtual void Prepare()
+    public bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns)
     {
-        PlayProgress = Progress.Pending;
-        SourceTile = null;
-        OutTile = null;
-        IsPreviewed = false;
-    }
-
-    public bool Activate(Map map, PlayerInfo player, Card card, Tile inputTile, out IEnumerable<ITilePattern> validPatterns)
-    {
-        PlayProgress = Progress.Failed;
-
-        SourceTile = inputTile;
-
-        validPatterns = OnActivate(map, player, card).Where(x => x.Tiles.Any() && x.Selectable);
+        validPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && x.Selectable);
         var hasAny = validPatterns.Any();
-        PlayProgress = hasAny ? Progress.Now : Progress.Failed;
-        if (!hasAny)
-            return false;
-
-        if (AutoSelectOnOnePossibleTile && validPatterns.Count() == 1 && card != null)
-        {
-            card.SkillTarget = validPatterns.First();
-        }
-        else if (player.IsAI)
-        {
-            player.AIDecide(card, this, validPatterns);
-        }
-
-        return true;
+        ctx.PlayProgress = hasAny ? Progress.Now : Progress.Failed;
+        return hasAny;
     }
 
-    protected abstract IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card);
-    public IEnumerator Preview(ITilePattern target)
-    {
-        IsPreviewed = true;
-        yield return OnPreview(target);
-        if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
-        PlayProgress = Progress.Queued;
-    }
+    protected abstract IEnumerable<ITilePattern> OnActivate(SkillContext ctx);
 
-    public void Reset()
-    {
-        if (this is not ICancelable cancelable) return;
-        if (IsPreviewed)
-            cancelable.OnCancel();
-        IsPreviewed = false;
-        PlayProgress = Progress.Pending;
-    }
-
-    protected abstract IEnumerator OnPreview(ITilePattern targetPattern);
-    protected abstract void OnUse();
-
-    public void Use()
-    {
-        OnUse();
-        IsPreviewed = false;
-    }
-
-    internal void Skip()
-    {
-        PlayProgress = Progress.Skipped;
-        IsPreviewed = false;
-    }
+    public abstract IEnumerator OnPreview(SkillContext ctx);
 
     public virtual List<Card> GetRelatedCards()
     {

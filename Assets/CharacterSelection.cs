@@ -18,7 +18,7 @@ public class CharacterSelection : MonoBehaviour
             var velm = new VisualElement();
             velm.AddToClassList("decklist");
             tabs.Add(velm);
-            foreach (var card in deck.All)
+            foreach (var card in deck.Cards)
             {
                 CardItem.CloneTree(velm, out var idx, out int _);
                 velm[idx].Q<CardItem>().Card = card;
@@ -28,7 +28,7 @@ public class CharacterSelection : MonoBehaviour
             selector.Q("ShowPrevious").RegisterCallback<MouseDownEvent>(_ => { currentDeck = (currentDeck - 1) % Decks.Length; ShowDeck(); });
             selector.Q<Button>("ChooseDeck").clicked += (() =>
             {
-                Lobby.Current.LocalPlayer.Deck = Deck.Create(Decks[currentDeck]);
+                Lobby.Current.LocalPlayer.Deck = Instantiate(Decks[currentDeck]);
                 selector.style.display = Lobby.Current.LocalPlayer.Deck == null ? DisplayStyle.Flex : DisplayStyle.None;
             });
             ShowDeck();

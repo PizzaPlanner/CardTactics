@@ -20,26 +20,24 @@ public class PlayCardPassive : Passive
 
     void PlayCard(Unit unit)
     {
-        var card = Card.Instantiate(Card);
-        card.Init();
-        Card.FindObjectOfType<Board>().Playables.InsertFirst(unit.Player, unit, card);
+        Card.FindObjectOfType<Board>().Playables.InsertFirst(new CardContext(Card, Map.FindObjectOfType<Map>(), unit, CardState.Unplayed));
     }
 
-    protected override void OnRemoved(Unit unit)
+    protected override void OnRemoved(CardContext ctx)
     {
         if (When != PlayType.OnRemoved) return;
-        PlayCard(unit);
+        PlayCard(ctx.Unit);
     }
 
-    public override void OnTurnStart(Unit unit)
+    public override void OnTurnStart(CardContext ctx)
     {
         if (When != PlayType.OnTurnStart) return;
-        PlayCard(unit);
+        PlayCard(ctx.Unit);
     }
 
-    public override void OnTurnEnd(Unit unit)
+    public override void OnTurnEnd(CardContext ctx)
     {
         if (When != PlayType.OnTurnEnd) return;
-        PlayCard(unit);
+        PlayCard(ctx.Unit);
     }
 }

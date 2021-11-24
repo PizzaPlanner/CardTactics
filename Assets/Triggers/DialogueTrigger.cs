@@ -14,7 +14,7 @@ public class DialogueTrigger : Trigger
 
     [SerializeField] DialogueLine[] Lines;
 
-    protected override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
+    public override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
     {
         foreach (var line in Lines)
         {

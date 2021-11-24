@@ -15,49 +15,41 @@ public class AttackSkill : Skill
     [SerializeField] bool confirmOnePossibleTile;
     public float Damage;
 
-    Unit previewUnit;
-    Facing previewFacing;
-
     public override string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
-    protected override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
+    public override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new RangePatternBuilder { MinRange = MinRange, MaxRange = MaxRange }.Patterns(map, SourceTile, player, Filter);
+        return new RangePatternBuilder
+        {
+            MinRange = MinRange,
+            MaxRange = MaxRange
+        }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, Filter);
     }
 
-    protected override IEnumerator OnPreview(ITilePattern targetPattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        OutTile = targetPattern.Tiles.First();
-        Animator sourceAnimator = SourceTile.Unit.GetComponentInChildren<Animator>();
-        Animator targetAnimator = OutTile.Unit.GetComponentInChildren<Animator>();
-        previewFacing = SourceTile.Facing;
-        SourceTile.Face(Tile.GetFacing(SourceTile, OutTile));
+        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
+        Animator targetAnimator = ctx.OutTile.Unit.GetComponentInChildren<Animator>();
+        ctx.SourceTile.Face(Tile.GetFacing(ctx.SourceTile, ctx.OutTile));
         if (sourceAnimator != null)
         {
             sourceAnimator.SetInteger("Action", 1);
             sourceAnimator.SetTrigger("AttackTrigger");
         }
         if (Sound != null)
-            SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
+            ctx.SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
         yield return new WaitForSeconds(0.3f);
-        previewUnit = OutTile.Unit;
-        previewUnit.Damage(Damage, true);
         if (targetAnimator != null)
         {
             targetAnimator.SetInteger("Action", 1);
             targetAnimator.SetTrigger("GetHitTrigger");
         }
-        if (previewUnit.LifePreview <= 0)
+        ctx.OutTile.Unit.Damage(Damage, false);
+        if (ctx.OutTile.Unit.LifePreview <= 0)
         {
-            yield return new WaitForSeconds(0.5f);
-            previewUnit.gameObject.SetActive(false);
-            OutTile.Unit = null;
+            yield return new WaitUntil(() => ctx.OutTile.Unit == null);
         }
-    }
-
-    protected override void OnUse()
-    {
-        previewUnit.Damage(Damage, false);
     }
 }

@@ -13,27 +13,24 @@ public class HealSkill : Skill
 
     public float Heal;
 
-    Unit previewUnit;
     public override string Description => $"Heal {Heal}";
-    protected override bool AutoSelectOnOnePossibleTile => false;
+    public override bool AutoSelectOnOnePossibleTile => false;
 
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         if ((Filter.Tile & TileFilter.Empty) > 0) return new ITilePattern[0];
-        return new RangePatternBuilder { MinRange = MinRange, MaxRange = MaxRange }.Patterns(map, SourceTile, player, Filter);
+        return new RangePatternBuilder
+        {
+            MinRange = MinRange,
+            MaxRange = MaxRange
+        }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, Filter);
     }
 
-    protected override IEnumerator OnPreview(ITilePattern targetPattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        OutTile = targetPattern.Tiles.First();
-        SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
+        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
         yield return new WaitForSeconds(0.5f);
-        previewUnit = OutTile.Unit;
-        previewUnit.Damage(-Heal, true);
-    }
-
-    protected override void OnUse()
-    {
-        previewUnit.Damage(-Heal, false);
+        ctx.OutTile.Unit.Damage(-Heal, false);
     }
 }

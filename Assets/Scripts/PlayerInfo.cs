@@ -21,7 +21,7 @@ public class PlayerInfo : MonoBehaviour
     [ReadOnly]
     [ShowIf("Deck")]
     [NonSerialized]
-    public Deck Deck;
+    public IngameDeck Deck;
 
     [NonSerialized]
     public Team Team;
@@ -39,12 +39,7 @@ public class PlayerInfo : MonoBehaviour
 
     public Trigger OnDead;
 
-    internal void AIDecide(Card card, Skill skill, IEnumerable<ITilePattern> validPatterns)
-    {
-        card.SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
-    }
-
-    public bool Initialize(Lobby lobby, Team team)
+    public bool Initialize(Lobby lobby, Team team, Map map)
     {
         if (Slot == SlotType.PlayerRequired && !lobby.AssignPlayer(this))
         {
@@ -58,9 +53,9 @@ public class PlayerInfo : MonoBehaviour
         if (deck == null && lobby.DeckOf(this) == null) return false;
 
         if (deck == null)
-            Deck = Deck.Create(lobby.DeckOf(this));
+            Deck = new IngameDeck(lobby.DeckOf(this), map);
         else if (Deck == null)
-            Deck = Deck.Create(deck);
+            Deck = new IngameDeck(deck, map);
 
         Team = team;
         return true;

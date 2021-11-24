@@ -12,7 +12,7 @@ public class GainCardTrigger : Trigger
     [SerializeField] int Player;
     [SerializeField] bool GiveToTriggerer;
 
-    protected override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
+    public override IEnumerator Execute(Board board, Map map, Unit unit, PlayerInfo player)
     {
         if (!GiveToTriggerer && (Player < 0 || Player >= map.Players.Count()))
         {
@@ -20,8 +20,9 @@ public class GainCardTrigger : Trigger
             yield break;
         }
 
-        Skill.Player = GiveToTriggerer ? player : map.Players.ToArray()[Player];
-        yield return GainCardSkill.ShowGetAnimation(Skill.CardPrefab);
-        Skill.Use();
+        if (!GiveToTriggerer)
+            player = map.Players.ToArray()[Player];
+        var ctx = new SkillContext(new SkillInfo { Skill = Skill }, player, map.TileOf(unit));
+        ctx.Play();
     }
 }

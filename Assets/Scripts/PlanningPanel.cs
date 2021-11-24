@@ -38,21 +38,21 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    void OnConfirm(Card card)
+    void OnConfirm(CardContext card)
     {
         onPlayWrapper.Invoke(card);
         Hide();
     }
 
-    Action<Card> onPlayWrapper;
+    Action<CardContext> onPlayWrapper;
     Action onEndTurnWrapper;
 
-    public void Show(PlayerInfo player, Unit unit, Action<Card> onPlay, Action onEndTurn)
+    public void Show(PlayerInfo player, Unit unit, Action<CardContext> onPlay, Action onEndTurn)
     {
         var deck = player.Deck;
 
         var unplayed = deck.Unplayed.ToList();
-        unplayed.Sort((x, y) => x.Name.CompareTo(y.Name));
+        unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
 
         var board = FindObjectOfType<Board>();
         var playable = board.CurrentUnit == unit && unit.Player.IsLocal && board.CurrentStage == Board.Stage.Plan;
@@ -66,31 +66,31 @@ public class PlanningPanel : MonoBehaviour
         var doc = FindObjectOfType<UIDocument>();
         cardPanel.Clear();
         var map = FindObjectOfType<Map>();
-        foreach (var card in unplayed)
+        foreach (var ctx in unplayed)
         {
             cardAsset.CloneTree(cardPanel, out int idx, out int _);
-            var cx = cardPanel[idx].Q<CardItem>();
-            cx.AddToClassList("carditem-selectable");
-            cx.Card = card;
-            var firstSkill = card.Skills.FirstOrDefault();
-            if (firstSkill != null && firstSkill.Activate(map, player, card, map.TileOf(unit), out var validPatterns))
+            var item = cardPanel[idx].Q<CardItem>();
+            item.AddToClassList("carditem-selectable");
+            item.Card = ctx.Target;
+            var firstSkill = ctx.Target.skills.FirstOrDefault();
+            if (firstSkill != null && new SkillContext(firstSkill, ctx, player, map.TileOf(unit)).Preview(out var validPatterns))
             {
-                cx.OnMouseEnter = () =>
+                item.OnMouseEnter = () =>
                 {
-                    CardTooltip.Show(card);
+                    CardTooltip.Show(ctx.Target);
                     map.ShowTileIndicators(validPatterns);
                 };
             }
             else
-                cx.OnMouseEnter = () => CardTooltip.Show(card);
+                item.OnMouseEnter = () => CardTooltip.Show(ctx.Target);
 
-            cx.OnMouseLeave = () => { CardTooltip.Hide(); map.HideTileSelectionPreview(); };
+            item.OnMouseLeave = () => { CardTooltip.Hide(); map.HideTileSelectionPreview(); };
 
             if (playable)
-                cx.RegisterCallback<MouseDownEvent>((_) =>
+                item.RegisterCallback<MouseDownEvent>((_) =>
                 {
                     audio.PlayOneShot(SelectSound);
-                    OnConfirm(card);
+                    OnConfirm(ctx);
                 });
         }
         CalculateValidCards(unit);

@@ -30,13 +30,10 @@ public class UnitItem : VisualElement
 
     void OnMouseEnter()
     {
-        if (Unit.Card != null)
-            CardTooltip.Show(Unit.Card);
     }
 
     void OnMouseLeave()
     {
-        CardTooltip.Hide();
     }
 
 

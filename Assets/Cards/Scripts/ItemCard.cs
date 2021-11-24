@@ -19,10 +19,5 @@ public class ItemCard : Card
     public override Sprite Icon => icon;
     public override string Name => name;
 
-    protected override void OnInit()
-    {
-        State = CardState.Active;
-    }
-
-    protected override CardState StateOnPlayed => CardState.Active;
+    public override CardState StateOnPlayed => CardState.Active;
 }

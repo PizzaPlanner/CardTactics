@@ -5,69 +5,50 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-[CreateAssetMenu]
-public class Deck : ScriptableObject
+public class IngameDeck
 {
-    [SerializeField] Unit commanderPrefab;
-    [SerializeField] Card[] Cards;
+    public List<CardContext> Contexts;
+
+    public void OnRoundStart()
+    {
+        foreach (var card in Contexts)
+            card.Target.OnRoundStart(card);
+    }
+
+    public void OnRoundEnd()
+    {
+        foreach (var card in Contexts)
+            card.Target.OnRoundEnd(card);
+    }
+
+    public void OnTurnStart()
+    {
+        foreach (var card in Contexts)
+            card.Target.OnTurnStart(card);
+    }
+
+    public void OnTurnEnd()
+    {
+        foreach (var card in Contexts)
+            card.Target.OnTurnEnd(card);
+    }
+
+    public IngameDeck(Deck prefab, Map map)
+    {
+        Contexts = new List<CardContext>();
+
+        Commander = Card.Instantiate(prefab.commanderPrefab);
+        Commander.gameObject.SetActive(false);
+        foreach (var card in prefab.Cards)
+            Contexts.Add(new CardContext(card, map, Commander, CardState.Unplayed));
+    }
+
     [NonSerialized] public Unit Commander;
 
-    public IEnumerable<Card> All => Cards;
-    public IEnumerable<ItemCard> Equipped => Cards.Where(x => x is ItemCard && x.State == Card.CardState.Active).Cast<ItemCard>();
-    public IEnumerable<Card> Unplayed => Cards.Where(x => x.State == Card.CardState.Unplayed);
-    public IEnumerable<ActionCard> Playable(Unit currentUnit) => Unplayed.Where(x => x is ActionCard acard && currentUnit.Resources.CanAfford(acard.Cost)).Cast<ActionCard>();
+    public IEnumerable<CardContext> All => Contexts;
+    public IEnumerable<CardContext> Unplayed => Contexts.Where(x => x.State == CardState.Unplayed);
+    public IEnumerable<CardContext> Playable => Unplayed.Where(x => x.Target is ActionCard acard && x.Unit.Resources.CanAfford(acard.Cost));
 
-    public void OnRoundStart(Map map)
-    {
-        foreach (var card in Cards)
-            card.OnRoundStart(map, Commander);
-    }
-
-    public void OnRoundEnd(Map map)
-    {
-        foreach (var card in Cards)
-            card.OnRoundEnd(map, Commander);
-    }
-
-    public void OnTurnStart(Map map)
-    {
-        foreach (var card in Cards)
-            card.OnTurnStart(map, Commander);
-    }
-
-    public void OnTurnEnd(Map map)
-    {
-        foreach (var card in Cards)
-            card.OnTurnEnd(map, Commander);
-    }
-
-    public static Deck Create(Deck prefab)
-    {
-        var deck = Deck.Instantiate(prefab);
-        deck.Cards = new Card[0];
-        if (deck.Commander == null)
-        {
-            deck.Commander = Instantiate(prefab.commanderPrefab.gameObject).GetComponent<Unit>();
-            deck.Commander.gameObject.SetActive(false);
-        }
-        foreach (var card in prefab.Cards)
-            deck.ExtendWith(card, null, card is ItemCard ? Card.CardState.Active : Card.CardState.Unplayed);
-
-        Assert.IsNotNull(deck.Commander);
-        return deck;
-    }
-
-    public T ExtendWith<T>(T cardPrefab, Card source, Card.CardState initialState) where T : Card
-    {
-        var newCard = Instantiate(cardPrefab);
-        newCard.Init(source, initialState);
-
-        var listC = Cards.ToList();
-        listC.Add(newCard);
-        Cards = listC.ToArray();
-
-        return newCard;
-    }
 
 #if UNITY_EDITOR
     [BoxGroup("Editor")]
@@ -77,7 +58,14 @@ public class Deck : ScriptableObject
     [Button("Add Queued Card")]
     void EditorAddCard()
     {
-        ExtendWith(editorAddCardPrefab, null, Card.CardState.Unplayed);
+
     }
 #endif
+}
+
+[CreateAssetMenu]
+public class Deck : ScriptableObject
+{
+    public Unit commanderPrefab;
+    public Card[] Cards;
 }

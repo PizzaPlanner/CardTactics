@@ -7,28 +7,26 @@ using UnityEngine;
 [System.Serializable]
 public class GainCardSkill : Skill
 {
-    [NonSerialized] public PlayerInfo Player;
-
     [SerializeField] Card NewCardPrefab;
-    [SerializeField] Card.CardState NewCardInitialState;
+    [SerializeField] CardState NewCardInitialState;
 
-    public Card CardPrefab => NewCardPrefab;
+    public override string Description => $"Gain {NewCardPrefab.Name} ({NewCardInitialState})";
 
-    public override string Description => $"Gain {CardPrefab.Name} ({NewCardInitialState})";
+    public override bool AutoSelectOnOnePossibleTile => true;
 
-    protected override bool AutoSelectOnOnePossibleTile => true;
-
-    protected override IEnumerable<ITilePattern> OnActivate(Map map, PlayerInfo player, Card card)
+    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new[] { new SingleTilePattern { Target = SourceTile }.Build(map, SourceTile, player, new SelectionFilter { Range = RangeFilter.Any }) };
+        return new[] { new SingleTilePattern { Target = ctx.SourceTile
+}.Build(ctx.Source.Map, ctx.SourceTile, ctx.Player, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    protected override IEnumerator OnPreview(ITilePattern pattern)
+    public override IEnumerator OnPreview(SkillContext ctx)
     {
-        OutTile = pattern.Tiles.First();
-        if (OutTile.Unit == null) yield break;
-        Player = OutTile.Unit.Player;
+        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        if (ctx.OutTile.Unit == null) yield break;
         yield return ShowGetAnimation(NewCardPrefab);
+        var deck = ctx.OutTile.Unit.Player.Deck;
+        deck.Contexts.Add(new CardContext(NewCardPrefab, Map.FindObjectOfType<Map>(), ctx.OutTile.Unit, NewCardInitialState));
     }
 
     public static IEnumerator ShowGetAnimation(Card cardPrefab)
@@ -39,15 +37,10 @@ public class GainCardSkill : Skill
         CardTooltip.Hide();
     }
 
-    protected override void OnUse()
-    {
-        Player.Deck.ExtendWith(NewCardPrefab, Source, NewCardInitialState);
-    }
-
     public override List<Card> GetRelatedCards()
     {
         var list = base.GetRelatedCards();
-        list.Add(CardPrefab);
+        list.Add(NewCardPrefab);
         return list;
     }
 }

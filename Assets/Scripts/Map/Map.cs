@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -77,7 +78,7 @@ public class Map : MonoBehaviour
             }
             else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
             {
-                Unit instance = Teams[owner.Id].SpawnNew();
+                Unit instance = Teams[owner.Id].SpawnNew(this);
                 if (instance != null)
                 {
                     Debug.Log("[Board] Spawning unit " + instance.Name);
@@ -90,7 +91,7 @@ public class Map : MonoBehaviour
                 tile.gameObject.SetActive(false);
 
         foreach (var team in Teams)
-            team.Init(board);
+            team.Init(board, this);
     }
 
     public void RevealArea(int areaId)
@@ -105,8 +106,10 @@ public class Map : MonoBehaviour
         return Tiles.FirstOrDefault(x => x.Unit == unit);
     }
 
-    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns)
+    public Action<ITilePattern> OnTileSelection;
+    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns, Action<ITilePattern> onSelectPattern = null)
     {
+        OnTileSelection = onSelectPattern;
         foreach (var tile in Tiles)
         {
             tile.CurrentIndicator = TargetIndicator.Hidden;
