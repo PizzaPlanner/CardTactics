@@ -11,7 +11,7 @@ public class MultiTrigger : Trigger
     public override IEnumerator Execute(Board board, Map map, Unit unit, PlayerInfo player)
     {
         foreach (var trigger in SubTriggers)
-            board.Playables.Enqueue(new TriggerContext(player, unit, map, board, trigger));
+            board.Playables.Enqueue(new TriggerContext(unit, map, board, trigger));
         yield return null;
     }
 }

@@ -15,15 +15,17 @@ public class Map : MonoBehaviour
 
     public Team[] Teams;
 
-    public List<(PlayerInfo player, Trigger trigger)> CheckTriggers()
+    public void AddTriggers(Board board)
     {
-        var l = new List<(PlayerInfo player, Trigger trigger)>();
         foreach (var tcomp in GetComponentsInChildren<TriggerComponent>())
         {
             if (tcomp.TryGetComponent<Tile>(out var tile) && tcomp.Trigger.ShouldTrigger(this, tile))
-                l.Add((tile.Unit?.Player ?? null, tcomp.Trigger));
+            {
+                var ctx = new TriggerContext(tile.Unit, this, board, tcomp.Trigger);
+                if (ctx.Queueable)
+                    board.Playables.Enqueue(ctx);
+            }
         }
-        return l;
     }
 
     public void ShowMarker(int id)
@@ -107,7 +109,7 @@ public class Map : MonoBehaviour
     }
 
     public Action<ITilePattern> OnTileSelection;
-    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns, Action<ITilePattern> onSelectPattern = null)
+    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns, Func<ITilePattern, TargetIndicator> indicatorFunc, Action<ITilePattern> onSelectPattern = null)
     {
         OnTileSelection = onSelectPattern;
         foreach (var tile in Tiles)
@@ -123,7 +125,7 @@ public class Map : MonoBehaviour
                         break;
 
                     tile.PrimaryPattern = pattern;
-                    tile.CurrentIndicator = pattern.Selectable ? TargetIndicator.Valid : TargetIndicator.Invalid;
+                    tile.CurrentIndicator = indicatorFunc(pattern);
                     tile.SetIndicatorVisible(true, pattern.Tiles.Contains(Tile.Hovered));
                 }
             }

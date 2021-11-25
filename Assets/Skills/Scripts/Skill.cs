@@ -64,15 +64,18 @@ public enum RangeFilter
 public class SkillContext : IPlayableContext
 {
     public SkillInfo Target { get; set; }
-    public ITilePattern SkillTarget;
-    public Tile OutTile, SourceTile;
+    public ITilePattern SkillTarget { get; private set; }
+    public Tile OutTile;
+    public Tile SourceTile;
     Tile OriginTile;
-    public CardContext Source;
-    public bool WantSkillSkip { get; set; }
-    public bool WantComplete { get; set; }
-    public bool WantReset { get; set; }
+    public CardContext Source { get; private set; }
+    public bool WantSkillSkip { get; private set; }
+    public bool WantComplete { get; private set; }
     public Skill.Progress PlayProgress;
-    public PlayerInfo Player;
+    public PlayerInfo Player { get; private set; }
+
+    public string Name => Target.GetType().Name;
+    public bool Queueable => true;
 
     public SkillContext(SkillInfo target, CardContext source, PlayerInfo player, Tile sourceTile)
     {
@@ -97,7 +100,6 @@ public class SkillContext : IPlayableContext
         if (Target.CanUse(OriginTile, Source, out SourceTile)
             && Target.Skill.Activate(this, out validPatterns))
         {
-            map.ShowTileIndicators(validPatterns, (itp) => SkillTarget = itp);
             return true;
         }
         validPatterns = new ITilePattern[0];
@@ -117,7 +119,9 @@ public class SkillContext : IPlayableContext
             else if (player.IsAI)
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
             else if (player.IsLocal)
-                map.ShowTileIndicators(validPatterns, (itp) => SkillTarget = itp);
+                map.ShowTileIndicators(validPatterns,
+                (pattern) => pattern.Selectable ? TargetIndicator.Valid : TargetIndicator.Invalid,
+                (itp) => SkillTarget = itp);
             else
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
 

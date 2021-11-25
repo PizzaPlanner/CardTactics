@@ -30,17 +30,12 @@ public class PlayableQueue
 
     void Enqueue(IPlayableContext context, bool priorizeNext)
     {
-        if (context is CardContext card)
+        if (!context.Queueable)
         {
-            if (card.State != CardState.Unplayed)
-            {
-                Debug.LogError($"[Board] Failed to Queue {card.Target.Name}: State is {card.State}");
-                return;
-            }
-            Debug.Log($"[Board] Queued {card.Target.Name} for {card.Unit.Player.Name}");
+            Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {context.Player.Name}");
+            return;
         }
-        else
-            Debug.Log($"[Board] Queued {context.GetType().Name}");
+        Debug.Log($"[Playable] Queue {context.Name} for {context.Player.Name}");
 
         if (priorizeNext)
         {
@@ -117,6 +112,7 @@ public class Board : MonoBehaviour
         IEnumerator PlayAndResume()
         {
             currentContext = ctx;
+            Debug.Log($"[Playable] Play {ctx.Name} for {ctx.Player.Name}");
             yield return new WaitForEndOfFrame();
             yield return ctx.Play();
             currentContext = null;
@@ -137,19 +133,8 @@ public class Board : MonoBehaviour
 
     void OnEvents()
     {
-        var triggers = Map.CheckTriggers();
-        if (triggers.Count > 0)
-        {
-            foreach (var trigger in triggers)
-                Playables.Enqueue(new TriggerContext(trigger.player, CurrentUnit, Map, this, trigger.trigger));
-        }
-        foreach (var player in CheckDeath(Map))
-        {
-            foreach (var unit in FindObjectsOfType<Unit>())
-                if (unit.Player == player)
-                    Destroy(unit);
-            Playables.InsertFirst(new TriggerContext(player, CurrentUnit, Map, this, player.Team.OnLooseTrigger));
-        }
+        Map.AddTriggers(this);
+        CheckDeath(Map);
 
         if (!Playables.Empty)
             CurrentStage = Stage.Play;
@@ -357,19 +342,13 @@ public class Board : MonoBehaviour
         Resume();
     }
 
-    List<PlayerInfo> deadPlayers = new List<PlayerInfo>();
-    List<PlayerInfo> CheckDeath(Map map)
+    void CheckDeath(Map map)
     {
-        var dead = new List<PlayerInfo>();
         foreach (var player in map.Players)
         {
-            if (!deadPlayers.Contains(player) && player.Team.LooseCondition.Check(map, player.Team))
-            {
-                dead.Add(player);
-                deadPlayers.Add(player);
-            }
+            if (player.Team.LooseCondition.Check(map, player.Team) && player.Team.OnLooseTrigger.ShouldTrigger(map, map.TileOf(player.Deck.Commander)))
+                Playables.InsertFirst(new TriggerContext(player.Deck.Commander, map, this, player.Team.OnLooseTrigger));
         }
-        return dead;
     }
 
     internal CardContext CreateFakeCardContext()

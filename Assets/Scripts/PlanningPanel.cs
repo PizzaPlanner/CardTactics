@@ -78,7 +78,8 @@ public class PlanningPanel : MonoBehaviour
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);
-                    map.ShowTileIndicators(validPatterns);
+                    map.ShowTileIndicators(validPatterns,
+                    (pattern) => pattern.Selectable ? TargetIndicator.Special : TargetIndicator.Invalid);
                 };
             }
             else

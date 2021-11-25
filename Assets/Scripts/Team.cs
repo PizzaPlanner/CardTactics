@@ -14,6 +14,7 @@ public class Team
     [SerializeField] PlayerInfo[] Players;
 
     public Color Color;
+    [Required]
     public LooseCondition LooseCondition;
     public Trigger OnLooseTrigger;
 

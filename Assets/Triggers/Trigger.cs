@@ -8,26 +8,29 @@ public interface IPlayable
 public class TriggerContext : IPlayableContext
 {
     public Trigger Target { get; private set; }
-    public TriggerContext(PlayerInfo player, Unit unit, Map map, Board board, Trigger trigger)
+    public TriggerContext(Unit unit, Map map, Board board, Trigger trigger)
     {
         Target = trigger;
-        board = this.board;
-        map = this.map;
-        unit = this.unit;
-        player = this.player;
+        this.board = board;
+        this.map = map;
+        this.unit = unit;
+        this.Player = unit.Player;
     }
 
     Board board;
     Map map;
     Unit unit;
-    PlayerInfo player;
+    public PlayerInfo Player { get; private set; }
+
+    public string Name => Target.GetType().Name;
+    public bool Queueable => unit != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
 
     public IEnumerator Play()
     {
         if (Target.Executed && !Target.CanTriggerMultipleTimes)
             yield break;
         Target.Executed = true;
-        yield return Target.Execute(board, map, unit, player);
+        yield return Target.Execute(board, map, unit, Player);
     }
 }
 

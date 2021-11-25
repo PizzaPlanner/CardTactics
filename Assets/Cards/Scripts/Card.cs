@@ -10,22 +10,29 @@ using UnityEngine.Serialization;
 public interface IPlayableContext
 {
     IEnumerator Play();
+    bool Queueable { get; }
+    string Name { get; }
+    PlayerInfo Player { get; }
 }
 
 public class CardContext : IPlayableContext
 {
     [ShowInInspector]
-    public Card Target { get; set; }
+    public Card Target { get; private set; }
     [ShowInInspector]
     public CardState State;
 
-    public Map Map;
+    public Map Map { get; private set; }
 
-    public Unit Unit;
+    public Unit Unit { get; private set; }
 
-    public int currentSkill;
+    public int currentSkill { get; private set; }
 
-    public List<SkillContext> PreviousContexts;
+    public List<SkillContext> PreviousContexts { get; private set; }
+
+    public bool Queueable => State == CardState.Unplayed;
+    public string Name => Target.Name;
+    public PlayerInfo Player => Unit.Player;
 
     public CardContext(Card card, Map map, Unit unit, CardState initialState)
     {
@@ -38,7 +45,6 @@ public class CardContext : IPlayableContext
 
     public IEnumerator Play()
     {
-        Debug.Log("[Card] Play " + Target.Name);
         State = CardState.Current;
         CardTooltip.Show(Target);
         currentSkill = 0;
@@ -48,7 +54,7 @@ public class CardContext : IPlayableContext
         for (currentSkill = 0; currentSkill < Target.Skills.Count(); currentSkill++)
         {
             var skill = Target.skills.ToArray()[currentSkill];
-            var ctx = new SkillContext(skill, this, Unit.Player, Map.TileOf(Unit));
+            var ctx = new SkillContext(skill, this, Player, Map.TileOf(Unit));
             yield return ctx.Play();
             PreviousContexts.Add(ctx);
         }
