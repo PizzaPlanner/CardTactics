@@ -60,6 +60,7 @@ public class CardContext : IPlayableContext
         }
         // yield return new WaitForSeconds(board.CardPlayPostTime);
         CardTooltip.Hide();
+        PreviousContexts.Clear();
         State = Target.StateOnPlayed;
         foreach (var passive in Target.passives)
             passive.OnCardRemoved(this);

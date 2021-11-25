@@ -11,8 +11,7 @@ public enum TargetIndicator
     Valid,
     Invalid,
     Hidden,
-    Origin,
-    Special
+    Preview
 }
 
 public enum Facing
@@ -287,19 +286,36 @@ public class Tile : MonoBehaviour
     void PaintIndicator(bool highlightPattern)
     {
         var color = Color.black;
+        var pirender = PathingIndicator.GetComponent<Renderer>();
+
+        // Plane
         switch (CurrentIndicator)
         {
-            case TargetIndicator.Invalid: color = new Color(1, 0, 0, 0.7f); break;
-            case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.7f); break;
-            case TargetIndicator.Origin: color = new Color(0.3f, .7f, .5f, 0.7f); break;
+            case TargetIndicator.Invalid: color = new Color(0.5f, 0, 0, 0.2f); break;
+            case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.5f); break;
             case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
-            case TargetIndicator.Special: color = new Color(0, 1, 0, 0); break;
+            case TargetIndicator.Preview: color = new Color(0.2f, 0.2f, 0.2f, 0.5f); break;
         }
         if (highlightPattern)
             color += new Color(0.2f, 0.2f, 0.2f);
-        PathingIndicator.GetComponent<Renderer>().material.color = color;
+        pirender.material.color = color;
+
+        // Borders
         foreach (var border in PathingIndicator.GetComponentsInChildren<Renderer>(true))
-            border.material.color = color * 0.8f;
+        {
+            if (border == pirender) continue;
+            color = Color.black;
+            switch (CurrentIndicator)
+            {
+                case TargetIndicator.Invalid: color = new Color(0.5f, 0, 0, 0.5f); break;
+                case TargetIndicator.Valid: color = new Color(0, 0, 1, 0.8f); break;
+                case TargetIndicator.Hidden: color = new Color(0, 0, 0, 0); break;
+                case TargetIndicator.Preview: color = new Color(0, 0, 0, 0.7f); break;
+            }
+            if (highlightPattern)
+                color += new Color(0.2f, 0.2f, 0.2f);
+            border.material.color = color;
+        }
     }
 
     public bool CanPlace(Unit unit)

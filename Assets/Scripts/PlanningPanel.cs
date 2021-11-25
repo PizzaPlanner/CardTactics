@@ -73,17 +73,18 @@ public class PlanningPanel : MonoBehaviour
             item.AddToClassList("carditem-selectable");
             item.Card = ctx.Target;
             var firstSkill = ctx.Target.skills.FirstOrDefault();
-            if (firstSkill != null && new SkillContext(firstSkill, ctx, player, map.TileOf(unit)).Preview(out var validPatterns))
+            if (firstSkill != null)
             {
+                new SkillContext(firstSkill, ctx, player, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);
-                    map.ShowTileIndicators(validPatterns,
-                    (pattern) => pattern.Selectable ? TargetIndicator.Special : TargetIndicator.Invalid);
+                    map.ShowTileIndicators(validPatterns, (pattern) => TargetIndicator.Preview);
+                    map.ShowTileIndicators(invalidPatterns, (pattern) => TargetIndicator.Invalid);
                 };
             }
             else
-                item.OnMouseEnter = () => CardTooltip.Show(ctx.Target);
+                item.OnMouseEnter = () => { CardTooltip.Show(ctx.Target); };
 
             item.OnMouseLeave = () => { CardTooltip.Hide(); map.HideTileSelectionPreview(); };
 

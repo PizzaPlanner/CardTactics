@@ -93,16 +93,14 @@ public class SkillContext : IPlayableContext
         OriginTile = sourceTile;
     }
 
-    public bool Preview(out IEnumerable<ITilePattern> validPatterns)
+    public bool Preview(out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
-        var map = Source.Map;
-        var player = Player;
         if (Target.CanUse(OriginTile, Source, out SourceTile)
-            && Target.Skill.Activate(this, out validPatterns))
-        {
+            && Target.Skill.Activate(this, out validPatterns, out invalidPatterns))
             return true;
-        }
+
         validPatterns = new ITilePattern[0];
+        invalidPatterns = new ITilePattern[0];
         return false;
     }
 
@@ -111,7 +109,7 @@ public class SkillContext : IPlayableContext
         var map = Source.Map;
         var player = Player;
         if (Target.CanUse(OriginTile, Source, out SourceTile)
-            && Target.Skill.Activate(this, out var validPatterns))
+            && Target.Skill.Activate(this, out var validPatterns, out var _))
         {
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color>");
             if (Target.Skill.AutoSelectOnOnePossibleTile && validPatterns.Count() == 1)
@@ -120,7 +118,7 @@ public class SkillContext : IPlayableContext
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
             else if (player.IsLocal)
                 map.ShowTileIndicators(validPatterns,
-                (pattern) => pattern.Selectable ? TargetIndicator.Valid : TargetIndicator.Invalid,
+                (pattern) => TargetIndicator.Valid,
                 (itp) => SkillTarget = itp);
             else
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
@@ -228,9 +226,10 @@ public abstract class Skill
     public abstract bool AutoSelectOnOnePossibleTile { get; }
 
 
-    public bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns)
+    public bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
         validPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && x.Selectable);
+        invalidPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
         var hasAny = validPatterns.Any();
         ctx.PlayProgress = hasAny ? Progress.Now : Progress.Failed;
         return hasAny;

@@ -31,6 +31,8 @@ MonoBehaviour:
     Resources:
     - Total: 1
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    - Total: 1
+      Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
   references:
     version: 2
     RefIds:
