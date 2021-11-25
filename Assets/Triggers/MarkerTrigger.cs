@@ -13,6 +13,6 @@ public class MarkerTrigger : Trigger
             map.ShowMarker(Marker);
         else
             map.HideMarker(Marker);
-        yield return new WaitForSeconds(1);
+        yield return GameSettings.Instance.MarkerDelayTime.Yield();
     }
 }

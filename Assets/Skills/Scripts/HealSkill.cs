@@ -29,8 +29,11 @@ public class HealSkill : Skill
     public override IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
-        ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
-        yield return new WaitForSeconds(0.5f);
+        if (GameSettings.Instance.UseAnimations)
+        {
+            ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
+            yield return new WaitForSeconds(0.5f);
+        }
         ctx.OutTile.Unit.Damage(-Heal, false);
     }
 }

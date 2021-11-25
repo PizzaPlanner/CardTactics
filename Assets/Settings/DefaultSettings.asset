@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a68eccd22dabe643aad6f2ab3e9a919, type: 3}
+  m_Name: DefaultSettings
+  m_EditorClassIdentifier: 
+  TileIndicatorColors:
+    keyData: 000000000100000003000000
+    valueData:
+    - {r: 0.0036044943, g: 0.21367273, b: 0.764151, a: 0.47058824}
+    - {r: 0.74509805, g: 0.07450981, b: 0.07450981, a: 0.39215687}
+    - {r: 0.254717, g: 0.25111252, b: 0.25111252, a: 0.39215687}
+  TileIndicatorHighlightColors:
+    keyData: 000000000100000003000000
+    valueData:
+    - {r: 0.0039215684, g: 0.7647059, b: 0.41160583, a: 0.5882353}
+    - {r: 0.74509805, g: 0.07450981, b: 0.07450981, a: 0.5882353}
+    - {r: 0.25490198, g: 0.2509804, b: 0.2509804, a: 0.39215687}
+  BorderIndicatorColors:
+    keyData: 000000000100000003000000
+    valueData:
+    - {r: 0.003921569, g: 0.21176472, b: 0.76470596, a: 1}
+    - {r: 0.745283, g: 0.0738252, b: 0.0738252, a: 1}
+    - {r: 0.11320752, g: 0.11320752, b: 0.11320752, a: 1}
+  BorderIndicatorHighlightColors:
+    keyData: 000000000100000003000000
+    valueData:
+    - {r: 0.003921569, g: 0.76470596, b: 0.41176474, a: 1}
+    - {r: 0.74509805, g: 0.07450981, b: 0.07450981, a: 1}
+    - {r: 0.1137255, g: 0.1137255, b: 0.1137255, a: 1}
+  UseAnimations: 1
+  SkipTimings: 1
+  BeforePlayDelay: 0.3
+  AfterPlayDelay: 0.2
+  TurnAnnouncerTime: 0.25
+  CardGainAnnouncerTime: 1.5
+  MarkerDelayTime: 1
+  RevealAreaPreDelay: 0.2
+  RevealAreaPostDelay: 0.4
+  EndGameDelay: 2

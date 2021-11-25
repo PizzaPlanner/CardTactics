@@ -8,8 +8,8 @@ public class RevealAreaTrigger : Trigger
 
     public override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return GameSettings.Instance.RevealAreaPreDelay.Yield();
         map.RevealArea(Area);
-        yield return new WaitForSeconds(0.5f);
+        yield return GameSettings.Instance.RevealAreaPostDelay.Yield();
     }
 }

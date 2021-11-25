@@ -175,6 +175,7 @@ public class Unit : MonoBehaviour
 
     public IEnumerator Move(Tile source, ITilePattern pattern, Tile target, RangeFilter type)
     {
+
         var tiles = pattern.Tiles.ToList();
         if (!tiles.Contains(source))
             tiles.Insert(0, source);
@@ -192,28 +193,31 @@ public class Unit : MonoBehaviour
             var from = tiles[current];
             var to = tiles[++current];
 
-            if (type == RangeFilter.Path)
+            if (GameSettings.Instance.UseAnimations)
             {
-                transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
-                while (Vector3.Distance(transform.position, to.UnitAnchor) > MOVEMENT_SPEED * Time.deltaTime)
+                if (type == RangeFilter.Path)
                 {
-                    transform.position += (to.UnitAnchor - transform.position).normalized * MOVEMENT_SPEED * Time.deltaTime;
-                    yield return new WaitForEndOfFrame();
+                    transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
+                    while (Vector3.Distance(transform.position, to.UnitAnchor) > MOVEMENT_SPEED * Time.deltaTime)
+                    {
+                        transform.position += (to.UnitAnchor - transform.position).normalized * MOVEMENT_SPEED * Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
                 }
-            }
-            else if (type == RangeFilter.Any)
-            {
-                while (transform.position.y < 5)
+                else if (type == RangeFilter.Any)
                 {
-                    transform.position += Vector3.up * 50 * Time.deltaTime;
-                    yield return new WaitForEndOfFrame();
-                }
-                transform.position = to.transform.position + Vector3.up * 5;
-                transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
-                while (transform.position.y > 0)
-                {
-                    transform.position -= Vector3.up * 50 * Time.deltaTime;
-                    yield return new WaitForEndOfFrame();
+                    while (transform.position.y < 5)
+                    {
+                        transform.position += Vector3.up * 50 * Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    transform.position = to.transform.position + Vector3.up * 5;
+                    transform.rotation = Quaternion.Euler(0, to.FaceToRot(Tile.GetFacing(from, to)), 0);
+                    while (transform.position.y > 0)
+                    {
+                        transform.position -= Vector3.up * 50 * Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
                 }
             }
             MoveInstant(from, to);

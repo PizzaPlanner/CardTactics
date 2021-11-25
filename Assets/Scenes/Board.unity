@@ -153,8 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88996214e8ffd6a4d8f930c4fd27bf00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardPlayPreTime: 0.3
-  CardPlayPostTime: 0.3
+  settings: {fileID: 11400000, guid: a34c42c9dcd84bd4bb62344b7185bca6, type: 2}
   OnNoCardsPlayed: {fileID: 11400000, guid: 8086d45c1fa73b44d9f9261d17bd7a77, type: 2}
 --- !u!4 &78512298
 Transform:
@@ -456,7 +455,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   readyBadgeAsset: {fileID: 9197481963319205126, guid: 1d599a6e9e01ecd4cbdd0045b1307771, type: 3}
-  turnAnnouncerTime: 1
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,7 +50,7 @@ public class CardContext : IPlayableContext
         currentSkill = 0;
         PreviousContexts = new List<SkillContext>();
         Target.OnPlay(this);
-        // yield return new WaitForSeconds(board.CardPlayPreTime);
+        yield return GameSettings.Instance.BeforePlayDelay.Yield();
         for (currentSkill = 0; currentSkill < Target.Skills.Count(); currentSkill++)
         {
             var skill = Target.skills.ToArray()[currentSkill];
@@ -58,7 +58,7 @@ public class CardContext : IPlayableContext
             yield return ctx.Play();
             PreviousContexts.Add(ctx);
         }
-        // yield return new WaitForSeconds(board.CardPlayPostTime);
+        yield return GameSettings.Instance.AfterPlayDelay.Yield();
         CardTooltip.Hide();
         PreviousContexts.Clear();
         State = Target.StateOnPlayed;

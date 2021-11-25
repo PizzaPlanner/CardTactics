@@ -33,7 +33,7 @@ public class GainCardSkill : Skill
     {
         yield return new WaitForEndOfFrame();
         CardTooltip.Show(cardPrefab);
-        yield return new WaitForSeconds(2);
+        yield return GameSettings.Instance.CardGainAnnouncerTime.Yield();
         CardTooltip.Hide();
     }
 

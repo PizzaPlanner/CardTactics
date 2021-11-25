@@ -33,18 +33,21 @@ public class AttackSkill : Skill
         Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
         Animator targetAnimator = ctx.OutTile.Unit.GetComponentInChildren<Animator>();
         ctx.SourceTile.Face(Tile.GetFacing(ctx.SourceTile, ctx.OutTile));
-        if (sourceAnimator != null)
+        if (GameSettings.Instance.UseAnimations)
         {
-            sourceAnimator.SetInteger("Action", 1);
-            sourceAnimator.SetTrigger("AttackTrigger");
-        }
-        if (Sound != null)
-            ctx.SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
-        yield return new WaitForSeconds(0.3f);
-        if (targetAnimator != null)
-        {
-            targetAnimator.SetInteger("Action", 1);
-            targetAnimator.SetTrigger("GetHitTrigger");
+            if (sourceAnimator != null)
+            {
+                sourceAnimator.SetInteger("Action", 1);
+                sourceAnimator.SetTrigger("AttackTrigger");
+            }
+            if (Sound != null)
+                ctx.SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
+            yield return new WaitForSeconds(0.3f);
+            if (targetAnimator != null)
+            {
+                targetAnimator.SetInteger("Action", 1);
+                targetAnimator.SetTrigger("GetHitTrigger");
+            }
         }
         ctx.OutTile.Unit.Damage(Damage, false);
         if (ctx.OutTile.Unit.LifePreview <= 0)

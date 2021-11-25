@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class PlayableQueue
 {
@@ -66,8 +67,7 @@ public class Board : MonoBehaviour
 
     }
 
-    public float CardPlayPreTime;
-    public float CardPlayPostTime;
+    [SerializeField] GameSettings settings;
 
     [ShowInInspector]
     bool WaitingForAction;
@@ -94,6 +94,7 @@ public class Board : MonoBehaviour
         CurrentStage = Stage.Setup;
         playableUnits = new Queue<Unit>();
         this.lobby = lobby;
+        settings.Load();
         Map = mapInstance;
         Map.Load(this);
         WaitingForAction = true;

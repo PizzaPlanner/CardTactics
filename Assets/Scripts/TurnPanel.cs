@@ -10,8 +10,6 @@ public class TurnPanel : MonoBehaviour
     VisualElement readyPanel;
     VisualElement turnAnnouncer;
 
-    [SerializeField] float turnAnnouncerTime;
-
     void Awake()
     {
         readyPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("ReadyPanel");
@@ -57,7 +55,7 @@ public class TurnPanel : MonoBehaviour
     {
         turnAnnouncer.Q<Label>().text = $"Round {round}";
         turnAnnouncer.style.display = DisplayStyle.Flex;
-        yield return new WaitForSeconds(turnAnnouncerTime);
+        yield return GameSettings.Instance.TurnAnnouncerTime.Yield();
         turnAnnouncer.style.display = DisplayStyle.None;
         readyPanel.Query<PlayerInfoBadge>().ForEach(x =>
         {
@@ -81,7 +79,7 @@ public class TurnPanel : MonoBehaviour
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.AddToClassList("unit-badge--current"));
         turnAnnouncer.Q<Label>().text = $"Turn of <color=#{ColorUtility.ToHtmlStringRGB(unit.Player.Team.Color)}>{unit.Name}</color>";
         turnAnnouncer.style.display = DisplayStyle.Flex;
-        yield return new WaitForSeconds(turnAnnouncerTime);
+        yield return GameSettings.Instance.TurnAnnouncerTime.Yield();
         turnAnnouncer.style.display = DisplayStyle.None;
         onComplete?.Invoke();
     }
