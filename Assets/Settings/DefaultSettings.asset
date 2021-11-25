@@ -37,11 +37,11 @@ MonoBehaviour:
     - {r: 0.74509805, g: 0.07450981, b: 0.07450981, a: 1}
     - {r: 0.1137255, g: 0.1137255, b: 0.1137255, a: 1}
   UseAnimations: 1
-  SkipTimings: 1
+  SkipTimings: 0
   BeforePlayDelay: 0.3
-  AfterPlayDelay: 0.2
-  TurnAnnouncerTime: 0.25
-  CardGainAnnouncerTime: 1.5
+  AfterPlayDelay: 0.7
+  TurnAnnouncerTime: 0.75
+  CardGainAnnouncerTime: 2
   MarkerDelayTime: 1
   RevealAreaPreDelay: 0.2
   RevealAreaPostDelay: 0.4

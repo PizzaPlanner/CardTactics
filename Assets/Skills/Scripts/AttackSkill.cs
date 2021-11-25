@@ -49,10 +49,6 @@ public class AttackSkill : Skill
                 targetAnimator.SetTrigger("GetHitTrigger");
             }
         }
-        ctx.OutTile.Unit.Damage(Damage, false);
-        if (ctx.OutTile.Unit.LifePreview <= 0)
-        {
-            yield return new WaitUntil(() => ctx.OutTile.Unit == null);
-        }
+        ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
     }
 }

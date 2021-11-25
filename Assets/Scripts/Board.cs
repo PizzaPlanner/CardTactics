@@ -69,16 +69,18 @@ public class Board : MonoBehaviour
 
     [SerializeField] GameSettings settings;
 
-    [ShowInInspector]
+    [Sirenix.OdinInspector.ShowInInspector]
     bool WaitingForAction;
 
-    [ShowInInspector]
-    public Stage CurrentStage { get; private set; }
+    [Sirenix.OdinInspector.ShowInInspector]
+    public Stage CurrentStage { get => currentStage; private set => currentStage = value; }
+
+    Stage currentStage;
 
     TurnPanel turnPanel;
     Map Map;
 
-    [ShowInInspector]
+    [Sirenix.OdinInspector.ShowInInspector]
     public PlayableQueue Playables { get; } = new();
 
     IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.IsAlive);
@@ -157,10 +159,7 @@ public class Board : MonoBehaviour
     void OnEnd()
     {
         WaitingForAction = true;
-        var survivors = Map.Players.Where(x => !x.Team.LooseCondition.Check(Map, x.Team)).Select(x => x.Team).Distinct();
-        foreach (var player in Map.Players.Where(x => !x.IsAI && survivors.Contains(x.Team) && survivors.Count() == 1))
-            lobby.Award($"Victory:{Map.name}", player);
-        lobby.Award($"Finished:{Map.name}");
+        Debug.Log("Game ended.");
         lobby.Return();
     }
 
@@ -345,10 +344,14 @@ public class Board : MonoBehaviour
 
     void CheckDeath(Map map)
     {
-        foreach (var player in map.Players)
+        foreach (var team in map.Teams)
         {
-            if (player.Team.LooseCondition.Check(map, player.Team) && player.Team.OnLooseTrigger.ShouldTrigger(map, map.TileOf(player.Deck.Commander)))
-                Playables.InsertFirst(new TriggerContext(player.Deck.Commander, map, this, player.Team.OnLooseTrigger));
+            foreach (var condition in team.Conditions.ToArray())
+                if (condition.Check(map, team))
+                {
+                    team.Conditions.Remove(condition);
+                    Playables.InsertFirst(new TeamTriggerContext(team, map, this, condition.Trigger));
+                }
         }
     }
 

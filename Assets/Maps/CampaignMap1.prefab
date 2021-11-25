@@ -355,20 +355,25 @@ MonoBehaviour:
     - {fileID: 4691292391125025511}
     - {fileID: 3299027930295852002}
     Color: {r: 0.33241364, g: 0.59154505, b: 0.8490566, a: 1}
-    LooseCondition: {fileID: 11400000, guid: 9d1623aa5ba4ddc45af7bc2c1d228b2b, type: 2}
-    OnLooseTrigger: {fileID: 3027569407111047263}
+    Conditions: []
   - CopyPerSpawn: 1
     PlayerTemplate: {fileID: 6333284322881996931}
     Players: []
     Color: {r: 0.9245283, g: 0.3009078, b: 0.3009078, a: 1}
-    LooseCondition: {fileID: 11400000, guid: 9d1623aa5ba4ddc45af7bc2c1d228b2b, type: 2}
-    OnLooseTrigger: {fileID: 6563728267220495563}
+    Conditions:
+    - rid: 1776283593267217075
   - CopyPerSpawn: 1
     PlayerTemplate: {fileID: 3285135886878221959}
     Players: []
     Color: {r: 0.9056604, g: 0.64859784, b: 0.24350302, a: 1}
-    LooseCondition: {fileID: 11400000, guid: 9d1623aa5ba4ddc45af7bc2c1d228b2b, type: 2}
-    OnLooseTrigger: {fileID: 3027569407111047263}
+    Conditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 1776283593267217075
+      type: {class: TeamConditionEveryoneDead, ns: , asm: Assembly-CSharp}
+      data:
+        Trigger: {fileID: 4663176691770104794}
 --- !u!114 &4933829720774767360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -730,7 +735,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3058256126821480167}
-  - component: {fileID: 6563728267220495563}
+  - component: {fileID: 4663176691770104794}
   m_Layer: 0
   m_Name: Reveal Area 1
   m_TagString: Untagged
@@ -753,7 +758,7 @@ Transform:
   m_Father: {fileID: 8563675027570633795}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6563728267220495563
+--- !u!114 &4663176691770104794
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -762,10 +767,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4432171285529387068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe497c8b09f06d641a8560fffd7a0052, type: 3}
+  m_Script: {fileID: 11500000, guid: aa9b3da8057c0894f906290fd08c5b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
+  Executed: 0
   Area: 1
 --- !u!1 &4451599481478484436
 GameObject:
@@ -961,10 +967,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5724480100014333757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 883dae40175247b4eab51d9a1ab30ffe, type: 3}
+  m_Script: {fileID: 11500000, guid: 60b9a38b5f477c5429730c7da7289926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
+  Executed: 0
 --- !u!114 &2272655225775057495
 MonoBehaviour:
   m_ObjectHideFlags: 0

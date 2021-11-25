@@ -43,7 +43,7 @@ public class UnitStatusBar : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         if (bar != null && bar.gameObject != null)
             GameObject.Destroy(bar.gameObject);

@@ -34,6 +34,6 @@ public class HealSkill : Skill
             ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
             yield return new WaitForSeconds(0.5f);
         }
-        ctx.OutTile.Unit.Damage(-Heal, false);
+        ctx.OutTile.Unit.Damage(-Heal, ctx.OriginTile.Unit);
     }
 }

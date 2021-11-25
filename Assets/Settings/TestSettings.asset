@@ -12,3 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a68eccd22dabe643aad6f2ab3e9a919, type: 3}
   m_Name: TestSettings
   m_EditorClassIdentifier: 
+  TileIndicatorColors:
+    keyData: 00000000
+    valueData:
+    - {r: 1, g: 0.924858, b: 0, a: 0.5176471}
+  TileIndicatorHighlightColors:
+    keyData: 00000000
+    valueData:
+    - {r: 1, g: 0.92549026, b: 0, a: 0.8235294}
+  BorderIndicatorColors:
+    keyData: 
+    valueData: []
+  BorderIndicatorHighlightColors:
+    keyData: 
+    valueData: []
+  UseAnimations: 0
+  SkipTimings: 1
+  BeforePlayDelay: 0
+  AfterPlayDelay: 0
+  TurnAnnouncerTime: 0
+  CardGainAnnouncerTime: 0
+  MarkerDelayTime: 0
+  RevealAreaPreDelay: 0
+  RevealAreaPostDelay: 0
+  EndGameDelay: 0

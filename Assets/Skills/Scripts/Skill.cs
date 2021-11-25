@@ -67,14 +67,14 @@ public class SkillContext : IPlayableContext
     public ITilePattern SkillTarget { get; private set; }
     public Tile OutTile;
     public Tile SourceTile;
-    Tile OriginTile;
+    public Tile OriginTile { get; private set; }
     public CardContext Source { get; private set; }
     public bool WantSkillSkip { get; private set; }
     public bool WantComplete { get; private set; }
     public Skill.Progress PlayProgress;
     public PlayerInfo Player { get; private set; }
 
-    public string Name => Target.GetType().Name;
+    public string Name => Target.Skill.GetType().Name;
     public bool Queueable => true;
 
     public SkillContext(SkillInfo target, CardContext source, PlayerInfo player, Tile sourceTile)

@@ -14,9 +14,7 @@ public class Team
     [SerializeField] PlayerInfo[] Players;
 
     public Color Color;
-    [Required]
-    public LooseCondition LooseCondition;
-    public Trigger OnLooseTrigger;
+    [SerializeReference] public List<TeamCondition> Conditions;
 
     public IEnumerable<PlayerInfo> RegisteredPlayers => registeredPlayers;
     List<PlayerInfo> registeredPlayers;

@@ -106,6 +106,7 @@ public class Unit : MonoBehaviour
     public UnitFilter Type;
     public ResourceInfo Resources;
 
+    public bool IsDead => Life <= 0;
     public float Life { get; private set; }
     public float LifePreview { get; private set; }
     public PlayerInfo Player { get; set; }
@@ -113,41 +114,48 @@ public class Unit : MonoBehaviour
     static int spawnCounter;
     int counter;
 
-    public void Damage(float dmg, bool isPreview = false)
+    public void Damage(float dmg, Unit source)
     {
-        if (!isPreview)
+
+        Life -= dmg;
+        if (Life > MaxLife)
+            Life = MaxLife;
+        LifePreview = Life;
+        OnLifeChange?.Invoke(Life, MaxLife);
+        if (IsDead)
         {
-            Life -= dmg;
-            if (Life > MaxLife)
-                Life = MaxLife;
-            LifePreview = Life;
-            OnLifeChange?.Invoke(Life, MaxLife);
-            if (Life <= 0)
-            {
-                Destroy(gameObject);
-            }
+            OnDeath(source);
         }
-        else
+    }
+
+    void OnDeath(Unit killer)
+    {
+        Debug.Log($"[Unit] {name} died!");
+        gameObject.SetActive(false);
+        var map = FindObjectOfType<Map>();
+        var board = FindObjectOfType<Board>();
+        if (Player != null)
         {
-            LifePreview -= dmg;
-            if (LifePreview > MaxLife)
-                LifePreview = MaxLife;
+            FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
+            if (Player.OnDeadKiller != null && killer != null)
+                board.Playables.InsertFirst(new TriggerContext(killer, map, board, Player.OnDeadKiller));
+            if (Player.OnDeadSelf != null)
+                board.Playables.InsertFirst(new TriggerContext(this, map, board, Player.OnDeadSelf));
+            FindObjectOfType<Map>().TileOf(this).Unit = null;
         }
     }
 
     public Action<float, float> OnLifeChange;
 
-    void OnDestroy()
-    {
-        if (Player != null)
-            FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
-    }
-
-    void Start()
+    void Awake()
     {
         Life = MaxLife;
         LifePreview = MaxLife;
         counter = spawnCounter++;
+    }
+
+    void Start()
+    {
         if (Player != null)
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
         OnLifeChange?.Invoke(Life, MaxLife);

@@ -31,13 +31,13 @@ public class PlayerInfo : MonoBehaviour
     public SlotType Slot => slot;
 
     [ShowInInspector]
-    public bool IsAlive => Team != null && Deck.Commander != null;
+    public bool IsAlive => Team != null && Deck.Commander != null && !Deck.Commander.IsDead;
 
     [NonSerialized] public bool IsLocal;
 
     [SerializeField] SlotType slot;
 
-    public Trigger OnDead;
+    public Trigger OnDeadSelf, OnDeadKiller;
 
     public bool Initialize(Lobby lobby, Team team, Map map)
     {
