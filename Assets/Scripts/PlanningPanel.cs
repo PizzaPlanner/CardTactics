@@ -47,9 +47,9 @@ public class PlanningPanel : MonoBehaviour
     Action<CardContext> onPlayWrapper;
     Action onEndTurnWrapper;
 
-    public void Show(PlayerInfo player, Unit unit, Action<CardContext> onPlay, Action onEndTurn)
+    public void Show(Unit unit, Action<CardContext> onPlay, Action onEndTurn)
     {
-        var deck = player.Deck;
+        if (!unit.TryGetComponent<IngameDeck>(out var deck)) return;
 
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
@@ -75,7 +75,7 @@ public class PlanningPanel : MonoBehaviour
             var firstSkill = ctx.Target.skills.FirstOrDefault();
             if (firstSkill != null)
             {
-                new SkillContext(firstSkill, ctx, player, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
+                new SkillContext(firstSkill, ctx, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);

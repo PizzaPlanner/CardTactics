@@ -99,7 +99,7 @@ public class Unit : MonoBehaviour
 {
     public const float MOVEMENT_SPEED = 8f;
 
-    public string Name;
+    public string Name => Player != null ? $"<color=#{ColorUtility.ToHtmlStringRGB(Player.Team.Color)}>{name}</color>" : name;
     public Sprite Icon;
     public int Speed;
     public float MaxLife;
@@ -109,7 +109,7 @@ public class Unit : MonoBehaviour
     public bool IsDead => Life <= 0;
     public float Life { get; private set; }
     public float LifePreview { get; private set; }
-    public PlayerInfo Player { get; set; }
+    public PlayerSlot Player { get; set; }
 
     static int spawnCounter;
     int counter;

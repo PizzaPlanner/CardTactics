@@ -25,9 +25,9 @@ public class MoveSkill : Skill
             {
                 MinRange = 1,
                 MaxRange = Range
-            }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
+            }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
         else
-            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
+            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)

@@ -24,7 +24,7 @@ public class AttackSkill : Skill
         {
             MinRange = MinRange,
             MaxRange = MaxRange
-        }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, Filter);
+        }.Patterns(ctx.Source.Map, ctx.SourceTile, Filter);
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)

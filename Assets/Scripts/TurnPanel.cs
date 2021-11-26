@@ -28,7 +28,7 @@ public class TurnPanel : MonoBehaviour
         var player = unit.Player;
         badge.RegisterCallback<MouseDownEvent>((_) =>
         {
-            GameObject.FindObjectOfType<PlanningPanel>(false).Show(player, unit, null, null);
+            GameObject.FindObjectOfType<PlanningPanel>(false).Show(unit, null, null);
         });
 
         badge.UnitItem.Unit = unit;

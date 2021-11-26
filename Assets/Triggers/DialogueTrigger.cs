@@ -9,17 +9,16 @@ public class DialogueTrigger : Trigger
     class DialogueLine
     {
         public string Text;
-        public int Speaker;
     }
 
     [SerializeField] DialogueLine[] Lines;
 
-    public override IEnumerator Execute(Board board, Map map, Unit _, PlayerInfo player)
+    public override IEnumerator Execute(Board board, Map map, Unit unit)
     {
         foreach (var line in Lines)
         {
             var ui = GameObject.FindObjectOfType<DialogueUI>(true);
-            yield return ui.Set(map.Players.ToArray()[line.Speaker].Deck.Commander, line.Text);
+            yield return ui.Set(unit, line.Text);
         }
     }
 }

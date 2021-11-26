@@ -21,7 +21,7 @@ public class SelectSkill : Skill
     protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange }))
-            .Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, TargetFilter);
+            .Patterns(ctx.Source.Map, ctx.SourceTile, TargetFilter);
         if (selectAtRandom)
         {
             if (randomOnlySelectableTiles)

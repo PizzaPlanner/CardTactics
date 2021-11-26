@@ -19,7 +19,7 @@ public class DashSkill : Skill
         filter.Range = RangeType;
         if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
+        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)

@@ -12,7 +12,7 @@ public interface IPlayableContext
     IEnumerator Play();
     bool Queueable { get; }
     string Name { get; }
-    PlayerInfo Player { get; }
+    Unit Unit { get; }
 }
 
 public class CardContext : IPlayableContext
@@ -32,7 +32,6 @@ public class CardContext : IPlayableContext
 
     public bool Queueable => State == CardState.Unplayed;
     public string Name => Target.Name;
-    public PlayerInfo Player => Unit.Player;
 
     public CardContext(Card card, Map map, Unit unit, CardState initialState)
     {
@@ -54,7 +53,7 @@ public class CardContext : IPlayableContext
         for (currentSkill = 0; currentSkill < Target.Skills.Count(); currentSkill++)
         {
             var skill = Target.skills.ToArray()[currentSkill];
-            var ctx = new SkillContext(skill, this, Player, Map.TileOf(Unit));
+            var ctx = new SkillContext(skill, this, Map.TileOf(Unit));
             yield return ctx.Play();
             PreviousContexts.Add(ctx);
         }

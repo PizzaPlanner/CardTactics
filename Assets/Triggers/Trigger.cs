@@ -13,24 +13,22 @@ public class TriggerContext : IPlayableContext
         Target = trigger;
         this.board = board;
         this.map = map;
-        this.unit = unit;
-        this.Player = unit.Player;
+        this.Unit = unit;
     }
 
     Board board;
     Map map;
-    Unit unit;
-    public PlayerInfo Player { get; private set; }
+    public Unit Unit { get; private set; }
 
     public string Name => Target.GetType().Name;
-    public bool Queueable => unit != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
+    public bool Queueable => Unit != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
 
     public IEnumerator Play()
     {
         if (Target.Executed && !Target.CanTriggerMultipleTimes)
             yield break;
         Target.Executed = true;
-        yield return Target.Execute(board, map, unit, Player);
+        yield return Target.Execute(board, map, Unit);
     }
 }
 
@@ -43,5 +41,5 @@ public abstract class Trigger : MonoBehaviour, IPlayable
 
     public bool Executed;
 
-    public abstract IEnumerator Execute(Board board, Map map, Unit unit, PlayerInfo player);
+    public abstract IEnumerator Execute(Board board, Map map, Unit unit);
 }

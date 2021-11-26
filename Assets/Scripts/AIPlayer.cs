@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AIPlayer
 {
-    public PlayerInfo Player;
+    public PlayerSlot Player;
     public Card[] PlanTurn(Map map)
     {
         var selfTiles = map.GetPlayerTiles(Player);

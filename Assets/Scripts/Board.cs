@@ -10,7 +10,7 @@ public class PlayableQueue
 {
     public struct PlayableWithInfo
     {
-        public PlayerInfo Player;
+        public PlayerSlot Player;
         public Unit Unit;
         public IPlayable Playable;
     }
@@ -33,10 +33,10 @@ public class PlayableQueue
     {
         if (!context.Queueable)
         {
-            Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {context.Player.Name}");
+            Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {context.Unit.Name}", context.Unit);
             return;
         }
-        Debug.Log($"[Playable] Queue {context.Name} for {context.Player.Name}");
+        Debug.Log($"[Playable] Queue {context.Name} for {context.Unit.Name}", context.Unit);
 
         if (priorizeNext)
         {
@@ -83,7 +83,7 @@ public class Board : MonoBehaviour
     [Sirenix.OdinInspector.ShowInInspector]
     public PlayableQueue Playables { get; } = new();
 
-    IEnumerable<PlayerInfo> RegisteredPlayers => Map.Players.Where(x => x.IsAlive);
+    IEnumerable<PlayerSlot> RegisteredPlayers => FindObjectsOfType<PlayerSlot>().Where(x => x.IsAlive);
 
     [SerializeField]
     Card OnNoCardsPlayed;
@@ -115,7 +115,7 @@ public class Board : MonoBehaviour
         IEnumerator PlayAndResume()
         {
             currentContext = ctx;
-            Debug.Log($"[Playable] Play {ctx.Name} for {ctx.Player.Name}");
+            Debug.Log($"[Playable] Play {ctx.Name} for {ctx.Unit.Name}", ctx.Unit);
             yield return new WaitForEndOfFrame();
             yield return ctx.Play();
             currentContext = null;
@@ -169,19 +169,15 @@ public class Board : MonoBehaviour
     int round;
     void OnStartRound()
     {
-        foreach (var player in RegisteredPlayers)
-        {
-            player.Deck.OnRoundEnd();
-            player.Deck.OnRoundStart();
-        }
-
         playableUnits.Clear();
         var playables = new List<Unit>();
         foreach (var unit in FindObjectsOfType<Unit>())
-            if (unit.Player != null && RegisteredPlayers.Contains(unit.Player))
+            if (unit.Player != null && unit.TryGetComponent<IngameDeck>(out var deck))
             {
+                deck.OnRoundEnd();
                 unit.Resources.Refresh();
                 playables.Add(unit);
+                deck.OnRoundStart();
             }
         playables.Sort((x, y) => Unit.CompareSpeed(x, y));
         foreach (var item in playables)
@@ -203,7 +199,7 @@ public class Board : MonoBehaviour
         turnPanel.OnTurnEnd(CurrentUnit);
         Debug.Log($"[Board] End Turn of {CurrentUnit.Name}");
         if (CurrentUnit.Player != null)
-            CurrentUnit.Player.Deck.OnTurnEnd();
+            CurrentUnit.GetComponent<IngameDeck>().OnTurnEnd();
         CurrentUnit = null;
         if (Playables.Empty)
             CurrentStage = Stage.Events;
@@ -219,7 +215,7 @@ public class Board : MonoBehaviour
         WaitingForAction = true;
         StartCoroutine(turnPanel.OnTurnStart(CurrentUnit, onComplete: Resume));
         if (CurrentUnit.Player != null)
-            CurrentUnit.Player.Deck.OnTurnStart();
+            CurrentUnit.GetComponent<IngameDeck>().OnTurnStart();
         if (Playables.Empty)
             CurrentStage = Stage.Plan;
         else
@@ -300,28 +296,42 @@ public class Board : MonoBehaviour
             Camera.main.orthographicSize += scroll;
     }
 
-    void AIPrepare(PlayerInfo aiPlayer)
+    void AIPrepare(PlayerSlot aiPlayer)
     {
-        if (aiPlayer.Deck.Playable.Count() > 0)
+        var deck = aiPlayer.Unit.GetComponent<IngameDeck>();
+        if (deck == null)
         {
-            var rnd = Random.Range(0, aiPlayer.Deck.Playable.Count());
-            SetPlayerReady(aiPlayer, aiPlayer.Deck.Playable.ToArray()[rnd]);
+            SetPlayerDone(aiPlayer);
+            return;
+        }
+
+        if (deck.Playable.Count() > 0)
+        {
+            var rnd = Random.Range(0, deck.Playable.Count());
+            SetPlayerReady(aiPlayer, deck.Playable.ToArray()[rnd]);
         }
         else
             SetPlayerDone(aiPlayer);
     }
 
-    void PlayerPrepare(PlayerInfo player)
+    void PlayerPrepare(PlayerSlot player)
     {
-        if (player.Deck.Playable.Count() > 0)
-            GameObject.FindObjectOfType<PlanningPanel>(true).Show(player, CurrentUnit,
+        var deck = player.Unit.GetComponent<IngameDeck>();
+        if (deck == null)
+        {
+            SetPlayerDone(player);
+            return;
+        }
+
+        if (deck.Playable.Count() > 0)
+            GameObject.FindObjectOfType<PlanningPanel>(true).Show(CurrentUnit,
             onPlay: (card) => SetPlayerReady(player, card),
             onEndTurn: () => SetPlayerDone(player));
         else
             SetPlayerDone(player);
     }
 
-    public void SetPlayerDone(PlayerInfo player)
+    public void SetPlayerDone(PlayerSlot player)
     {
         if (cardsPlayedForCurrentUnit == 0)
         {
@@ -334,7 +344,7 @@ public class Board : MonoBehaviour
         Resume();
     }
 
-    public void SetPlayerReady(PlayerInfo player, CardContext card)
+    public void SetPlayerReady(PlayerSlot player, CardContext card)
     {
         Playables.Enqueue(card);
         cardsPlayedForCurrentUnit++;

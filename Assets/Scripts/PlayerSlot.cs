@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerInfo : MonoBehaviour
+public class PlayerSlot : MonoBehaviour
 {
     public enum SlotType
     {
@@ -17,21 +17,14 @@ public class PlayerInfo : MonoBehaviour
     [HideIf("Deck")]
     [SerializeField] Deck deck;
 
-    [ShowInInspector]
-    [ReadOnly]
-    [ShowIf("Deck")]
-    [NonSerialized]
-    public IngameDeck Deck;
-
-    [NonSerialized]
-    public Team Team;
+    public Unit Unit { get; private set; }
+    public Team Team { get; private set; }
     public bool IsAI => Slot == SlotType.AI;
-    public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Team.Color)}>{Deck.Commander.Name}</color>";
 
     public SlotType Slot => slot;
 
     [ShowInInspector]
-    public bool IsAlive => Team != null && Deck.Commander != null && !Deck.Commander.IsDead;
+    public bool IsAlive => Team != null && Unit != null && !Unit.IsDead;
 
     [NonSerialized] public bool IsLocal;
 
@@ -53,10 +46,10 @@ public class PlayerInfo : MonoBehaviour
         if (deck == null && lobby.DeckOf(this) == null) return false;
 
         if (deck == null)
-            Deck = new IngameDeck(lobby.DeckOf(this), map);
-        else if (Deck == null)
-            Deck = new IngameDeck(deck, map);
-
+            Unit = lobby.DeckOf(this).Create(map);
+        else
+            Unit = deck.Create(map);
+        Unit.Player = this;
         Team = team;
         return true;
     }

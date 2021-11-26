@@ -47,7 +47,7 @@ public class Lobby
         public Deck Deck;
         public bool IsLocal;
         public List<string> Achievements;
-        public PlayerInfo Player;
+        public PlayerSlot Player;
     }
 
     public HumanPlayer LocalPlayer => Players.First(x => x.IsLocal);
@@ -77,7 +77,7 @@ public class Lobby
         achievements.Add(achievement);
     }
 
-    public void Award(string achievement, PlayerInfo player)
+    public void Award(string achievement, PlayerSlot player)
     {
         var p = Players.FirstOrDefault(x => x.Player == player);
         if (p == null)
@@ -88,7 +88,7 @@ public class Lobby
         p.Achievements.Add(achievement);
     }
 
-    internal bool AssignPlayer(PlayerInfo playerInfo)
+    internal bool AssignPlayer(PlayerSlot playerInfo)
     {
         var p = Players.FirstOrDefault(x => x.Player == null);
         if (p == null) return false;
@@ -97,7 +97,7 @@ public class Lobby
         return true;
     }
 
-    internal Deck DeckOf(PlayerInfo playerInfo)
+    internal Deck DeckOf(PlayerSlot playerInfo)
     {
         return Players.FirstOrDefault(x => x.Player == playerInfo)?.Deck;
     }

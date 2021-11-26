@@ -20,7 +20,7 @@ public class PushSkill : Skill
         {
             MinRange = 1,
             MaxRange = MaxRange
-        }.Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, filter);
+        }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)

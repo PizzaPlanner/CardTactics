@@ -11,13 +11,13 @@ public class TeamTriggerContext : IPlayableContext
         this.board = board;
         this.map = map;
         this.team = team;
-        Player = team.RegisteredPlayers.First();
+        Unit = team.RegisteredPlayers.First().Unit;
     }
 
     Board board;
     Map map;
     Team team;
-    public PlayerInfo Player { get; private set; }
+    public Unit Unit { get; private set; }
 
     public string Name => Target.GetType().Name;
     public bool Queueable => team != null && (Target.CanTriggerMultipleTimes || !Target.Executed);

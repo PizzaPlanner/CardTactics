@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Grid))]
 public class Map : MonoBehaviour
 {
-    public IEnumerable<PlayerInfo> Players => Teams.SelectMany(x => x.RegisteredPlayers);
+    public IEnumerable<PlayerSlot> Players => Teams.SelectMany(x => x.RegisteredPlayers);
     public int MinPartySize => Teams.Sum(x => x.MinPlayers);
     public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
 
@@ -132,14 +132,15 @@ public class Map : MonoBehaviour
         }
     }
 
-    public Tile[] GetSpawnTiles(SelectionFilter filter, PlayerInfo player)
+    public Tile[] GetSpawnTiles(SelectionFilter filter, Team team)
     {
+        Debug.Log("Get spawn tiles for " + team);
         List<Tile> valid = new List<Tile>();
         foreach (var owner in GetComponentsInChildren<Owner>())
         {
-            if (Teams[owner.Id] != player.Team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
+            if (Teams[owner.Id] != team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
             var tile = owner.GetComponent<Tile>();
-            if (TileMatches(tile, filter, player))
+            if (TileMatches(tile, filter, null))
                 valid.Add(tile);
         }
         return valid.ToArray();
@@ -157,7 +158,7 @@ public class Map : MonoBehaviour
         }
     }
 
-    public Tile[] GetPlayerTiles(PlayerInfo player)
+    public Tile[] GetPlayerTiles(PlayerSlot player)
     {
         List<Tile> valid = new List<Tile>();
         foreach (var tile in Tiles)
@@ -168,7 +169,7 @@ public class Map : MonoBehaviour
         return valid.ToArray();
     }
 
-    public bool TileMatches(Tile tile, SelectionFilter filter, PlayerInfo player)
+    public bool TileMatches(Tile tile, SelectionFilter filter, Unit source)
     {
         if (!tile.gameObject.activeSelf)
             return false;
@@ -177,14 +178,12 @@ public class Map : MonoBehaviour
         {
             var isObstacle = tile.HasObstacle || tile.Unit.Player == null;
             validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;
-            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == player;
-            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != player && tile.Unit.Player.Team == player.Team;
-            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && (tile.Unit.Player.Team != player.Team);
+            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == source.Player;
+            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != source.Player && tile.Unit.Player.Team == source.Player.Team;
+            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && (tile.Unit.Player.Team != source.Player.Team);
 
             validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }
-
-        // tile.SetIndicator(validTarget ? TargetIndicator.Valid : TargetIndicator.Invalid);
         return validTarget;
     }
 

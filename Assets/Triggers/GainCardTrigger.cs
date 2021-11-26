@@ -8,9 +8,9 @@ public class GainCardTrigger : Trigger
 {
     [SerializeField] GainCardSkill Skill;
 
-    public override IEnumerator Execute(Board board, Map map, Unit unit, PlayerInfo player)
+    public override IEnumerator Execute(Board board, Map map, Unit unit)
     {
-        var ctx = new SkillContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, player, map.TileOf(unit));
+        var ctx = new SkillContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, unit, map.TileOf(unit));
         yield return ctx.Play();
     }
 }

@@ -72,25 +72,25 @@ public class SkillContext : IPlayableContext
     public bool WantSkillSkip { get; private set; }
     public bool WantComplete { get; private set; }
     public Skill.Progress PlayProgress;
-    public PlayerInfo Player { get; private set; }
+    public Unit Unit { get; private set; }
 
     public string Name => Target.Skill.GetType().Name;
     public bool Queueable => true;
 
-    public SkillContext(SkillInfo target, CardContext source, PlayerInfo player, Tile sourceTile)
+    public SkillContext(SkillInfo target, CardContext source, Tile sourceTile)
     {
         Target = target;
-        Player = player;
         Source = source;
         OriginTile = sourceTile;
+        Unit = source.Unit;
     }
 
-    public SkillContext(SkillInfo target, PlayerInfo player, Tile sourceTile = null)
+    public SkillContext(SkillInfo target, Unit unit, Tile sourceTile = null)
     {
         Target = target;
-        Player = player;
         Source = Board.FindObjectOfType<Board>().CreateFakeCardContext();
         OriginTile = sourceTile;
+        Unit = unit;
     }
 
     public bool Preview(out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
@@ -107,7 +107,7 @@ public class SkillContext : IPlayableContext
     public IEnumerator Play()
     {
         var map = Source.Map;
-        var player = Player;
+        var player = Unit.Player;
         if (Target.CanUse(OriginTile, Source, out SourceTile)
             && Target.Skill.Activate(this, out var validPatterns, out var _))
         {

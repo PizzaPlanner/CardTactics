@@ -16,16 +16,14 @@ public class GainCardSkill : Skill
 
     protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new[] { new SingleTilePattern { Target = ctx.SourceTile
-}.Build(ctx.Source.Map, ctx.SourceTile, ctx.Player, new SelectionFilter { Range = RangeFilter.Any }) };
+        return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Source.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
-        if (ctx.OutTile.Unit == null) yield break;
+        if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
         yield return ShowGetAnimation(NewCardPrefab);
-        var deck = ctx.OutTile.Unit.Player.Deck;
         deck.Contexts.Add(new CardContext(NewCardPrefab, Map.FindObjectOfType<Map>(), ctx.OutTile.Unit, NewCardInitialState));
     }
 

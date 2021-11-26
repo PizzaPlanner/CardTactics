@@ -9,18 +9,18 @@ public class Team
 {
     [SerializeField] bool CopyPerSpawn;
     [ShowIf("CopyPerSpawn")]
-    [SerializeField] PlayerInfo PlayerTemplate;
+    [SerializeField] PlayerSlot PlayerTemplate;
     [HideIf("CopyPerSpawn")]
-    [SerializeField] PlayerInfo[] Players;
+    [SerializeField] PlayerSlot[] Players;
 
     public Color Color;
     [SerializeReference] public List<TeamCondition> Conditions;
 
-    public IEnumerable<PlayerInfo> RegisteredPlayers => registeredPlayers;
-    List<PlayerInfo> registeredPlayers;
+    public IEnumerable<PlayerSlot> RegisteredPlayers => registeredPlayers;
+    List<PlayerSlot> registeredPlayers;
 
-    public int MinPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired);
-    public int MaxPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerInfo.SlotType.PlayerRequired || x.Slot == PlayerInfo.SlotType.PlayerOptional);
+    public int MinPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired);
+    public int MaxPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired || x.Slot == PlayerSlot.SlotType.PlayerOptional);
 
     public void Init(Board board, Map map)
     {
@@ -32,11 +32,11 @@ public class Team
                 continue;
 
             if (registeredPlayers == null)
-                registeredPlayers = new List<PlayerInfo>();
+                registeredPlayers = new List<PlayerSlot>();
             registeredPlayers.Add(player);
-            var placeSkill = new PlaceSkill { reference = player.Deck.Commander };
+            var placeSkill = new PlaceSkill { reference = player.Unit };
             var skillInfo = new SkillInfo { Skill = placeSkill };
-            board.Playables.InsertFirst(new SkillContext(skillInfo, player));
+            board.Playables.InsertFirst(new SkillContext(skillInfo, player.Unit));
         }
     }
 
@@ -44,17 +44,15 @@ public class Team
     {
         if (CopyPerSpawn && PlayerTemplate != null)
         {
-            var player = PlayerInfo.Instantiate(PlayerTemplate);
+            var player = PlayerSlot.Instantiate(PlayerTemplate);
             if (!player.Initialize(Lobby.Current, this, map))
                 return null;
 
             if (registeredPlayers == null)
-                registeredPlayers = new List<PlayerInfo>();
+                registeredPlayers = new List<PlayerSlot>();
             registeredPlayers.Add(player);
 
-            player.Deck.Commander.Player = player;
-
-            return player.Deck.Commander;
+            return player.Unit;
         }
         return null;
     }

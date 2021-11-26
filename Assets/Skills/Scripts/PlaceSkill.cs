@@ -15,7 +15,7 @@ public class PlaceSkill : Skill
 
     protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new SpawnPatternBuilder().Patterns(ctx.Source.Map, ctx.SourceTile, ctx.Player, SelectionFilters.Empty);
+        return new SpawnPatternBuilder { UnitToSpawn = reference }.Patterns(ctx.Source.Map, ctx.SourceTile, SelectionFilters.Empty);
     }
 
     public override IEnumerator OnPreview(SkillContext ctx)
@@ -24,7 +24,6 @@ public class PlaceSkill : Skill
 
         var facing = ctx.OutTile.TryGetComponent<SpawnLocation>(out var sl) ? sl.Facing : 0;
         ctx.OutTile.Place(reference, facing);
-        reference.Player = ctx.Player;
         yield return null;
     }
 }
