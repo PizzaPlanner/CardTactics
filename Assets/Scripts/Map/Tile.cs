@@ -100,9 +100,7 @@ public class Tile : MonoBehaviour
             return;
         Hovered = this;
         if (Unit != null)
-            FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
-            .Where(x => x.UnitItem.Unit == Unit)
-            .ForEach(x => x.AddToClassList("unit-badge--hovered"));
+            FindObjectOfType<TurnPanel>().OnHover(Unit, true);
         SelectionIndicator.SetActive(true);
         if (PrimaryPattern != null)
         {
@@ -124,9 +122,7 @@ public class Tile : MonoBehaviour
             return;
         Hovered = null;
         if (Unit != null)
-            FindObjectOfType<UIDocument>().rootVisualElement.Query<PlayerInfoBadge>()
-            .Where(x => x.UnitItem.Unit == Unit)
-            .ForEach(x => x.RemoveFromClassList("unit-badge--hovered"));
+            FindObjectOfType<TurnPanel>().OnHover(Unit, false);
         SelectionIndicator.SetActive(false);
         if (PrimaryPattern != null)
         {

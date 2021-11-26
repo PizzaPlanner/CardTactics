@@ -706,6 +706,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
   - {fileID: 11400000, guid: 72674ffae81d89c44af0894b943d1ada, type: 2}
   CardItem: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
+  uiRoot: {fileID: 7540563857837773768}
 --- !u!1 &3896609403382642947
 GameObject:
   m_ObjectHideFlags: 0

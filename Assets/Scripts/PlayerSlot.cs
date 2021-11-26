@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerSlot : MonoBehaviour
+public class PlayerSlot : NetworkBehaviour
 {
     public enum SlotType
     {
@@ -23,34 +25,39 @@ public class PlayerSlot : MonoBehaviour
 
     public SlotType Slot => slot;
 
-    [ShowInInspector]
     public bool IsAlive => Team != null && Unit != null && !Unit.IsDead;
 
-    [NonSerialized] public bool IsLocal;
+    public NetworkIdentity Identity { get; private set; }
 
     [SerializeField] SlotType slot;
 
     public Trigger OnDeadSelf, OnDeadKiller;
 
-    public bool Initialize(Lobby lobby, Team team, Map map)
+    [Server]
+    public bool Initialize(Team team, Map map)
     {
-        if (Slot == SlotType.PlayerRequired && !lobby.AssignPlayer(this))
+        var allPlayers = FindObjectsOfType<PlayerController>().ToList();
+        allPlayers.Sort((x, y) => x.ControlledUnits.Count.CompareTo(y.ControlledUnits.Count));
+        var player = Slot == SlotType.AI ? null : allPlayers.FirstOrDefault();
+        if (Slot != SlotType.AI && player == null)
         {
             Debug.LogError("Incompatible Player Slot assignment");
             return false;
         }
-        else if (Slot == SlotType.PlayerOptional)
-            if (!lobby.AssignPlayer(this))
-                return false;
 
-        if (deck == null && lobby.DeckOf(this) == null) return false;
+        if (deck == null && (player == null || player.Deck == null)) return false;
 
         if (deck == null)
-            Unit = lobby.DeckOf(this).Create(map);
+            Unit = player.Deck.Create(map);
         else
             Unit = deck.Create(map);
         Unit.Player = this;
         Team = team;
+        if (player != null)
+        {
+            player.ControlledUnits.Add(Unit);
+            Identity = player.GetComponent<NetworkIdentity>();
+        }
         return true;
     }
 }

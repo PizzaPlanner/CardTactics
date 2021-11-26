@@ -198,3 +198,17 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+TextField > * {
+    background-color: rgba(87, 87, 87, 255);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(188, 188, 188, 255);
+    border-right-color: rgba(188, 188, 188, 255);
+    border-top-color: rgba(188, 188, 188, 255);
+    border-bottom-color: rgba(188, 188, 188, 255);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

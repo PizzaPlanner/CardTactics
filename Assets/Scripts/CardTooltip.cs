@@ -9,10 +9,11 @@ public class CardTooltip : MonoBehaviour
 
     CardItem mainCard;
 
+    [SerializeField] UIDocument uiRoot;
     void Start()
     {
         instance = this;
-        mainCard = FindObjectOfType<UIDocument>().rootVisualElement.Q("TooltipCard").Q<CardItem>();
+        mainCard = uiRoot.rootVisualElement.Q("TooltipCard").Q<CardItem>();
         Debug.Assert(mainCard != null, this);
         Hide();
     }

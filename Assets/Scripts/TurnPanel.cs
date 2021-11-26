@@ -10,11 +10,13 @@ public class TurnPanel : MonoBehaviour
     VisualElement readyPanel;
     VisualElement turnAnnouncer;
 
+    [SerializeField] UIDocument uiRoot;
+
     void Awake()
     {
-        readyPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("ReadyPanel");
+        readyPanel = uiRoot.rootVisualElement.Q("ReadyPanel");
         Debug.Assert(readyPanel != null, this);
-        turnAnnouncer = FindObjectOfType<UIDocument>().rootVisualElement.Q("TurnAnnouncer");
+        turnAnnouncer = uiRoot.rootVisualElement.Q("TurnAnnouncer");
         Debug.Assert(turnAnnouncer != null, this);
         // foreach (Transform t in nextActionsPanel)
         //     Destroy(t.gameObject);
@@ -87,5 +89,18 @@ public class TurnPanel : MonoBehaviour
     internal void OnTurnEnd(Unit unit)
     {
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.RemoveFromClassList("unit-badge--current"));
+    }
+
+    internal void OnHover(Unit unit, bool hover)
+    {
+        readyPanel.Query<PlayerInfoBadge>()
+            .Where(x => x.UnitItem.Unit == unit)
+            .ForEach(x =>
+            {
+                if (hover)
+                    x.AddToClassList("unit-badge--hovered");
+                else
+                    x.RemoveFromClassList("unit-badge--hovered");
+            });
     }
 }

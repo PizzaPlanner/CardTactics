@@ -22,6 +22,6 @@ public class TeamConditionOnlyTeamAlive : TeamCondition
     public override bool Check(Map map, Team team)
     {
         var dead = new TeamConditionEveryoneDead();
-        return !dead.Check(map, team) && map.Teams.Where(x => x != team).All(x => dead.Check(map, x));
+        return !dead.Check(map, team) && map.AllTeams.Where(x => x != team).All(x => dead.Check(map, x));
     }
 }

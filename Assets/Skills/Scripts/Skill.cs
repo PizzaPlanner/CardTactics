@@ -116,7 +116,7 @@ public class SkillContext : IPlayableContext
                 SkillTarget = validPatterns.First();
             else if (player.IsAI)
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
-            else if (player.IsLocal)
+            else if (player.Identity.isLocalPlayer)
                 map.ShowTileIndicators(validPatterns,
                 (pattern) => TargetIndicator.Valid,
                 (itp) => SkillTarget = itp);

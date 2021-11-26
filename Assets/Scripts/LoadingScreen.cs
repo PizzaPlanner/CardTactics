@@ -25,7 +25,7 @@ public class LoadingScreen : MonoBehaviour
     }
     float progress = 0;
 
-    public static bool CreateGame(Map map, Lobby lobby)
+    public static bool CreateGame(Map map)
     {
 
         ChangeScene(
@@ -33,7 +33,7 @@ public class LoadingScreen : MonoBehaviour
         () =>
         {
             var mapInstance = Instantiate(map);
-            GameObject.FindObjectOfType<Board>().Initialize(mapInstance, lobby);
+            GameObject.FindObjectOfType<Board>().Initialize(mapInstance);
         },
         () => GameObject.FindObjectOfType<Board>().StartGame());
         return true;

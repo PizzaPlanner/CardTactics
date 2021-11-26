@@ -28,7 +28,7 @@ public class Team
 
         foreach (var player in Players)
         {
-            if (!player.Initialize(Lobby.Current, this, map))
+            if (!player.Initialize(this, map))
                 continue;
 
             if (registeredPlayers == null)
@@ -45,7 +45,7 @@ public class Team
         if (CopyPerSpawn && PlayerTemplate != null)
         {
             var player = PlayerSlot.Instantiate(PlayerTemplate);
-            if (!player.Initialize(Lobby.Current, this, map))
+            if (!player.Initialize(this, map))
                 return null;
 
             if (registeredPlayers == null)

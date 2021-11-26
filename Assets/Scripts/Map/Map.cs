@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Grid))]
-public class Map : MonoBehaviour
+public class Map : NetworkBehaviour
 {
-    public IEnumerable<PlayerSlot> Players => Teams.SelectMany(x => x.RegisteredPlayers);
-    public int MinPartySize => Teams.Sum(x => x.MinPlayers);
-    public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
+    public IEnumerable<PlayerSlot> Players => AllTeams.SelectMany(x => x.RegisteredPlayers);
+    public int MinPartySize => AllTeams.Sum(x => x.MinPlayers);
+    public int MaxPartySize => AllTeams.Sum(x => x.MaxPlayers);
 
-    List<Tile> Tiles;
+    [SyncVar] List<Tile> Tiles;
     public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
 
-    public Team[] Teams;
+    [FormerlySerializedAs("Teams")]
+    public Team[] teams;
+
+    public SyncList<Team> AllTeams = new SyncList<Team>();
 
     public void AddTriggers(Board board)
     {
@@ -80,11 +85,14 @@ public class Map : MonoBehaviour
             }
             else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
             {
-                Unit instance = Teams[owner.Id].SpawnNew(this);
-                if (instance != null)
+                if (isServer)
                 {
-                    Debug.Log("[Board] Spawning unit " + instance.Name);
-                    tile.Place(instance, spawn.Facing);
+                    Unit instance = AllTeams[owner.Id].SpawnNew(this);
+                    if (instance != null)
+                    {
+                        Debug.Log("[Board] Spawning unit " + instance.Name);
+                        tile.Place(instance, spawn.Facing);
+                    }
                 }
             }
         }
@@ -92,8 +100,14 @@ public class Map : MonoBehaviour
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
 
-        foreach (var team in Teams)
-            team.Init(board, this);
+        if (isServer)
+        {
+            foreach (var team in teams)
+            {
+                team.Init(board, this);
+                AllTeams.Add(team);
+            }
+        }
     }
 
     public void RevealArea(int areaId)
@@ -138,7 +152,7 @@ public class Map : MonoBehaviour
         List<Tile> valid = new List<Tile>();
         foreach (var owner in GetComponentsInChildren<Owner>())
         {
-            if (Teams[owner.Id] != team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
+            if (AllTeams[owner.Id] != team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
             var tile = owner.GetComponent<Tile>();
             if (TileMatches(tile, filter, null))
                 valid.Add(tile);

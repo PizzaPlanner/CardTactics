@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -95,7 +96,7 @@ public class ResourceInfo
     }
 }
 
-public class Unit : MonoBehaviour
+public class Unit : NetworkBehaviour
 {
     public const float MOVEMENT_SPEED = 8f;
 

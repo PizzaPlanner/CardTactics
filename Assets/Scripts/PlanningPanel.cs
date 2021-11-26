@@ -15,11 +15,11 @@ public class PlanningPanel : MonoBehaviour
     AudioSource audio;
 
     VisualElement cardPanel, planningPanel, unitPanel;
-
+    [SerializeField] UIDocument uiRoot;
     void Awake()
     {
         audio = GetComponent<AudioSource>();
-        planningPanel = FindObjectOfType<UIDocument>().rootVisualElement.Q("PlanningPanel");
+        planningPanel = uiRoot.rootVisualElement.Q("PlanningPanel");
         Debug.Assert(planningPanel != null, this);
         cardPanel = planningPanel.Q("CardPanel");
         unitPanel = planningPanel.Q("CurrentUnit");
@@ -55,7 +55,7 @@ public class PlanningPanel : MonoBehaviour
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
 
         var board = FindObjectOfType<Board>();
-        var playable = board.CurrentUnit == unit && unit.Player.IsLocal && board.CurrentStage == Board.Stage.Plan;
+        var playable = board.CurrentUnit == unit && unit.Player.Identity.isLocalPlayer && board.CurrentStage == Board.Stage.Plan;
         planningPanel.Q<Button>("Confirm").SetEnabled(playable);
         if (playable)
         {
@@ -63,7 +63,7 @@ public class PlanningPanel : MonoBehaviour
             onPlayWrapper ??= onPlay;
         }
 
-        var doc = FindObjectOfType<UIDocument>();
+        var doc = uiRoot;
         cardPanel.Clear();
         var map = FindObjectOfType<Map>();
         foreach (var ctx in unplayed)

@@ -88,14 +88,11 @@ public class Board : MonoBehaviour
     [SerializeField]
     Card OnNoCardsPlayed;
 
-    Lobby lobby;
-
     // Start is called before the first frame update
-    public void Initialize(Map mapInstance, Lobby lobby)
+    public void Initialize(Map mapInstance)
     {
         CurrentStage = Stage.Setup;
         playableUnits = new Queue<Unit>();
-        this.lobby = lobby;
         settings.Load();
         Map = mapInstance;
         Map.Load(this);
@@ -160,7 +157,6 @@ public class Board : MonoBehaviour
     {
         WaitingForAction = true;
         Debug.Log("Game ended.");
-        lobby.Return();
     }
 
 
@@ -354,7 +350,7 @@ public class Board : MonoBehaviour
 
     void CheckDeath(Map map)
     {
-        foreach (var team in map.Teams)
+        foreach (var team in map.AllTeams)
         {
             foreach (var condition in team.Conditions.ToArray())
                 if (condition.Check(map, team))

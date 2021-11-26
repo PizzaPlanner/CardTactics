@@ -9,26 +9,15 @@ public class Hubworld : MonoBehaviour
         public Map MapPrefab;
         public string[] RequiredAchievements;
         public string[] PreventingAchievements;
-
-        public bool Playable(Lobby lobby) =>
-            RequiredAchievements.Count(x => !lobby.Achievements.Contains(x)) == 0 &&
-            PreventingAchievements.Count(x => lobby.Achievements.Contains(x)) == 0;
-
+        public bool Playable => true;
     }
 
     [SerializeField] MapWithRequirements[] Maps;
 
     public void PlayMap(int i)
     {
-        var lobby = Lobby.Current;
-        if (Maps.Length <= i || !Maps[i].Playable(lobby)) return;
+        if (Maps.Length <= i || !Maps[i].Playable) return;
         var prefab = Maps[i].MapPrefab;
-        if (lobby.PlayerCount < prefab.MinPartySize || lobby.PlayerCount > prefab.MaxPartySize)
-        {
-            Debug.LogError($"Can not start this map with Party Size {lobby.PlayerCount}. Required: {prefab.MinPartySize} to {prefab.MaxPartySize}");
-            return;
-        }
-
-        LoadingScreen.CreateGame(prefab, lobby);
+        FindObjectOfType<RoomNetworkManager>().PlayMap(prefab);
     }
 }

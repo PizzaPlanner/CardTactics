@@ -276,8 +276,8 @@ GameObject:
   m_Component:
   - component: {fileID: 728829426}
   - component: {fileID: 728829425}
-  - component: {fileID: 728829427}
   - component: {fileID: 728829429}
+  - component: {fileID: 728829427}
   - component: {fileID: 728829428}
   - component: {fileID: 728829430}
   m_Layer: 5
@@ -330,6 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a740f2693f9f534d99fb263d7f720bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiRoot: {fileID: 728829425}
 --- !u!114 &728829428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,6 +347,7 @@ MonoBehaviour:
   UnselectSound: {fileID: 8300000, guid: 623e8d2f237eccd4b9c3c9545695c15f, type: 3}
   ReadySound: {fileID: 8300000, guid: ec966655d5e585c48b343f0369bd39ef, type: 3}
   cardAsset: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
+  uiRoot: {fileID: 728829425}
 --- !u!82 &728829429
 AudioSource:
   m_ObjectHideFlags: 0
@@ -455,6 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   readyBadgeAsset: {fileID: 9197481963319205126, guid: 1d599a6e9e01ecd4cbdd0045b1307771, type: 3}
+  uiRoot: {fileID: 728829425}
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0
