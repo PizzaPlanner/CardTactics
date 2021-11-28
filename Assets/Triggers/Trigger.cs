@@ -23,7 +23,7 @@ public class TriggerContext : IPlayableContext
     public string Name => Target.GetType().Name;
     public bool Queueable => Unit != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
 
-    public IEnumerator Play()
+    public IEnumerator Play(bool isClient, bool isServer)
     {
         if (Target.Executed && !Target.CanTriggerMultipleTimes)
             yield break;

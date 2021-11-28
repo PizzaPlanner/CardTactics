@@ -16,27 +16,23 @@ public class Team
     public Color Color;
     [SerializeReference] public List<TeamCondition> Conditions;
 
-    public IEnumerable<PlayerSlot> RegisteredPlayers => registeredPlayers;
-    List<PlayerSlot> registeredPlayers;
-
     public int MinPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired);
     public int MaxPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired || x.Slot == PlayerSlot.SlotType.PlayerOptional);
 
-    public void Init(Board board, Map map)
+    public void CreatePlayables(PlayableQueue queue, Map map)
     {
         if (CopyPerSpawn || Players == null) return;
 
         foreach (var player in Players)
         {
-            if (!player.Initialize(this, map))
+            if (!player.GetUnit(this, map, out var unit))
                 continue;
 
-            if (registeredPlayers == null)
-                registeredPlayers = new List<PlayerSlot>();
-            registeredPlayers.Add(player);
-            var placeSkill = new PlaceSkill { reference = player.Unit };
+            if (queue == null) return;
+
+            var placeSkill = new PlaceSkill { reference = unit };
             var skillInfo = new SkillInfo { Skill = placeSkill };
-            board.Playables.InsertFirst(new SkillContext(skillInfo, player.Unit));
+            queue.InsertFirst(new SkillContext(skillInfo, unit, map));
         }
     }
 
@@ -44,15 +40,10 @@ public class Team
     {
         if (CopyPerSpawn && PlayerTemplate != null)
         {
-            var player = PlayerSlot.Instantiate(PlayerTemplate);
-            if (!player.Initialize(this, map))
+            if (!PlayerTemplate.GetUnit(this, map, out var unit))
                 return null;
 
-            if (registeredPlayers == null)
-                registeredPlayers = new List<PlayerSlot>();
-            registeredPlayers.Add(player);
-
-            return player.Unit;
+            return unit;
         }
         return null;
     }

@@ -55,7 +55,8 @@ public class PlanningPanel : MonoBehaviour
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
 
         var board = FindObjectOfType<Board>();
-        var playable = board.CurrentUnit == unit && unit.Player.Identity.isLocalPlayer && board.CurrentStage == Board.Stage.Plan;
+        // var playable = board.CurrentUnit == unit && unit.isLocalPlayer && board.CurrentStage == Board.Stage.Plan;
+        var playable = true;
         planningPanel.Q<Button>("Confirm").SetEnabled(playable);
         if (playable)
         {
@@ -75,7 +76,7 @@ public class PlanningPanel : MonoBehaviour
             var firstSkill = ctx.Target.skills.FirstOrDefault();
             if (firstSkill != null)
             {
-                new SkillContext(firstSkill, ctx, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
+                new SkillContext(firstSkill, unit, map, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);

@@ -7,7 +7,16 @@ using Sirenix.Utilities;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerSlot : NetworkBehaviour
+public struct PlayerInfo
+{
+    public bool IsAI;
+    public Color TeamColor;
+    public int Team;
+}
+
+
+[System.Serializable]
+public class PlayerSlot : MonoBehaviour
 {
     public enum SlotType
     {
@@ -16,47 +25,42 @@ public class PlayerSlot : NetworkBehaviour
         AI
     }
 
-    [HideIf("Deck")]
     [SerializeField] Deck deck;
 
-    public Unit Unit { get; private set; }
-    public Team Team { get; private set; }
-    public bool IsAI => Slot == SlotType.AI;
+    public bool IsAI => slot == SlotType.AI;
 
     public SlotType Slot => slot;
-
-    public bool IsAlive => Team != null && Unit != null && !Unit.IsDead;
-
-    public NetworkIdentity Identity { get; private set; }
-
     [SerializeField] SlotType slot;
 
     public Trigger OnDeadSelf, OnDeadKiller;
 
-    [Server]
-    public bool Initialize(Team team, Map map)
+    public bool GetUnit(Team team, Map map, out Unit unit)
     {
+        unit = null;
         var allPlayers = FindObjectsOfType<PlayerController>().ToList();
         allPlayers.Sort((x, y) => x.ControlledUnits.Count.CompareTo(y.ControlledUnits.Count));
-        var player = Slot == SlotType.AI ? null : allPlayers.FirstOrDefault();
-        if (Slot != SlotType.AI && player == null)
+        var player = slot == SlotType.AI ? null : allPlayers.FirstOrDefault();
+        if (slot != SlotType.AI && player == null)
         {
             Debug.LogError("Incompatible Player Slot assignment");
             return false;
         }
 
         if (deck == null && (player == null || player.Deck == null)) return false;
-
         if (deck == null)
-            Unit = player.Deck.Create(map);
+            unit = player.Deck.Create(map);
         else
-            Unit = deck.Create(map);
-        Unit.Player = this;
-        Team = team;
+            unit = deck.Create(map);
+        var teamId = -1;
+        for (int t = 0; t < map.Teams.Length; t++)
+            if (map.Teams[t] == team)
+                teamId = t;
+        unit.Player = new PlayerInfo { IsAI = IsAI, TeamColor = team.Color, Team = teamId };
+        unit.OnDeadSelf = OnDeadSelf;
+        unit.OnDeadKiller = OnDeadKiller;
         if (player != null)
         {
-            player.ControlledUnits.Add(Unit);
-            Identity = player.GetComponent<NetworkIdentity>();
+            player.ControlledUnits.Add(unit);
         }
         return true;
     }

@@ -13,7 +13,7 @@ public abstract class TeamCondition
 [System.Serializable]
 public class TeamConditionEveryoneDead : TeamCondition
 {
-    public override bool Check(Map map, Team team) => !team.RegisteredPlayers.Any(x => x.IsAlive);
+    public override bool Check(Map map, Team team) => false; //!team.RegisteredPlayers.Any(x => x.IsAlive);
 }
 
 [System.Serializable]
@@ -22,6 +22,6 @@ public class TeamConditionOnlyTeamAlive : TeamCondition
     public override bool Check(Map map, Team team)
     {
         var dead = new TeamConditionEveryoneDead();
-        return !dead.Check(map, team) && map.AllTeams.Where(x => x != team).All(x => dead.Check(map, x));
+        return !dead.Check(map, team) && map.Teams.Where(x => x != team).All(x => dead.Check(map, x));
     }
 }

@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 
 public interface IPlayableContext
 {
-    IEnumerator Play();
+    IEnumerator Play(bool isClient, bool isServer);
     bool Queueable { get; }
     string Name { get; }
     Unit Unit { get; }
@@ -42,27 +42,58 @@ public class CardContext : IPlayableContext
         PreviousContexts = new List<SkillContext>();
     }
 
-    public IEnumerator Play()
+    public IEnumerator Play(bool isClient, bool isServer)
     {
         State = CardState.Current;
-        CardTooltip.Show(Target);
         currentSkill = 0;
         PreviousContexts = new List<SkillContext>();
         Target.OnPlay(this);
-        yield return GameSettings.Instance.BeforePlayDelay.Yield();
+        if (isClient)
+        {
+            CardTooltip.Show(Target);
+            yield return GameSettings.Instance.BeforePlayDelay.Yield();
+        }
         for (currentSkill = 0; currentSkill < Target.Skills.Count(); currentSkill++)
         {
             var skill = Target.skills.ToArray()[currentSkill];
-            var ctx = new SkillContext(skill, this, Map.TileOf(Unit));
-            yield return ctx.Play();
+            var ctx = new SkillContext(skill, Map, Map.TileOf(Unit), PreviousContexts.ToArray());
+            Board.FindObjectOfType<Board>().Playables.Enqueue(ctx);
             PreviousContexts.Add(ctx);
         }
-        yield return GameSettings.Instance.AfterPlayDelay.Yield();
-        CardTooltip.Hide();
-        PreviousContexts.Clear();
-        State = Target.StateOnPlayed;
-        foreach (var passive in Target.passives)
-            passive.OnCardRemoved(this);
+        Board.FindObjectOfType<Board>().Playables.Enqueue(new FinishCardContext(this));
+    }
+
+    public class FinishCardContext : IPlayableContext
+    {
+        public FinishCardContext(CardContext origin)
+        {
+            context = origin;
+        }
+
+        public bool Queueable => true;
+
+        public string Name => context.Name;
+
+        public Unit Unit => context.Unit;
+
+        CardContext context;
+
+        public IEnumerator Play(bool isClient, bool isServer)
+        {
+            if (isClient)
+            {
+                CardTooltip.Hide();
+                yield return GameSettings.Instance.AfterPlayDelay.Yield();
+            }
+
+            context.PreviousContexts.Clear();
+            if (isServer)
+            {
+                context.State = context.Target.StateOnPlayed;
+                foreach (var passive in context.Target.passives)
+                    passive.OnCardRemoved(context);
+            }
+        }
     }
 }
 public enum CardState
@@ -77,18 +108,6 @@ public enum CardState
 public abstract class Card : ScriptableObject, IPlayable
 {
     public virtual void OnPlay(CardContext context) { }
-
-    public virtual List<Card> GetRelatedCards()
-    {
-        var list = new List<Card>();
-        if (Source != null)
-            list.Add(Source);
-        foreach (var skill in Skills)
-        {
-            list.AddRange(skill.GetRelatedCards());
-        }
-        return list;
-    }
 
     public virtual void OnRoundStart(CardContext context)
     {
@@ -124,8 +143,6 @@ public abstract class Card : ScriptableObject, IPlayable
         if (passives == null)
             passives = new Passive[0];
 
-        foreach (var skill in skills)
-            skill.Skill.Source = this;
         foreach (var passive in passives)
             passive.Source = this;
     }
@@ -139,7 +156,7 @@ public abstract class Card : ScriptableObject, IPlayable
     public Passive[] passives;
 
 
-    public IEnumerable<Skill> Skills => skills?.Select(x => x.Skill) ?? new Skill[0];
+    public IEnumerable<ISkill> Skills => skills?.Select(x => x.Skill) ?? new ISkill[0];
 
     public virtual string GetDescription()
     {

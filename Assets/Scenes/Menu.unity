@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3459208, g: 0.3377077, b: 0.29409814, a: 1}
+  m_IndirectSpecularColor: {r: 0.18154559, g: 0.22718792, b: 0.30740583, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -944,6 +944,7 @@ GameObject:
   - component: {fileID: 1818055811}
   - component: {fileID: 1818055810}
   - component: {fileID: 1818055813}
+  - component: {fileID: 1818055814}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1002,7 +1003,14 @@ MonoBehaviour:
   playerPrefab: {fileID: 7684022313020701077, guid: 3b8ef672a8476464abe2d273d436155c, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 563312192517643092, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
+  - {fileID: 563312192517643092, guid: bf58a55d02772324e827aee1e28eaa17, type: 3}
+  - {fileID: 6485420451507662470, guid: d39b3b200556355409427645b5da3b2c, type: 3}
+  - {fileID: 563312192517643092, guid: c17ec6991b75bf4408808625cbdea8bc, type: 3}
+  - {fileID: 6485420451507662470, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
+  - {fileID: 563312192517643092, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
+  - {fileID: 5495453133545694608, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
   lobbyUIPrefab: {fileID: 9197481963319205126, guid: 801e85466d40710478276a8bfcb54de3, type: 3}
 --- !u!4 &1818055812
 Transform:
@@ -1035,6 +1043,22 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 0}
   m_SortingOrder: 0
+--- !u!114 &1818055814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818055809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a56d19a22f1f24f99f8cc207e500e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Maps:
+  - {fileID: 1285172813067429327, guid: 0706e2210d18729429029807cbf06883, type: 3}
+  - {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}
+  - {fileID: 1285172813067429327, guid: f2e8a925c168ba24288889c2a93fdd00, type: 3}
 --- !u!1 &1888047056
 GameObject:
   m_ObjectHideFlags: 0

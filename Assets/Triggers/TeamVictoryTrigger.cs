@@ -11,6 +11,5 @@ public class TeamVictoryTrigger : TeamTrigger
         // foreach (var player in team.RegisteredPlayers)
         //     if (!player.IsAI)
         //         Lobby.Current.Award($"Victory:{map.name}", player);
-        board.CloseBoard();
     }
 }

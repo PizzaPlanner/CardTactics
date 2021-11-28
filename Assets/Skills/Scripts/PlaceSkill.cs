@@ -5,20 +5,20 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class PlaceSkill : Skill
+public class PlaceSkill : ISkill
 {
     [SerializeField] public Unit reference;
 
-    public override string Description => null;
+    public string Description => null;
 
-    public override bool AutoSelectOnOnePossibleTile => true;
+    public bool AutoSelectOnOnePossibleTile => true;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new SpawnPatternBuilder { UnitToSpawn = reference }.Patterns(ctx.Source.Map, ctx.SourceTile, SelectionFilters.Empty);
+        return new SpawnPatternBuilder { UnitToSpawn = reference }.Patterns(ctx.Map, ctx.SourceTile, SelectionFilters.Empty);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
 

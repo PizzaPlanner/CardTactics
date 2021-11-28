@@ -1,7 +1,8 @@
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
-public class Hubworld : MonoBehaviour
+public class Hubworld : NetworkBehaviour
 {
     [System.Serializable]
     class MapWithRequirements

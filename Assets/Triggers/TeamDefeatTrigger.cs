@@ -8,6 +8,5 @@ public class TeamDefeatTrigger : TeamTrigger
     {
         Debug.Log("Defeated! " + team);
         yield return GameSettings.Instance.EndGameDelay.Yield();
-        board.CloseBoard();
     }
 }

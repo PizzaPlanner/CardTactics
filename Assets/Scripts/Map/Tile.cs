@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -24,7 +25,7 @@ public enum Facing
 }
 
 [RequireComponent(typeof(GridPosition))]
-public class Tile : MonoBehaviour
+public class Tile : NetworkBehaviour
 {
     public struct PathingData
     {
@@ -63,7 +64,7 @@ public class Tile : MonoBehaviour
     public static Tile Hovered { get; private set; }
     public List<Tile> Neighbours;
 
-    [ShowInInspector] public PathingData Pathing;
+    public PathingData Pathing;
 
     [SerializeField]
     [ChildGameObjectsOnly]
@@ -239,7 +240,6 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
-    [ShowInInspector]
     public TargetIndicator CurrentIndicator { get; set; }
 
     public void SetIndicatorVisible(bool visible, bool highlightPattern)
@@ -302,14 +302,10 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public bool CanPlace(Unit unit)
-    {
-        return Unit == null;
-    }
-
+    [Server]
     public bool Place(Unit unit, Facing facing)
     {
-        if (!CanPlace(unit))
+        if (Unit != null || unit == null)
             return false;
 
         PlaceUnitNoCheck(unit, facing);
@@ -351,6 +347,7 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
+    [Server]
     public void Face(Facing targetFacing)
     {
         if (Unit == null) return;
@@ -361,8 +358,7 @@ public class Tile : MonoBehaviour
 
     public Vector3 UnitAnchor => transform.position + new Vector3(0, 0.5f, 0);
 
-    public bool HasObstacle { get; internal set; }
-
+    [Server]
     void PlaceUnitNoCheck(Unit unit, Facing facing)
     {
         unit.transform.position = UnitAnchor;

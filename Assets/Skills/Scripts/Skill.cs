@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -68,34 +69,37 @@ public class SkillContext : IPlayableContext
     public Tile OutTile;
     public Tile SourceTile;
     public Tile OriginTile { get; private set; }
-    public CardContext Source { get; private set; }
+    public Map Map { get; private set; }
     public bool WantSkillSkip { get; private set; }
     public bool WantComplete { get; private set; }
-    public Skill.Progress PlayProgress;
+    public Progress PlayProgress;
     public Unit Unit { get; private set; }
+    IEnumerable<SkillContext> previousContexts;
 
     public string Name => Target.Skill.GetType().Name;
     public bool Queueable => true;
 
-    public SkillContext(SkillInfo target, CardContext source, Tile sourceTile)
+    public SkillContext(SkillInfo target, Map map, Tile sourceTile, IEnumerable<SkillContext> previousContexts)
     {
         Target = target;
-        Source = source;
         OriginTile = sourceTile;
-        Unit = source.Unit;
+        Unit = sourceTile.Unit;
+        this.previousContexts = previousContexts;
+        Map = map;
     }
 
-    public SkillContext(SkillInfo target, Unit unit, Tile sourceTile = null)
+    public SkillContext(SkillInfo target, Unit unit, Map map, Tile sourceTile = null)
     {
         Target = target;
-        Source = Board.FindObjectOfType<Board>().CreateFakeCardContext();
         OriginTile = sourceTile;
         Unit = unit;
+        previousContexts = new SkillContext[0];
+        Map = map;
     }
 
     public bool Preview(out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
-        if (Target.CanUse(OriginTile, Source, out SourceTile)
+        if (Target.CanUse(OriginTile, new SkillContext[0], out SourceTile)
             && Target.Skill.Activate(this, out validPatterns, out invalidPatterns))
             return true;
 
@@ -104,19 +108,18 @@ public class SkillContext : IPlayableContext
         return false;
     }
 
-    public IEnumerator Play()
+    public IEnumerator Play(bool isClient, bool isServer)
     {
-        var map = Source.Map;
-        var player = Unit.Player;
-        if (Target.CanUse(OriginTile, Source, out SourceTile)
+        var map = Map;
+        if (Target.CanUse(OriginTile, previousContexts, out SourceTile)
             && Target.Skill.Activate(this, out var validPatterns, out var _))
         {
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color>");
             if (Target.Skill.AutoSelectOnOnePossibleTile && validPatterns.Count() == 1)
                 SkillTarget = validPatterns.First();
-            else if (player.IsAI)
+            else if (Unit.Player.IsAI)
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
-            else if (player.Identity.isLocalPlayer)
+            else if (Unit.isLocalPlayer)
                 map.ShowTileIndicators(validPatterns,
                 (pattern) => TargetIndicator.Valid,
                 (itp) => SkillTarget = itp);
@@ -129,13 +132,13 @@ public class SkillContext : IPlayableContext
             {
                 yield return Target.Skill.OnPreview(this);
                 if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
-                PlayProgress = global::Skill.Progress.Queued;
-                if (player.IsAI)
+                PlayProgress = Progress.Queued;
+                if (Unit.Player.IsAI)
                     WantComplete = true;
             }
             else if (WantSkillSkip)
             {
-                PlayProgress = global::Skill.Progress.Skipped;
+                PlayProgress = Progress.Skipped;
             }
         }
         else
@@ -179,54 +182,48 @@ public class SkillInfo : IPlayable
     [HideLabel]
     [VerticalGroup("Skill")]
     [SerializeReference]
-    public Skill Skill;
+    public ISkill Skill;
 
 
-    Tile GetInputTile(Tile origin, CardContext ctx)
+    Tile GetInputTile(Tile origin, IEnumerable<SkillContext> previousContexts)
     {
-        var previous = ctx.PreviousContexts;
+        var previous = previousContexts;
         if (SourceTileInput == SkillChain._) return null;
         var wanted = SourceTileInput;
-        var inputInfo = ctx.PreviousContexts.LastOrDefault(x => x.Target.TileOutput == wanted);
+        var inputInfo = previousContexts.LastOrDefault(x => x.Target.TileOutput == wanted);
         if (wanted == SkillChain.A && inputInfo == null)
             return origin;
         return inputInfo?.OutTile;
     }
 
-    public bool CanUse(Tile origin, CardContext ctx, out Tile inputTile)
+    public bool CanUse(Tile origin, IEnumerable<SkillContext> previousContexts, out Tile inputTile)
     {
         inputTile = null;
-        if (ctx.PreviousContexts.Any(x => x.Target == this))
+        if (previousContexts.Any(x => x.Target == this))
             return false;
         if (Conditions != null)
             foreach (var condition in Conditions)
-                if (ctx.PreviousContexts.LastOrDefault(x => x.Target.TileOutput == condition)?.PlayProgress != Skill.Progress.Queued) return false;
-        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, ctx)) == null) return false;
+                if (previousContexts.LastOrDefault(x => x.Target.TileOutput == condition)?.PlayProgress != Progress.Queued) return false;
+        if (SourceTileInput != SkillChain._ && (inputTile = GetInputTile(origin, previousContexts)) == null) return false;
         return true;
     }
 }
-
-[System.Serializable]
-public abstract class Skill
+public enum Progress
 {
-    public enum Progress
-    {
-        Pending,
-        Queued,
-        Skipped,
-        Failed,
-        Now
-    }
+    Pending,
+    Queued,
+    Skipped,
+    Failed,
+    Now
+}
 
-    public Card Source { get; set; }
-    public abstract string Description { get; }
-    public bool IsOptional => SkippableWithInput;
+public interface ISkill
+{
+    string Description { get; }
+    bool IsOptional => false;
+    bool AutoSelectOnOnePossibleTile { get; }
 
-    [SerializeField] bool SkippableWithInput;
-    public abstract bool AutoSelectOnOnePossibleTile { get; }
-
-
-    public bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
+    bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
         validPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && x.Selectable);
         invalidPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
@@ -235,15 +232,6 @@ public abstract class Skill
         return hasAny;
     }
 
-    protected abstract IEnumerable<ITilePattern> OnActivate(SkillContext ctx);
-
-    public abstract IEnumerator OnPreview(SkillContext ctx);
-
-    public virtual List<Card> GetRelatedCards()
-    {
-        var list = new List<Card>();
-        if (Source != null)
-            list.Add(Source);
-        return list;
-    }
+    IEnumerable<ITilePattern> OnActivate(SkillContext ctx);
+    IEnumerator OnPreview(SkillContext ctx);
 }

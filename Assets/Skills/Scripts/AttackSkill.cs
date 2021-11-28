@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 
 [System.Serializable]
-public class AttackSkill : Skill
+public class AttackSkill : ISkill
 {
     [ValidateInput("@((int)$value.Tile & (int)TileFilter.Empty) == 0")]
     public SelectionFilter Filter;
@@ -15,19 +15,19 @@ public class AttackSkill : Skill
     [SerializeField] bool confirmOnePossibleTile;
     public float Damage;
 
-    public override string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
-    public override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
+    public string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
+    public bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         return new RangePatternBuilder
         {
             MinRange = MinRange,
             MaxRange = MaxRange
-        }.Patterns(ctx.Source.Map, ctx.SourceTile, Filter);
+        }.Patterns(ctx.Map, ctx.SourceTile, Filter);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
         Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();

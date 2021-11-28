@@ -14,7 +14,6 @@ public class Deck : ScriptableObject
         var unit = Card.Instantiate(commanderPrefab);
         var deck = unit.gameObject.AddComponent<IngameDeck>();
         deck.Contexts = new List<CardContext>();
-        unit.gameObject.SetActive(false);
         foreach (var card in Cards)
             deck.Contexts.Add(new CardContext(card, map, unit, CardState.Unplayed));
         return unit;

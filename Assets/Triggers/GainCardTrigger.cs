@@ -10,7 +10,7 @@ public class GainCardTrigger : Trigger
 
     public override IEnumerator Execute(Board board, Map map, Unit unit)
     {
-        var ctx = new SkillContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, unit, map.TileOf(unit));
-        yield return ctx.Play();
+        var ctx = new SkillContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, unit, map, map.TileOf(unit));
+        yield return ctx.Play(true, true);
     }
 }

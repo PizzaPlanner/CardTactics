@@ -1,6 +1,8 @@
 using UnityEngine;
 using Mirror;
 using UnityEngine.UIElements;
+using System.Linq;
+using System;
 
 [RequireComponent(typeof(UIDocument))]
 public class RoomNetworkManager : NetworkManager
@@ -16,6 +18,7 @@ public class RoomNetworkManager : NetworkManager
         lobbyUI.Q<Toggle>().RegisterValueChangedCallback(x => conn.isReady = x.newValue);
         DontDestroyOnLoad(conn.identity);
         SetConnectionUI(NetworkManagerMode.ClientOnly);
+
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -83,13 +86,13 @@ public class RoomNetworkManager : NetworkManager
         lobbyUI.Q<Button>("Leave").clicked += Leave;
         lobbyUI.Q<Button>("Host").clicked += Host;
 
-        SetConnectionUI(NetworkManagerMode.Offline);
+        StartHost();
     }
 
     void Host()
     {
         SetConnectionUI(NetworkManagerMode.ServerOnly);
-        StartHost();
+        StartServer();
     }
 
     void Connect()
@@ -106,18 +109,26 @@ public class RoomNetworkManager : NetworkManager
 
     public void GoToHub(Hubworld hub)
     {
-        LoadingScreen.LoadHub(hub);
+        FindObjectsOfType<PlayerController>().First(x => x.hasAuthority).LoadHub(hub);
     }
 
     public void PlayMap(Map mapPrefab)
     {
-        GetComponent<UIDocument>().enabled = false;
-        if (numPlayers < mapPrefab.MinPartySize || numPlayers > mapPrefab.MaxPartySize)
+        if (!FindObjectOfType<MapAtlas>().Has(mapPrefab, out var idx))
         {
-            Debug.LogError($"Can not start this map with Party Size {numPlayers}. Required: {mapPrefab.MinPartySize} to {mapPrefab.MaxPartySize}");
+            Debug.LogError($"Map {mapPrefab.name} is not registered!");
             return;
         }
 
-        LoadingScreen.CreateGame(mapPrefab);
+        FindObjectsOfType<PlayerController>().First(x => x.hasAuthority).CreateGame(idx, numPlayers);
+        GetComponent<UIDocument>().enabled = false;
+    }
+
+    public static Action OnSceneChanged;
+    public override void OnServerSceneChanged(string newSceneName)
+    {
+        OnSceneChanged?.Invoke();
+        OnSceneChanged = null;
+
     }
 }

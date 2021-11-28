@@ -11,7 +11,7 @@ public class TeamTriggerContext : IPlayableContext
         this.board = board;
         this.map = map;
         this.team = team;
-        Unit = team.RegisteredPlayers.First().Unit;
+        Unit = null; //team.RegisteredPlayers.First().Unit;
     }
 
     Board board;
@@ -22,7 +22,7 @@ public class TeamTriggerContext : IPlayableContext
     public string Name => Target.GetType().Name;
     public bool Queueable => team != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
 
-    public IEnumerator Play()
+    public IEnumerator Play(bool isClient, bool isServer)
     {
         if (Target.Executed && !Target.CanTriggerMultipleTimes)
             yield break;

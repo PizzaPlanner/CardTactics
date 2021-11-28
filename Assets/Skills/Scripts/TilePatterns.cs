@@ -29,7 +29,7 @@ public struct SpawnPatternBuilder : ITilePatternBuilder
     public Unit UnitToSpawn;
     public IEnumerable<ITilePattern> Patterns(Map map, Tile origin, SelectionFilter filter)
     {
-        if (UnitToSpawn.Player == null)
+        if (UnitToSpawn.Player.Team == -1)
             return new ITilePattern[0];
         return map.GetSpawnTiles(filter, UnitToSpawn.Player.Team).Select(x => new SingleTilePattern { Target = x }.Build(map, x, filter));
     }

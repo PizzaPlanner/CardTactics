@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
-public class SelectSkill : Skill
+public class SelectSkill : ISkill
 {
     [SerializeField] SelectionFilter TargetFilter;
     [SerializeField] bool confirmOnePossibleTile;
@@ -14,14 +14,14 @@ public class SelectSkill : Skill
     [ShowIf("selectAtRandom")]
     [SerializeField] bool randomOnlySelectableTiles;
 
-    public override string Description => TargetFilter.Equals(SelectionFilters.Self) ? null : $"Select {TargetFilter}";
+    public string Description => TargetFilter.Equals(SelectionFilters.Self) ? null : $"Select {TargetFilter}";
 
-    public override bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
+    public bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange }))
-            .Patterns(ctx.Source.Map, ctx.SourceTile, TargetFilter);
+            .Patterns(ctx.Map, ctx.SourceTile, TargetFilter);
         if (selectAtRandom)
         {
             if (randomOnlySelectableTiles)
@@ -33,7 +33,7 @@ public class SelectSkill : Skill
             return patterns;
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
         yield return null;

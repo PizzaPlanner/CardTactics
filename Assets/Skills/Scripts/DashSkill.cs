@@ -4,25 +4,25 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class DashSkill : Skill
+public class DashSkill : ISkill
 {
     public int MaxRange;
     public RangeFilter RangeType;
 
-    public override string Description => $"Dash {MaxRange}";
+    public string Description => $"Dash {MaxRange}";
 
-    public override bool AutoSelectOnOnePossibleTile => false;
+    public bool AutoSelectOnOnePossibleTile => false;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
         if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
+        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Map, ctx.SourceTile, filter);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         var tilesByDistance = ((LinePattern)ctx.SkillTarget).TilesByDistance;
         var prevTile = ctx.SourceTile;

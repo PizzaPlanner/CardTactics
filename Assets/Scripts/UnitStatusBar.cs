@@ -22,14 +22,14 @@ public class UnitStatusBar : MonoBehaviour
         Life = bar.GetChild(0).GetChild(0).GetComponentInChildren<Text>();
         fillBar = bar.GetChild(0).GetChild(0).GetComponentInChildren<Image>();
         unit = gameObject.GetComponentInParent<Unit>();
-        fillBar.color = unit.Player.Team.Color;
+        fillBar.color = unit.Player.TeamColor;
     }
 
     void Update()
     {
         bar.transform.position = Camera.main.WorldToScreenPoint(transform.position);
-        Life.text = gameObject.GetComponentInParent<Unit>()?.LifePreview.ToString();
-        var diff = fillBar.fillAmount - unit.LifePreview / unit.MaxLife;
+        Life.text = gameObject.GetComponentInParent<Unit>()?.Life.ToString();
+        var diff = fillBar.fillAmount - unit.Life / unit.MaxLife;
         if (Mathf.Abs(diff) > 0.001f)
         {
             if (speed == 0)

@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class PushSkill : Skill
+public class PushSkill : ISkill
 {
     public int MaxRange;
     public int Tiles;
 
-    public override string Description => $"Push {Tiles}";
+    public string Description => $"Push {Tiles}";
 
-    public override bool AutoSelectOnOnePossibleTile => true;
+    public bool AutoSelectOnOnePossibleTile => true;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var filter = SelectionFilters.AnyUnit;
         if (ctx.SourceTile.Unit == null)
@@ -20,10 +20,10 @@ public class PushSkill : Skill
         {
             MinRange = 1,
             MaxRange = MaxRange
-        }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
+        }.Patterns(ctx.Map, ctx.SourceTile, filter);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         var tilesByDistance = ((LinePattern)ctx.SkillTarget).TilesByDistance;
         var prevTile = ctx.SourceTile;

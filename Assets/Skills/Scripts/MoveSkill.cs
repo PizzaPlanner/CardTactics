@@ -5,16 +5,16 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class MoveSkill : Skill
+public class MoveSkill : ISkill
 {
     public int Range;
     public RangeFilter RangeType;
 
-    public override string Description => $"{(RangeType == RangeFilter.Path ? "Move" : "Jump")} {Range}";
+    public string Description => $"{(RangeType == RangeFilter.Path ? "Move" : "Jump")} {Range}";
 
-    public override bool AutoSelectOnOnePossibleTile => false;
+    public bool AutoSelectOnOnePossibleTile => false;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
@@ -25,12 +25,12 @@ public class MoveSkill : Skill
             {
                 MinRange = 1,
                 MaxRange = Range
-            }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
+            }.Patterns(ctx.Map, ctx.SourceTile, filter);
         else
-            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Source.Map, ctx.SourceTile, filter);
+            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Map, ctx.SourceTile, filter);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         if (ctx.SkillTarget is PathPattern pp)
             ctx.OutTile = pp.Target;

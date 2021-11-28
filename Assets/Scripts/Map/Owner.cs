@@ -11,8 +11,8 @@ public class Owner : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         if (map == null) map = GetComponentInParent<Map>();
-        if (Id < map.AllTeams.Count)
-            UnityEditor.Handles.color = map.AllTeams[Id].Color;
+        if (Id < map.Teams.Length)
+            UnityEditor.Handles.color = map.Teams[Id].Color;
         else
             UnityEditor.Handles.color = Color.black;
 

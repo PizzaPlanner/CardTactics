@@ -1,20 +1,19 @@
 using System;
 using System.Collections;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadingScreen : MonoBehaviour
+public class LoadingScreen : NetworkBehaviour
 {
-    const string SCENE_BOARD = "Board";
-    const string SCENE_MENU = "Menu";
-    const string SCENE_EMPTY = "Empty";
-    const string SCENE_LOADING = "LoadingScreen";
+    public const string SCENE_BOARD = "Board";
+    public const string SCENE_MENU = "Menu";
+    public const string SCENE_EMPTY = "Empty";
+    public const string SCENE_LOADING = "LoadingScreen";
 
     class FakeBehaviour : MonoBehaviour { }
 
-    [ShowInInspector]
-    [PropertyRange(0f, 1f)]
     public float Progress
     {
         get => progress; set
@@ -24,30 +23,6 @@ public class LoadingScreen : MonoBehaviour
         }
     }
     float progress = 0;
-
-    public static bool CreateGame(Map map)
-    {
-
-        ChangeScene(
-        SCENE_BOARD,
-        () =>
-        {
-            var mapInstance = Instantiate(map);
-            GameObject.FindObjectOfType<Board>().Initialize(mapInstance);
-        },
-        () => GameObject.FindObjectOfType<Board>().StartGame());
-        return true;
-    }
-
-    public static void LoadHub(Hubworld hubPrefab)
-    {
-        ChangeScene(
-        SCENE_EMPTY,
-        () =>
-        {
-            var hub = Instantiate(hubPrefab);
-        }, null);
-    }
 
     static IEnumerator LoadMap(GameObject loader, string scene, Action onLoaded, Action onFinished)
     {
@@ -75,14 +50,16 @@ public class LoadingScreen : MonoBehaviour
         };
     }
 
-    static void ChangeScene(string targetSceneName, Action onLoaded = null, Action onFinished = null)
+    [Server]
+    public static void ChangeSceneServer(string targetSceneName, Action onLoaded = null, Action onFinished = null)
     {
-        var loader = new GameObject();
-        loader.AddComponent<FakeBehaviour>().StartCoroutine(LoadMap(loader, targetSceneName, onLoaded, onFinished));
+        NetworkManager.singleton.ServerChangeScene(targetSceneName);
+        // RoomNetworkManager.OnSceneChange = () => { onLoaded?.Invoke(); onFinished?.Invoke(); };
     }
 
     public static void GoToMenu()
     {
-        ChangeScene(SCENE_MENU);
+        // ChangeSceneServer(SCENE_MENU);
     }
+
 }

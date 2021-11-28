@@ -100,20 +100,21 @@ public class Unit : NetworkBehaviour
 {
     public const float MOVEMENT_SPEED = 8f;
 
-    public string Name => Player != null ? $"<color=#{ColorUtility.ToHtmlStringRGB(Player.Team.Color)}>{name}</color>" : name;
+    public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Player.TeamColor)}>{name}</color>";
     public Sprite Icon;
-    public int Speed;
-    public float MaxLife;
+    [SyncVar] public int Speed;
+    [SyncVar] public float MaxLife;
     public UnitFilter Type;
     public ResourceInfo Resources;
 
     public bool IsDead => Life <= 0;
-    public float Life { get; private set; }
-    public float LifePreview { get; private set; }
-    public PlayerSlot Player { get; set; }
+    [SyncVar] public float Life;
+    [SyncVar] public PlayerInfo Player;
 
     static int spawnCounter;
-    int counter;
+    [SyncVar] int counter;
+
+    public Trigger OnDeadSelf, OnDeadKiller;
 
     public void Damage(float dmg, Unit source)
     {
@@ -121,7 +122,6 @@ public class Unit : NetworkBehaviour
         Life -= dmg;
         if (Life > MaxLife)
             Life = MaxLife;
-        LifePreview = Life;
         OnLifeChange?.Invoke(Life, MaxLife);
         if (IsDead)
         {
@@ -135,31 +135,35 @@ public class Unit : NetworkBehaviour
         gameObject.SetActive(false);
         var map = FindObjectOfType<Map>();
         var board = FindObjectOfType<Board>();
-        if (Player != null)
+        if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
-            if (Player.OnDeadKiller != null && killer != null)
-                board.Playables.InsertFirst(new TriggerContext(killer, map, board, Player.OnDeadKiller));
-            if (Player.OnDeadSelf != null)
-                board.Playables.InsertFirst(new TriggerContext(this, map, board, Player.OnDeadSelf));
+            if (OnDeadKiller != null && killer != null)
+                board.Playables.InsertFirst(new TriggerContext(killer, map, board, OnDeadKiller));
+            if (OnDeadSelf != null)
+                board.Playables.InsertFirst(new TriggerContext(this, map, board, OnDeadSelf));
             FindObjectOfType<Map>().TileOf(this).Unit = null;
         }
     }
 
     public Action<float, float> OnLifeChange;
 
-    void Awake()
+    public override void OnStartServer()
     {
         Life = MaxLife;
-        LifePreview = MaxLife;
         counter = spawnCounter++;
+
+        foreach (var player in FindObjectsOfType<PlayerController>())
+            if (player.ControlledUnits.Contains(this))
+                GetComponent<NetworkIdentity>().AssignClientAuthority(player.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
-    void Start()
+    public override void OnStartClient()
     {
-        if (Player != null)
+        if (Player.Team != -1)
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
         OnLifeChange?.Invoke(Life, MaxLife);
+        Debug.Log($"I spawned on Client! With life {Life}/{MaxLife}");
     }
 
     public static int CompareSpeed(Unit u1, Unit u2)

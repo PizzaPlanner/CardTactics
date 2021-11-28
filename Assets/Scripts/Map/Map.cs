@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Grid))]
-public class Map : NetworkBehaviour
+public class Map : Mirror.NetworkBehaviour
 {
-    public IEnumerable<PlayerSlot> Players => AllTeams.SelectMany(x => x.RegisteredPlayers);
-    public int MinPartySize => AllTeams.Sum(x => x.MinPlayers);
-    public int MaxPartySize => AllTeams.Sum(x => x.MaxPlayers);
+    public int MinPartySize => Teams.Sum(x => x.MinPlayers);
+    public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
 
-    [SyncVar] List<Tile> Tiles;
+    List<Tile> Tiles;
     public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
 
-    [FormerlySerializedAs("Teams")]
-    public Team[] teams;
-
-    public SyncList<Team> AllTeams = new SyncList<Team>();
+    public Team[] Teams;
 
     public void AddTriggers(Board board)
     {
@@ -55,7 +50,7 @@ public class Map : NetworkBehaviour
         .Where(gp => gp.Position.x == x && gp.Position.y == y && gp.Position.z >= zMin && gp.Position.z <= zMax && gp.GetComponent<T>() != null)
         .Select(gp => gp.GetComponent<T>());
 
-    public void Load(Board board)
+    void Start()
     {
         var allGridThings = GetComponentsInChildren<GridPosition>(true);
         Tiles = new List<Tile>();
@@ -77,36 +72,34 @@ public class Map : NetworkBehaviour
                 tile.Neighbours.Add(neighbour);
             }
 
-            if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
+            if (isServer)
             {
-                var instance = Instantiate(uspawn.Prefab);
-                Debug.Log("[Board] Spawning prop " + instance.Name);
-                tile.Place(instance, uspawn.Facing);
-            }
-            else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
-            {
-                if (isServer)
+                if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
                 {
-                    Unit instance = AllTeams[owner.Id].SpawnNew(this);
+                    var instance = Instantiate(uspawn.Prefab);
+                    Debug.Log("[Board] Spawning prop " + instance.Name);
+                    tile.Place(instance, uspawn.Facing);
+                }
+                else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
+                {
+                    Unit instance = Teams[owner.Id].SpawnNew(this);
                     if (instance != null)
                     {
                         Debug.Log("[Board] Spawning unit " + instance.Name);
                         tile.Place(instance, spawn.Facing);
                     }
+
                 }
             }
         }
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
-
         if (isServer)
         {
-            foreach (var team in teams)
-            {
-                team.Init(board, this);
-                AllTeams.Add(team);
-            }
+            foreach (var team in Teams)
+                team.CreatePlayables(FindObjectOfType<Board>().Playables, this);
+            NetworkServer.SpawnObjects();
         }
     }
 
@@ -146,13 +139,13 @@ public class Map : NetworkBehaviour
         }
     }
 
-    public Tile[] GetSpawnTiles(SelectionFilter filter, Team team)
+    public Tile[] GetSpawnTiles(SelectionFilter filter, int team)
     {
         Debug.Log("Get spawn tiles for " + team);
         List<Tile> valid = new List<Tile>();
         foreach (var owner in GetComponentsInChildren<Owner>())
         {
-            if (AllTeams[owner.Id] != team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
+            if (owner.Id != team || !owner.TryGetComponent<SpawnLocation>(out var _)) continue;
             var tile = owner.GetComponent<Tile>();
             if (TileMatches(tile, filter, null))
                 valid.Add(tile);
@@ -172,29 +165,18 @@ public class Map : NetworkBehaviour
         }
     }
 
-    public Tile[] GetPlayerTiles(PlayerSlot player)
-    {
-        List<Tile> valid = new List<Tile>();
-        foreach (var tile in Tiles)
-        {
-            if (tile == null || tile.Unit == null || tile.Unit.Player != player) continue;
-            valid.Add(tile);
-        }
-        return valid.ToArray();
-    }
-
     public bool TileMatches(Tile tile, SelectionFilter filter, Unit source)
     {
         if (!tile.gameObject.activeSelf)
             return false;
         var validTarget = (((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null)) || filter.Tile == 0;
-        if (filter.Unit > 0 && (tile.Unit != null || tile.HasObstacle))
+        if (filter.Unit > 0 && tile.Unit != null)
         {
-            var isObstacle = tile.HasObstacle || tile.Unit.Player == null;
+            var isObstacle = tile.Unit.Player.Team == -1;
             validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;
-            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit.Player == source.Player;
-            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player != source.Player && tile.Unit.Player.Team == source.Player.Team;
-            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && (tile.Unit.Player.Team != source.Player.Team);
+            validTarget |= ((filter.Tile & TileFilter.Self) > 0) && !isObstacle && tile.Unit == source;
+            validTarget |= ((filter.Tile & TileFilter.Ally) > 0) && !isObstacle && tile.Unit.Player.Team == source.Player.Team;
+            validTarget |= ((filter.Tile & TileFilter.Enemy) > 0) && !isObstacle && tile.Unit.Player.Team != source.Player.Team;
 
             validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }

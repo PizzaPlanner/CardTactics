@@ -5,21 +5,21 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class GainCardSkill : Skill
+public class GainCardSkill : ISkill
 {
     [SerializeField] Card NewCardPrefab;
     [SerializeField] CardState NewCardInitialState;
 
-    public override string Description => $"Gain {NewCardPrefab.Name} ({NewCardInitialState})";
+    public string Description => $"Gain {NewCardPrefab.Name} ({NewCardInitialState})";
 
-    public override bool AutoSelectOnOnePossibleTile => true;
+    public bool AutoSelectOnOnePossibleTile => true;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
-        return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Source.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
+        return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
         if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
@@ -33,12 +33,5 @@ public class GainCardSkill : Skill
         CardTooltip.Show(cardPrefab);
         yield return GameSettings.Instance.CardGainAnnouncerTime.Yield();
         CardTooltip.Hide();
-    }
-
-    public override List<Card> GetRelatedCards()
-    {
-        var list = base.GetRelatedCards();
-        list.Add(NewCardPrefab);
-        return list;
     }
 }

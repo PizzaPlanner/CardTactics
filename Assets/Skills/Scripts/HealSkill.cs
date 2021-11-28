@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 
 [System.Serializable]
-public class HealSkill : Skill
+public class HealSkill : ISkill
 {
     public SelectionFilter Filter;
     public int MinRange;
@@ -13,20 +13,20 @@ public class HealSkill : Skill
 
     public float Heal;
 
-    public override string Description => $"Heal {Heal}";
-    public override bool AutoSelectOnOnePossibleTile => false;
+    public string Description => $"Heal {Heal}";
+    public bool AutoSelectOnOnePossibleTile => false;
 
-    protected override IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
     {
         if ((Filter.Tile & TileFilter.Empty) > 0) return new ITilePattern[0];
         return new RangePatternBuilder
         {
             MinRange = MinRange,
             MaxRange = MaxRange
-        }.Patterns(ctx.Source.Map, ctx.SourceTile, Filter);
+        }.Patterns(ctx.Map, ctx.SourceTile, Filter);
     }
 
-    public override IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator OnPreview(SkillContext ctx)
     {
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
         if (GameSettings.Instance.UseAnimations)
