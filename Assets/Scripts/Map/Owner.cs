@@ -16,7 +16,7 @@ public class Owner : MonoBehaviour
         else
             UnityEditor.Handles.color = Color.black;
 
-        var origin = transform.position + Vector3.up * 0.5f;
+        var origin = transform.position;
 
         UnityEditor.Handles.DrawLine(origin + new Vector3(0.5f, 0, 0.5f) * 0.7f, origin + new Vector3(0.5f, 0, -0.5f) * 0.7f, 3);
         UnityEditor.Handles.DrawLine(origin + new Vector3(0.5f, 0, -0.5f) * 0.7f, origin + new Vector3(-0.5f, 0, -0.5f) * 0.7f, 3);

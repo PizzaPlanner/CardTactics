@@ -22,12 +22,17 @@ public class TeamTriggerContext : IPlayableContext
     public string Name => Target.GetType().Name;
     public bool Queueable => team != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
 
-    public IEnumerator Play(bool isClient, bool isServer)
+    public IEnumerator PlayOnServer()
     {
         if (Target.Executed && !Target.CanTriggerMultipleTimes)
             yield break;
         Target.Executed = true;
         yield return Target.Execute(board, map, team);
+    }
+
+    public IEnumerator PlayOnClient()
+    {
+        yield return null;
     }
 }
 

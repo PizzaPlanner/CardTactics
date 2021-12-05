@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -74,6 +75,24 @@ public struct SingleTilePattern : ITilePattern
         Selectable = map.TileMatches(Target, filter, origin.Unit);
         return this;
     }
+
+    public ITilePattern Deserialize(NetworkReader reader)
+    {
+        var pattern = new SingleTilePattern
+        {
+            Target = reader.Read<Tile>(),
+            Selectable = reader.Read<bool>(),
+            Tiles = reader.Read<Tile[]>()
+        };
+        return pattern;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(Target);
+        writer.Write(Selectable);
+        writer.Write(Tiles.ToArray());
+    }
 }
 
 public struct LinePattern : ITilePattern
@@ -100,6 +119,26 @@ public struct LinePattern : ITilePattern
         Selectable = Tiles.Count(x => map.TileMatches(x, filter, origin.Unit)) > 0;
         return this;
     }
+
+    public ITilePattern Deserialize(NetworkReader reader)
+    {
+        var pattern = new LinePattern
+        {
+            Offset = reader.Read<Vector2Int>(),
+            Length = reader.Read<int>(),
+            Selectable = reader.Read<bool>(),
+            TilesByDistance = reader.Read<Tile[]>()
+        };
+        return pattern;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(Offset);
+        writer.Write(Length);
+        writer.Write(Selectable);
+        writer.Write(TilesByDistance);
+    }
 }
 
 public struct RectPattern : ITilePattern
@@ -117,6 +156,26 @@ public struct RectPattern : ITilePattern
             return new EmptyPattern();
         Selectable = true;
         return this;
+    }
+
+    public ITilePattern Deserialize(NetworkReader reader)
+    {
+        var pattern = new RectPattern
+        {
+            Offset = reader.Read<Vector2Int>(),
+            Size = reader.Read<Vector2Int>(),
+            Selectable = reader.Read<bool>(),
+            Tiles = reader.Read<Tile[]>()
+        };
+        return pattern;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(Offset);
+        writer.Write(Size);
+        writer.Write(Selectable);
+        writer.Write(Tiles.ToArray());
     }
 }
 
@@ -140,6 +199,28 @@ public struct PathPattern : ITilePattern
         Selectable = Tiles.Count() > MinLength;
         return this;
     }
+
+    public ITilePattern Deserialize(NetworkReader reader)
+    {
+        var pattern = new PathPattern
+        {
+            MinLength = reader.Read<int>(),
+            MaxLength = reader.Read<int>(),
+            Target = reader.Read<Tile>(),
+            Selectable = reader.Read<bool>(),
+            Tiles = reader.Read<Tile[]>()
+        };
+        return pattern;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(MinLength);
+        writer.Write(MaxLength);
+        writer.Write(Target);
+        writer.Write(Selectable);
+        writer.Write(Tiles.ToArray());
+    }
 }
 
 public struct EmptyPattern : ITilePattern
@@ -147,6 +228,16 @@ public struct EmptyPattern : ITilePattern
     public bool Selectable => false;
     public IEnumerable<Tile> Tiles => new Tile[0];
     public ITilePattern Build(Map map, Tile origin, SelectionFilter filter) { return this; }
+
+    public ITilePattern Deserialize(NetworkReader reader)
+    {
+        return new EmptyPattern();
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+
+    }
 }
 
 public interface ITilePattern
@@ -155,9 +246,57 @@ public interface ITilePattern
     ITilePattern Build(Map map, Tile origin, SelectionFilter filter);
     IEnumerable<Tile> Tiles { get; }
     IEnumerable<Tile> UnselectableTiles => new Tile[0];
+
+    void Serialize(NetworkWriter writer);
+    ITilePattern Deserialize(NetworkReader reader);
 }
 
 public interface ITilePatternBuilder
 {
     IEnumerable<ITilePattern> Patterns(Map map, Tile origin, SelectionFilter filter);
+}
+
+public struct TilePatternMessage : NetworkMessage
+{
+    public ITilePattern[] Patterns;
+}
+
+public static class TilePatternSerializeHelper
+{
+    public static void WritePattern(this NetworkWriter writer, ITilePattern pattern)
+    {
+        writer.WriteString(pattern.GetType().Name);
+        writer.WriteString(pattern.GetType().Assembly.GetName().Name);
+        pattern.Serialize(writer);
+    }
+    public static ITilePattern ReadPattern(this NetworkReader reader)
+    {
+        var type = reader.ReadString();
+        var asm = reader.ReadString();
+        var inst = (ITilePattern)System.Activator.CreateInstance(asm, type).Unwrap();
+        return inst.Deserialize(reader);
+    }
+
+    public static void WriteTile(this NetworkWriter writer, Tile tile) => writer.WriteVector3Int(tile.Position);
+    public static Tile ReadTile(this NetworkReader reader)
+    {
+        var pos = reader.Read<Vector3Int>();
+        return Map.FindObjectOfType<Map>().VisibleTiles.First(x => x.Position == pos);
+    }
+
+    public static void WriteTileArray(this NetworkWriter writer, Tile[] tiles)
+    {
+        writer.Write(tiles.Length);
+        foreach (var tile in tiles)
+            writer.Write(tile);
+    }
+
+    public static Tile[] ReadTileArray(this NetworkReader reader)
+    {
+        var tiles = new List<Tile>();
+        var number = reader.Read<int>();
+        for (int i = 0; i < number; i++)
+            tiles.Add(reader.Read<Tile>());
+        return tiles.ToArray();
+    }
 }

@@ -148,14 +148,27 @@ public class Unit : NetworkBehaviour
 
     public Action<float, float> OnLifeChange;
 
+    // TODO: This correctly spawns the unit. Calling spawn after instantiate like shown here doesnt work: https://mirror-networking.gitbook.io/docs/guides/gameobjects/spawning-gameobjects
+    // Only execute when isServer and isClient are not assigned yet to make sure it won't run on client.
+    // problably wouldn't do anything anyways because clients can't spawn?
+    public void Start()
+    {
+        if (isServer || isClient) return;
+
+        PlayerController owner = null;
+        foreach (var player in FindObjectsOfType<PlayerController>())
+            if (player.ControlledUnits.Contains(this))
+                owner = player;
+        if (owner == null)
+            NetworkServer.Spawn(gameObject);
+        else
+            NetworkServer.Spawn(gameObject, owner.gameObject);
+    }
+
     public override void OnStartServer()
     {
         Life = MaxLife;
         counter = spawnCounter++;
-
-        foreach (var player in FindObjectsOfType<PlayerController>())
-            if (player.ControlledUnits.Contains(this))
-                GetComponent<NetworkIdentity>().AssignClientAuthority(player.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
     public override void OnStartClient()

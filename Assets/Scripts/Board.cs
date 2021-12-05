@@ -59,7 +59,6 @@ public class Board : NetworkBehaviour
     [SerializeField] GameSettings settings;
     [SerializeField] GameStateMachine stateMachine;
 
-    TurnPanel turnPanel;
     Map Map;
 
     public PlayableQueue Playables { get; } = new(true);
@@ -77,39 +76,10 @@ public class Board : NetworkBehaviour
     {
         if (Map == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
             LoadingScreen.GoToMenu();
-        else
-            turnPanel = GameObject.FindObjectOfType<TurnPanel>();
     }
 
-    void Update()
-    {
-        if (isClient && stateMachine.CurrentStage == GameStateMachine.Stage.Play && !EventSystem.current.IsPointerOverGameObject())
-        {
-            if (Input.GetMouseButtonDown(0) && Tile.Hovered != null)
-            {
-                if (Tile.Hovered.CurrentIndicator == TargetIndicator.Valid)
-                    Map.OnTileSelection?.Invoke(Tile.Hovered.PrimaryPattern);
-            }
-        }
-
-        if (isClient && stateMachine.WaitingForAction)
-            switch (stateMachine.CurrentStage)
-            {
-                case GameStateMachine.Stage.Plan:
-                case GameStateMachine.Stage.Play:
-                    DoControls();
-                    break;
-            }
-    }
-
-    void DoControls()
-    {
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
-            Camera.main.orthographicSize += scroll;
-    }
-
-    public void AIPrepare(Unit unit)
+    [Server]
+    public void AIPlan(Unit unit)
     {
         var deck = unit.GetComponent<IngameDeck>();
         if (deck == null)
@@ -127,7 +97,8 @@ public class Board : NetworkBehaviour
             SetPlayerDone();
     }
 
-    public void PlayerPrepare(Unit unit)
+    [Server]
+    public void PlayerPlan(Unit unit)
     {
         var deck = unit.GetComponent<IngameDeck>();
         if (deck == null)
@@ -135,18 +106,17 @@ public class Board : NetworkBehaviour
             SetPlayerDone();
             return;
         }
-
+        Debug.Log($"[Board] Deck can play {deck.Playable.Count()} cards");
         if (deck.Playable.Count() > 0)
         {
             var netId = unit.GetComponent<NetworkIdentity>();
-            Debug.Log("Sending OnStartPlanning with netId " + netId);
-            Debug.Assert(netId != null);
             NetworkServer.SendToAll(new StartPlanningMessage { netId = netId });
         }
         else
             SetPlayerDone();
     }
 
+    [Server]
     public void SetPlayerDone()
     {
         // if (cardsPlayedForCurrentUnit == 0)
@@ -156,14 +126,15 @@ public class Board : NetworkBehaviour
         //     Playables.InsertFirst(oncp);
         // }
 
-        stateMachine.CurrentStage = GameStateMachine.Stage.EndTurn;
+        GameStateMachine.CurrentStage = GameStateMachine.Stage.EndTurn;
     }
 
+    [Server]
     public void SetPlayerReady(CardContext card)
     {
         Playables.Enqueue(card);
         // cardsPlayedForCurrentUnit++;
-        stateMachine.CurrentStage = GameStateMachine.Stage.Play;
+        GameStateMachine.CurrentStage = GameStateMachine.Stage.Play;
     }
 
     [Server]

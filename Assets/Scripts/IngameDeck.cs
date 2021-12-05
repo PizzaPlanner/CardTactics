@@ -9,28 +9,28 @@ public class IngameDeck : NetworkBehaviour
     [ShowInInspector]
     public List<CardContext> Contexts;
 
-    // [Server]
+    [Server]
     public void OnRoundStart()
     {
         foreach (var card in Contexts)
             card.Target.OnRoundStart(card);
     }
 
-    // [Server]
+    [Server]
     public void OnRoundEnd()
     {
         foreach (var card in Contexts)
             card.Target.OnRoundEnd(card);
     }
 
-    // [Server]
+    [Server]
     public void OnTurnStart()
     {
         foreach (var card in Contexts)
             card.Target.OnTurnStart(card);
     }
 
-    // [Server]
+    [Server]
     public void OnTurnEnd()
     {
         foreach (var card in Contexts)
@@ -40,4 +40,6 @@ public class IngameDeck : NetworkBehaviour
     public IEnumerable<CardContext> All => Contexts;
     public IEnumerable<CardContext> Unplayed => Contexts.Where(x => x.State == CardState.Unplayed);
     public IEnumerable<CardContext> Playable => Unplayed.Where(x => x.Target is ActionCard acard && x.Unit.Resources.CanAfford(acard.Cost));
+
+    public int IndexOf(CardContext ctx) => Contexts.IndexOf(ctx);
 }

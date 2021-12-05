@@ -3,10 +3,9 @@
 public class GridPosition : MonoBehaviour
 {
     public Vector3Int Position;
-    public int Height;
 
     const float Y_PER_HEIGHT = 0.25f;
-    static readonly Vector3 offset = Vector3.one * 0.5f + Vector3.down;
+    static readonly Vector3 offset = new Vector3(0.5f, 0, 0.5f);
 
     void Start()
     {
@@ -16,7 +15,7 @@ public class GridPosition : MonoBehaviour
     public void SetPosition()
     {
         var parent = GetComponentInParent<Grid>();
-        transform.localPosition = parent.CellToLocal(Position) + offset + Vector3.up * Height * Y_PER_HEIGHT;
+        transform.localPosition = parent.CellToLocal(Position) + offset;
     }
 
     void OnDrawGizmosSelected()

@@ -108,7 +108,12 @@ public class SkillContext : IPlayableContext
         return false;
     }
 
-    public IEnumerator Play(bool isClient, bool isServer)
+    public IEnumerator PlayOnClient()
+    {
+        yield return null;
+    }
+
+    public IEnumerator PlayOnServer()
     {
         var map = Map;
         if (Target.CanUse(OriginTile, previousContexts, out SourceTile)
@@ -119,12 +124,13 @@ public class SkillContext : IPlayableContext
                 SkillTarget = validPatterns.First();
             else if (Unit.Player.IsAI)
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
-            else if (Unit.isLocalPlayer)
+            else
+            {
                 map.ShowTileIndicators(validPatterns,
                 (pattern) => TargetIndicator.Valid,
                 (itp) => SkillTarget = itp);
-            else
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
+            }
 
             yield return new WaitUntil(() => SkillTarget != null || (WantSkillSkip && Target.Skill.IsOptional));
 

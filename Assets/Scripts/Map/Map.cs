@@ -4,8 +4,12 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(Grid))]
-public class Map : Mirror.NetworkBehaviour
+public struct SelectTileMessage : NetworkMessage
+{
+    public Vector3Int Position;
+}
+
+public class Map : NetworkBehaviour
 {
     public int MinPartySize => Teams.Sum(x => x.MinPlayers);
     public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
@@ -61,7 +65,7 @@ public class Map : Mirror.NetworkBehaviour
             var pos = thing.Position;
             foreach (var neighbour in Get<Tile>(pos.x - 1, pos.y, pos.z - 1, pos.z + 1).Union(Get<Tile>(pos.x, pos.y - 1, pos.z - 1, pos.z + 1)))
             {
-                if (Mathf.Abs(thing.Height - neighbour.GetComponent<GridPosition>().Height) >= 2) continue;
+                if (Mathf.Abs(thing.Position.z - neighbour.GetComponent<GridPosition>().Position.z) >= 2) continue;
 
                 if (neighbour.Neighbours == null)
                     neighbour.Neighbours = new();
@@ -77,6 +81,7 @@ public class Map : Mirror.NetworkBehaviour
                 if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
                 {
                     var instance = Instantiate(uspawn.Prefab);
+                    instance.Player.Team = -1;
                     Debug.Log("[Board] Spawning prop " + instance.Name);
                     tile.Place(instance, uspawn.Facing);
                 }
@@ -99,7 +104,19 @@ public class Map : Mirror.NetworkBehaviour
         {
             foreach (var team in Teams)
                 team.CreatePlayables(FindObjectOfType<Board>().Playables, this);
-            NetworkServer.SpawnObjects();
+            NetworkServer.RegisterHandler<SelectTileMessage>(OnSelectTileMessage);
+        }
+    }
+
+    void OnSelectTileMessage(NetworkConnection conn, SelectTileMessage message)
+    {
+        var tile = Tiles.FirstOrDefault(x => x.Position == message.Position);
+        if (tile == null)
+            return;
+        if (tile.PrimaryPattern != null)
+        {
+            Debug.Log("Selected Tile " + tile.Position);
+            OnTileSelection?.Invoke(tile.PrimaryPattern);
         }
     }
 
@@ -116,6 +133,8 @@ public class Map : Mirror.NetworkBehaviour
     }
 
     public Action<ITilePattern> OnTileSelection;
+
+    [Server]
     public void ShowTileIndicators(IEnumerable<ITilePattern> patterns, Func<ITilePattern, TargetIndicator> indicatorFunc, Action<ITilePattern> onSelectPattern = null)
     {
         OnTileSelection = onSelectPattern;
@@ -133,6 +152,34 @@ public class Map : Mirror.NetworkBehaviour
 
                     tile.PrimaryPattern = pattern;
                     tile.CurrentIndicator = indicatorFunc(pattern);
+                }
+            }
+        }
+        NetworkServer.SendToAll(new TilePatternMessage { Patterns = patterns.ToArray() });
+    }
+
+    [Client]
+    public void ShowPatterns(IEnumerable<ITilePattern> patterns, bool hasAuthority)
+    {
+        Debug.Log("ShowPatterns on Cient");
+        foreach (var tile in Tiles)
+        {
+            // TODO: This is a workaround for Host mode
+            if (isServer)
+                tile.PrimaryPattern = null;
+            tile.CurrentIndicator = TargetIndicator.Hidden;
+            foreach (var pattern in patterns)
+            {
+                if (pattern.Tiles.Contains(tile))
+                {
+                    if (pattern.UnselectableTiles.Contains(tile))
+                        continue;
+                    if (tile.PrimaryPattern != null)
+                        break;
+
+                    tile.PrimaryPattern = pattern;
+                    tile.CurrentIndicator = hasAuthority ? TargetIndicator.Valid : TargetIndicator.Preview;
+
                     tile.SetIndicatorVisible(true, pattern.Tiles.Contains(Tile.Hovered));
                 }
             }
@@ -141,7 +188,6 @@ public class Map : Mirror.NetworkBehaviour
 
     public Tile[] GetSpawnTiles(SelectionFilter filter, int team)
     {
-        Debug.Log("Get spawn tiles for " + team);
         List<Tile> valid = new List<Tile>();
         foreach (var owner in GetComponentsInChildren<Owner>())
         {
@@ -155,6 +201,7 @@ public class Map : Mirror.NetworkBehaviour
 
     public void HideTileSelectionPreview()
     {
+        OnTileSelection = null;
         foreach (var tile in Tiles)
         {
             if (tile == null) continue;
@@ -181,6 +228,38 @@ public class Map : Mirror.NetworkBehaviour
             validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }
         return validTarget;
+    }
+
+    void Update()
+    {
+        if (!isClient)
+            return;
+
+        var currentTile = Tile.Hovered;
+        Tile newTile = null;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Tile")))
+            newTile = hit.transform.GetComponent<Tile>();
+        if (newTile != currentTile && currentTile != null)
+            currentTile.OnMouseLeave();
+        if (newTile != null)
+            newTile.OnMouseEnter();
+
+        if (GameStateMachine.WaitingForAction)
+            switch (GameStateMachine.CurrentStage)
+            {
+                case GameStateMachine.Stage.Plan:
+                case GameStateMachine.Stage.Play:
+                    DoControls();
+                    break;
+            }
+    }
+
+    [Client]
+    void DoControls()
+    {
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
+            Camera.main.orthographicSize += scroll;
     }
 
 #if UNITY_EDITOR

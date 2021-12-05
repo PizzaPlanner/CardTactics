@@ -38,16 +38,16 @@ public class PlanningPanel : MonoBehaviour
         Hide();
     }
 
-    void OnConfirm(CardContext card)
+    void OnConfirm(int cardInDeck)
     {
-        onPlayWrapper.Invoke(card);
+        onPlayWrapper.Invoke(cardInDeck);
         Hide();
     }
 
-    Action<CardContext> onPlayWrapper;
+    Action<int> onPlayWrapper;
     Action onEndTurnWrapper;
 
-    public void Show(Unit unit, Action<CardContext> onPlay, Action onEndTurn)
+    public void Show(Unit unit, Action<int> onPlay, Action onEndTurn)
     {
         if (!unit.TryGetComponent<IngameDeck>(out var deck)) return;
 
@@ -80,8 +80,7 @@ public class PlanningPanel : MonoBehaviour
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);
-                    map.ShowTileIndicators(validPatterns, (pattern) => TargetIndicator.Preview);
-                    map.ShowTileIndicators(invalidPatterns, (pattern) => TargetIndicator.Invalid);
+                    map.ShowPatterns(validPatterns, false);
                 };
             }
             else
@@ -93,7 +92,7 @@ public class PlanningPanel : MonoBehaviour
                 item.RegisterCallback<MouseDownEvent>((_) =>
                 {
                     audio.PlayOneShot(SelectSound);
-                    OnConfirm(ctx);
+                    OnConfirm(deck.IndexOf(ctx));
                 });
         }
         CalculateValidCards(unit);

@@ -12,7 +12,7 @@ public class UnitSpawn : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(transform.position + Vector3.up * 0.5f, 0.5f); //Quaternion.AngleAxis(GetComponent<Tile>().FaceToRot(Facing), Vector3.up));
+        Gizmos.DrawWireSphere(transform.position, 0.5f); //Quaternion.AngleAxis(GetComponent<Tile>().FaceToRot(Facing), Vector3.up));
     }
 #endif
 }

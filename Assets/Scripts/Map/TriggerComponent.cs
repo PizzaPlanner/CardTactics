@@ -8,7 +8,7 @@ public class TriggerComponent : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Vector2 size = GUI.skin.label.CalcSize(new GUIContent(Trigger.gameObject.name));
-        UnityEditor.Handles.Label(transform.position + Vector3.up * 1.5f, Trigger.gameObject.name);
+        UnityEditor.Handles.Label(transform.position + Vector3.up, Trigger.gameObject.name);
     }
 #endif
 }

@@ -16,7 +16,6 @@ public class PlayerController : NetworkBehaviour
     }
 
     public PlayableQueue Playables { get; } = new(false);
-    bool playing = false;
 
     void Update()
     {
@@ -25,8 +24,8 @@ public class PlayerController : NetworkBehaviour
         var next = Playables.Next();
         IEnumerator PlayAndResume()
         {
-            Debug.Log($"[Player] Play {next.Name} for {next.Unit.Name}");
-            yield return next.Play(true, false);
+            Debug.Log($"[Playable] Play {next.Name} for {next.Unit.Name} ({gameObject.name})");
+            yield return next.PlayOnClient();
         }
         StartCoroutine(PlayAndResume());
     }
@@ -54,7 +53,6 @@ public class PlayerController : NetworkBehaviour
             var map = Instantiate(mapPrefab);
             NetworkServer.Spawn(map.gameObject);
             GameObject.FindObjectOfType<Board>().Initialize(map);
-            GameObject.FindObjectOfType<GameStateMachine>().StartGame();
             foreach (var controller in FindObjectsOfType<PlayerController>())
                 controller.OnLoadMap(i);
         };
@@ -77,6 +75,12 @@ public class PlayerController : NetworkBehaviour
         NetworkClient.RegisterHandler<RoundStartMessage>(OnRoundStart);
         NetworkClient.RegisterHandler<TurnStartMessage>(OnTurnStart);
         NetworkClient.RegisterHandler<StartPlanningMessage>(OnStartPlanning);
+        NetworkClient.RegisterHandler<TilePatternMessage>(OnGetPatterns);
+    }
+
+    void OnGetPatterns(TilePatternMessage msg)
+    {
+        FindObjectOfType<Map>().ShowPatterns(msg.Patterns, true);
     }
 
     void OnRoundStart(RoundStartMessage msg)
@@ -101,26 +105,25 @@ public class PlayerController : NetworkBehaviour
         Debug.Assert(unit != null);
         if (!ControlledUnits.Contains(unit)) return;
         GameObject.FindObjectOfType<PlanningPanel>(true).Show(unit,
-        onPlay: (card) => SetPlayerReady(),
+        onPlay: (cardId) => SetPlayerReady(unit, cardId),
         onEndTurn: () => EndTurn());
     }
 
     [Command]
-    void SetPlayerReady()
+    void SetPlayerReady(Unit unit, int cardId)
     {
-
+        FindObjectOfType<Board>().SetPlayerReady(unit.GetComponent<IngameDeck>().Contexts[cardId]);
     }
 
     [Command]
     void EndTurn()
     {
-
+        FindObjectOfType<Board>().SetPlayerDone();
     }
 }
 
 public struct StartPlanningMessage : NetworkMessage
 {
-    public bool MakeSureSignatureIsUnique;
     public NetworkIdentity netId;
 }
 

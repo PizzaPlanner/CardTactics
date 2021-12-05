@@ -24,9 +24,9 @@ namespace UnityEditor.Tilemaps
         {
             var existingTile = TileBrush.GetCell<Tile>(grid, parent, position);
             if (existingTile == null) return;
-            Undo.RecordObject(existingTile.gameObject, "Paint Height");
             var gpos = existingTile.GetComponent<GridPosition>();
-            gpos.Height = Height;
+            Undo.RecordObject(gpos, "Paint Height");
+            gpos.Position.z = height;
             gpos.SetPosition();
         }
     }

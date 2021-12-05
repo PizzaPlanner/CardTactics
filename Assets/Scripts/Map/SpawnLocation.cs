@@ -11,7 +11,7 @@ public class SpawnLocation : MonoBehaviour
     {
         UnityEditor.Handles.color = InstantCommanderSpawn ? Color.cyan : Color.white;
 
-        var origin = transform.position + Vector3.up * 0.5f;
+        var origin = transform.position;
 
         switch (Facing)
         {

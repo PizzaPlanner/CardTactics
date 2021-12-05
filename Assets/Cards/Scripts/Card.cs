@@ -9,7 +9,8 @@ using UnityEngine.Serialization;
 
 public interface IPlayableContext
 {
-    IEnumerator Play(bool isClient, bool isServer);
+    IEnumerator PlayOnServer();
+    IEnumerator PlayOnClient();
     bool Queueable { get; }
     string Name { get; }
     Unit Unit { get; }
@@ -42,17 +43,18 @@ public class CardContext : IPlayableContext
         PreviousContexts = new List<SkillContext>();
     }
 
-    public IEnumerator Play(bool isClient, bool isServer)
+    public IEnumerator PlayOnClient()
+    {
+        CardTooltip.Show(Target);
+        yield return GameSettings.Instance.BeforePlayDelay.Yield();
+    }
+
+    public IEnumerator PlayOnServer()
     {
         State = CardState.Current;
         currentSkill = 0;
         PreviousContexts = new List<SkillContext>();
         Target.OnPlay(this);
-        if (isClient)
-        {
-            CardTooltip.Show(Target);
-            yield return GameSettings.Instance.BeforePlayDelay.Yield();
-        }
         for (currentSkill = 0; currentSkill < Target.Skills.Count(); currentSkill++)
         {
             var skill = Target.skills.ToArray()[currentSkill];
@@ -61,6 +63,7 @@ public class CardContext : IPlayableContext
             PreviousContexts.Add(ctx);
         }
         Board.FindObjectOfType<Board>().Playables.Enqueue(new FinishCardContext(this));
+        yield return null;
     }
 
     public class FinishCardContext : IPlayableContext
@@ -72,27 +75,26 @@ public class CardContext : IPlayableContext
 
         public bool Queueable => true;
 
-        public string Name => context.Name;
+        public string Name => "Finish " + context.Name;
 
         public Unit Unit => context.Unit;
 
         CardContext context;
 
-        public IEnumerator Play(bool isClient, bool isServer)
+        public IEnumerator PlayOnClient()
         {
-            if (isClient)
-            {
-                CardTooltip.Hide();
-                yield return GameSettings.Instance.AfterPlayDelay.Yield();
-            }
-
+            CardTooltip.Hide();
+            yield return GameSettings.Instance.AfterPlayDelay.Yield();
             context.PreviousContexts.Clear();
-            if (isServer)
-            {
-                context.State = context.Target.StateOnPlayed;
-                foreach (var passive in context.Target.passives)
-                    passive.OnCardRemoved(context);
-            }
+        }
+
+        public IEnumerator PlayOnServer()
+        {
+            context.State = context.Target.StateOnPlayed;
+            foreach (var passive in context.Target.passives)
+                passive.OnCardRemoved(context);
+            context.PreviousContexts.Clear();
+            yield return null;
         }
     }
 }

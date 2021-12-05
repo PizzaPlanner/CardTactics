@@ -25,7 +25,7 @@ public enum Facing
 }
 
 [RequireComponent(typeof(GridPosition))]
-public class Tile : NetworkBehaviour
+public class Tile : MonoBehaviour
 {
     public struct PathingData
     {
@@ -95,7 +95,7 @@ public class Tile : NetworkBehaviour
         CurrentIndicator = TargetIndicator.Hidden;
     }
 
-    void OnMouseOver()
+    public void OnMouseEnter()
     {
         if (Hovered != null || EventSystem.current.IsPointerOverGameObject())
             return;
@@ -105,7 +105,7 @@ public class Tile : NetworkBehaviour
         SelectionIndicator.SetActive(true);
         if (PrimaryPattern != null)
         {
-            var isPath = (PrimaryPattern is PathPattern);
+            var isPath = PrimaryPattern is PathPattern;
             var tiles = PrimaryPattern.Tiles.ToArray();
             for (int i = 0; i < tiles.Length; i++)
             {
@@ -116,8 +116,7 @@ public class Tile : NetworkBehaviour
         }
     }
 
-    // ...and the mesh finally turns white when the mouse moves away.
-    void OnMouseExit()
+    public void OnMouseLeave()
     {
         if (Hovered != this)
             return;
@@ -135,6 +134,16 @@ public class Tile : NetworkBehaviour
                 if (isPath)
                     tiles[i].HidePath();
             }
+        }
+    }
+
+    void Update()
+    {
+        if (Hovered != this) return;
+        if (Input.GetMouseButtonDown(0) && CurrentIndicator == TargetIndicator.Valid && PrimaryPattern != null && GameStateMachine.CurrentStage == GameStateMachine.Stage.Play)
+        {
+            NetworkClient.Send(new SelectTileMessage { Position = Position });
+            Debug.Log("Sending selection message");
         }
     }
 
@@ -356,7 +365,7 @@ public class Tile : NetworkBehaviour
 
     public Facing Facing => RotToFace(Unit.transform.rotation.eulerAngles.y);
 
-    public Vector3 UnitAnchor => transform.position + new Vector3(0, 0.5f, 0);
+    public Vector3 UnitAnchor => transform.position;
 
     [Server]
     void PlaceUnitNoCheck(Unit unit, Facing facing)
