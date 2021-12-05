@@ -82,12 +82,10 @@ public class GameStateMachine : NetworkBehaviour
             CurrentStage = Stage.Plan;
         else if (playableUnits.Count() > 0)
             CurrentStage = Stage.StartTurn;
-        else
+        else if (FindObjectsOfType<Unit>().Count(x => !x.IsDead) > 0)
             CurrentStage = Stage.StartRound;
-        // else if (Map.Teams.Sum(x => x.RegisteredPlayers.Count(y => y.IsAlive)) > 0)
-        //     CurrentStage = Stage.StartRound;
-        // else
-        //     CurrentStage = Stage.End;
+        else
+            CurrentStage = Stage.End;
     }
 
     [Server]
@@ -131,16 +129,25 @@ public class GameStateMachine : NetworkBehaviour
     [Server]
     void OnEndTurn()
     {
-        // turnPanel.OnTurnEnd(CurrentUnit);
         Debug.Log($"[Board] End Turn of {CurrentUnit.Name}");
         if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
             deck.OnTurnEnd();
+        if (cardsPlayedForCurrentUnit == 0)
+        {
+            var board = FindObjectOfType<Board>();
+            Debug.LogWarning($"[Board] {CurrentUnit.Name} ended without playing a Card!");
+            var oncp = new CardContext(board.OnNoCardsPlayed, FindObjectOfType<Map>(), CurrentUnit, CardState.Unplayed);
+            board.Playables.InsertFirst(oncp);
+        }
         CurrentUnit = null;
         if (board.Playables.Empty)
             CurrentStage = Stage.Events;
         else
             CurrentStage = Stage.Play;
     }
+
+    [Server]
+    public void NotifyCardPlayed() => cardsPlayedForCurrentUnit++;
 
     [Server]
     void OnStartTurn()
@@ -151,7 +158,6 @@ public class GameStateMachine : NetworkBehaviour
         waitingForAction = true;
         var netId = CurrentUnit.GetComponent<NetworkIdentity>();
         Debug.Assert(netId != null);
-        Debug.Log("Sending TurnStartMessage");
         NetworkServer.SendToAll(new TurnStartMessage { netId = netId });
         Resume();
         if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))

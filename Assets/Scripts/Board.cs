@@ -64,7 +64,7 @@ public class Board : NetworkBehaviour
     public PlayableQueue Playables { get; } = new(true);
 
     [SerializeField]
-    Card OnNoCardsPlayed;
+    public Card OnNoCardsPlayed;
 
     public void Initialize(Map mapInstance)
     {
@@ -119,13 +119,6 @@ public class Board : NetworkBehaviour
     [Server]
     public void SetPlayerDone()
     {
-        // if (cardsPlayedForCurrentUnit == 0)
-        // {
-        //     Debug.LogWarning($"{CurrentUnit.Name} ended without playing a Card!");
-        //     var oncp = new CardContext(OnNoCardsPlayed, Map, CurrentUnit, CardState.Unplayed);
-        //     Playables.InsertFirst(oncp);
-        // }
-
         GameStateMachine.CurrentStage = GameStateMachine.Stage.EndTurn;
     }
 
@@ -133,7 +126,7 @@ public class Board : NetworkBehaviour
     public void SetPlayerReady(CardContext card)
     {
         Playables.Enqueue(card);
-        // cardsPlayedForCurrentUnit++;
+        stateMachine.NotifyCardPlayed();
         GameStateMachine.CurrentStage = GameStateMachine.Stage.Play;
     }
 

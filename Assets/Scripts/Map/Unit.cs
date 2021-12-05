@@ -107,7 +107,7 @@ public class Unit : NetworkBehaviour
     public UnitFilter Type;
     public ResourceInfo Resources;
 
-    public bool IsDead => Life <= 0;
+    public bool IsDead => Life <= 0 || Player.Team == -1;
     [SyncVar] public float Life;
     [SyncVar] public PlayerInfo Player;
 

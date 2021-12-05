@@ -85,13 +85,11 @@ public class PlayerController : NetworkBehaviour
 
     void OnRoundStart(RoundStartMessage msg)
     {
-        Debug.Log("Running OnRoundStart");
         StartCoroutine(FindObjectOfType<TurnPanel>().OnRoundStart(msg.round, onComplete: null));
     }
 
     void OnTurnStart(TurnStartMessage msg)
     {
-        Debug.Log("Running OnTurnStart");
         Debug.Assert(msg.netId != null);
         var unit = msg.netId.GetComponent<Unit>();
         Debug.Assert(unit != null);
@@ -100,7 +98,6 @@ public class PlayerController : NetworkBehaviour
 
     void OnStartPlanning(StartPlanningMessage msg)
     {
-        Debug.Log("Running OnStartPlanning with netId " + msg.netId);
         var unit = msg.netId.GetComponent<Unit>();
         Debug.Assert(unit != null);
         if (!ControlledUnits.Contains(unit)) return;

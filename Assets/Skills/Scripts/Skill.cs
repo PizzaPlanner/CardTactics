@@ -110,7 +110,12 @@ public class SkillContext : IPlayableContext
 
     public IEnumerator PlayOnClient()
     {
-        yield return null;
+        var target = SourceTile.UnitAnchor + Camera.main.transform.forward * -50;
+        while (Vector3.Distance(Camera.main.transform.position, target) > 0.05f)
+        {
+            Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, target, 10 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public IEnumerator PlayOnServer()

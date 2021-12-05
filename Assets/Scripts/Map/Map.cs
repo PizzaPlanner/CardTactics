@@ -100,6 +100,8 @@ public class Map : NetworkBehaviour
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
+        if (isClient)
+            Camera.main.transform.position = Camera.main.transform.forward * -50;
         if (isServer)
         {
             foreach (var team in Teams)
