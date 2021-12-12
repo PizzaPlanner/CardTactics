@@ -12,6 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Mage_Energize
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  id: 0
+  DescriptionOverride: 'While in your Hand:
+
+    Convert [+0:Amount] [+1:Class] to
+    [+0:Class] for your Turn.
+
+    At the end of your Turn, Play [+2:Card].
+
+
+    Heal
+    yourself for [!0:Heal]'
   skills:
   - SourceTileInput: 1
     TileOutput: 0
@@ -35,7 +46,6 @@ MonoBehaviour:
     - rid: 1776283524840817459
       type: {class: HealSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
         Filter:
           Tile: 16
           Unit: 2147483647
@@ -46,17 +56,20 @@ MonoBehaviour:
     - rid: 1776283524840817460
       type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
       data:
+        Source: {fileID: 11400000}
         Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
         Amount: 1
         Type: 1
     - rid: 1776283524840817461
       type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
       data:
+        Source: {fileID: 11400000}
         Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
         Amount: -1
         Type: 1
     - rid: 1776283524840817462
       type: {class: PlayCardPassive, ns: , asm: Assembly-CSharp}
       data:
+        Source: {fileID: 11400000}
         Card: {fileID: 11400000, guid: e04b7b7db5cafc84ab309c5b9b20637c, type: 2}
         When: 1

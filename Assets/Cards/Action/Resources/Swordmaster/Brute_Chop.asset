@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Brute_Chop
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  id: 0
+  DescriptionOverride: 
   skills:
   - SourceTileInput: 1
     TileOutput: 2
@@ -35,7 +37,6 @@ MonoBehaviour:
     - rid: 1776283502214906287
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
         Filter:
           Tile: 2
           Unit: 2147483639
@@ -48,7 +49,6 @@ MonoBehaviour:
     - rid: 1776283502214906288
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
         Filter:
           Tile: 2
           Unit: 7

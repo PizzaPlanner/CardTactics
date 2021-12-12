@@ -11,9 +11,16 @@ public class CardItem : VisualElement
         set
         {
             card = value;
-            this.Q("Icon").style.backgroundImage = new StyleBackground(card.Icon);
-            this.Query<Label>("Name").ForEach(x => x.text = card.Name);
-            this.Query<Label>("Description").ForEach(x => x.text = GetDescription(card));
+            if (card != null)
+            {
+                this.Q("Icon").style.backgroundImage = new StyleBackground(card.Icon);
+                this.Query<Label>("Name").ForEach(x => x.text = card.Name);
+                this.Query<Label>("Description").ForEach(x => x.text = GetDescription(card));
+            }
+            else
+            {
+                this.Q("Icon").style.backgroundImage = new StyleBackground();
+            }
 
             this.Query(null, "filter-actioncard").ForEach(x => x.style.display = DisplayStyle.None);
             this.Query(null, "filter-unitcard").ForEach(x => x.style.display = DisplayStyle.None);
@@ -47,7 +54,7 @@ public class CardItem : VisualElement
 
     static string GetDescription(Card card)
     {
-        return card.GetDescription();
+        return card.GetFormattedDescription();
     }
 
 

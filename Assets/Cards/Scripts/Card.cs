@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -240,6 +242,12 @@ public abstract class Card : ScriptableObject, IPlayable
     public abstract string Name { get; }
     public Card Source { get; private set; }
 
+    public int Id => id;
+    [SerializeField] int id;
+
+    [TextArea]
+    [SerializeField] string DescriptionOverride;
+
     void OnEnable()
     {
         if (skills == null)
@@ -262,8 +270,11 @@ public abstract class Card : ScriptableObject, IPlayable
 
     public IEnumerable<ISkill> Skills => skills?.Select(x => x.Skill) ?? new ISkill[0];
 
-    public virtual string GetDescription()
+    protected virtual string GetDescription()
     {
+        if (!string.IsNullOrEmpty(DescriptionOverride))
+            return DescriptionOverride;
+
         var descriptions = new List<string>();
         if (passives != null && passives.Length > 1)
         {
@@ -278,4 +289,43 @@ public abstract class Card : ScriptableObject, IPlayable
                 descriptions.Add(skill.Description);
         return string.Join("\n", descriptions);
     }
+
+    public string GetFormattedDescription()
+    {
+        var desc = GetDescription();
+        var startIdx = -1;
+        while (desc.IndexOf('[') > startIdx)
+        {
+            var replacement = "<color=#ff3333>Invalid Link</color>";
+            var start = desc.IndexOf("[");
+            var end = desc[start..].IndexOf("]") + start + 1;
+            var substr = desc[start..end];
+            var contents = substr[2..^1];
+            var type = substr[1];
+            startIdx = start;
+            try
+            {
+                var split = contents.Split(':');
+                object target = type switch
+                {
+                    '!' => skills[int.Parse(split[0])].Skill,
+                    '+' => passives[int.Parse(split[0])],
+                    _ => null,
+                };
+                if (target != null)
+                {
+                    FieldInfo field = target.GetType().GetField(split[1], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                    if (field != null)
+                        replacement = $"<color=#2288ff>{field.GetValue(target)}</color>";
+                    else
+                        replacement = $"<color=#ff3333>No Data for '{split[1]}'</color>";
+                }
+            }
+            catch (Exception e) { replacement = $"<color=#ff3333>Invalid Format</color>"; }
+            desc = desc.Replace(substr, replacement);
+        }
+        return desc;
+    }
+
+    public override string ToString() => Name;
 }

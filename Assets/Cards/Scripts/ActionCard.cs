@@ -61,7 +61,7 @@ public class ActionCard : Card
         base.OnRoundEnd(ctx);
     }
 
-    public override string GetDescription()
+    protected override string GetDescription()
     {
         var str = base.GetDescription();
         if (str.Length > 0) str += "\n";

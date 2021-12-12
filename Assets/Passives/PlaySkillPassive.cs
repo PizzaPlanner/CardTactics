@@ -16,7 +16,7 @@ public class PlayCardPassive : Passive
     [SerializeField] Card Card;
     [SerializeField] PlayType When;
 
-    public override string Description => $"{(When == PlayType.OnTurnStart ? "At the Start of your Turn:\n" : When == PlayType.OnTurnEnd ? "At the end of your Turn:\n" : "")}{Card.GetDescription()}";
+    public override string Description => $"{(When == PlayType.OnTurnStart ? "At the Start of your Turn:\n" : When == PlayType.OnTurnEnd ? "At the end of your Turn:\n" : "")}{Card.GetFormattedDescription()}";
 
     void PlayCard(Unit unit)
     {

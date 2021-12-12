@@ -22,17 +22,37 @@ public class CardEditor : EditorWindow
     {
         cardUIPrefab = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UI_PREFAB_PATH);
         var list = new ScrollView(ScrollViewMode.Vertical);
-
-        list.contentContainer.style.flexDirection = FlexDirection.Row;
-        list.contentContainer.style.flexWrap = Wrap.Wrap;
-        inspector = new ScrollView(ScrollViewMode.Vertical);
+        list.contentContainer.style.flexDirection = FlexDirection.Column;
         rootVisualElement.Add(list);
-        rootVisualElement.style.flexDirection = FlexDirection.Row;
-        var newcard = new Button(() => { var card = Card.CreateInstance<ActionCard>(); MakeCard(card, list.contentContainer); ProjectWindowUtil.CreateAsset(card, "Assets/Cards/Action/newAction.asset"); }) { text = "New ActionCard" };
-        list.contentContainer.Add(newcard);
-        foreach (var cardAsset in AssetDatabase.FindAssets("t:Card").Select(x => AssetDatabase.LoadAssetAtPath<Card>(AssetDatabase.GUIDToAssetPath(x))))
-            MakeCard(cardAsset, list.contentContainer);
+        inspector = new ScrollView(ScrollViewMode.Vertical);
         rootVisualElement.Add(inspector);
+
+        rootVisualElement.style.flexDirection = FlexDirection.Row;
+
+        var cardAssetsBasePath = "Assets/Cards/Action/Resources";
+
+        Debug.Log("ADB.GS: " + AssetDatabase.GetSubFolders(cardAssetsBasePath).Length);
+
+        foreach (var path in AssetDatabase.GetSubFolders(cardAssetsBasePath))
+        {
+            var pathThingy = new Foldout { text = path };
+            pathThingy.contentContainer.style.flexDirection = FlexDirection.Row;
+            pathThingy.contentContainer.style.flexWrap = Wrap.Wrap;
+            list.contentContainer.Add(pathThingy);
+
+            // New Card Button
+            cardUIPrefab.CloneTree(pathThingy.contentContainer, out var idx, out var _);
+            var newcard = pathThingy.contentContainer[idx].Q<CardItem>();
+            newcard.Card = null;
+            newcard.RegisterCallback<MouseDownEvent>((_) => { var card = Card.CreateInstance<ActionCard>(); MakeCard(card, list.contentContainer); ProjectWindowUtil.CreateAsset(card, "Assets/Cards/Action/Resources/newAction.asset"); });
+            newcard.Q<Label>("Name").text = "New ActionCard";
+            newcard.Q<Label>("Description").text = $"in {path}";
+            newcard.transform.scale = new Vector3(0.9f, 0.9f, 0.9f);
+
+            // Add Cards
+            foreach (var cardAsset in AssetDatabase.FindAssets("t:Card", new string[] { path }).Select(x => AssetDatabase.LoadAssetAtPath<Card>(AssetDatabase.GUIDToAssetPath(x))))
+                MakeCard(cardAsset, pathThingy.contentContainer);
+        }
     }
 
     void MakeCard(Card card, VisualElement parent)

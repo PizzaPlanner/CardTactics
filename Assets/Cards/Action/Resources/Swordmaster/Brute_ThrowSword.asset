@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Brute_ThrowSword
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  id: 0
+  DescriptionOverride: 'Throw a sword at an Enemy in Range [!0:MinRange] to [!0:MaxRange],
+    dealing [!0:Damage] Damage.
+
+    The target gains [!1:NewCardPrefab]'
   skills:
   - SourceTileInput: 1
     TileOutput: 2
@@ -24,21 +29,19 @@ MonoBehaviour:
     Skill:
       rid: 1776283499621253604
   passives: []
-  name: Throw Blade
   icon: {fileID: 21300000, guid: eea717ea89df3f04781e8d2b413d1c7a, type: 3}
+  name: Throw Blade
+  Type: 0
   cost:
     Resources:
     - Total: 1
       Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
-  Once: 1
-  Temporary: 0
   references:
     version: 2
     RefIds:
     - rid: 1776283499621253602
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
         Filter:
           Tile: 2
           Unit: 7
@@ -51,6 +54,5 @@ MonoBehaviour:
     - rid: 1776283499621253604
       type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
         NewCardPrefab: {fileID: 11400000, guid: ec97aedbc3d27064180d7fb10e323625, type: 2}
         NewCardInitialState: 0
