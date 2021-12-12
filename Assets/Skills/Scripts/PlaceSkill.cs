@@ -26,4 +26,7 @@ public class PlaceSkill : ISkill
         ctx.OutTile.Place(reference, facing);
         yield return null;
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

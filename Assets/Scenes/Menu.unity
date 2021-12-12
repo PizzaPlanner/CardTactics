@@ -993,7 +993,7 @@ MonoBehaviour:
   PersistNetworkManagerToOfflineScene: 1
   runInBackground: 1
   autoStartServerBuild: 1
-  serverTickRate: 30
+  serverTickRate: 10
   offlineScene: 
   onlineScene: 
   transport: {fileID: 1818055810}
@@ -1001,7 +1001,7 @@ MonoBehaviour:
   maxConnections: 4
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 7684022313020701077, guid: 3b8ef672a8476464abe2d273d436155c, type: 3}
-  autoCreatePlayer: 1
+  autoCreatePlayer: 0
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 563312192517643092, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
@@ -1012,6 +1012,7 @@ MonoBehaviour:
   - {fileID: 563312192517643092, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
   - {fileID: 5495453133545694608, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
   lobbyUIPrefab: {fileID: 9197481963319205126, guid: 801e85466d40710478276a8bfcb54de3, type: 3}
+  loadingScreenPrefab: {fileID: 9197481963319205126, guid: 481dc223f89a06e4986294f7432b31a5, type: 3}
 --- !u!4 &1818055812
 Transform:
   m_ObjectHideFlags: 0
@@ -1147,7 +1148,7 @@ MonoBehaviour:
         m_MethodName: PlayMap
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1285172813067429327, guid: f2e8a925c168ba24288889c2a93fdd00, type: 3}
+          m_ObjectArgument: {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
           m_ObjectArgumentAssemblyTypeName: Map, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0

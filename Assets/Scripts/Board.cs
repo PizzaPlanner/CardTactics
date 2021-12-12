@@ -14,12 +14,9 @@ public class PlayableQueue
         public IPlayable Playable;
     }
 
-    bool isServer;
-
-    public PlayableQueue(bool isServer)
+    public PlayableQueue()
     {
         queue = new();
-        this.isServer = isServer;
     }
 
     public bool Empty => queue.Count == 0;
@@ -35,10 +32,16 @@ public class PlayableQueue
     {
         if (!context.Queueable)
         {
-            Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {context.Unit.Name}", context.Unit);
+            if (context is IPlayableContextWithUnit ipcu)
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {ipcu.Unit.Name}", ipcu.Unit);
+            else
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} (Server)");
             return;
         }
-        Debug.Log($"[Playable] Queue {context.Name} for {context.Unit.Name}", context.Unit);
+        if (context is IPlayableContextWithUnit ipcu2)
+            Debug.Log($"[Playable] Queue {context.Name} for {ipcu2.Unit.Name}", ipcu2.Unit);
+        else
+            Debug.Log($"[Playable] Queue {context.Name}");
 
         if (priorizeNext)
         {
@@ -57,25 +60,17 @@ public class Board : NetworkBehaviour
 {
 
     [SerializeField] GameSettings settings;
-    [SerializeField] GameStateMachine stateMachine;
 
-    Map Map;
-
-    public PlayableQueue Playables { get; } = new(true);
+    public PlayableQueue Playables { get; } = new();
 
     [SerializeField]
     public Card OnNoCardsPlayed;
 
-    public void Initialize(Map mapInstance)
-    {
-        settings.Load();
-        Map = mapInstance;
-    }
 
-    void Awake()
+    void Start()
     {
-        if (Map == null && GameObject.FindObjectOfType<LoadingScreen>() == null)
-            LoadingScreen.GoToMenu();
+        if (isClient)
+            settings.Load();
     }
 
     [Server]
@@ -90,6 +85,7 @@ public class Board : NetworkBehaviour
 
         if (deck.Playable.Count() > 0)
         {
+            NetworkServer.SendToAll(new StartPlanningMessage { netId = unit.GetComponent<NetworkIdentity>() });
             var rnd = Random.Range(0, deck.Playable.Count());
             SetPlayerReady(deck.Playable.ToArray()[rnd]);
         }
@@ -106,11 +102,9 @@ public class Board : NetworkBehaviour
             SetPlayerDone();
             return;
         }
-        Debug.Log($"[Board] Deck can play {deck.Playable.Count()} cards");
         if (deck.Playable.Count() > 0)
         {
-            var netId = unit.GetComponent<NetworkIdentity>();
-            NetworkServer.SendToAll(new StartPlanningMessage { netId = netId });
+            NetworkServer.SendToAll(new StartPlanningMessage { netId = unit.GetComponent<NetworkIdentity>() });
         }
         else
             SetPlayerDone();
@@ -125,8 +119,13 @@ public class Board : NetworkBehaviour
     [Server]
     public void SetPlayerReady(CardContext card)
     {
+        if (card.Unit != FindObjectOfType<GameStateMachine>().CurrentUnit)
+        {
+            Debug.LogError($"[Board] Invalid ready message received by {card.Unit.Name}!");
+            return;
+        }
         Playables.Enqueue(card);
-        stateMachine.NotifyCardPlayed();
+        FindObjectOfType<GameStateMachine>().NotifyCardPlayed();
         GameStateMachine.CurrentStage = GameStateMachine.Stage.Play;
     }
 
@@ -142,10 +141,5 @@ public class Board : NetworkBehaviour
                     Playables.InsertFirst(new TeamTriggerContext(team, map, this, condition.Trigger));
                 }
         }
-    }
-
-    internal CardContext CreateFakeCardContext()
-    {
-        return new CardContext(new ActionCard(), Map, null, CardState.Unplayed);
     }
 }

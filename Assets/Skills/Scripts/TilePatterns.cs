@@ -277,10 +277,12 @@ public static class TilePatternSerializeHelper
         return inst.Deserialize(reader);
     }
 
-    public static void WriteTile(this NetworkWriter writer, Tile tile) => writer.WriteVector3Int(tile.Position);
+    public static void WriteTile(this NetworkWriter writer, Tile tile) => writer.WriteVector3Int(tile != null ? tile.Position : new Vector3Int(0, 0, int.MaxValue));
     public static Tile ReadTile(this NetworkReader reader)
     {
         var pos = reader.Read<Vector3Int>();
+        if (pos.z == int.MaxValue)
+            return null;
         return Map.FindObjectOfType<Map>().VisibleTiles.First(x => x.Position == pos);
     }
 

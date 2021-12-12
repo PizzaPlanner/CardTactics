@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -30,10 +31,15 @@ public class UnitItem : VisualElement
 
     void OnMouseEnter()
     {
+        var t = Tile.FindObjectsOfType<Tile>().FirstOrDefault(x => x.Unit == unit);
+        if (t != null)
+            t.Hover();
     }
 
     void OnMouseLeave()
     {
+        if (Tile.Hovered == null) return;
+        Tile.Hovered.OnMouseLeave();
     }
 
 

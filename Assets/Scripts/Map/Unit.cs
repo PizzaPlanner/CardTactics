@@ -174,9 +174,13 @@ public class Unit : NetworkBehaviour
     public override void OnStartClient()
     {
         if (Player.Team != -1)
+        {
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
+            gameObject.layer = LayerMask.NameToLayer("Outline");
+            foreach (var mr in gameObject.GetComponentsInChildren<Renderer>())
+                mr.gameObject.layer = LayerMask.NameToLayer("Outline");
+        }
         OnLifeChange?.Invoke(Life, MaxLife);
-        Debug.Log($"I spawned on Client! With life {Life}/{MaxLife}");
     }
 
     public static int CompareSpeed(Unit u1, Unit u2)

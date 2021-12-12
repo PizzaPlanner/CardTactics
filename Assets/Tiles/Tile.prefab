@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 272313555594542653}
   - component: {fileID: 5054393223645005214}
   - component: {fileID: 3666596268607574038}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 6157916520541071826}
   - component: {fileID: 6606386029562005318}
   - component: {fileID: 156700582178196855}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 5193176750621615190}
   - component: {fileID: 927541307547886737}
   - component: {fileID: 6973369679464957532}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 9046838568513489114}
   - component: {fileID: 399673033136230023}
   - component: {fileID: 1578913912470224297}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pathing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -539,7 +539,7 @@ GameObject:
   - component: {fileID: 1623296605801053197}
   - component: {fileID: 7898533524778054851}
   - component: {fileID: 5772755886439187198}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -654,7 +654,7 @@ GameObject:
   - component: {fileID: 9107083348758278188}
   - component: {fileID: 5583252231369944398}
   - component: {fileID: 6835423211010824982}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 914960167778491740}
   - component: {fileID: 8841071674636128570}
   - component: {fileID: 28636435755707010}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,7 +820,7 @@ GameObject:
   - component: {fileID: 6920819608546186335}
   - component: {fileID: 2310332169437296077}
   - component: {fileID: 3262764021050246540}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -903,7 +903,7 @@ GameObject:
   - component: {fileID: 4379732810368804190}
   - component: {fileID: 3852857550524094758}
   - component: {fileID: 7390842314000080756}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -984,7 +984,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8627160892531216349}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Movement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5926,7 +5926,7 @@ GameObject:
   - component: {fileID: 5755690457033901952}
   - component: {fileID: 1528137433141801645}
   - component: {fileID: 7765894615085496958}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementC
   m_TagString: Untagged
   m_Icon: {fileID: 0}

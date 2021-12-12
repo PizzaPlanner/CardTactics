@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class TeamTriggerContext : IPlayableContext
@@ -11,13 +12,11 @@ public class TeamTriggerContext : IPlayableContext
         this.board = board;
         this.map = map;
         this.team = team;
-        Unit = null; //team.RegisteredPlayers.First().Unit;
     }
 
     Board board;
     Map map;
     Team team;
-    public Unit Unit { get; private set; }
 
     public string Name => Target.GetType().Name;
     public bool Queueable => team != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
@@ -33,6 +32,19 @@ public class TeamTriggerContext : IPlayableContext
     public IEnumerator PlayOnClient()
     {
         yield return null;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(board);
+        writer.Write(map);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        board = reader.Read<Board>();
+        map = reader.Read<Map>();
+        return this;
     }
 }
 

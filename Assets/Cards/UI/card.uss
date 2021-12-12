@@ -78,7 +78,7 @@
 .carditem-selectable:hover {
     translate: 0 -200px;
     transition-duration: 150ms;
-    transition-timing-function: linear;
+    transition-timing-function: ease-in-out-sine;
     border-left-color: rgb(63, 173, 233);
     border-right-color: rgb(63, 173, 233);
     border-top-color: rgb(63, 173, 233);
@@ -200,15 +200,15 @@
 }
 
 TextField > * {
-    background-color: rgba(87, 87, 87, 255);
+    background-color: rgb(87, 87, 87);
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-    border-left-color: rgba(188, 188, 188, 255);
-    border-right-color: rgba(188, 188, 188, 255);
-    border-top-color: rgba(188, 188, 188, 255);
-    border-bottom-color: rgba(188, 188, 188, 255);
+    border-left-color: rgb(188, 188, 188);
+    border-right-color: rgb(188, 188, 188);
+    border-top-color: rgb(188, 188, 188);
+    border-bottom-color: rgb(188, 188, 188);
     padding-top: 5px;
     padding-bottom: 5px;
 }

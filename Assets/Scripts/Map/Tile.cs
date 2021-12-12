@@ -97,7 +97,13 @@ public class Tile : MonoBehaviour
 
     public void OnMouseEnter()
     {
-        if (Hovered != null || EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject())
+            Hover();
+    }
+
+    public void Hover()
+    {
+        if (Hovered != null)
             return;
         Hovered = this;
         if (Unit != null)

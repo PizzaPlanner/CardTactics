@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <ui:VisualElement name="LoadingScreen" style="background-color: rgb(20, 20, 20); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center;">
+        <ui:VisualElement style="background-image: url(&apos;project://database/Assets/3rdParty/FantasyIconsMegaPack/LootIcons/LootIcons_png/transparent/addons/128_t.PNG?fileID=2800000&amp;guid=a01148c4b525a634d820b9362353217d&amp;type=3#128_t&apos;); width: 256px; height: 256px; transition-property: rotate; transition-duration: 1s; transition-timing-function: linear; transition-delay: 0s;" />
+        <ui:Label text="Travelling somewhere else ..." display-tooltip-when-elided="true" class="color-default-text" style="margin-top: 50px; font-size: 28px;" />
+    </ui:VisualElement>
+</ui:UXML>

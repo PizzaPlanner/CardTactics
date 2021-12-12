@@ -163,7 +163,6 @@ public class Map : NetworkBehaviour
     [Client]
     public void ShowPatterns(IEnumerable<ITilePattern> patterns, bool hasAuthority)
     {
-        Debug.Log("ShowPatterns on Cient");
         foreach (var tile in Tiles)
         {
             // TODO: This is a workaround for Host mode

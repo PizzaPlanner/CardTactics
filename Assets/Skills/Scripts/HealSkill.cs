@@ -36,4 +36,7 @@ public class HealSkill : ISkill
         }
         ctx.OutTile.Unit.Damage(-Heal, ctx.OriginTile.Unit);
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

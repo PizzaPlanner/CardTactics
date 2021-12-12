@@ -39,4 +39,7 @@ public class MoveSkill : ISkill
         yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);
     }
 
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+
 }

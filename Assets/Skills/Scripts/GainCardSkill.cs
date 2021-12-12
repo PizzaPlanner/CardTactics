@@ -34,4 +34,7 @@ public class GainCardSkill : ISkill
         yield return GameSettings.Instance.CardGainAnnouncerTime.Yield();
         CardTooltip.Hide();
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

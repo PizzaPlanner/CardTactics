@@ -51,4 +51,7 @@ public class AttackSkill : ISkill
         }
         ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

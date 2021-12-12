@@ -3,11 +3,12 @@ using Mirror;
 using UnityEngine.UIElements;
 using System.Linq;
 using System;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(UIDocument))]
 public class RoomNetworkManager : NetworkManager
 {
-    VisualElement lobbyUI;
+    VisualElement lobbyUI, loadingScreen;
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -16,9 +17,8 @@ public class RoomNetworkManager : NetworkManager
         lobbyUI.Q("PlayerList").Add(new Label(conn.identity.gameObject.name));
         lobbyUI.Q<Toggle>().value = conn.isReady;
         lobbyUI.Q<Toggle>().RegisterValueChangedCallback(x => conn.isReady = x.newValue);
-        DontDestroyOnLoad(conn.identity);
+        DontDestroyOnLoad(conn.identity.gameObject);
         SetConnectionUI(NetworkManagerMode.ClientOnly);
-
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -74,6 +74,7 @@ public class RoomNetworkManager : NetworkManager
     }
 
     [SerializeField] VisualTreeAsset lobbyUIPrefab;
+    [SerializeField] VisualTreeAsset loadingScreenPrefab;
 
     void Start()
     {
@@ -86,7 +87,17 @@ public class RoomNetworkManager : NetworkManager
         lobbyUI.Q<Button>("Leave").clicked += Leave;
         lobbyUI.Q<Button>("Host").clicked += Host;
 
+        loadingScreenPrefab.CloneTree(root, out idx, out var _);
+        loadingScreen = root[idx].Q("LoadingScreen");
+        loadingScreen.style.display = DisplayStyle.None;
+
         StartHost();
+    }
+
+    public override void OnStartClient()
+    {
+        NetworkClient.ready = true;
+        NetworkClient.AddPlayer();
     }
 
     void Host()
@@ -121,14 +132,26 @@ public class RoomNetworkManager : NetworkManager
         }
 
         FindObjectsOfType<PlayerController>().First(x => x.hasAuthority).CreateGame(idx, numPlayers);
-        GetComponent<UIDocument>().enabled = false;
     }
 
-    public static Action OnSceneChanged;
+    public static Action OnSceneChangedServer;
     public override void OnServerSceneChanged(string newSceneName)
     {
-        OnSceneChanged?.Invoke();
-        OnSceneChanged = null;
+        OnSceneChangedServer?.Invoke();
+        OnSceneChangedServer = null;
+    }
 
+    public override void OnClientSceneChanged(NetworkConnection conn)
+    {
+        base.OnClientSceneChanged(conn);
+        loadingScreen.style.display = DisplayStyle.None;
+        lobbyUI.style.display = SceneManager.GetActiveScene().name == "Menu" ? DisplayStyle.Flex : DisplayStyle.None;
+
+    }
+
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+        Debug.Log("Now loading...");
+        loadingScreen.style.display = DisplayStyle.Flex;
     }
 }

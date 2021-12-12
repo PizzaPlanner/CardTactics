@@ -22,17 +22,14 @@ public class GameStateMachine : NetworkBehaviour
     void Start()
     {
         instance = this;
-        CurrentStage = Stage.Setup;
         playableUnits = new Queue<Unit>();
         waitingForAction = true;
-        Debug.Log("Hey! Game start! " + isClient + "," + isServer);
         CurrentStage = Stage.Events;
-        Resume();
     }
 
     public static Stage CurrentStage { get => instance.currentStage; set { instance.currentStage = value; instance.Resume(); } }
 
-    [SyncVar] Stage currentStage;
+    [SyncVar] Stage currentStage = Stage.Setup;
     [SyncVar] public Unit CurrentUnit;
     Queue<Unit> playableUnits;
 
@@ -52,12 +49,13 @@ public class GameStateMachine : NetworkBehaviour
     void OnPlay()
     {
         var next = board.Playables.Next();
-        foreach (var player in FindObjectsOfType<PlayerController>())
-            player.Playables.Enqueue(next);
 
         IEnumerator PlayAndResume()
         {
-            Debug.Log($"[Playable] Play {next.Name} for {next.Unit.Name} (Server)");
+            if (next is IPlayableContextWithUnit ipcu)
+                Debug.Log($"[Playable] Play {next.Name} for {ipcu.Unit.Name} (Server)", ipcu.Unit);
+            else
+                Debug.Log($"[Playable] Play {next.Name} (Server)");
             yield return next.PlayOnServer();
 
             if (!board.Playables.Empty)
@@ -119,11 +117,8 @@ public class GameStateMachine : NetworkBehaviour
         else
             CurrentStage = Stage.End;
 
-        waitingForAction = true;
         round++;
-        Debug.Log("Sending RoudnStartMessage");
-        NetworkServer.SendToAll(new RoundStartMessage { round = round });
-        Resume();
+        board.Playables.Enqueue(new RoundStartContext { Round = round });
     }
 
     [Server]
@@ -156,9 +151,7 @@ public class GameStateMachine : NetworkBehaviour
         Debug.Log($"[Board] Start Turn of {CurrentUnit.Name}");
         cardsPlayedForCurrentUnit = 0;
         waitingForAction = true;
-        var netId = CurrentUnit.GetComponent<NetworkIdentity>();
-        Debug.Assert(netId != null);
-        NetworkServer.SendToAll(new TurnStartMessage { netId = netId });
+        board.Playables.Enqueue(new TurnStartContext { Unit = CurrentUnit });
         Resume();
         if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
             deck.OnTurnStart();
@@ -181,7 +174,14 @@ public class GameStateMachine : NetworkBehaviour
     [Server]
     public void Resume()
     {
-        waitingForAction = false;
+        if (!waitingForAction)
+            return;
+        IEnumerator waitForPlayers()
+        {
+            yield return new WaitUntil(() => NetworkServer.connections.Values.All(x => x.isReady));
+            waitingForAction = false;
+        }
+        StartCoroutine(waitForPlayers());
     }
 
     public override void OnStartServer()

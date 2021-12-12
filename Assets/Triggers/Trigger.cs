@@ -1,11 +1,12 @@
 using System.Collections;
+using Mirror;
 using UnityEngine;
 
 public interface IPlayable
 {
 }
 
-public class TriggerContext : IPlayableContext
+public class TriggerContext : IPlayableContextWithUnit
 {
     public Trigger Target { get; private set; }
     public TriggerContext(Unit unit, Map map, Board board, Trigger trigger)
@@ -34,6 +35,21 @@ public class TriggerContext : IPlayableContext
     public IEnumerator PlayOnClient()
     {
         yield return null;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.WriteNetworkBehaviour(board);
+        writer.WriteNetworkBehaviour(map);
+        writer.WriteNetworkBehaviour(Unit);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        board = reader.ReadNetworkBehaviour<Board>();
+        map = reader.ReadNetworkBehaviour<Map>();
+        Unit = reader.ReadNetworkBehaviour<Unit>();
+        return this;
     }
 }
 

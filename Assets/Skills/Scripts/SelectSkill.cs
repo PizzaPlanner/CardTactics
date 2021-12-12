@@ -26,8 +26,7 @@ public class SelectSkill : ISkill
         {
             if (randomOnlySelectableTiles)
                 patterns = patterns.Where(x => x.Selectable);
-            return patterns.Any() ? new ITilePattern[] { patterns.ToArray()[Random.Range(0, patterns.Count())]
-} : new ITilePattern[0];
+            return patterns.Any() ? new ITilePattern[] { patterns.ToArray()[Random.Range(0, patterns.Count())] } : new ITilePattern[0];
         }
         else
             return patterns;
@@ -38,4 +37,7 @@ public class SelectSkill : ISkill
         ctx.OutTile = ctx.SkillTarget.Tiles.First();
         yield return null;
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

@@ -55,13 +55,12 @@ public class PlanningPanel : MonoBehaviour
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
 
         var board = FindObjectOfType<Board>();
-        // var playable = board.CurrentUnit == unit && unit.isLocalPlayer && board.CurrentStage == Board.Stage.Plan;
-        var playable = true;
+        var playable = onPlay != null;
         planningPanel.Q<Button>("Confirm").SetEnabled(playable);
         if (playable)
         {
-            onEndTurnWrapper ??= onEndTurn;
-            onPlayWrapper ??= onPlay;
+            onEndTurnWrapper = onEndTurn;
+            onPlayWrapper = onPlay;
         }
 
         var doc = uiRoot;

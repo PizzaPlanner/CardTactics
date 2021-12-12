@@ -36,4 +36,7 @@ public class PushSkill : ISkill
             ctx.OutTile = tile;
         }
     }
+
+    public void Serialize(Mirror.NetworkWriter writer) { }
+    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
 }

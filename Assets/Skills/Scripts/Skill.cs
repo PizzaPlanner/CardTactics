@@ -62,7 +62,7 @@ public enum RangeFilter
 }
 
 [System.Serializable]
-public class SkillContext : IPlayableContext
+public class SkillContext : IPlayableContextWithUnit
 {
     public SkillInfo Target { get; set; }
     public ITilePattern SkillTarget { get; private set; }
@@ -110,12 +110,7 @@ public class SkillContext : IPlayableContext
 
     public IEnumerator PlayOnClient()
     {
-        var target = SourceTile.UnitAnchor + Camera.main.transform.forward * -50;
-        while (Vector3.Distance(Camera.main.transform.position, target) > 0.05f)
-        {
-            Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, target, 10 * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
+        yield break;
     }
 
     public IEnumerator PlayOnServer()
@@ -136,6 +131,7 @@ public class SkillContext : IPlayableContext
                 (itp) => SkillTarget = itp);
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
             }
+            NetworkServer.SendToAll(new PlayableMessage { context = this });
 
             yield return new WaitUntil(() => SkillTarget != null || (WantSkillSkip && Target.Skill.IsOptional));
 
@@ -155,6 +151,40 @@ public class SkillContext : IPlayableContext
         else
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=red>Condition Failed</color>");
         map.HideTileSelectionPreview();
+    }
+
+    public SkillContext() { }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        Debug.Log("Serializing SkillContext");
+        writer.WriteSkillInfo(Target);
+        writer.WriteTile(OriginTile);
+        writer.WriteTile(SourceTile);
+        writer.WriteTile(OutTile);
+        writer.WriteNetworkBehaviour(Map);
+        writer.Write((byte)PlayProgress);
+        writer.WriteNetworkBehaviour(Unit);
+        writer.Write(previousContexts.Count());
+        foreach (var item in previousContexts)
+            writer.WritePlayable(item);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        Debug.Log("DESERIALIZING SkillContext");
+        Target = reader.ReadSkillInfo();
+        OriginTile = reader.ReadTile();
+        SourceTile = reader.ReadTile();
+        OutTile = reader.ReadTile();
+        Map = reader.ReadNetworkBehaviour<Map>();
+        PlayProgress = (Progress)reader.ReadByte();
+        Unit = reader.ReadNetworkBehaviour<Unit>();
+        var arr = new SkillContext[reader.ReadInt()];
+        for (int i = 0; i < arr.Length; i++)
+            arr[i] = (SkillContext)reader.ReadPlayable();
+        previousContexts = arr;
+        return this;
     }
 }
 
@@ -245,4 +275,8 @@ public interface ISkill
 
     IEnumerable<ITilePattern> OnActivate(SkillContext ctx);
     IEnumerator OnPreview(SkillContext ctx);
+
+    void Serialize(NetworkWriter writer);
+
+    ISkill Deserialize(NetworkReader reader);
 }
