@@ -7,8 +7,9 @@ public class MarkerTrigger : Trigger
     public int Marker;
     public bool Revealed;
 
-    public override IEnumerator Execute(Board board, Map map, Unit _)
+    public override IEnumerator Execute(Unit _)
     {
+        var map = FindObjectOfType<Map>();
         if (Revealed)
             map.ShowMarker(Marker);
         else

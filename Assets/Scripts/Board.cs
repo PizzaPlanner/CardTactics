@@ -128,18 +128,4 @@ public class Board : NetworkBehaviour
         FindObjectOfType<GameStateMachine>().NotifyCardPlayed();
         GameStateMachine.CurrentStage = GameStateMachine.Stage.Play;
     }
-
-    [Server]
-    public void CheckDeath(Map map)
-    {
-        foreach (var team in map.Teams)
-        {
-            foreach (var condition in team.Conditions.ToArray())
-                if (condition.Check(map, team))
-                {
-                    team.Conditions.Remove(condition);
-                    Playables.InsertFirst(new TeamTriggerContext(team, map, this, condition.Trigger));
-                }
-        }
-    }
 }

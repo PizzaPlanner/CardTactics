@@ -14,7 +14,7 @@ public class PlanningPanel : MonoBehaviour
 
     AudioSource audio;
 
-    VisualElement cardPanel, planningPanel, unitPanel;
+    VisualElement cardPanel, planningPanel, unitPanel, unplayablePanel;
     [SerializeField] UIDocument uiRoot;
     void Awake()
     {
@@ -22,6 +22,7 @@ public class PlanningPanel : MonoBehaviour
         planningPanel = uiRoot.rootVisualElement.Q("PlanningPanel");
         Debug.Assert(planningPanel != null, this);
         cardPanel = planningPanel.Q("CardPanel");
+        unplayablePanel = planningPanel.Q("UnplayablePanel");
         unitPanel = planningPanel.Q("CurrentUnit");
         planningPanel.Q<Button>("Confirm").clicked += OnEndTurn;
         Hide();
@@ -51,9 +52,6 @@ public class PlanningPanel : MonoBehaviour
     {
         if (!unit.TryGetComponent<IngameDeck>(out var deck)) return;
 
-        var unplayed = deck.Unplayed.ToList();
-        unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
-
         var board = FindObjectOfType<Board>();
 
         var isCurrent = GameStateMachine.FindObjectOfType<GameStateMachine>().CurrentUnit == unit;
@@ -67,7 +65,10 @@ public class PlanningPanel : MonoBehaviour
 
         var doc = uiRoot;
         cardPanel.Clear();
+        unplayablePanel.Clear();
         var map = FindObjectOfType<Map>();
+        var unplayed = deck.Unplayed.ToList();
+        unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
         foreach (var ctx in unplayed)
         {
             cardAsset.CloneTree(cardPanel, out int idx, out int _);
@@ -97,6 +98,18 @@ public class PlanningPanel : MonoBehaviour
                 });
         }
         CalculateValidCards(unit);
+
+        var unplayable = deck.Unplayable.ToList();
+        unplayable.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
+        foreach (var ctx in unplayable)
+        {
+            cardAsset.CloneTree(unplayablePanel, out int idx, out int _);
+            var item = unplayablePanel[idx].Q<CardItem>();
+            item.Card = ctx.Target;
+
+            item.OnMouseEnter = () => { CardTooltip.Show(ctx.Target); };
+            item.OnMouseLeave = () => { CardTooltip.Hide(); };
+        }
 
         unitPanel.Q<UnitItem>().Unit = unit;
         unitPanel.Q<ResourcePanel>().Resources = unit.Resources;

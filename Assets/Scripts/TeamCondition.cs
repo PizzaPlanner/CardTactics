@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,13 +8,13 @@ public abstract class TeamCondition
 {
     public abstract bool Check(Map map, Team team);
 
-    [SerializeReference] public TeamTrigger Trigger;
+    public Trigger OnConditionMet;
 }
 
 [System.Serializable]
 public class TeamConditionEveryoneDead : TeamCondition
 {
-    public override bool Check(Map map, Team team) => false; //!team.RegisteredPlayers.Any(x => x.IsAlive);
+    public override bool Check(Map map, Team team) => !Unit.FindObjectsOfType<Unit>(true).Any(x => !x.IsDead && map.Teams[x.Player.Team] == team);
 }
 
 [System.Serializable]

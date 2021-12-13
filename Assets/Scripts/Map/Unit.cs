@@ -133,15 +133,14 @@ public class Unit : NetworkBehaviour
     {
         Debug.Log($"[Unit] {name} died!");
         gameObject.SetActive(false);
-        var map = FindObjectOfType<Map>();
         var board = FindObjectOfType<Board>();
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
             if (OnDeadKiller != null && killer != null)
-                board.Playables.InsertFirst(new TriggerContext(killer, map, board, OnDeadKiller));
+                board.Playables.InsertFirst(new TriggerContext(killer, OnDeadKiller));
             if (OnDeadSelf != null)
-                board.Playables.InsertFirst(new TriggerContext(this, map, board, OnDeadSelf));
+                board.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
             FindObjectOfType<Map>().TileOf(this).Unit = null;
         }
     }
@@ -167,7 +166,6 @@ public class Unit : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Life = MaxLife;
         counter = spawnCounter++;
     }
 
@@ -176,7 +174,6 @@ public class Unit : NetworkBehaviour
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
-            gameObject.layer = LayerMask.NameToLayer("Outline");
             foreach (var mr in gameObject.GetComponentsInChildren<Renderer>())
                 mr.gameObject.layer = LayerMask.NameToLayer("Outline");
         }

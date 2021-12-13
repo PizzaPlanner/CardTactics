@@ -12,6 +12,13 @@
                     <CostIcon />
                 </ui:VisualElement>
             </ResourcePanel>
+            <ui:VisualElement name="UnplayablePanel" style="position: absolute; align-items: flex-end; flex-direction: row; bottom: 305px; flex-shrink: 1; flex-grow: 0; justify-content: flex-start; flex-wrap: wrap; left: 92px; width: 300px;">
+                <ui:Instance template="CardBig" name="CardBig" />
+                <ui:Instance template="CardBig" name="CardBig" />
+                <ui:Instance template="CardBig" name="CardBig" />
+                <ui:Instance template="CardBig" name="CardBig" />
+                <ui:Instance template="CardBig" name="CardBig" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; flex-direction: row; bottom: -200px; flex-shrink: 1; flex-grow: 0; justify-content: space-around; margin-right: 75px; margin-left: 75px;">
             <ui:Instance template="CardBig" name="CardBig" />

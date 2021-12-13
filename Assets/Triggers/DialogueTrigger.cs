@@ -13,7 +13,7 @@ public class DialogueTrigger : Trigger
 
     [SerializeField] DialogueLine[] Lines;
 
-    public override IEnumerator Execute(Board board, Map map, Unit unit)
+    public override IEnumerator Execute(Unit unit)
     {
         foreach (var line in Lines)
         {

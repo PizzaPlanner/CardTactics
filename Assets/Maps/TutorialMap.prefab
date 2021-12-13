@@ -417,11 +417,11 @@ MonoBehaviour:
     - rid: 1776283599535079775
       type: {class: TeamConditionOnlyTeamAlive, ns: , asm: Assembly-CSharp}
       data:
-        Trigger: {fileID: 410908750546951905}
+        OnConditionMet: {fileID: 3678247853456033456}
     - rid: 1776283599535079776
       type: {class: TeamConditionEveryoneDead, ns: , asm: Assembly-CSharp}
       data:
-        Trigger: {fileID: 8549433142310552816}
+        OnConditionMet: {fileID: 8549433142310552816}
 --- !u!114 &188897203071287732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,7 +564,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   SubTriggers:
   - {fileID: 3639274654966509245}
   - {fileID: 2783217159852863914}
@@ -809,7 +808,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   SubTriggers:
   - {fileID: 3121844732603952256}
   - {fileID: 4276515745723812076}
@@ -1231,11 +1229,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5724480100014333757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60b9a38b5f477c5429730c7da7289926, type: 3}
+  m_Script: {fileID: 11500000, guid: b7649bb34b43d544ca6cd2038cfb5d9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
+  Victory: 1
 --- !u!114 &7300895922818222227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1314,7 +1312,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Lines:
   - Text: This is it. I must be close.
   - Text: Let's explore a bit. There is a cave over there.
@@ -1331,7 +1328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Marker: 0
   Revealed: 1
 --- !u!114 &8454203062747207831
@@ -1347,7 +1343,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Lines:
   - Text: This is it. There is a Ghost.
   - Text: My sword will handle that.
@@ -1364,7 +1359,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Marker: 0
   Revealed: 0
 --- !u!114 &2783217159852863914
@@ -1380,7 +1374,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Area: 0
 --- !u!114 &8703973177150945742
 MonoBehaviour:
@@ -1395,7 +1388,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Skill:
     NewCardPrefab: {fileID: 11400000, guid: deafccf3d0c90a5418c787a2f743b885, type: 2}
     NewCardInitialState: 0
@@ -1412,7 +1404,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Lines:
   - Text: That was easy. Now what?
   - Text: I can see light from up there. Maybe I can climb those rocks...
@@ -1429,7 +1420,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Skill:
     NewCardPrefab: {fileID: 11400000, guid: 92fd2c70933d41448a94ac96b4230aa6, type: 2}
     NewCardInitialState: 0
@@ -1446,7 +1436,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Marker: 1
   Revealed: 1
 --- !u!114 &5356218156615371533
@@ -1462,7 +1451,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Lines:
   - Text: More Enemies. I must be close. But I should prepare better...
 --- !u!114 &7473323581103457815
@@ -1478,7 +1466,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Skill:
     NewCardPrefab: {fileID: 11400000, guid: 5baf07c73b9b9ed4db1f3c9333a1e6dd, type: 2}
     NewCardInitialState: 0
@@ -1495,7 +1482,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Marker: 1
   Revealed: 0
 --- !u!114 &3206644957108560850
@@ -1511,7 +1497,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Area: 1
 --- !u!114 &1296979925254554346
 MonoBehaviour:
@@ -1526,7 +1511,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   Lines:
   - Text: Finally. Let
   - Text: There it is. I found the Artifact!
@@ -1749,9 +1733,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   SubTriggers:
   - {fileID: 1296979925254554346}
+  - {fileID: 410908750546951905}
 --- !u!1 &7192807334054893585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1793,11 +1777,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7192807334054893585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 782fb8684adf25f4f9c5f2cbf7561fe2, type: 3}
+  m_Script: {fileID: 11500000, guid: b7649bb34b43d544ca6cd2038cfb5d9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
+  Victory: 0
 --- !u!114 &1407940355805959373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1943,7 +1927,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   SubTriggers:
   - {fileID: 9038509656476550887}
   - {fileID: 3206644957108560850}
@@ -2074,7 +2057,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanTriggerMultipleTimes: 0
-  Executed: 0
   SubTriggers:
   - {fileID: 8137443201774582159}
   - {fileID: 1038768980993932093}

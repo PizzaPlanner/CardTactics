@@ -23,12 +23,25 @@ public class Map : NetworkBehaviour
     {
         foreach (var tcomp in GetComponentsInChildren<TriggerComponent>())
         {
-            if (tcomp.TryGetComponent<Tile>(out var tile) && tcomp.Trigger.ShouldTrigger(this, tile))
+            if (tcomp.TryGetComponent<Tile>(out var tile))
             {
-                var ctx = new TriggerContext(tile.Unit, this, board, tcomp.Trigger);
+                var ctx = new TriggerContext(tile.Unit, tcomp.Trigger);
                 if (ctx.Queueable)
                     board.Playables.Enqueue(ctx);
             }
+        }
+
+        foreach (var team in Teams)
+        {
+            foreach (var condition in team.Conditions.ToArray())
+                if (condition.Check(this, team))
+                {
+                    var firstUnit = FindObjectsOfType<Unit>(true).FirstOrDefault(x => !x.IsDead && Teams[x.Player.Team] == team);
+                    if (firstUnit == null)
+                        Debug.Log("Team is dead!");
+                    team.Conditions.Remove(condition);
+                    board.Playables.InsertFirst(new TriggerContext(firstUnit, condition.OnConditionMet));
+                }
         }
     }
 

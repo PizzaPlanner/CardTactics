@@ -243,6 +243,8 @@ public abstract class Card : ScriptableObject, IPlayable
     public abstract string Name { get; }
     public Card Source { get; private set; }
 
+    public bool Playable => skills.Any(x => x.Trigger == SkillTrigger.Use);
+
     public abstract CardState DestroyedOn { get; }
 
     [BoxGroup("Override Description")]

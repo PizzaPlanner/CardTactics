@@ -56,10 +56,4 @@ public class LoadingScreen : NetworkBehaviour
         NetworkManager.singleton.ServerChangeScene(targetSceneName);
         // RoomNetworkManager.OnSceneChange = () => { onLoaded?.Invoke(); onFinished?.Invoke(); };
     }
-
-    public static void GoToMenu()
-    {
-        // ChangeSceneServer(SCENE_MENU);
-    }
-
 }

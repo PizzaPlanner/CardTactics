@@ -49,8 +49,10 @@ public class IngameDeck : NetworkBehaviour
     }
 
     public IEnumerable<CardContext> All => Contexts;
-    public IEnumerable<CardContext> Unplayed => Contexts.Where(x => x.State == CardState.Unplayed);
-    public IEnumerable<CardContext> Playable => Unplayed.Where(x => x.Target is ActionCard acard && x.Unit.Resources.CanAfford(acard.Cost));
+    public IEnumerable<CardContext> Unplayed => Contexts.Where(x => x.Target.Playable && (x.State != CardState.Played && x.State != CardState.Destroyed));
+    public IEnumerable<CardContext> Played => Contexts.Where(x => x.Target.Playable && x.State == CardState.Played);
+    public IEnumerable<CardContext> Unplayable => Contexts.Where(x => !x.Target.Playable && (x.State != CardState.Played && x.State != CardState.Destroyed));
+    public IEnumerable<CardContext> Playable => Unplayed.Where(x => x.Target.Playable && x.Target is ActionCard acard && x.Unit.Resources.CanAfford(acard.Cost));
 
     public int IndexOf(CardContext ctx) => Contexts.IndexOf(ctx);
 }

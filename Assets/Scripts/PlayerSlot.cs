@@ -58,6 +58,7 @@ public class PlayerSlot : MonoBehaviour
         unit.Player = new PlayerInfo { IsAI = IsAI, TeamColor = team.Color, Team = teamId };
         unit.OnDeadSelf = OnDeadSelf;
         unit.OnDeadKiller = OnDeadKiller;
+        unit.Life = unit.MaxLife; // We have to set it here to not immediately trigger win conditions
         if (player != null)
         {
             player.ControlledUnits.Add(unit);

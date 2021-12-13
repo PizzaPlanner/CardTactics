@@ -6,10 +6,10 @@ public class RevealAreaTrigger : Trigger
 {
     public int Area;
 
-    public override IEnumerator Execute(Board board, Map map, Unit _)
+    public override IEnumerator Execute(Unit _)
     {
         yield return GameSettings.Instance.RevealAreaPreDelay.Yield();
-        map.RevealArea(Area);
+        FindObjectOfType<Map>().RevealArea(Area);
         yield return GameSettings.Instance.RevealAreaPostDelay.Yield();
     }
 }

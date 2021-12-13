@@ -31,8 +31,6 @@ public class CardEditor : EditorWindow
 
         var cardAssetsBasePath = "Assets/Cards/Action/Resources";
 
-        Debug.Log("ADB.GS: " + AssetDatabase.GetSubFolders(cardAssetsBasePath).Length);
-
         foreach (var path in AssetDatabase.GetSubFolders(cardAssetsBasePath))
         {
             var pathThingy = new Foldout { text = path };

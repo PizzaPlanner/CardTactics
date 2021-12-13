@@ -72,7 +72,6 @@ public class GameStateMachine : NetworkBehaviour
     {
         var map = FindObjectOfType<Map>();
         map.AddTriggers(board);
-        board.CheckDeath(map);
 
         if (!board.Playables.Empty)
             CurrentStage = Stage.Play;

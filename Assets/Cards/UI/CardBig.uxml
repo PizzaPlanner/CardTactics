@@ -43,7 +43,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Border" style="background-image: url(&apos;project://database/Assets/Card_Border.png?fileID=21300000&amp;guid=248332c67d33f494ea5c899d68baa89e&amp;type=3#Card_Border&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center;">
-            <ui:VisualElement name="UnplayableMarker" class="filter-unplayable" style="background-image: url(&apos;project://database/Assets/3rdParty/FantasyIconsMegaPack/ResourcesAndCraftIcons/ResourcesAndCraftIcons_png/transparent/wood/wd_t_07.png?fileID=2800000&amp;guid=c1b387eb94cb50e4982ea96f9df31386&amp;type=3#wd_t_07&apos;); position: absolute; right: 3px; top: 3px; width: 32px; height: 32px;" />
+            <ui:VisualElement name="UnplayableMarker" class="filter-unplayable" style="background-image: url(&apos;project://database/Assets/Card_Border_Unplayable.png?fileID=2800000&amp;guid=245126403b8a7ec4ea9894075073dcd6&amp;type=3#Card_Border_Unplayable&apos;); position: absolute; right: 0; top: 0; bottom: 0; left: 0;" />
             <ResourcePanel class="filter-actioncard resource-panel--card" style="position: absolute; left: -22px; top: -22px; flex-direction: column;">
                 <ui:VisualElement class="resource-panel-group">
                     <CostIcon />
