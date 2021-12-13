@@ -55,13 +55,15 @@ public class PlanningPanel : MonoBehaviour
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
 
         var board = FindObjectOfType<Board>();
-        var playable = onPlay != null;
-        planningPanel.Q<Button>("Confirm").SetEnabled(playable);
-        if (playable)
-        {
-            onEndTurnWrapper = onEndTurn;
+
+        var isCurrent = GameStateMachine.FindObjectOfType<GameStateMachine>().CurrentUnit == unit;
+        var playable = isCurrent && PlayerController.Local.ControlledUnits.Contains(unit);
+        if (playable && onPlay != null)
             onPlayWrapper = onPlay;
-        }
+        var confirmable = isCurrent && PlayerController.Local.ControlledUnits.Contains(unit);
+        if (confirmable && onEndTurn != null)
+            onEndTurnWrapper = onEndTurn;
+        planningPanel.Q<Button>("Confirm").SetEnabled(confirmable);
 
         var doc = uiRoot;
         cardPanel.Clear();

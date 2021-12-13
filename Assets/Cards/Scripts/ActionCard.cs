@@ -41,6 +41,8 @@ public class ActionCard : Card
     [SerializeField] ResourceInfo cost;
 
 
+    public bool Temporary => Type == UseType.Temporary;
+
     public ResourceInfo Cost => cost;
     public override Sprite Icon => icon;
 
@@ -54,12 +56,12 @@ public class ActionCard : Card
 
     public override CardState StateOnPlayed => Type == UseType.Once || Type == UseType.Temporary ? CardState.Destroyed : CardState.Played;
 
-    public override void OnRoundEnd(CardContext ctx)
-    {
-        if (Type == UseType.Temporary && ctx.State == CardState.Unplayed) ctx.State = CardState.Destroyed;
-        if (ctx.State == CardState.Active && Type == UseType.Once) ctx.State = CardState.Destroyed;
-        base.OnRoundEnd(ctx);
-    }
+    // public override void OnRoundEnd(CardContext ctx)
+    // {
+    //     if (Type == UseType.Temporary && ctx.State == CardState.Unplayed) ctx.State = CardState.Destroyed;
+    //     if (ctx.State == CardState.Active && Type == UseType.Once) ctx.State = CardState.Destroyed;
+    //     base.OnRoundEnd(ctx);
+    // }
 
     protected override string GetDescription()
     {

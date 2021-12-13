@@ -85,7 +85,7 @@ public class Board : NetworkBehaviour
 
         if (deck.Playable.Count() > 0)
         {
-            NetworkServer.SendToAll(new StartPlanningMessage { netId = unit.GetComponent<NetworkIdentity>() });
+            NetworkServer.SendToAll(new PlayableMessage { context = new PlanContext(unit) });
             var rnd = Random.Range(0, deck.Playable.Count());
             SetPlayerReady(deck.Playable.ToArray()[rnd]);
         }
@@ -104,7 +104,7 @@ public class Board : NetworkBehaviour
         }
         if (deck.Playable.Count() > 0)
         {
-            NetworkServer.SendToAll(new StartPlanningMessage { netId = unit.GetComponent<NetworkIdentity>() });
+            NetworkServer.SendToAll(new PlayableMessage { context = new PlanContext(unit) });
         }
         else
             SetPlayerDone();

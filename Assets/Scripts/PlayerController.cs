@@ -43,7 +43,10 @@ public class TurnStartContext : IPlayableContextWithUnit
 
     public IEnumerator PlayOnClient()
     {
-        yield return TurnPanel.FindObjectOfType<TurnPanel>().OnTurnStart(Unit, onComplete: null);
+        // StartCoroutine to run this in parallel with other animations
+        var tp = TurnPanel.FindObjectOfType<TurnPanel>();
+        tp.StartCoroutine(tp.OnTurnStart(Unit, null));
+        yield return null;
     }
 
     public IEnumerator PlayOnServer()
@@ -64,9 +67,49 @@ public class TurnStartContext : IPlayableContextWithUnit
     }
 }
 
+
+public class PlanContext : IPlayableContextWithUnit
+{
+    public bool Queueable => true;
+    public string Name => $"Planning of {Unit.Name}";
+    public Unit Unit { get; set; }
+
+    public PlanContext(Unit unit) => Unit = unit;
+    public PlanContext() { }
+
+    public IEnumerator PlayOnClient()
+    {
+        var localOwner = PlayerController.Local.ControlledUnits.Contains(Unit);
+
+        GameObject.FindObjectOfType<PlanningPanel>(true).Show(Unit,
+        onPlay: localOwner ? ((cardId) => PlayerController.Local.SetPlayerReady(Unit, cardId)) : null,
+        onEndTurn: localOwner ? (() => PlayerController.Local.EndTurn()) : null);
+
+        yield return GameSettings.Instance.PlanningPanelPopupTime.Yield();
+    }
+
+    public IEnumerator PlayOnServer()
+    {
+        // TODO: Remove this Method here
+        throw new System.NotImplementedException();
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.WriteNetworkBehaviour(Unit);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        Unit = reader.ReadNetworkBehaviour<Unit>();
+        return this;
+    }
+}
+
 public class PlayerController : NetworkBehaviour
 {
     public List<Unit> ControlledUnits;
+    public static PlayerController Local;
 
     [SyncVar] public Deck Deck;
 
@@ -140,9 +183,9 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        NetworkClient.RegisterHandler<StartPlanningMessage>(OnStartPlanning);
         NetworkClient.RegisterHandler<TilePatternMessage>(OnGetPatterns);
         NetworkClient.RegisterHandler<PlayableMessage>(OnGetPlayable);
+        Local = this;
     }
 
     void OnGetPlayable(PlayableMessage msg)
@@ -155,30 +198,15 @@ public class PlayerController : NetworkBehaviour
         FindObjectOfType<Map>().ShowPatterns(msg.Patterns, true);
     }
 
-    void OnStartPlanning(StartPlanningMessage msg)
-    {
-        var unit = msg.netId.GetComponent<Unit>();
-        Debug.Assert(unit != null);
-        if (!ControlledUnits.Contains(unit)) return;
-        GameObject.FindObjectOfType<PlanningPanel>(true).Show(unit,
-        onPlay: ControlledUnits.Contains(unit) ? ((cardId) => SetPlayerReady(unit, cardId)) : null,
-        onEndTurn: ControlledUnits.Contains(unit) ? (() => EndTurn()) : null);
-    }
-
     [Command]
-    void SetPlayerReady(Unit unit, int cardId)
+    public void SetPlayerReady(Unit unit, int cardId)
     {
         FindObjectOfType<Board>().SetPlayerReady(unit.GetComponent<IngameDeck>().Contexts[cardId]);
     }
 
     [Command]
-    void EndTurn()
+    public void EndTurn()
     {
         FindObjectOfType<Board>().SetPlayerDone();
     }
-}
-
-public struct StartPlanningMessage : NetworkMessage
-{
-    public NetworkIdentity netId;
 }

@@ -67,6 +67,9 @@ public class GameSettings : ScriptableObject
     public float TurnAnnouncerTime;
     [HideIf("SkipTimings")]
     [BoxGroup("Timings/Times")]
+    public float PlanningPanelPopupTime;
+    [HideIf("SkipTimings")]
+    [BoxGroup("Timings/Times")]
     public float CardGainAnnouncerTime;
     [HideIf("SkipTimings")]
     [BoxGroup("Timings/Times")]

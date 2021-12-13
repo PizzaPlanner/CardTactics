@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: Channel
   m_EditorClassIdentifier: 
   id: 0
-  DescriptionOverride: You or an Ally in Range [!0:MaxRange] Takes [!0:Damage] Damage
-    and gains [!1:NewCardPrefab]
+  DescriptionOverride: You or an Ally in Range [0:MaxRange] Takes [0:Damage] Damage
+    and gains [1:NewCardPrefab]
   skills:
-  - SourceTileInput: 1
+  - Trigger: 0
+    SourceTileInput: 1
     TileOutput: 2
     Conditions: 
     Skill:
       rid: 1776283524840817164
-  - SourceTileInput: 2
+  - Trigger: 0
+    SourceTileInput: 2
     TileOutput: 0
     Conditions: 
     Skill:

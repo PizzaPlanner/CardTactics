@@ -13,12 +13,25 @@ MonoBehaviour:
   m_Name: Fatigue
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   id: -7
-  DescriptionOverride: 'While in your Hand:
+  DescriptionOverride: '!start
 
-    You have [+0:Amount] [+0:Class]'
-  skills: []
-  passives:
-  - rid: 325904319036784640
+    You have [+0:Amount] [+0:Class]
+
+'
+  skills:
+  - Trigger: 1
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186973
+  - Trigger: 2
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186974
+  passives: []
   icon: {fileID: 21300000, guid: ef7b1601560ca7d4881bed162b0cd2ef, type: 3}
   name: Fatigue
   Type: 2
@@ -27,10 +40,17 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 325904319036784640
-      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
+    - rid: 325904334296186973
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
       data:
-        Source: {fileID: 11400000}
-        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+        Convert: 0
         Amount: -1
-        Type: 1
+        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+        ToClass: {fileID: 0}
+    - rid: 325904334296186974
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Convert: 0
+        Amount: 1
+        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+        ToClass: {fileID: 0}

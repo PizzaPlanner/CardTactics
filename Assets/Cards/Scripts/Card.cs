@@ -37,6 +37,7 @@ public static class ContextSerializationHelper
 
         writer.Write((byte)info.SourceTileInput);
         writer.Write((byte)info.TileOutput);
+        writer.Write((byte)info.Trigger);
         if (info.Conditions != null)
         {
             writer.Write(info.Conditions.Length);
@@ -52,7 +53,8 @@ public static class ContextSerializationHelper
         var info = new SkillInfo
         {
             SourceTileInput = (SkillChain)reader.ReadByte(),
-            TileOutput = (SkillChain)reader.ReadByte()
+            TileOutput = (SkillChain)reader.ReadByte(),
+            Trigger = (SkillTrigger)reader.ReadByte()
         };
         var arr = new SkillChain[reader.ReadInt()];
         for (int i = 0; i < arr.Length; i++)
@@ -107,7 +109,7 @@ public class CardContext : IPlayableContextWithUnit
 
     public List<SkillContext> PreviousContexts { get; private set; }
 
-    public bool Queueable => State == CardState.Unplayed;
+    public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
     public string Name => Target.Name;
 
     public CardContext(Card card, Map map, Unit unit, CardState initialState)
@@ -121,6 +123,8 @@ public class CardContext : IPlayableContextWithUnit
 
     public IEnumerator PlayOnClient()
     {
+        if (State != CardState.Unplayed) yield break;
+
         CardTooltip.Show(Target);
         yield return GameSettings.Instance.BeforePlayDelay.Yield();
     }
@@ -128,18 +132,39 @@ public class CardContext : IPlayableContextWithUnit
     public IEnumerator PlayOnServer()
     {
         if (Unit == null || Unit.IsDead) yield break;
-
-        State = CardState.Current;
-        PreviousContexts = new List<SkillContext>();
-        Target.OnPlay(this);
-        for (int i = 0; i < Target.Skills.Count(); i++)
+        IEnumerable<SkillInfo> skillsToPlay = State switch
         {
-            var skill = Target.skills.ToArray()[i];
+            CardState.TurnStart => Target.skills.Where(x => x.Trigger == SkillTrigger.TurnStart),
+            CardState.TurnEnd => Target.skills.Where(x => x.Trigger == SkillTrigger.TurnEnd),
+            CardState.Unplayed => Target.skills.Where(x => x.Trigger == SkillTrigger.Use),
+            _ => null,
+        };
+
+        if (State == CardState.Unplayed)
+            Target.OnPlay(this);
+
+        State = State switch
+        {
+            CardState.Unplayed => Target.StateOnPlayed,
+            CardState.TurnStart => CardState.Unplayed,
+            CardState.TurnEnd => (Target is ActionCard acard && acard.Temporary) ? CardState.Destroyed : CardState.Shuffle,
+            _ => CardState.Destroyed
+        };
+
+        if (skillsToPlay == null)
+            yield break;
+
+        PreviousContexts = new List<SkillContext>();
+
+        var playables = Board.FindObjectOfType<Board>().Playables;
+        for (int i = 0; i < skillsToPlay.Count(); i++)
+        {
+            var skill = skillsToPlay.ToArray()[i];
             var ctx = new SkillContext(skill, Map, Map.TileOf(Unit), PreviousContexts.ToArray());
-            Board.FindObjectOfType<Board>().Playables.Enqueue(ctx);
+            playables.Enqueue(ctx);
             PreviousContexts.Add(ctx);
         }
-        Board.FindObjectOfType<Board>().Playables.Enqueue(new FinishCardContext(this));
+        playables.Enqueue(new FinishCardContext(this));
         yield return null;
     }
 
@@ -184,9 +209,6 @@ public class CardContext : IPlayableContextWithUnit
 
         public IEnumerator PlayOnServer()
         {
-            context.State = context.Target.StateOnPlayed;
-            foreach (var passive in context.Target.passives)
-                passive.OnCardRemoved(context);
             context.PreviousContexts.Clear();
             yield return null;
         }
@@ -204,38 +226,17 @@ public class CardContext : IPlayableContextWithUnit
 }
 public enum CardState
 {
+    Shuffle,
+    TurnStart,
     Unplayed,
     Played,
-    Current,
-    Active,
-    Destroyed
+    Destroyed,
+    TurnEnd
 }
 
 public abstract class Card : ScriptableObject, IPlayable
 {
     public virtual void OnPlay(CardContext context) { }
-
-    public virtual void OnRoundStart(CardContext context)
-    {
-    }
-
-    public virtual void OnTurnStart(CardContext context)
-    {
-        foreach (var passive in passives)
-            passive.OnTurnStart(context);
-    }
-
-    public virtual void OnTurnEnd(CardContext context)
-    {
-        foreach (var passive in passives)
-            passive.OnTurnEnd(context);
-    }
-
-    public virtual void OnRoundEnd(CardContext context)
-    {
-        if (context.State == CardState.Played)
-            context.State = CardState.Unplayed;
-    }
 
     public abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }
@@ -245,28 +246,18 @@ public abstract class Card : ScriptableObject, IPlayable
     public int Id => id;
     [SerializeField] int id;
 
-    [TextArea]
+    [TextArea(3, 15)]
     [SerializeField] string DescriptionOverride;
 
     void OnEnable()
     {
         if (skills == null)
             skills = new SkillInfo[0];
-        if (passives == null)
-            passives = new Passive[0];
-
-        foreach (var passive in passives)
-            passive.Source = this;
     }
 
     [SerializeField]
     [TableList(AlwaysExpanded = true)]
     public SkillInfo[] skills;
-
-    [SerializeReference]
-    [TableList(AlwaysExpanded = true)]
-    public Passive[] passives;
-
 
     public IEnumerable<ISkill> Skills => skills?.Select(x => x.Skill) ?? new ISkill[0];
 
@@ -276,14 +267,6 @@ public abstract class Card : ScriptableObject, IPlayable
             return DescriptionOverride;
 
         var descriptions = new List<string>();
-        if (passives != null && passives.Length > 1)
-        {
-            descriptions.Add("While in your Hand:");
-            foreach (var skill in passives)
-                if (skill.Description != null)
-                    descriptions.Add(skill.Description);
-            descriptions.Add("--------");
-        }
         foreach (var skill in Skills)
             if (skill.Description != null)
                 descriptions.Add(skill.Description);
@@ -300,18 +283,12 @@ public abstract class Card : ScriptableObject, IPlayable
             var start = desc.IndexOf("[");
             var end = desc[start..].IndexOf("]") + start + 1;
             var substr = desc[start..end];
-            var contents = substr[2..^1];
-            var type = substr[1];
+            var contents = substr[1..^1];
             startIdx = start;
             try
             {
                 var split = contents.Split(':');
-                object target = type switch
-                {
-                    '!' => skills[int.Parse(split[0])].Skill,
-                    '+' => passives[int.Parse(split[0])],
-                    _ => null,
-                };
+                var target = skills[int.Parse(split[0])].Skill;
                 if (target != null)
                 {
                     FieldInfo field = target.GetType().GetField(split[1], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
@@ -324,6 +301,10 @@ public abstract class Card : ScriptableObject, IPlayable
             catch (Exception e) { replacement = $"<color=#ff3333>Invalid Format</color>"; }
             desc = desc.Replace(substr, replacement);
         }
+        desc = desc
+        .Replace("!play", "<sprite=\"classicons\" name=\"event_play\">")
+        .Replace("!start", "<sprite=\"classicons\" name=\"event_turnstart\">")
+        .Replace("!end", "<sprite=\"classicons\" name=\"event_turnend\">");
         return desc;
     }
 

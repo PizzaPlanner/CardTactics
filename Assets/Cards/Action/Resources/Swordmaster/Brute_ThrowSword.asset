@@ -13,17 +13,19 @@ MonoBehaviour:
   m_Name: Brute_ThrowSword
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   id: 0
-  DescriptionOverride: 'Throw a sword at an Enemy in Range [!0:MinRange] to [!0:MaxRange],
-    dealing [!0:Damage] Damage.
+  DescriptionOverride: 'Throw a sword at an Enemy in Range [0:MinRange] to [0:MaxRange],
+    dealing [0:Damage] Damage.
 
-    The target gains [!1:NewCardPrefab]'
+    The target gains [1:NewCardPrefab]'
   skills:
-  - SourceTileInput: 1
+  - Trigger: 0
+    SourceTileInput: 1
     TileOutput: 2
     Conditions: 
     Skill:
       rid: 1776283499621253602
-  - SourceTileInput: 2
+  - Trigger: 0
+    SourceTileInput: 2
     TileOutput: 0
     Conditions: 
     Skill:

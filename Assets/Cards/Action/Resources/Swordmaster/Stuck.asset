@@ -17,9 +17,10 @@ MonoBehaviour:
     each turn.
 
 
-    Receive [!0:Damage] Damage'
+    Receive [0:Damage] Damage'
   skills:
-  - SourceTileInput: 1
+  - Trigger: 0
+    SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:

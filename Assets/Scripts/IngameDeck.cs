@@ -12,29 +12,40 @@ public class IngameDeck : NetworkBehaviour
     [Server]
     public void OnRoundStart()
     {
-        foreach (var card in Contexts)
-            card.Target.OnRoundStart(card);
+
     }
 
     [Server]
     public void OnRoundEnd()
     {
         foreach (var card in Contexts)
-            card.Target.OnRoundEnd(card);
+            if (card.State == CardState.Played || card.State == CardState.Shuffle)
+                card.State = CardState.TurnStart;
     }
 
     [Server]
     public void OnTurnStart()
     {
         foreach (var card in Contexts)
-            card.Target.OnTurnStart(card);
+        {
+            if (card.State == CardState.TurnStart)
+            {
+                FindObjectOfType<Board>().Playables.Enqueue(card);
+            }
+        }
     }
 
     [Server]
     public void OnTurnEnd()
     {
         foreach (var card in Contexts)
-            card.Target.OnTurnEnd(card);
+        {
+            if (card.State == CardState.Unplayed)
+            {
+                card.State = CardState.TurnEnd;
+                FindObjectOfType<Board>().Playables.Enqueue(card);
+            }
+        }
     }
 
     public IEnumerable<CardContext> All => Contexts;

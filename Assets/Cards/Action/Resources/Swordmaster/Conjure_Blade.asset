@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Conjure_Blade
   m_EditorClassIdentifier: 
+  id: 0
+  DescriptionOverride: TODO
   skills: []
-  name: Conjure Blade
+  passives: []
   icon: {fileID: 21300000, guid: 9d968abbac32ba14db9c02d47bb14c8f, type: 3}
+  name: Conjure Blade
+  Type: 0
   cost:
     Resources:
     - Total: 1
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-  Once: 0
-  Temporary: 0
   references:
     version: 2
     RefIds: []

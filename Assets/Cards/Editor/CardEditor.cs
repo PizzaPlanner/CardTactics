@@ -39,7 +39,6 @@ public class CardEditor : EditorWindow
             pathThingy.contentContainer.style.flexDirection = FlexDirection.Row;
             pathThingy.contentContainer.style.flexWrap = Wrap.Wrap;
             list.contentContainer.Add(pathThingy);
-
             // New Card Button
             cardUIPrefab.CloneTree(pathThingy.contentContainer, out var idx, out var _);
             var newcard = pathThingy.contentContainer[idx].Q<CardItem>();
@@ -47,7 +46,11 @@ public class CardEditor : EditorWindow
             newcard.RegisterCallback<MouseDownEvent>((_) => { var card = Card.CreateInstance<ActionCard>(); MakeCard(card, list.contentContainer); ProjectWindowUtil.CreateAsset(card, "Assets/Cards/Action/Resources/newAction.asset"); });
             newcard.Q<Label>("Name").text = "New ActionCard";
             newcard.Q<Label>("Description").text = $"in {path}";
-            newcard.transform.scale = new Vector3(0.9f, 0.9f, 0.9f);
+            newcard.transform.scale = new Vector3(0.7f, 0.7f, 0.7f);
+            newcard.style.marginBottom = -50;
+            newcard.style.marginTop = -50;
+            newcard.style.marginLeft = -30;
+            newcard.style.marginRight = -30;
 
             // Add Cards
             foreach (var cardAsset in AssetDatabase.FindAssets("t:Card", new string[] { path }).Select(x => AssetDatabase.LoadAssetAtPath<Card>(AssetDatabase.GUIDToAssetPath(x))))
@@ -65,7 +68,11 @@ public class CardEditor : EditorWindow
             cardItem.Card = card;
         }
         catch { }
-        cardItem.transform.scale = new Vector3(0.9f, 0.9f, 0.9f);
+        cardItem.transform.scale = new Vector3(0.7f, 0.7f, 0.7f);
+        cardItem.style.marginBottom = -50;
+        cardItem.style.marginTop = -50;
+        cardItem.style.marginLeft = -30;
+        cardItem.style.marginRight = -30;
     }
 
     CardItem edited;

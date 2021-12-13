@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
+  m_Name: DeceptiveStrike
+  m_EditorClassIdentifier: 
+  id: 0
+  DescriptionOverride: Deal [1:Damage] Damage with two of your Clones.
+  skills:
+  - Trigger: 1
+    SourceTileInput: 1
+    TileOutput: 2
+    Conditions: 
+    Skill:
+      rid: 325904334296186957
+  - Trigger: 0
+    SourceTileInput: 2
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186958
+  - Trigger: 0
+    SourceTileInput: 1
+    TileOutput: 3
+    Conditions: 
+    Skill:
+      rid: 325904334296186959
+  - Trigger: 0
+    SourceTileInput: 3
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186960
+  passives: []
+  icon: {fileID: 21300000, guid: e1b20d1725d2f08478ea6a3406c602ea, type: 3}
+  name: Deceptive Strike
+  Type: 0
+  cost:
+    Resources:
+    - Total: 0
+      Type: {fileID: 11400000, guid: 92b9c73dfba2d78458b25bd0236eb4cc, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: 325904334296186957
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        TargetFilter:
+          Tile: 4
+          Unit: 2
+          Range: 0
+        confirmOnePossibleTile: 0
+        maxRange: 9999
+        selectAtRandom: 0
+        randomOnlySelectableTiles: 0
+    - rid: 325904334296186958
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Filter:
+          Tile: 2
+          Unit: 2147483647
+          Range: 0
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 0}
+        confirmOnePossibleTile: 0
+        Damage: 2
+    - rid: 325904334296186959
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
+      data:
+        TargetFilter:
+          Tile: 4
+          Unit: 2
+          Range: 0
+        confirmOnePossibleTile: 0
+        maxRange: 9999
+        selectAtRandom: 0
+        randomOnlySelectableTiles: 0
+    - rid: 325904334296186960
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Filter:
+          Tile: 2
+          Unit: 2147483647
+          Range: 0
+        MinRange: 1
+        MaxRange: 1
+        Sound: {fileID: 0}
+        confirmOnePossibleTile: 0
+        Damage: 2

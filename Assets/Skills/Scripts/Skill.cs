@@ -157,7 +157,6 @@ public class SkillContext : IPlayableContextWithUnit
 
     public void Serialize(NetworkWriter writer)
     {
-        Debug.Log("Serializing SkillContext");
         writer.WriteSkillInfo(Target);
         writer.WriteTile(OriginTile);
         writer.WriteTile(SourceTile);
@@ -172,7 +171,6 @@ public class SkillContext : IPlayableContextWithUnit
 
     public IPlayableContext Deserialize(NetworkReader reader)
     {
-        Debug.Log("DESERIALIZING SkillContext");
         Target = reader.ReadSkillInfo();
         OriginTile = reader.ReadTile();
         SourceTile = reader.ReadTile();
@@ -199,9 +197,21 @@ public enum SkillChain
     F = 6
 }
 
+public enum SkillTrigger
+{
+    Use,
+    TurnStart,
+    TurnEnd,
+    RoundStart,
+    RoundEnd
+}
+
 [Serializable]
 public class SkillInfo : IPlayable
 {
+    [VerticalGroup("Skill")]
+    [HideLabel]
+    public SkillTrigger Trigger;
 
     [VerticalGroup("Skill")]
     [HorizontalGroup("Skill/Horizontal", 5)]
@@ -220,8 +230,8 @@ public class SkillInfo : IPlayable
     [LabelText("If")]
     public SkillChain[] Conditions;
 
-    [HideLabel]
     [VerticalGroup("Skill")]
+    [HideLabel]
     [SerializeReference]
     public ISkill Skill;
 

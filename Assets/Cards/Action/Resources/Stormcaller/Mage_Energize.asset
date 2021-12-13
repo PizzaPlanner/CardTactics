@@ -13,26 +13,37 @@ MonoBehaviour:
   m_Name: Mage_Energize
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
   id: 0
-  DescriptionOverride: 'While in your Hand:
+  DescriptionOverride: '!start
 
-    Convert [+0:Amount] [+1:Class] to
-    [+0:Class] for your Turn.
-
-    At the end of your Turn, Play [+2:Card].
+    Take [2:Damage] Damage
 
 
-    Heal
-    yourself for [!0:Heal]'
+    !play
+
+    Convert
+    [0:Amount] [0:Class] to [0:ToClass]
+
+    Take [1:Damage] Damage'
   skills:
-  - SourceTileInput: 1
+  - Trigger: 0
+    SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283524840817459
-  passives:
-  - rid: 1776283524840817460
-  - rid: 1776283524840817461
-  - rid: 1776283524840817462
+      rid: 325904334296186968
+  - Trigger: 0
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186969
+  - Trigger: 1
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296186972
+  passives: []
   icon: {fileID: 21300000, guid: 571fa2abc8a03e545a2bb15e9d1d916d, type: 3}
   name: Charged
   Type: 1
@@ -43,8 +54,15 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1776283524840817459
-      type: {class: HealSkill, ns: , asm: Assembly-CSharp}
+    - rid: 325904334296186968
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Convert: 1
+        Amount: 1
+        Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
+        ToClass: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    - rid: 325904334296186969
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
           Tile: 16
@@ -52,24 +70,18 @@ MonoBehaviour:
           Range: 0
         MinRange: 0
         MaxRange: 0
-        Heal: 2
-    - rid: 1776283524840817460
-      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
+        Sound: {fileID: 8300000, guid: a2538bdbef8c63f46b53dc9a1a30257e, type: 3}
+        confirmOnePossibleTile: 1
+        Damage: 2
+    - rid: 325904334296186972
+      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
-        Source: {fileID: 11400000}
-        Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
-        Amount: 1
-        Type: 1
-    - rid: 1776283524840817461
-      type: {class: GainResourcePassive, ns: , asm: Assembly-CSharp}
-      data:
-        Source: {fileID: 11400000}
-        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-        Amount: -1
-        Type: 1
-    - rid: 1776283524840817462
-      type: {class: PlayCardPassive, ns: , asm: Assembly-CSharp}
-      data:
-        Source: {fileID: 11400000}
-        Card: {fileID: 11400000, guid: e04b7b7db5cafc84ab309c5b9b20637c, type: 2}
-        When: 1
+        Filter:
+          Tile: 16
+          Unit: 2147483647
+          Range: 0
+        MinRange: 0
+        MaxRange: 0
+        Sound: {fileID: 8300000, guid: a2538bdbef8c63f46b53dc9a1a30257e, type: 3}
+        confirmOnePossibleTile: 1
+        Damage: 1
