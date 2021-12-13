@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Channel
   m_EditorClassIdentifier: 
-  id: 0
   DescriptionOverride: You or an Ally in Range [0:MaxRange] Takes [0:Damage] Damage
     and gains [1:NewCardPrefab]
   skills:
@@ -21,17 +20,16 @@ MonoBehaviour:
     TileOutput: 2
     Conditions: 
     Skill:
-      rid: 1776283524840817164
+      rid: 325904334296187481
   - Trigger: 0
     SourceTileInput: 2
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283524840817165
-  passives: []
+      rid: 325904334296187482
   icon: {fileID: 21300000, guid: 537236360bca39848a1125aeaf5d288f, type: 3}
   name: Channel
-  Type: 0
+  FinalState: 4
   cost:
     Resources:
     - Total: 1
@@ -41,7 +39,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1776283524840817164
+    - rid: 325904334296187481
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
@@ -53,7 +51,7 @@ MonoBehaviour:
         Sound: {fileID: 8300000, guid: 6f883c891e63cad45a4f31456878bc3d, type: 3}
         confirmOnePossibleTile: 0
         Damage: 2
-    - rid: 1776283524840817165
+    - rid: 325904334296187482
       type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
       data:
         NewCardPrefab: {fileID: 11400000, guid: b7c933e46f821774788f1283dd52ccbe, type: 2}

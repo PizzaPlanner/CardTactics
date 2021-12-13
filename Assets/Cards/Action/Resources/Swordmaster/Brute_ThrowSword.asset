@@ -12,36 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Brute_ThrowSword
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  id: 0
-  DescriptionOverride: 'Throw a sword at an Enemy in Range [0:MinRange] to [0:MaxRange],
-    dealing [0:Damage] Damage.
+  DescriptionOverride: 'Deal [0:Damage] Damage to an Enemy in Range [0:MinRange]
+    to [0:MaxRange].
 
-    The target gains [1:NewCardPrefab]'
+    The target gains [1:NewCardPrefab]
+
+    Remove'
   skills:
   - Trigger: 0
     SourceTileInput: 1
     TileOutput: 2
     Conditions: 
     Skill:
-      rid: 1776283499621253602
+      rid: 325904334296187470
   - Trigger: 0
     SourceTileInput: 2
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283499621253604
-  passives: []
+      rid: 325904334296187471
   icon: {fileID: 21300000, guid: eea717ea89df3f04781e8d2b413d1c7a, type: 3}
   name: Throw Blade
-  Type: 0
+  FinalState: 4
   cost:
     Resources:
+    - Total: 2
+      Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 1776283499621253602
+    - rid: 325904334296187470
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
@@ -53,7 +55,7 @@ MonoBehaviour:
         Sound: {fileID: 8300000, guid: 575a2eeab6244354dbdc493d3078ade9, type: 3}
         confirmOnePossibleTile: 1
         Damage: 2
-    - rid: 1776283499621253604
+    - rid: 325904334296187471
       type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
       data:
         NewCardPrefab: {fileID: 11400000, guid: ec97aedbc3d27064180d7fb10e323625, type: 2}

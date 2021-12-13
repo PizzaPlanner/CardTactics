@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UnEnergized
   m_EditorClassIdentifier: 
   id: 0
-  DescriptionOverride: 'Convert [1:Amount] [1:Class] to [1:ToClass]
+  DescriptionOverride: 'Convert [1:Amount] [1:FromClass] to [1:Class]
 
     On your
     next turn, gain [0:NewCardPrefab]'
@@ -23,14 +23,13 @@ MonoBehaviour:
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283524840817456
+      rid: 325904334296187358
   - Trigger: 0
     SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 325904334296186971
-  passives: []
+      rid: 325904334296187359
   icon: {fileID: 21300000, guid: de1dfc4a2bcd4c24aa171a09ed51f3b2, type: 3}
   name: Electrify
   Type: 0
@@ -41,15 +40,15 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 325904334296186971
-      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
-      data:
-        Convert: 1
-        Amount: 1
-        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-        ToClass: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
-    - rid: 1776283524840817456
+    - rid: 325904334296187358
       type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
       data:
         NewCardPrefab: {fileID: 11400000, guid: 8efa2bf928fafcd4b912605f18641654, type: 2}
         NewCardInitialState: 1
+    - rid: 325904334296187359
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Convert: 1
+        Amount: 1
+        FromClass: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+        Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}

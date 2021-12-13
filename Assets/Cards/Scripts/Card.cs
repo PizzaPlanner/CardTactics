@@ -143,11 +143,11 @@ public class CardContext : IPlayableContextWithUnit
         if (State == CardState.Unplayed)
             Target.OnPlay(this);
 
-        State = State switch
+        State = State == Target.DestroyedOn ? CardState.Destroyed : State switch
         {
-            CardState.Unplayed => Target.StateOnPlayed,
+            CardState.Unplayed => CardState.Played,
             CardState.TurnStart => CardState.Unplayed,
-            CardState.TurnEnd => (Target is ActionCard acard && acard.Temporary) ? CardState.Destroyed : CardState.Shuffle,
+            CardState.TurnEnd => CardState.Shuffle,
             _ => CardState.Destroyed
         };
 
@@ -209,6 +209,8 @@ public class CardContext : IPlayableContextWithUnit
 
         public IEnumerator PlayOnServer()
         {
+            if (context.State == context.Target.DestroyedOn)
+                context.State = CardState.Destroyed;
             context.PreviousContexts.Clear();
             yield return null;
         }
@@ -237,16 +239,15 @@ public enum CardState
 public abstract class Card : ScriptableObject, IPlayable
 {
     public virtual void OnPlay(CardContext context) { }
-
-    public abstract CardState StateOnPlayed { get; }
     public abstract Sprite Icon { get; }
     public abstract string Name { get; }
     public Card Source { get; private set; }
 
-    public int Id => id;
-    [SerializeField] int id;
+    public abstract CardState DestroyedOn { get; }
 
-    [TextArea(3, 15)]
+    [BoxGroup("Override Description")]
+    [HideLabel]
+    [TextArea(2, 15)]
     [SerializeField] string DescriptionOverride;
 
     void OnEnable()
@@ -293,7 +294,7 @@ public abstract class Card : ScriptableObject, IPlayable
                 {
                     FieldInfo field = target.GetType().GetField(split[1], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
                     if (field != null)
-                        replacement = $"<color=#2288ff>{field.GetValue(target)}</color>";
+                        replacement = $"<color=#88aaff>{field.GetValue(target)}</color>";
                     else
                         replacement = $"<color=#ff3333>No Data for '{split[1]}'</color>";
                 }

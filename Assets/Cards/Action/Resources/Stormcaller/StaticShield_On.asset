@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
+  m_Name: StaticShield_On
+  m_EditorClassIdentifier: 
+  DescriptionOverride: 'You have 2 [0:Class].
+
+    When you take Damage, All Units
+    within Range 2 gain [2:NewCardPrefab]
+
+
+    !start
+
+    Turns into [1:NewCardPrefab]'
+  skills:
+  - Trigger: 1
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296187483
+  - Trigger: 1
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296187484
+  - Trigger: 4
+    SourceTileInput: 0
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296187485
+  icon: {fileID: 21300000, guid: a2aa52e45ff99ff42bafc1f2b4db9b6a, type: 3}
+  name: Static Shield (Active)
+  FinalState: 1
+  cost:
+    Resources: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 325904334296187483
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
+      data:
+        Convert: 0
+        Amount: -2
+        FromClass: {fileID: 0}
+        Class: {fileID: 11400000, guid: 8080e19cae9b5464f9f977bdb12d2c5c, type: 2}
+    - rid: 325904334296187484
+      type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
+      data:
+        NewCardPrefab: {fileID: 11400000, guid: 2abefc8637d4cc94cab46f9ce7c9a303, type: 2}
+        NewCardInitialState: 2
+    - rid: 325904334296187485
+      type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
+      data:
+        NewCardPrefab: {fileID: 11400000, guid: e04b7b7db5cafc84ab309c5b9b20637c, type: 2}
+        NewCardInitialState: 0

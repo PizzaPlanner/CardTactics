@@ -41,6 +41,7 @@ MonoBehaviour:
   BeforePlayDelay: 0.3
   AfterPlayDelay: 0.7
   TurnAnnouncerTime: 0.75
+  PlanningPanelPopupTime: 1
   CardGainAnnouncerTime: 2
   MarkerDelayTime: 1
   RevealAreaPreDelay: 0.2

@@ -10,21 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
-  m_Name: Concentrate
+  m_Name: StaticShield
   m_EditorClassIdentifier: 
-  id: 0
-  DescriptionOverride: "<TODO> Until your next Turn: \nGain 2 Melee Armor.\nGain
-    Static Discharge.\nWhenever you are attacked in melee range, Play Shocked on
-    each Unit in Range 1."
-  skills: []
-  passives: []
+  DescriptionOverride: Gain [0:NewCardPrefab]
+  skills:
+  - Trigger: 0
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296187405
   icon: {fileID: 21300000, guid: a2aa52e45ff99ff42bafc1f2b4db9b6a, type: 3}
   name: Static Shield
-  Type: 0
+  FinalState: 3
   cost:
     Resources:
     - Total: 3
       Type: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 325904334296187405
+      type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
+      data:
+        NewCardPrefab: {fileID: 11400000, guid: 1d036520daa06584aa392fd725c525c6, type: 2}
+        NewCardInitialState: 2

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Mage_Energize
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
-  id: 0
   DescriptionOverride: '!start
 
     Take [2:Damage] Damage
@@ -21,7 +20,7 @@ MonoBehaviour:
     !play
 
     Convert
-    [0:Amount] [0:Class] to [0:ToClass]
+    [0:Amount] [0:FromClass] to [0:Class]
 
     Take [1:Damage] Damage'
   skills:
@@ -30,23 +29,22 @@ MonoBehaviour:
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 325904334296186968
+      rid: 325904334296187467
   - Trigger: 0
     SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 325904334296186969
+      rid: 325904334296187468
   - Trigger: 1
     SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 325904334296186972
-  passives: []
+      rid: 325904334296187469
   icon: {fileID: 21300000, guid: 571fa2abc8a03e545a2bb15e9d1d916d, type: 3}
   name: Charged
-  Type: 1
+  FinalState: 3
   cost:
     Resources:
     - Total: 1
@@ -54,14 +52,14 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 325904334296186968
+    - rid: 325904334296187467
       type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
       data:
         Convert: 1
         Amount: 1
-        Class: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
-        ToClass: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
-    - rid: 325904334296186969
+        FromClass: {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
+        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
+    - rid: 325904334296187468
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
@@ -71,9 +69,9 @@ MonoBehaviour:
         MinRange: 0
         MaxRange: 0
         Sound: {fileID: 8300000, guid: a2538bdbef8c63f46b53dc9a1a30257e, type: 3}
-        confirmOnePossibleTile: 1
+        confirmOnePossibleTile: 0
         Damage: 2
-    - rid: 325904334296186972
+    - rid: 325904334296187469
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
@@ -83,5 +81,5 @@ MonoBehaviour:
         MinRange: 0
         MaxRange: 0
         Sound: {fileID: 8300000, guid: a2538bdbef8c63f46b53dc9a1a30257e, type: 3}
-        confirmOnePossibleTile: 1
+        confirmOnePossibleTile: 0
         Damage: 1

@@ -12,31 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Followup_Shocked
   m_EditorClassIdentifier: Assembly-CSharp::ActionCard
+  DescriptionOverride: 'You have [0:Amount] [0:Class]
+
+
+    !end
+
+    Destroy'
   skills:
-  - SourceTileInput: 1
+  - Trigger: 1
+    SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283524840817188
-  passives: []
+      rid: 325904334296187509
   icon: {fileID: 21300000, guid: 52ecd67673b8d10418888b3b79b40012, type: 3}
   name: Shocked
-  Type: 0
+  FinalState: 5
   cost:
     Resources: []
   references:
     version: 2
     RefIds:
-    - rid: 1776283524840817188
-      type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
+    - rid: 325904334296187509
+      type: {class: ChangeResourceSkill, ns: , asm: Assembly-CSharp}
       data:
-        SkippableWithInput: 0
-        Filter:
-          Tile: 16
-          Unit: 2147483647
-          Range: 0
-        MinRange: 0
-        MaxRange: 0
-        Sound: {fileID: 8300000, guid: bffd04c63c968ad4fb0e13f0e411bace, type: 3}
-        confirmOnePossibleTile: 0
-        Damage: 1
+        Convert: 0
+        Amount: -2
+        FromClass: {fileID: 0}
+        Class: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}

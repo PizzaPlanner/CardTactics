@@ -12,31 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46cbabaacbfb87408c852ba422b3608, type: 3}
   m_Name: Stuck
   m_EditorClassIdentifier: 
-  id: 0
-  DescriptionOverride: 'While in your Hand, gain <TODO: Bleeding> at the start of
-    each turn.
+  DescriptionOverride: '!end
+
+    Gain [1:NewCardPrefab]
 
 
-    Receive [0:Damage] Damage'
+    !play
+
+    Remove'
   skills:
   - Trigger: 0
     SourceTileInput: 1
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 1776283593267216834
-  passives: []
+      rid: 325904334296187465
+  - Trigger: 2
+    SourceTileInput: 1
+    TileOutput: 0
+    Conditions: 
+    Skill:
+      rid: 325904334296187466
   icon: {fileID: 21300000, guid: bb93366383c45e9499d9638f90472099, type: 3}
   name: I am Stuck, Stepbro!
-  Type: 1
+  FinalState: 3
   cost:
     Resources:
-    - Total: 2
+    - Total: 1
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 1776283593267216834
+    - rid: 325904334296187465
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:
@@ -47,4 +54,9 @@ MonoBehaviour:
         MaxRange: 0
         Sound: {fileID: 8300000, guid: 11f65804e2012f04aa89fe928fbd42f2, type: 3}
         confirmOnePossibleTile: 0
-        Damage: 2
+        Damage: 0
+    - rid: 325904334296187466
+      type: {class: GainCardSkill, ns: , asm: Assembly-CSharp}
+      data:
+        NewCardPrefab: {fileID: 11400000, guid: 67df5333a4ddfc340aae2379a6b63eb6, type: 2}
+        NewCardInitialState: 0

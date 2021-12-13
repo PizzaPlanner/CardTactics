@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -33,6 +34,8 @@ public class CardItem : VisualElement
             if (card is ActionCard acard)
             {
                 this.Query<ResourcePanel>().ForEach(x => x.Resources = acard.Cost);
+                this.Query(null, "filter-playable").ForEach(x => x.style.display = card.skills.Any(x => x.Trigger == SkillTrigger.Use) ? DisplayStyle.Flex : DisplayStyle.None);
+                this.Query(null, "filter-unplayable").ForEach(x => x.style.display = card.skills.Any(x => x.Trigger == SkillTrigger.Use) ? DisplayStyle.None : DisplayStyle.Flex);
             }
             else if (card is UnitCard ucard)
             {
