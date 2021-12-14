@@ -170,7 +170,7 @@ public class CardContext : IPlayableContextWithUnit
 
     public void Serialize(NetworkWriter writer)
     {
-        writer.WriteCard(Target);
+        writer.WriteObject(Target);
         writer.Write((byte)State);
         writer.WriteNetworkBehaviour(Map);
         writer.WriteNetworkBehaviour(Unit);
@@ -178,7 +178,7 @@ public class CardContext : IPlayableContextWithUnit
 
     public IPlayableContext Deserialize(NetworkReader reader)
     {
-        Target = reader.ReadCard();
+        Target = reader.ReadObject<Card>();
         State = (CardState)reader.ReadByte();
         Map = reader.ReadNetworkBehaviour<Map>();
         Unit = reader.ReadNetworkBehaviour<Unit>();

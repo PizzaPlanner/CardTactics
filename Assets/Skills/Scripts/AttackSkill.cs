@@ -35,15 +35,16 @@ public class AttackSkill : ISkill
 
     public IEnumerator ExecuteClient(SkillContext ctx)
     {
-        Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
+        Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
         Animator targetAnimator = ctx.OutTile.Unit.GetComponentInChildren<Animator>();
         ctx.SourceTile.Face(Tile.GetFacing(ctx.SourceTile, ctx.OutTile));
         if (GameSettings.Instance.UseAnimations)
         {
             if (sourceAnimator != null)
             {
-                sourceAnimator.SetInteger("Action", 1);
-                sourceAnimator.SetTrigger("AttackTrigger");
+                sourceAnimator.SetInteger("TriggerNumber", 4);
+                sourceAnimator.SetInteger("Action", 5);
+                sourceAnimator.SetTrigger("Trigger");
             }
             if (Sound != null)
             {

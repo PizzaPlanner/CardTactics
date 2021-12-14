@@ -22,17 +22,6 @@ public class Deck : ScriptableObject
 
 public static class CardHelper
 {
-    public static void WriteCard(this NetworkWriter writer, Card value)
-    {
-        writer.WriteString(value == null ? "NULL" : value.name);
-    }
-    public static Card ReadCard(this NetworkReader reader)
-    {
-        var name = reader.ReadString();
-        Debug.Log("Read Card " + name);
-        return Resources.Load<Card>(name);
-    }
-
     public static void WriteDeck(this NetworkWriter writer, Deck value)
     {
         writer.WriteString(value == null ? "NULL" : value.name);

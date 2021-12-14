@@ -41,11 +41,11 @@ public class GainCardSkill : ISkill
 
     public void Serialize(Mirror.NetworkWriter writer)
     {
-        writer.WriteCard(NewCardPrefab);
+        writer.WriteObject(NewCardPrefab);
     }
     public ISkill Deserialize(Mirror.NetworkReader reader)
     {
-        NewCardPrefab = reader.ReadCard();
+        NewCardPrefab = reader.ReadObject<Card>();
         return this;
     }
 }

@@ -29,7 +29,7 @@ public class CardEditor : EditorWindow
 
         rootVisualElement.style.flexDirection = FlexDirection.Row;
 
-        var cardAssetsBasePath = "Assets/Cards/Action/Resources";
+        var cardAssetsBasePath = "Assets/Cards/Action";
 
         foreach (var path in AssetDatabase.GetSubFolders(cardAssetsBasePath))
         {
@@ -41,7 +41,7 @@ public class CardEditor : EditorWindow
             cardUIPrefab.CloneTree(pathThingy.contentContainer, out var idx, out var _);
             var newcard = pathThingy.contentContainer[idx].Q<CardItem>();
             newcard.Card = null;
-            newcard.RegisterCallback<MouseDownEvent>((_) => { var card = Card.CreateInstance<ActionCard>(); MakeCard(card, list.contentContainer); ProjectWindowUtil.CreateAsset(card, "Assets/Cards/Action/Resources/newAction.asset"); });
+            newcard.RegisterCallback<MouseDownEvent>((_) => { var card = Card.CreateInstance<ActionCard>(); MakeCard(card, list.contentContainer); ProjectWindowUtil.CreateAsset(card, $"{path}/newAction.asset"); });
             newcard.Q<Label>("Name").text = "New ActionCard";
             newcard.Q<Label>("Description").text = $"in {path}";
             newcard.transform.scale = new Vector3(0.7f, 0.7f, 0.7f);

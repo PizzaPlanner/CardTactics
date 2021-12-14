@@ -29,11 +29,6 @@ public abstract class ObjectAtlas<T> : MonoBehaviour where T : UnityEngine.Objec
 
 
 #if UNITY_EDITOR
-    void OnValidate()
-    {
-        Populate();
-    }
-
     [Button]
     void Populate()
     {

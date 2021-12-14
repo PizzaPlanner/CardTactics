@@ -46,7 +46,11 @@ public class MoveSkill : ISkill
 
     public IEnumerator ExecuteClient(SkillContext ctx)
     {
-        yield return null;
+        Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
+        if (sourceAnimator == null) yield break;
+        sourceAnimator.SetBool("Moving", true);
+        yield return new WaitForSeconds(1);
+        sourceAnimator.SetBool("Moving", false);
     }
 
     public void Serialize(Mirror.NetworkWriter writer) { }
