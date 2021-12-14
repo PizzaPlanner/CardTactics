@@ -14,17 +14,21 @@ public class GainCardSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => true;
 
-    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
     {
         return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    public IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillContext ctx)
     {
-        ctx.OutTile = ctx.SkillTarget.Tiles.First();
         if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
-        yield return ShowGetAnimation(NewCardPrefab);
         deck.Contexts.Add(new CardContext(NewCardPrefab, Map.FindObjectOfType<Map>(), ctx.OutTile.Unit, NewCardInitialState));
+        yield return null;
+    }
+
+    public IEnumerator ExecuteClient(SkillContext ctx)
+    {
+        yield return ShowGetAnimation(NewCardPrefab);
     }
 
     public static IEnumerator ShowGetAnimation(Card cardPrefab)
@@ -35,6 +39,13 @@ public class GainCardSkill : ISkill
         CardTooltip.Hide();
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.WriteCard(NewCardPrefab);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        NewCardPrefab = reader.ReadCard();
+        return this;
+    }
 }

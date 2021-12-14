@@ -18,7 +18,7 @@ public class AttackSkill : ISkill
     public string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
     public bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
     {
         return new RangePatternBuilder
         {
@@ -27,9 +27,14 @@ public class AttackSkill : ISkill
         }.Patterns(ctx.Map, ctx.SourceTile, Filter);
     }
 
-    public IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillContext ctx)
     {
-        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
+        yield return null;
+    }
+
+    public IEnumerator ExecuteClient(SkillContext ctx)
+    {
         Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
         Animator targetAnimator = ctx.OutTile.Unit.GetComponentInChildren<Animator>();
         ctx.SourceTile.Face(Tile.GetFacing(ctx.SourceTile, ctx.OutTile));
@@ -41,7 +46,9 @@ public class AttackSkill : ISkill
                 sourceAnimator.SetTrigger("AttackTrigger");
             }
             if (Sound != null)
+            {
                 ctx.SourceTile.Unit.GetComponent<AudioSource>().PlayOneShot(Sound);
+            }
             yield return new WaitForSeconds(0.3f);
             if (targetAnimator != null)
             {
@@ -49,9 +56,17 @@ public class AttackSkill : ISkill
                 targetAnimator.SetTrigger("GetHitTrigger");
             }
         }
-        ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.Write(Damage);
+        writer.WriteObject(Sound);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        Damage = reader.Read<float>();
+        Sound = reader.ReadObject<AudioClip>();
+        return this;
+    }
 }

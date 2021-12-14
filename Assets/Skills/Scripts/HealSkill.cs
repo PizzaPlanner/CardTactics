@@ -16,7 +16,7 @@ public class HealSkill : ISkill
     public string Description => $"Heal {Heal}";
     public bool AutoSelectOnOnePossibleTile => false;
 
-    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
     {
         if ((Filter.Tile & TileFilter.Empty) > 0) return new ITilePattern[0];
         return new RangePatternBuilder
@@ -26,15 +26,19 @@ public class HealSkill : ISkill
         }.Patterns(ctx.Map, ctx.SourceTile, Filter);
     }
 
-    public IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillContext ctx)
     {
-        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        ctx.OutTile.Unit.Damage(-Heal, ctx.OriginTile.Unit);
+        yield return null;
+    }
+
+    public IEnumerator ExecuteClient(SkillContext ctx)
+    {
         if (GameSettings.Instance.UseAnimations)
         {
             ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
             yield return new WaitForSeconds(0.5f);
         }
-        ctx.OutTile.Unit.Damage(-Heal, ctx.OriginTile.Unit);
     }
 
     public void Serialize(Mirror.NetworkWriter writer) { }

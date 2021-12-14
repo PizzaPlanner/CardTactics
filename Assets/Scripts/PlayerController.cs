@@ -82,7 +82,7 @@ public class PlanContext : IPlayableContextWithUnit
         var localOwner = PlayerController.Local.ControlledUnits.Contains(Unit);
 
         GameObject.FindObjectOfType<PlanningPanel>(true).Show(Unit,
-        onPlay: localOwner ? ((cardId) => PlayerController.Local.SetPlayerReady(Unit, cardId)) : null,
+        onPlay: localOwner ? ((cardId) => PlayerController.Local.SetPlayerReady(cardId)) : null,
         onEndTurn: localOwner ? (() => PlayerController.Local.EndTurn()) : null);
 
         yield return GameSettings.Instance.PlanningPanelPopupTime.Yield();
@@ -199,8 +199,9 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void SetPlayerReady(Unit unit, int cardId)
+    public void SetPlayerReady(int cardId)
     {
+        var unit = FindObjectOfType<GameStateMachine>().CurrentUnit;
         FindObjectOfType<Board>().SetPlayerReady(unit.GetComponent<IngameDeck>().Contexts[cardId]);
     }
 

@@ -14,7 +14,7 @@ public class MoveSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => false;
 
-    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
@@ -30,13 +30,23 @@ public class MoveSkill : ISkill
             return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Map, ctx.SourceTile, filter);
     }
 
-    public IEnumerator OnPreview(SkillContext ctx)
+    public Tile GetOutTile(SkillContext ctx)
     {
         if (ctx.SkillTarget is PathPattern pp)
-            ctx.OutTile = pp.Target;
+            return pp.Target;
         else if (ctx.SkillTarget is SingleTilePattern stp)
-            ctx.OutTile = stp.Target;
+            return stp.Target;
+        return null;
+    }
+
+    public IEnumerator ExecuteServer(SkillContext ctx)
+    {
         yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);
+    }
+
+    public IEnumerator ExecuteClient(SkillContext ctx)
+    {
+        yield return null;
     }
 
     public void Serialize(Mirror.NetworkWriter writer) { }

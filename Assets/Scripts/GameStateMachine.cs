@@ -75,7 +75,7 @@ public class GameStateMachine : NetworkBehaviour
 
         if (!board.Playables.Empty)
             CurrentStage = Stage.Play;
-        else if (CurrentUnit != null)
+        else if (CurrentUnit != null && !CurrentUnit.IsDead)
             CurrentStage = Stage.Plan;
         else if (playableUnits.Count() > 0)
             CurrentStage = Stage.StartTurn;
@@ -97,7 +97,7 @@ public class GameStateMachine : NetworkBehaviour
     {
         playableUnits.Clear();
         var unitsToPlay = new List<Unit>();
-        foreach (var unit in FindObjectsOfType<Unit>())
+        foreach (var unit in FindObjectsOfType<Unit>().Where(x => !x.IsDead))
             if (unit.TryGetComponent<IngameDeck>(out var deck))
             {
                 deck.OnRoundEnd();
@@ -147,11 +147,15 @@ public class GameStateMachine : NetworkBehaviour
     void OnStartTurn()
     {
         CurrentUnit = playableUnits.Dequeue();
+        if (CurrentUnit.IsDead)
+        {
+            CurrentStage = Stage.Events;
+            return;
+        }
+
         Debug.Log($"[Board] Start Turn of {CurrentUnit.Name}");
         cardsPlayedForCurrentUnit = 0;
-        waitingForAction = true;
         board.Playables.Enqueue(new TurnStartContext { Unit = CurrentUnit });
-        Resume();
         if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
             deck.OnTurnStart();
         if (board.Playables.Empty)

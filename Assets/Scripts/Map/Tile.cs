@@ -320,11 +320,12 @@ public class Tile : MonoBehaviour
     [Server]
     public bool Place(Unit unit, Facing facing)
     {
-        if (Unit != null || unit == null)
+        if ((Unit != null && !Unit.IsDead) || unit == null)
             return false;
 
         PlaceUnitNoCheck(unit, facing);
         Unit = unit;
+        unit.gameObject.SetActive(true);
         return true;
     }
 
@@ -379,6 +380,5 @@ public class Tile : MonoBehaviour
         unit.transform.position = UnitAnchor;
         unit.transform.SetParent(transform);
         unit.transform.rotation = Quaternion.AngleAxis(FaceToRot(facing), Vector3.up);
-        unit.gameObject.SetActive(true);
     }
 }

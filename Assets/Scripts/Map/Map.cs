@@ -230,8 +230,8 @@ public class Map : NetworkBehaviour
     {
         if (!tile.gameObject.activeSelf)
             return false;
-        var validTarget = (((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null)) || filter.Tile == 0;
-        if (filter.Unit > 0 && tile.Unit != null)
+        var validTarget = (((filter.Tile & TileFilter.Empty) > 0) && (tile.Unit == null || tile.Unit.IsDead)) || filter.Tile == 0;
+        if (filter.Unit > 0 && tile.Unit != null && !tile.Unit.IsDead)
         {
             var isObstacle = tile.Unit.Player.Team == -1;
             validTarget |= ((filter.Tile & TileFilter.Obstacle) > 0) && isObstacle;

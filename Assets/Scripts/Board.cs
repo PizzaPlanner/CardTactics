@@ -119,9 +119,10 @@ public class Board : NetworkBehaviour
     [Server]
     public void SetPlayerReady(CardContext card)
     {
-        if (card.Unit != FindObjectOfType<GameStateMachine>().CurrentUnit)
+        if (card.Unit != FindObjectOfType<GameStateMachine>().CurrentUnit || card.Unit.IsDead)
         {
             Debug.LogError($"[Board] Invalid ready message received by {card.Unit.Name}!");
+            SetPlayerDone();
             return;
         }
         Playables.Enqueue(card);

@@ -141,7 +141,6 @@ public class Unit : NetworkBehaviour
                 board.Playables.InsertFirst(new TriggerContext(killer, OnDeadKiller));
             if (OnDeadSelf != null)
                 board.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
-            FindObjectOfType<Map>().TileOf(this).Unit = null;
         }
     }
 
@@ -191,13 +190,13 @@ public class Unit : NetworkBehaviour
 
     public void MoveInstant(Tile from, Tile to)
     {
-        if (from.Unit != this || to.Unit != null)
+        if (from.Unit != this)
             return;
-        from.Unit = null;
         var facing = to.GetPathFacing();
         if (facing == Facing.Preserve)
             facing = Tile.GetFacing(from, to);
-        to.Place(this, facing);
+        if (to.Place(this, facing))
+            from.Unit = null;
     }
 
     public IEnumerator Move(Tile source, ITilePattern pattern, Tile target, RangeFilter type)

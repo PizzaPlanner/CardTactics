@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.Utilities;
@@ -115,6 +116,20 @@ public class PlanningPanel : MonoBehaviour
         unitPanel.Q<ResourcePanel>().Resources = unit.Resources;
 
         planningPanel.style.display = DisplayStyle.Flex;
+        StartCoroutine(FocusWithCamera(unit));
+    }
+
+    IEnumerator FocusWithCamera(Unit unit)
+    {
+        var targetPos = unit.transform.position + Camera.main.transform.forward * -50;
+        var originalDistance = Vector3.Distance(Camera.main.transform.position, targetPos);
+        while (Vector3.Distance(Camera.main.transform.position, targetPos) > 0.05f)
+        {
+            var distancePerFrame = originalDistance * Time.deltaTime * 5;
+            Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, targetPos, distancePerFrame);
+            yield return new WaitForEndOfFrame();
+        }
+        Camera.main.transform.position = targetPos;
     }
 
     void CalculateValidCards(Unit unit)

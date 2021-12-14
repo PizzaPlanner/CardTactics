@@ -70,17 +70,8 @@ public class TurnPanel : MonoBehaviour
     internal IEnumerator OnTurnStart(Unit unit, Action onComplete)
     {
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.AddToClassList("unit-badge--current"));
-        turnAnnouncer.Q<Label>().text = $"Turn of {unit.gameObject.name}";
+        turnAnnouncer.Q<Label>().text = $"Turn of {unit.Name}";
         turnAnnouncer.style.display = DisplayStyle.Flex;
-        var targetPos = unit.transform.position + Camera.main.transform.forward * -50;
-        var originalDistance = Vector3.Distance(Camera.main.transform.position, targetPos);
-        while (Vector3.Distance(Camera.main.transform.position, targetPos) > 0.05f)
-        {
-            var distancePerFrame = originalDistance * Time.deltaTime;
-            Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, targetPos, originalDistance / 4);
-            yield return new WaitForEndOfFrame();
-        }
-        Camera.main.transform.position = targetPos;
         yield return GameSettings.Instance.TurnAnnouncerTime.Yield();
         turnAnnouncer.style.display = DisplayStyle.None;
         onComplete?.Invoke();

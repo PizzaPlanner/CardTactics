@@ -71,7 +71,6 @@ public class SkillContext : IPlayableContextWithUnit
     public Tile OriginTile { get; private set; }
     public Map Map { get; private set; }
     public bool WantSkillSkip { get; private set; }
-    public bool WantComplete { get; private set; }
     public Progress PlayProgress;
     public Unit Unit { get; private set; }
     IEnumerable<SkillContext> previousContexts;
@@ -110,15 +109,18 @@ public class SkillContext : IPlayableContextWithUnit
 
     public IEnumerator PlayOnClient()
     {
-        yield break;
+        // Received only when Server already played this and Skill execution was successful
+        yield return Target.Skill.ExecuteClient(this);
     }
 
     public IEnumerator PlayOnServer()
     {
         var map = Map;
+        PlayProgress = Progress.Failed;
         if (Target.CanUse(OriginTile, previousContexts, out SourceTile)
             && Target.Skill.Activate(this, out var validPatterns, out var _))
         {
+            PlayProgress = Progress.Now;
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color>");
             if (Target.Skill.AutoSelectOnOnePossibleTile && validPatterns.Count() == 1)
                 SkillTarget = validPatterns.First();
@@ -131,19 +133,18 @@ public class SkillContext : IPlayableContextWithUnit
                 (itp) => SkillTarget = itp);
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
             }
-            NetworkServer.SendToAll(new PlayableMessage { context = this });
 
             yield return new WaitUntil(() => SkillTarget != null || (WantSkillSkip && Target.Skill.IsOptional));
 
             if (SkillTarget != null)
             {
-                yield return Target.Skill.OnPreview(this);
-                if (OutTile == null) Debug.LogError("[Card] Did not assign OutTile!");
+                OutTile = Target.Skill.GetOutTile(this);
+                Debug.Assert(OutTile != null);
+                yield return Target.Skill.ExecuteServer(this);
                 PlayProgress = Progress.Queued;
-                if (Unit.Player.IsAI)
-                    WantComplete = true;
+                NetworkServer.SendToAll(new PlayableMessage { context = this });
             }
-            else if (WantSkillSkip)
+            else
             {
                 PlayProgress = Progress.Skipped;
             }
@@ -276,16 +277,16 @@ public interface ISkill
 
     bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
-        validPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && x.Selectable);
-        invalidPatterns = OnActivate(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
+        validPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && x.Selectable);
+        invalidPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
         var hasAny = validPatterns.Any();
-        ctx.PlayProgress = hasAny ? Progress.Now : Progress.Failed;
         return hasAny;
     }
 
-    IEnumerable<ITilePattern> OnActivate(SkillContext ctx);
-    IEnumerator OnPreview(SkillContext ctx);
-
+    Tile GetOutTile(SkillContext ctx) => ctx.SkillTarget.Tiles.First();
+    IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx);
+    IEnumerator ExecuteServer(SkillContext ctx);
+    IEnumerator ExecuteClient(SkillContext ctx);
     void Serialize(NetworkWriter writer);
 
     ISkill Deserialize(NetworkReader reader);

@@ -18,7 +18,7 @@ public class SelectSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    public IEnumerable<ITilePattern> OnActivate(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
     {
         var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange }))
             .Patterns(ctx.Map, ctx.SourceTile, TargetFilter);
@@ -32,9 +32,13 @@ public class SelectSkill : ISkill
             return patterns;
     }
 
-    public IEnumerator OnPreview(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillContext ctx)
     {
-        ctx.OutTile = ctx.SkillTarget.Tiles.First();
+        yield return null;
+    }
+
+    public IEnumerator ExecuteClient(SkillContext ctx)
+    {
         yield return null;
     }
 

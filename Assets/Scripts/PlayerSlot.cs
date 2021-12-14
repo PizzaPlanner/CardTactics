@@ -63,6 +63,7 @@ public class PlayerSlot : MonoBehaviour
         {
             player.ControlledUnits.Add(unit);
         }
+        unit.gameObject.SetActive(false);
         return true;
     }
 }
