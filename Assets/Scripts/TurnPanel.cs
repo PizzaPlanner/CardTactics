@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 public class TurnPanel : MonoBehaviour
 {
     [SerializeField] VisualTreeAsset readyBadgeAsset;
+    [SerializeField] VisualTreeAsset unitStatusBar, unitStatusBarBuffItem;
     VisualElement readyPanel;
     VisualElement turnAnnouncer;
 
@@ -21,6 +22,15 @@ public class TurnPanel : MonoBehaviour
         // foreach (Transform t in nextActionsPanel)
         //     Destroy(t.gameObject);
         turnAnnouncer.style.display = DisplayStyle.None;
+    }
+
+    public UnitStatusBar MakeStatusBar()
+    {
+        var attachments = uiRoot.rootVisualElement.Q("Attachments");
+        unitStatusBar.CloneTree(attachments, out var idx, out var _);
+        var item = attachments[idx].Q<UnitStatusBar>();
+        item.CardPrefab = unitStatusBarBuffItem;
+        return item;
     }
 
     public void AddUnit(Unit unit)

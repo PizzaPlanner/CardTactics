@@ -213,8 +213,16 @@ TextField > * {
     padding-bottom: 5px;
 }
 
-#UnplayablePanel > CardItem {
-    margin-top: -275px;
-    scale: 0.4 0.4;
-    margin-left: -150px;
+.statusbar CardItem {
+    width: 42px;
+    height: 42px;
+}
+
+.statusbar-big CardItem {
+    width: 64px;
+    height: 64px;
+}
+
+UnitItem .statusbar {
+    flex-direction: column-reverse;
 }

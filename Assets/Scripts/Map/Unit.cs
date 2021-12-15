@@ -5,6 +5,7 @@ using System.Linq;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum ResourceState
 {
@@ -122,7 +123,6 @@ public class Unit : NetworkBehaviour
         Life -= dmg;
         if (Life > MaxLife)
             Life = MaxLife;
-        OnLifeChange?.Invoke(Life, MaxLife);
         if (IsDead)
         {
             OnDeath(source);
@@ -142,9 +142,9 @@ public class Unit : NetworkBehaviour
             if (OnDeadSelf != null)
                 board.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
         }
+        if (bar != null)
+            bar.RemoveFromHierarchy();
     }
-
-    public Action<float, float> OnLifeChange;
 
     // TODO: This correctly spawns the unit. Calling spawn after instantiate like shown here doesnt work: https://mirror-networking.gitbook.io/docs/guides/gameobjects/spawning-gameobjects
     // Only execute when isServer and isClient are not assigned yet to make sure it won't run on client.
@@ -176,7 +176,21 @@ public class Unit : NetworkBehaviour
             foreach (var mr in gameObject.GetComponentsInChildren<Renderer>())
                 mr.gameObject.layer = LayerMask.NameToLayer("Outline");
         }
-        OnLifeChange?.Invoke(Life, MaxLife);
+        if (MaxLife > 0)
+        {
+            bar = FindObjectOfType<TurnPanel>()?.MakeStatusBar();
+            // bar.style.position = Position.Absolute;
+            bar.style.width = (MaxLife / 5) * 25 + 80;
+            bar.Unit = this;
+            bar.FollowUnit = true;
+        }
+    }
+
+    UnitStatusBar bar;
+    void LateUpdate()
+    {
+        if (bar != null)
+            bar.UpdateValues();
     }
 
     public static int CompareSpeed(Unit u1, Unit u2)

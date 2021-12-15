@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="CardStatus" src="project://database/Assets/UI/CardStatus.uxml?fileID=9197481963319205126&amp;guid=0750d3bb769a8f740a4c1807ea4de2ff&amp;type=3#CardStatus" />
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <UnitStatusBar name="VisualElement" picking-mode="Ignore" class="statusbar" style="align-items: center;">
+        <ui:VisualElement name="Lifebar" class="filter-unitcard" style="background-image: url(&apos;project://database/Assets/bar_life.png?fileID=21300000&amp;guid=961b551b49b6ad9448387a3a498b8d2c&amp;type=3#bar_life&apos;); -unity-background-image-tint-color: rgb(70, 70, 70); -unity-background-scale-mode: stretch-to-fill; height: 15px; margin-top: 5px; margin-bottom: 5px; width: 100%;">
+            <ui:VisualElement name="Lifebar-Bar" style="background-image: url(&apos;project://database/Assets/bar_life.png?fileID=21300000&amp;guid=961b551b49b6ad9448387a3a498b8d2c&amp;type=3#bar_life&apos;); -unity-background-image-tint-color: rgb(255, 0, 0); -unity-background-scale-mode: stretch-to-fill; height: 100%; width: 100%;" />
+            <ui:Label text="21" name="Life" class="color-default-text text-shadow" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 24px; -unity-font-style: bold; -unity-text-align: middle-center; padding-bottom: 0; padding-top: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="BuffBar" style="flex-direction: row; justify-content: center; flex-wrap: wrap;">
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+            <ui:Instance template="CardStatus" name="CardStatus" />
+        </ui:VisualElement>
+    </UnitStatusBar>
+</ui:UXML>

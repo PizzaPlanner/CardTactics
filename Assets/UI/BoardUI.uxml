@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Template name="UnitItemPlanning" src="project://database/Assets/Cards/UI/UnitItemPlanning.uxml?fileID=9197481963319205126&amp;guid=cff32862e11b4ed45a2121d13526a2b2&amp;type=3#UnitItemPlanning" />
-    <ui:Template name="CardBig" src="project://database/Assets/Cards/UI/CardBig.uxml?fileID=9197481963319205126&amp;guid=29a9371bab04ae14aa88f1bec4eb9fbc&amp;type=3#CardBig" />
-    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <ui:Template name="UnitItemPlanning" src="project://database/Assets/UI/UnitItemPlanning.uxml?fileID=9197481963319205126&amp;guid=cff32862e11b4ed45a2121d13526a2b2&amp;type=3#UnitItemPlanning" />
+    <ui:Template name="CardBig" src="project://database/Assets/UI/CardBig.uxml?fileID=9197481963319205126&amp;guid=29a9371bab04ae14aa88f1bec4eb9fbc&amp;type=3#CardBig" />
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <ui:VisualElement name="Attachments" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
     <ui:VisualElement name="PlanningPanel" picking-mode="Ignore" style="position: absolute; bottom: 0; left: 0; right: 0; top: 0; align-items: flex-end; justify-content: space-between; flex-direction: row;">
         <ui:VisualElement name="CurrentUnit" style="flex-direction: row; position: relative; flex-shrink: 0; width: 400px;">
             <ui:Instance template="UnitItemPlanning" name="UnitItemPlanning" style="scale: 0.9 0.9;" />
@@ -12,13 +13,6 @@
                     <CostIcon />
                 </ui:VisualElement>
             </ResourcePanel>
-            <ui:VisualElement name="UnplayablePanel" style="position: absolute; align-items: flex-end; flex-direction: row; bottom: 305px; flex-shrink: 1; flex-grow: 0; justify-content: flex-start; flex-wrap: wrap; left: 92px; width: 300px;">
-                <ui:Instance template="CardBig" name="CardBig" />
-                <ui:Instance template="CardBig" name="CardBig" />
-                <ui:Instance template="CardBig" name="CardBig" />
-                <ui:Instance template="CardBig" name="CardBig" />
-                <ui:Instance template="CardBig" name="CardBig" />
-            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="CardPanel" style="position: relative; align-items: flex-end; flex-direction: row; bottom: -200px; flex-shrink: 1; flex-grow: 0; justify-content: space-around; margin-right: 75px; margin-left: 75px;">
             <ui:Instance template="CardBig" name="CardBig" />

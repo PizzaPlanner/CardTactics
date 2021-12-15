@@ -157,7 +157,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   settings: {fileID: 11400000, guid: a34c42c9dcd84bd4bb62344b7185bca6, type: 2}
-  stateMachine: {fileID: 1657279318}
   OnNoCardsPlayed: {fileID: 11400000, guid: 8086d45c1fa73b44d9f9261d17bd7a77, type: 2}
 --- !u!4 &78512298
 Transform:
@@ -368,6 +367,7 @@ MonoBehaviour:
   UnselectSound: {fileID: 8300000, guid: 623e8d2f237eccd4b9c3c9545695c15f, type: 3}
   ReadySound: {fileID: 8300000, guid: ec966655d5e585c48b343f0369bd39ef, type: 3}
   cardAsset: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
+  buffAsset: {fileID: 9197481963319205126, guid: 0750d3bb769a8f740a4c1807ea4de2ff, type: 3}
   uiRoot: {fileID: 728829425}
 --- !u!82 &728829429
 AudioSource:
@@ -478,6 +478,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   readyBadgeAsset: {fileID: 9197481963319205126, guid: 1d599a6e9e01ecd4cbdd0045b1307771, type: 3}
+  unitStatusBar: {fileID: 9197481963319205126, guid: 59176d0302f46a140bf635fedd80471c, type: 3}
+  unitStatusBarBuffItem: {fileID: 9197481963319205126, guid: 0750d3bb769a8f740a4c1807ea4de2ff, type: 3}
   uiRoot: {fileID: 728829425}
 --- !u!1 &1657279317
 GameObject:

@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class CardEditor : EditorWindow
 {
     VisualTreeAsset cardUIPrefab;
-    const string UI_PREFAB_PATH = "Assets/Cards/UI/CardBig.uxml";
+    const string UI_PREFAB_PATH = "Assets/UI/CardBig.uxml";
 
     VisualElement inspector;
 

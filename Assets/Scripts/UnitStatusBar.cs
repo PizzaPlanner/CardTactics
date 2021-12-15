@@ -1,51 +1,82 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
-public class UnitStatusBar : MonoBehaviour
+public class UnitStatusBar : VisualElement
 {
-    RectTransform bar;
+    VisualElement bar;
+    Label life;
 
-    Text Life;
-    Image fillBar;
+    public Unit Unit
+    {
+        get => unit; set
+        {
+            unit = value;
+            this.Q("BuffBar").style.display = unit.TryGetComponent(out deck) ? DisplayStyle.Flex : DisplayStyle.None;
+            bar = this.Q("Lifebar-Bar");
+            life = this.Q<Label>("Life");
 
-    [SerializeField] RectTransform barPrefab;
+            this.Q("BuffBar").Clear();
 
+            UpdateValues();
+        }
+    }
     Unit unit;
+    public bool FollowUnit;
+    IngameDeck deck;
 
-    float speed = 0;
+    public VisualTreeAsset CardPrefab;
+    float lastBuffUpdate;
 
-    void Start()
+    public void UpdateValues()
     {
-        bar = Instantiate(barPrefab);
-        bar.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
-        bar.transform.SetAsFirstSibling();
-        Life = bar.GetChild(0).GetChild(0).GetComponentInChildren<Text>();
-        fillBar = bar.GetChild(0).GetChild(0).GetComponentInChildren<Image>();
-        unit = gameObject.GetComponentInParent<Unit>();
-        fillBar.color = unit.Player.TeamColor;
+        if (FollowUnit)
+        {
+            Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(panel, unit.transform.position, Camera.main);
+            transform.position = newPosition - new Vector2(layout.width / 2, 0);
+            bar.style.width = new StyleLength(new Length(unit.Life / unit.MaxLife * 100, LengthUnit.Percent));
+        }
+
+        life.text = unit.Life.ToString();
+
+        // Update Buffbar. Only once per 0.5s if FollowUnit is true
+        if (deck == null || (FollowUnit && Time.timeSinceLevelLoad - lastBuffUpdate > 0.5f))
+            return;
+
+        lastBuffUpdate = Time.timeSinceLevelLoad;
+        var hasNot = deck.Unplayable.ToArray();
+        foreach (var item in this.Query<CardItem>().ToList())
+        {
+            bool hasCard = false;
+            for (int i = 0; i < hasNot.Length; i++)
+            {
+                if (hasNot[i] != null && item.Card == hasNot[i].Target)
+                {
+                    hasNot[i] = null;
+                    hasCard = true;
+                    break;
+                }
+            }
+            if (!hasCard)
+                item.RemoveFromHierarchy();
+        }
+
+        foreach (var ctx in hasNot)
+            if (ctx != null)
+            {
+                CardPrefab.CloneTree(this.Q("BuffBar"), out var idx, out var _);
+                this.Q("BuffBar")[idx].Q<CardItem>().Card = ctx.Target;
+            }
     }
 
-    void Update()
-    {
-        bar.transform.position = Camera.main.WorldToScreenPoint(transform.position);
-        Life.text = gameObject.GetComponentInParent<Unit>()?.Life.ToString();
-        var diff = fillBar.fillAmount - unit.Life / unit.MaxLife;
-        if (Mathf.Abs(diff) > 0.001f)
-        {
-            if (speed == 0)
-                speed = diff;
-            fillBar.fillAmount -= Time.deltaTime * speed;
-            fillBar.fillAmount = Mathf.Clamp01(fillBar.fillAmount);
-        }
-        else
-        {
-            speed = 0;
-        }
-    }
+    public new class UxmlFactory : UxmlFactory<UnitStatusBar, UxmlTraits> { }
 
-    void OnDisable()
+    public new class UxmlTraits : VisualElement.UxmlTraits
     {
-        if (bar != null && bar.gameObject != null)
-            GameObject.Destroy(bar.gameObject);
+        public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
+        {
+            get { yield break; }
+        }
     }
 }
