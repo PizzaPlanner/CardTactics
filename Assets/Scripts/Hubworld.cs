@@ -19,6 +19,6 @@ public class Hubworld : NetworkBehaviour
     {
         if (Maps.Length <= i || !Maps[i].Playable) return;
         var prefab = Maps[i].MapPrefab;
-        FindObjectOfType<RoomNetworkManager>().PlayMap(prefab);
+        LoadingScreen.PlayMap(prefab);
     }
 }

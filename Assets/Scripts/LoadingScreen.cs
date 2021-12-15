@@ -1,59 +1,51 @@
-using System;
-using System.Collections;
 using Mirror;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class LoadingScreen : NetworkBehaviour
+public static class LoadingScreen
 {
-    public const string SCENE_BOARD = "Board";
-    public const string SCENE_MENU = "Menu";
-    public const string SCENE_EMPTY = "Empty";
-    public const string SCENE_LOADING = "LoadingScreen";
-
-    class FakeBehaviour : MonoBehaviour { }
-
-    public float Progress
+    public static void LoadHub(Hubworld hubPrefab)
     {
-        get => progress; set
-        {
-            progress = value;
-            GetComponent<RectTransform>().anchorMax = new Vector2(value, 1);
-        }
     }
-    float progress = 0;
 
-    static IEnumerator LoadMap(GameObject loader, string scene, Action onLoaded, Action onFinished)
+    public static void GoToHub(Hubworld hub)
     {
-        DontDestroyOnLoad(loader);
-        yield return null;
-        SceneManager.LoadScene(SCENE_LOADING, LoadSceneMode.Single);
-        while (FindObjectOfType<LoadingScreen>() == null)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-        var lbar = FindObjectOfType<LoadingScreen>();
-        var op = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
-        while (!op.isDone)
-        {
-            lbar.Progress = op.progress;
-            yield return new WaitForEndOfFrame();
-        }
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
-        onLoaded?.Invoke();
+    }
 
-        SceneManager.UnloadSceneAsync(SCENE_LOADING).completed += (_) =>
+    public static void GoToMenu()
+    {
+        NetworkManager.singleton.ServerChangeScene("Menu");
+    }
+
+    public static void PlayMap(Map mapPrefab)
+    {
+        if (!GameObject.FindObjectOfType<MapAtlas>().Has(mapPrefab, out var idx))
         {
-            onFinished?.Invoke();
-            Destroy(loader);
+            Debug.LogError($"Map {mapPrefab.name} is not registered!");
+            return;
+        }
+
+        CreateGame(idx, NetworkManager.singleton.numPlayers);
+    }
+
+
+    static void CreateGame(int i, int numPlayers)
+    {
+        var mapPrefab = MapAtlas.FindObjectOfType<MapAtlas>().Prefab(i);
+
+        if (numPlayers < mapPrefab.MinPartySize || numPlayers > mapPrefab.MaxPartySize)
+        {
+            Debug.LogError($"Can not start this map with Party Size {numPlayers}. Required: {mapPrefab.MinPartySize} to {mapPrefab.MaxPartySize}");
+            return;
+        }
+
+        RoomNetworkManager.OnSceneChangedServer = () =>
+        {
+            var map = GameObject.Instantiate(mapPrefab);
+            NetworkServer.Spawn(map.gameObject);
+            foreach (var player in GameObject.FindObjectsOfType<PlayerController>())
+                player.OnLoadMap(i);
         };
+        NetworkManager.singleton.ServerChangeScene("Board");
     }
 
-    [Server]
-    public static void ChangeSceneServer(string targetSceneName, Action onLoaded = null, Action onFinished = null)
-    {
-        NetworkManager.singleton.ServerChangeScene(targetSceneName);
-        // RoomNetworkManager.OnSceneChange = () => { onLoaded?.Invoke(); onFinished?.Invoke(); };
-    }
 }

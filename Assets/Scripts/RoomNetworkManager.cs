@@ -13,24 +13,34 @@ public class RoomNetworkManager : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         base.OnServerAddPlayer(conn);
-        lobbyUI = GetComponent<UIDocument>().rootVisualElement.Q("Lobby");
-        lobbyUI.Q("PlayerList").Add(new Label(conn.identity.gameObject.name));
-        lobbyUI.Q<Toggle>().value = conn.isReady;
-        lobbyUI.Q<Toggle>().RegisterValueChangedCallback(x => conn.isReady = x.newValue);
-        DontDestroyOnLoad(conn.identity.gameObject);
+        Debug.Log("[Server] Player joined");
+    }
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        base.OnClientConnect(conn);
         SetConnectionUI(NetworkManagerMode.ClientOnly);
+        Debug.Log("I joined");
+    }
+
+    public override void OnStartClient()
+    {
+
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         base.OnClientDisconnect(conn);
-        lobbyUI.Q("PlayerList").Clear();
         SetConnectionUI(NetworkManagerMode.Offline);
     }
 
     public override void OnStopClient()
     {
-        lobbyUI.Q("PlayerList").Clear();
+        SetConnectionUI(NetworkManagerMode.Offline);
+    }
+
+    public override void OnClientError(Exception exception)
+    {
         SetConnectionUI(NetworkManagerMode.Offline);
     }
 
@@ -41,23 +51,23 @@ public class RoomNetworkManager : NetworkManager
 
     public override void OnStartServer()
     {
-        Debug.Log("Server started!");
+
     }
 
     void SetConnectionUI(NetworkManagerMode m)
     {
+        var players = lobbyUI.Q("PlayerList");
+        players.Clear();
         switch (m)
         {
             case NetworkManagerMode.Offline:
                 lobbyUI.Q("Connecting").style.display = DisplayStyle.None;
-                lobbyUI.Q("Ready").style.display = DisplayStyle.None;
                 lobbyUI.Q("JoinPanel").style.display = DisplayStyle.Flex;
                 lobbyUI.Q("Leave").style.display = DisplayStyle.None;
                 lobbyUI.Q("Host").style.display = DisplayStyle.Flex;
                 break;
             case NetworkManagerMode.ServerOnly:
                 lobbyUI.Q("Connecting").style.display = DisplayStyle.Flex;
-                lobbyUI.Q("Ready").style.display = DisplayStyle.None;
                 lobbyUI.Q("JoinPanel").style.display = DisplayStyle.None;
                 lobbyUI.Q("Leave").style.display = DisplayStyle.None;
                 lobbyUI.Q("Host").style.display = DisplayStyle.None;
@@ -65,10 +75,11 @@ public class RoomNetworkManager : NetworkManager
             case NetworkManagerMode.ClientOnly:
             case NetworkManagerMode.Host:
                 lobbyUI.Q("Connecting").style.display = DisplayStyle.None;
-                lobbyUI.Q("Ready").style.display = DisplayStyle.Flex;
                 lobbyUI.Q("JoinPanel").style.display = DisplayStyle.None;
                 lobbyUI.Q("Leave").style.display = DisplayStyle.Flex;
                 lobbyUI.Q("Host").style.display = DisplayStyle.None;
+                foreach (var player in FindObjectsOfType<PlayerController>())
+                    players.Add(new Label(player.gameObject.name));
                 break;
         }
     }
@@ -91,13 +102,10 @@ public class RoomNetworkManager : NetworkManager
         loadingScreen = root[idx].Q("LoadingScreen");
         loadingScreen.style.display = DisplayStyle.None;
 
-        StartHost();
-    }
+        if (SceneManager.GetActiveScene().name == "Entrypoint")
+            LoadingScreen.GoToMenu();
 
-    public override void OnStartClient()
-    {
-        NetworkClient.ready = true;
-        NetworkClient.AddPlayer();
+        StartHost();
     }
 
     void Host()
@@ -118,22 +126,6 @@ public class RoomNetworkManager : NetworkManager
         StopHost();
     }
 
-    public void GoToHub(Hubworld hub)
-    {
-        FindObjectsOfType<PlayerController>().First(x => x.hasAuthority).LoadHub(hub);
-    }
-
-    public void PlayMap(Map mapPrefab)
-    {
-        if (!FindObjectOfType<MapAtlas>().Has(mapPrefab, out var idx))
-        {
-            Debug.LogError($"Map {mapPrefab.name} is not registered!");
-            return;
-        }
-
-        FindObjectsOfType<PlayerController>().First(x => x.hasAuthority).CreateGame(idx, numPlayers);
-    }
-
     public static Action OnSceneChangedServer;
     public override void OnServerSceneChanged(string newSceneName)
     {
@@ -147,6 +139,10 @@ public class RoomNetworkManager : NetworkManager
         loadingScreen.style.display = DisplayStyle.None;
         lobbyUI.style.display = SceneManager.GetActiveScene().name == "Menu" ? DisplayStyle.Flex : DisplayStyle.None;
 
+
+        NetworkClient.ready = true;
+        NetworkClient.AddPlayer();
+        Debug.Log("Player added");
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)

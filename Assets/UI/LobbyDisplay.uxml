@@ -1,8 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
     <ui:VisualElement name="Lobby" class="color-default-text" style="background-color: rgb(53, 53, 53); padding-left: 10px; padding-right: 10px; padding-top: 20px; padding-bottom: 10px; width: 300px;">
         <ui:VisualElement name="PlayerList" />
-        <ui:Toggle label="Ready" name="Ready" />
         <ui:VisualElement name="JoinPanel" style="flex-direction: row;">
             <ui:TextField picking-mode="Ignore" value="localhost" text="localhost" name="ServerIp" style="flex-grow: 1; height: 32px;" />
             <ui:Button text="Join" display-tooltip-when-elided="true" name="Join" class="button-menu" style="height: 32px; font-size: 18px; width: auto;" />

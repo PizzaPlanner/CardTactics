@@ -13,5 +13,6 @@ public class EndGameTrigger : Trigger
         else
             Debug.Log("Defeat...");
         yield return GameSettings.Instance.EndGameDelay.Yield();
+        LoadingScreen.GoToMenu();
     }
 }

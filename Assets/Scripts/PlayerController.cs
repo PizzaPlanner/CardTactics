@@ -141,51 +141,19 @@ public class PlayerController : NetworkBehaviour
         StartCoroutine(PlayAndResume());
     }
 
-    [ClientRpc]
-    void OnLoadMap(int mapId)
-    {
-        if (isServer) return;
-        var prefab = FindObjectOfType<MapAtlas>().Prefab(mapId);
-        Instantiate(prefab);
-    }
-
-    [Command]
-    public void CreateGame(int i, int numPlayers)
-    {
-        var mapPrefab = FindObjectOfType<MapAtlas>().Prefab(i);
-
-        if (numPlayers < mapPrefab.MinPartySize || numPlayers > mapPrefab.MaxPartySize)
-        {
-            Debug.LogError($"Can not start this map with Party Size {numPlayers}. Required: {mapPrefab.MinPartySize} to {mapPrefab.MaxPartySize}");
-            return;
-        }
-
-        RoomNetworkManager.OnSceneChangedServer = () =>
-        {
-            var map = Instantiate(mapPrefab);
-            NetworkServer.Spawn(map.gameObject);
-            foreach (var controller in FindObjectsOfType<PlayerController>())
-                controller.OnLoadMap(i);
-        };
-        NetworkManager.singleton.ServerChangeScene(LoadingScreen.SCENE_BOARD);
-    }
-
-    [Command]
-    public void LoadHub(Hubworld hubPrefab)
-    {
-        LoadingScreen.ChangeSceneServer(
-        LoadingScreen.SCENE_EMPTY,
-        () =>
-        {
-            var hub = Instantiate(hubPrefab);
-        }, null);
-    }
-
     public override void OnStartLocalPlayer()
     {
         NetworkClient.RegisterHandler<TilePatternMessage>(OnGetPatterns);
         NetworkClient.RegisterHandler<PlayableMessage>(OnGetPlayable);
         Local = this;
+    }
+
+    [ClientRpc]
+    public void OnLoadMap(int mapId)
+    {
+        var prefab = FindObjectOfType<MapAtlas>().Prefab(mapId);
+        Instantiate(prefab);
+        Debug.Log("LOAD MAP " + mapId + " ON CLIENT");
     }
 
     void OnGetPlayable(PlayableMessage msg)

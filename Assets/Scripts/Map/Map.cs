@@ -38,9 +38,14 @@ public class Map : NetworkBehaviour
                 {
                     var firstUnit = FindObjectsOfType<Unit>(true).FirstOrDefault(x => !x.IsDead && Teams[x.Player.Team] == team);
                     if (firstUnit == null)
-                        Debug.Log("Team is dead!");
-                    team.Conditions.Remove(condition);
-                    board.Playables.InsertFirst(new TriggerContext(firstUnit, condition.OnConditionMet));
+                        firstUnit = FindObjectsOfType<Unit>(true).FirstOrDefault(x => x.IsDead && Teams[x.Player.Team] == team);
+                    if (firstUnit == null)
+                        Debug.LogError("No Units left for Team!");
+                    else
+                    {
+                        team.Conditions.Remove(condition);
+                        board.Playables.InsertFirst(new TriggerContext(firstUnit, condition.OnConditionMet));
+                    }
                 }
         }
     }

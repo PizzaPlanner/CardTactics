@@ -55,8 +55,8 @@
 
 .button-menu {
     background-image: url('project://database/Assets/3rdParty/GUI_Parts/Gui_parts/name_bar2.png?fileID=21300000&guid=e4c261293bfe98f4fa9d9591373bc443&type=3#name_bar2');
-    height: 64px;
-    width: 256px;
+    height: 75px;
+    width: 275px;
     -unity-font-style: bold;
     color: rgb(231, 229, 208);
     font-size: 24px;
