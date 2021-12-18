@@ -11,7 +11,7 @@ public class MultiTrigger : Trigger
     public override IEnumerator Execute(Unit unit)
     {
         foreach (var trigger in SubTriggers)
-            FindObjectOfType<Board>().Playables.Enqueue(new TriggerContext(unit, trigger));
+            RoomNetworkManager.Playables.Enqueue(new TriggerContext(unit, trigger));
         yield return null;
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public struct SelectTileMessage : NetworkMessage
 {
     public Vector3Int Position;
 }
 
-public class Map : NetworkBehaviour
+public class Map : MonoBehaviour
 {
     public int MinPartySize => Teams.Sum(x => x.MinPlayers);
     public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
@@ -27,7 +28,7 @@ public class Map : NetworkBehaviour
             {
                 var ctx = new TriggerContext(tile.Unit, tcomp.Trigger);
                 if (ctx.Queueable)
-                    board.Playables.Enqueue(ctx);
+                    RoomNetworkManager.Playables.Enqueue(ctx);
             }
         }
 
@@ -44,7 +45,7 @@ public class Map : NetworkBehaviour
                     else
                     {
                         team.Conditions.Remove(condition);
-                        board.Playables.InsertFirst(new TriggerContext(firstUnit, condition.OnConditionMet));
+                        RoomNetworkManager.Playables.InsertFirst(new TriggerContext(firstUnit, condition.OnConditionMet));
                     }
                 }
         }
@@ -94,7 +95,7 @@ public class Map : NetworkBehaviour
                 tile.Neighbours.Add(neighbour);
             }
 
-            if (isServer)
+            if (NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
             {
                 if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
                 {
@@ -111,25 +112,32 @@ public class Map : NetworkBehaviour
                         Debug.Log("[Board] Spawning unit " + instance.Name);
                         tile.Place(instance, spawn.Facing);
                     }
-
                 }
             }
         }
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
-        if (isClient)
+        if (NetworkManager.singleton.mode != NetworkManagerMode.ServerOnly)
+        {
             Camera.main.transform.position = Camera.main.transform.forward * -50;
-        if (isServer)
+        }
+        if (NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
         {
             foreach (var team in Teams)
-                team.CreatePlayables(FindObjectOfType<Board>().Playables, this);
+                team.CreatePlayables(RoomNetworkManager.Playables, this);
             NetworkServer.RegisterHandler<SelectTileMessage>(OnSelectTileMessage);
         }
     }
 
     void OnSelectTileMessage(NetworkConnection conn, SelectTileMessage message)
     {
+        if (RoomNetworkManager.Playables.Current is not IServerPlayable s || s.Owner != conn)
+        {
+            Debug.LogWarning($"Ignored invalid selection request from {conn.identity.gameObject.name}");
+            return;
+        }
+
         var tile = Tiles.FirstOrDefault(x => x.Position == message.Position);
         if (tile == null)
             return;
@@ -178,13 +186,12 @@ public class Map : NetworkBehaviour
         NetworkServer.SendToAll(new TilePatternMessage { Patterns = patterns.ToArray() });
     }
 
-    [Client]
     public void ShowPatterns(IEnumerable<ITilePattern> patterns, bool hasAuthority)
     {
         foreach (var tile in Tiles)
         {
             // TODO: This is a workaround for Host mode
-            if (isServer)
+            if (NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
                 tile.PrimaryPattern = null;
             tile.CurrentIndicator = TargetIndicator.Hidden;
             foreach (var pattern in patterns)
@@ -251,29 +258,24 @@ public class Map : NetworkBehaviour
 
     void Update()
     {
-        if (!isClient)
+        if (NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly)
             return;
 
-        var currentTile = Tile.Hovered;
-        Tile newTile = null;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Tile")))
-            newTile = hit.transform.GetComponent<Tile>();
-        if (newTile != currentTile && currentTile != null)
-            currentTile.OnMouseLeave();
-        if (newTile != null)
-            newTile.OnMouseEnter();
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            var currentTile = Tile.Hovered;
+            Tile newTile = null;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Tile")))
+                newTile = hit.transform.GetComponent<Tile>();
+            if (newTile != currentTile && currentTile != null)
+                currentTile.OnMouseLeave();
+            if (newTile != null)
+                newTile.OnMouseEnter();
+        }
 
-        if (GameStateMachine.WaitingForAction)
-            switch (GameStateMachine.CurrentStage)
-            {
-                case GameStateMachine.Stage.Plan:
-                case GameStateMachine.Stage.Play:
-                    DoControls();
-                    break;
-            }
+        DoControls();
     }
 
-    [Client]
     void DoControls()
     {
         var scroll = Input.GetAxis("Mouse ScrollWheel");

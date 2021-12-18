@@ -48,23 +48,22 @@ public class GameStateMachine : NetworkBehaviour
     [Server]
     void OnPlay()
     {
-        var next = board.Playables.Next();
+        waitingForAction = true;
+        if (!RoomNetworkManager.Playables.TryGetNext(out var coroutine))
+            CurrentStage = Stage.Events;
+        else
+        {
+            StartCoroutine(PlayAndResume());
+        }
 
         IEnumerator PlayAndResume()
         {
-            if (next is IPlayableContextWithUnit ipcu)
-                Debug.Log($"[Playable] Play {next.Name} for {ipcu.Unit.Name} (Server)", ipcu.Unit);
-            else
-                Debug.Log($"[Playable] Play {next.Name} (Server)");
-            yield return next.PlayOnServer();
-
-            if (!board.Playables.Empty)
+            yield return coroutine;
+            if (!RoomNetworkManager.Playables.Empty)
                 CurrentStage = Stage.Play;
             else
                 CurrentStage = Stage.Events;
         }
-        waitingForAction = true;
-        StartCoroutine(PlayAndResume());
     }
 
     [Server]
@@ -73,7 +72,7 @@ public class GameStateMachine : NetworkBehaviour
         var map = FindObjectOfType<Map>();
         map.AddTriggers(board);
 
-        if (!board.Playables.Empty)
+        if (!RoomNetworkManager.Playables.Empty)
             CurrentStage = Stage.Play;
         else if (CurrentUnit != null && !CurrentUnit.IsDead)
             CurrentStage = Stage.Plan;
@@ -117,7 +116,7 @@ public class GameStateMachine : NetworkBehaviour
             CurrentStage = Stage.End;
 
         round++;
-        board.Playables.Enqueue(new RoundStartContext { Round = round });
+        RoomNetworkManager.Playables.Enqueue(new RoundStartContext { Round = round });
     }
 
     [Server]
@@ -130,11 +129,11 @@ public class GameStateMachine : NetworkBehaviour
         {
             var board = FindObjectOfType<Board>();
             Debug.LogWarning($"[Board] {CurrentUnit.Name} ended without playing a Card!");
-            var oncp = new CardContext(board.OnNoCardsPlayed, FindObjectOfType<Map>(), CurrentUnit, CardState.Unplayed);
-            board.Playables.InsertFirst(oncp);
+            var oncp = new CardContext(board.OnNoCardsPlayed, CurrentUnit, CardState.Unplayed);
+            RoomNetworkManager.Playables.InsertFirst(oncp);
         }
         CurrentUnit = null;
-        if (board.Playables.Empty)
+        if (RoomNetworkManager.Playables.Empty)
             CurrentStage = Stage.Events;
         else
             CurrentStage = Stage.Play;
@@ -155,10 +154,10 @@ public class GameStateMachine : NetworkBehaviour
 
         Debug.Log($"[Board] Start Turn of {CurrentUnit.Name}");
         cardsPlayedForCurrentUnit = 0;
-        board.Playables.Enqueue(new TurnStartContext { Unit = CurrentUnit });
+        RoomNetworkManager.Playables.Enqueue(new TurnStartContext { Unit = CurrentUnit });
         if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
             deck.OnTurnStart();
-        if (board.Playables.Empty)
+        if (RoomNetworkManager.Playables.Empty)
             CurrentStage = Stage.Plan;
         else
             CurrentStage = Stage.Play;

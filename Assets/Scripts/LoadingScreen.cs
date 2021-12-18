@@ -1,8 +1,30 @@
+using System.Collections;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
+public struct SceneInfo : NetworkMessage
+{
+    public int MapId;
+    public enum LoadType
+    {
+        None,
+        Map
+    }
+    public LoadType Type;
+
+    public void Apply()
+    {
+        if (Type == LoadType.Map)
+            GameObject.Instantiate(GameObject.FindObjectOfType<MapAtlas>().Prefab(MapId));
+    }
+}
+
 public static class LoadingScreen
 {
+
+    public static SceneInfo SceneInfo;
+
     public static void LoadHub(Hubworld hubPrefab)
     {
     }
@@ -38,12 +60,17 @@ public static class LoadingScreen
             return;
         }
 
+        NetworkServer.SendToAll(new SceneInfo { MapId = i, Type = SceneInfo.LoadType.Map });
         RoomNetworkManager.OnSceneChangedServer = () =>
         {
-            var map = GameObject.Instantiate(mapPrefab);
-            NetworkServer.Spawn(map.gameObject);
-            foreach (var player in GameObject.FindObjectsOfType<PlayerController>())
-                player.OnLoadMap(i);
+            IEnumerator coroutine()
+            {
+                Debug.Log("Waiting for all players to be ready...");
+                yield return new WaitUntil(() => NetworkServer.connections.Values.All(x => x.isReady));
+                Debug.Log("Loading Map on Server");
+                var map = GameObject.Instantiate(mapPrefab);
+            }
+            RoomNetworkManager.singleton.StartCoroutine(coroutine());
         };
         NetworkManager.singleton.ServerChangeScene("Board");
     }

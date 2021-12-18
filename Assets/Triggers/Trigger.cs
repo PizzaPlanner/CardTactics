@@ -7,7 +7,7 @@ public interface IPlayable
 {
 }
 
-public class TriggerContext : IPlayableContextWithUnit
+public class TriggerContext : IPlayableContextWithUnit, IServerPlayable
 {
     public Trigger Target { get; private set; }
     public Unit Unit { get; private set; }
@@ -27,11 +27,6 @@ public class TriggerContext : IPlayableContextWithUnit
             yield break;
         Target.Executed = true;
         yield return Target.Execute(Unit);
-    }
-
-    public IEnumerator PlayOnClient()
-    {
-        yield return null;
     }
 
     public void Serialize(NetworkWriter writer)

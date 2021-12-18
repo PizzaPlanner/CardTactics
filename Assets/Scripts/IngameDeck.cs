@@ -30,7 +30,7 @@ public class IngameDeck : NetworkBehaviour
         {
             if (card.State == CardState.TurnStart)
             {
-                FindObjectOfType<Board>().Playables.Enqueue(card);
+                RoomNetworkManager.Playables.Enqueue(card);
             }
         }
     }
@@ -43,7 +43,7 @@ public class IngameDeck : NetworkBehaviour
             if (card.State == CardState.Unplayed)
             {
                 card.State = CardState.TurnEnd;
-                FindObjectOfType<Board>().Playables.Enqueue(card);
+                RoomNetworkManager.Playables.Enqueue(card);
             }
         }
     }

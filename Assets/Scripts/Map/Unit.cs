@@ -108,6 +108,8 @@ public class Unit : NetworkBehaviour
     public UnitFilter Type;
     public ResourceInfo Resources;
 
+    public PlayerController Owner;
+
     public bool IsDead => Life <= 0 || Player.Team == -1;
     [SyncVar] public float Life;
     [SyncVar] public PlayerInfo Player;
@@ -133,14 +135,13 @@ public class Unit : NetworkBehaviour
     {
         Debug.Log($"[Unit] {name} died!");
         gameObject.SetActive(false);
-        var board = FindObjectOfType<Board>();
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
             if (OnDeadKiller != null && killer != null)
-                board.Playables.InsertFirst(new TriggerContext(killer, OnDeadKiller));
+                RoomNetworkManager.Playables.InsertFirst(new TriggerContext(killer, OnDeadKiller));
             if (OnDeadSelf != null)
-                board.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
+                RoomNetworkManager.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
         }
         if (bar != null)
             bar.RemoveFromHierarchy();
@@ -153,14 +154,12 @@ public class Unit : NetworkBehaviour
     {
         if (isServer || isClient) return;
 
-        PlayerController owner = null;
-        foreach (var player in FindObjectsOfType<PlayerController>())
-            if (player.ControlledUnits.Contains(this))
-                owner = player;
-        if (owner == null)
+        if (Owner == null)
             NetworkServer.Spawn(gameObject);
         else
-            NetworkServer.Spawn(gameObject, owner.gameObject);
+        {
+            NetworkServer.Spawn(gameObject, Owner.gameObject);
+        }
     }
 
     public override void OnStartServer()
@@ -179,7 +178,6 @@ public class Unit : NetworkBehaviour
         if (MaxLife > 0)
         {
             bar = FindObjectOfType<TurnPanel>()?.MakeStatusBar();
-            // bar.style.position = Position.Absolute;
             bar.style.width = (MaxLife / 5) * 25 + 80;
             bar.Unit = this;
             bar.FollowUnit = true;

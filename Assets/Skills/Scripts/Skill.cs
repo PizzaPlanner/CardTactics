@@ -62,7 +62,7 @@ public enum RangeFilter
 }
 
 [System.Serializable]
-public class SkillContext : IPlayableContextWithUnit
+public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
 {
     public SkillInfo Target { get; set; }
     public ITilePattern SkillTarget { get; private set; }
@@ -73,8 +73,10 @@ public class SkillContext : IPlayableContextWithUnit
     public bool WantSkillSkip { get; private set; }
     public Progress PlayProgress;
     public Unit Unit { get; private set; }
+    public NetworkConnection Owner => Unit.Owner.connectionToClient;
     IEnumerable<SkillContext> previousContexts;
 
+    public bool ManualSending => true;
     public string Name => Target.Skill.GetType().Name;
     public bool Queueable => true;
 
@@ -110,6 +112,7 @@ public class SkillContext : IPlayableContextWithUnit
     public IEnumerator PlayOnClient()
     {
         // Received only when Server already played this and Skill execution was successful
+        Map = Map.FindObjectOfType<Map>();
         yield return Target.Skill.ExecuteClient(this);
     }
 
@@ -162,7 +165,6 @@ public class SkillContext : IPlayableContextWithUnit
         writer.WriteTile(OriginTile);
         writer.WriteTile(SourceTile);
         writer.WriteTile(OutTile);
-        writer.WriteNetworkBehaviour(Map);
         writer.Write((byte)PlayProgress);
         writer.WriteNetworkBehaviour(Unit);
         writer.Write(previousContexts.Count());
@@ -176,7 +178,6 @@ public class SkillContext : IPlayableContextWithUnit
         OriginTile = reader.ReadTile();
         SourceTile = reader.ReadTile();
         OutTile = reader.ReadTile();
-        Map = reader.ReadNetworkBehaviour<Map>();
         PlayProgress = (Progress)reader.ReadByte();
         Unit = reader.ReadNetworkBehaviour<Unit>();
         var arr = new SkillContext[reader.ReadInt()];

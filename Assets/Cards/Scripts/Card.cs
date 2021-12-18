@@ -9,122 +9,31 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public struct PlayableMessage : NetworkMessage
-{
-    public IPlayableContext context;
-}
 
-public static class ContextSerializationHelper
-{
-
-    public static void WriteSkill(this NetworkWriter writer, ISkill skill)
-    {
-        writer.WriteString(skill.GetType().Name);
-        writer.WriteString(skill.GetType().Assembly.GetName().Name);
-        skill.Serialize(writer);
-    }
-
-    public static ISkill ReadSkill(this NetworkReader reader)
-    {
-        var type = reader.ReadString();
-        var asm = reader.ReadString();
-        var inst = (ISkill)System.Activator.CreateInstance(asm, type).Unwrap();
-        return inst.Deserialize(reader);
-    }
-
-    public static void WriteSkillInfo(this NetworkWriter writer, SkillInfo info)
-    {
-
-        writer.Write((byte)info.SourceTileInput);
-        writer.Write((byte)info.TileOutput);
-        writer.Write((byte)info.Trigger);
-        if (info.Conditions != null)
-        {
-            writer.Write(info.Conditions.Length);
-            foreach (var cond in info.Conditions)
-                writer.Write((byte)cond);
-        }
-        else writer.WriteInt(0);
-        writer.WriteSkill(info.Skill);
-    }
-
-    public static SkillInfo ReadSkillInfo(this NetworkReader reader)
-    {
-        var info = new SkillInfo
-        {
-            SourceTileInput = (SkillChain)reader.ReadByte(),
-            TileOutput = (SkillChain)reader.ReadByte(),
-            Trigger = (SkillTrigger)reader.ReadByte()
-        };
-        var arr = new SkillChain[reader.ReadInt()];
-        for (int i = 0; i < arr.Length; i++)
-            arr[i] = (SkillChain)reader.ReadByte();
-        info.Conditions = arr;
-        info.Skill = reader.ReadSkill();
-        return info;
-    }
-
-    public static void WritePlayable(this NetworkWriter writer, IPlayableContext context)
-    {
-        writer.WriteString(context.GetType().Name);
-        writer.WriteString(context.GetType().Assembly.GetName().Name);
-        context.Serialize(writer);
-    }
-
-    public static IPlayableContext ReadPlayable(this NetworkReader reader)
-    {
-        var type = reader.ReadString();
-        var asm = reader.ReadString();
-        var inst = (IPlayableContext)System.Activator.CreateInstance(asm, type).Unwrap();
-        return inst.Deserialize(reader);
-    }
-}
-
-public interface IPlayableContextWithUnit : IPlayableContext
-{
-    Unit Unit { get; }
-}
-
-public interface IPlayableContext
-{
-    IEnumerator PlayOnServer();
-    IEnumerator PlayOnClient();
-    bool Queueable { get; }
-    string Name { get; }
-
-    void Serialize(NetworkWriter writer);
-    IPlayableContext Deserialize(NetworkReader reader);
-}
-
-public class CardContext : IPlayableContextWithUnit
+public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
 {
     [Sirenix.OdinInspector.ShowInInspector]
     public Card Target { get; private set; }
     [Sirenix.OdinInspector.ShowInInspector]
     public CardState State;
 
-    public Map Map { get; private set; }
-
     public Unit Unit { get; private set; }
-
-    public List<SkillContext> PreviousContexts { get; private set; }
+    public NetworkConnection Owner => Unit.Owner.connectionToClient;
 
     public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
     public string Name => Target.Name;
+    public bool ManualSending => true;
 
-    public CardContext(Card card, Map map, Unit unit, CardState initialState)
+    public CardContext(Card card, Unit unit, CardState initialState)
     {
         Target = card;
-        Map = map;
         Unit = unit;
         State = initialState;
-        PreviousContexts = new List<SkillContext>();
     }
+    public CardContext() { }
 
     public IEnumerator PlayOnClient()
     {
-        if (State != CardState.Unplayed) yield break;
-
         CardTooltip.Show(Target);
         yield return GameSettings.Instance.BeforePlayDelay.Yield();
     }
@@ -132,6 +41,7 @@ public class CardContext : IPlayableContextWithUnit
     public IEnumerator PlayOnServer()
     {
         if (Unit == null || Unit.IsDead) yield break;
+
         IEnumerable<SkillInfo> skillsToPlay = State switch
         {
             CardState.TurnStart => Target.skills.Where(x => x.Trigger == SkillTrigger.TurnStart),
@@ -143,7 +53,7 @@ public class CardContext : IPlayableContextWithUnit
         if (State == CardState.Unplayed)
             Target.OnPlay(this);
 
-        State = State == Target.DestroyedOn ? CardState.Destroyed : State switch
+        var newstate = State == Target.DestroyedOn ? CardState.Destroyed : State switch
         {
             CardState.Unplayed => CardState.Played,
             CardState.TurnStart => CardState.Unplayed,
@@ -151,19 +61,23 @@ public class CardContext : IPlayableContextWithUnit
             _ => CardState.Destroyed
         };
 
-        if (skillsToPlay == null)
+        if (skillsToPlay == null || skillsToPlay.Count() == 0)
             yield break;
 
-        PreviousContexts = new List<SkillContext>();
+        NetworkServer.SendToAll(new PlayableMessage { context = this });
 
-        var playables = Board.FindObjectOfType<Board>().Playables;
+        var previousContexts = new List<SkillContext>();
+
+        var map = Map.FindObjectOfType<Map>();
+        var playables = RoomNetworkManager.Playables;
         for (int i = 0; i < skillsToPlay.Count(); i++)
         {
             var skill = skillsToPlay.ToArray()[i];
-            var ctx = new SkillContext(skill, Map, Map.TileOf(Unit), PreviousContexts.ToArray());
+            var ctx = new SkillContext(skill, map, map.TileOf(Unit), previousContexts.ToArray());
             playables.Enqueue(ctx);
-            PreviousContexts.Add(ctx);
+            previousContexts.Add(ctx);
         }
+        State = newstate;
         playables.Enqueue(new FinishCardContext(this));
         yield return null;
     }
@@ -172,7 +86,6 @@ public class CardContext : IPlayableContextWithUnit
     {
         writer.WriteObject(Target);
         writer.Write((byte)State);
-        writer.WriteNetworkBehaviour(Map);
         writer.WriteNetworkBehaviour(Unit);
     }
 
@@ -180,52 +93,44 @@ public class CardContext : IPlayableContextWithUnit
     {
         Target = reader.ReadObject<Card>();
         State = (CardState)reader.ReadByte();
-        Map = reader.ReadNetworkBehaviour<Map>();
         Unit = reader.ReadNetworkBehaviour<Unit>();
         return this;
     }
+}
 
-    public class FinishCardContext : IPlayableContext
+public class FinishCardContext : IPlayableContext, IClientPlayable
+{
+    public FinishCardContext(CardContext origin)
     {
-        public FinishCardContext(CardContext origin)
-        {
-            context = origin;
-        }
+        context = origin;
+    }
+    public FinishCardContext() { }
 
-        public bool Queueable => true;
+    public bool Queueable => true;
 
-        public string Name => "Finish " + context.Name;
+    public string Name => "Finish " + context.Name;
 
-        public Unit Unit => context.Unit;
+    public Unit Unit => context.Unit;
 
-        CardContext context;
+    CardContext context;
 
-        public IEnumerator PlayOnClient()
-        {
-            CardTooltip.Hide();
-            yield return GameSettings.Instance.AfterPlayDelay.Yield();
-            context.PreviousContexts.Clear();
-        }
+    public IEnumerator PlayOnClient()
+    {
+        CardTooltip.Hide();
+        yield return GameSettings.Instance.AfterPlayDelay.Yield();
+    }
 
-        public IEnumerator PlayOnServer()
-        {
-            if (context.State == context.Target.DestroyedOn)
-                context.State = CardState.Destroyed;
-            context.PreviousContexts.Clear();
-            yield return null;
-        }
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.WritePlayable(context);
+    }
 
-        public void Serialize(NetworkWriter writer)
-        {
-            writer.WritePlayable(context);
-        }
-
-        public IPlayableContext Deserialize(NetworkReader reader)
-        {
-            return new FinishCardContext((CardContext)reader.ReadPlayable());
-        }
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        return new FinishCardContext((CardContext)reader.ReadPlayable());
     }
 }
+
 public enum CardState
 {
     Shuffle,

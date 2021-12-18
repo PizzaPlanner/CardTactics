@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using System;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 [RequireComponent(typeof(UIDocument))]
 public class RoomNetworkManager : NetworkManager
@@ -25,7 +26,9 @@ public class RoomNetworkManager : NetworkManager
 
     public override void OnStartClient()
     {
-
+        NetworkClient.RegisterHandler<TilePatternMessage>(OnGetPatterns);
+        NetworkClient.RegisterHandler<PlayableMessage>(OnGetPlayable);
+        NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -139,10 +142,15 @@ public class RoomNetworkManager : NetworkManager
         loadingScreen.style.display = DisplayStyle.None;
         lobbyUI.style.display = SceneManager.GetActiveScene().name == "Menu" ? DisplayStyle.Flex : DisplayStyle.None;
 
+        Debug.Log("Player added");
+
+        if (mode != NetworkManagerMode.Host)
+            LoadingScreen.SceneInfo.Apply();
+        else
+            Debug.Log("Skipped Applying SceneInfo in Host Mode");
 
         NetworkClient.ready = true;
         NetworkClient.AddPlayer();
-        Debug.Log("Player added");
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
@@ -150,4 +158,32 @@ public class RoomNetworkManager : NetworkManager
         Debug.Log("Now loading...");
         loadingScreen.style.display = DisplayStyle.Flex;
     }
+
+    void OnGetPlayable(PlayableMessage msg)
+    {
+        PlayablesClient.Enqueue(msg.context);
+    }
+
+    void OnGetPatterns(TilePatternMessage msg)
+    {
+        FindObjectOfType<Map>().ShowPatterns(msg.Patterns, true);
+    }
+
+    PlayableQueue PlayablesClient { get; } = new(true);
+    PlayableQueue PlayablesServer { get; } = new(false);
+    public static PlayableQueue Playables => (singleton as RoomNetworkManager).PlayablesServer;
+
+    void Update()
+    {
+        if (PlayablesClient.TryGetNext(out var coroutine))
+            StartCoroutine(coroutine);
+    }
+
+    // void OnGUI()
+    // {
+    //     if (PlayablesServer.Current != null)
+    //         GUILayout.Label("S: " + PlayablesServer.Current.Name);
+    //     if (PlayablesClient.Current != null)
+    //         GUILayout.Label("C: " + PlayablesClient.Current.Name);
+    // }
 }

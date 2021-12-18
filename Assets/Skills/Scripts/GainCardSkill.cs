@@ -22,7 +22,7 @@ public class GainCardSkill : ISkill
     public IEnumerator ExecuteServer(SkillContext ctx)
     {
         if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
-        deck.Contexts.Add(new CardContext(NewCardPrefab, Map.FindObjectOfType<Map>(), ctx.OutTile.Unit, NewCardInitialState));
+        deck.Contexts.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
         yield return null;
     }
 

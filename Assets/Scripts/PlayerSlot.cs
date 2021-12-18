@@ -48,20 +48,22 @@ public class PlayerSlot : MonoBehaviour
 
         if (deck == null && (player == null || player.Deck == null)) return false;
         if (deck == null)
-            unit = player.Deck.Create(map);
+            unit = player.Deck.Create();
         else
-            unit = deck.Create(map);
+            unit = deck.Create();
         var teamId = -1;
         for (int t = 0; t < map.Teams.Length; t++)
             if (map.Teams[t] == team)
                 teamId = t;
         unit.Player = new PlayerInfo { IsAI = IsAI, TeamColor = team.Color, Team = teamId };
+        unit.Owner = player;
         unit.OnDeadSelf = OnDeadSelf;
         unit.OnDeadKiller = OnDeadKiller;
         unit.Life = unit.MaxLife; // We have to set it here to not immediately trigger win conditions
         if (player != null)
         {
             player.ControlledUnits.Add(unit);
+            Debug.Log($"Assigned {unit.Name} to {player.gameObject.name}");
         }
         unit.gameObject.SetActive(false);
         return true;
