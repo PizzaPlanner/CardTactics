@@ -8,7 +8,9 @@ public abstract class ObjectAtlas<T> : MonoBehaviour where T : UnityEngine.Objec
     public static ObjectAtlas<T> Instance => instance ??= FindObjectOfType<ObjectAtlas<T>>();
     static ObjectAtlas<T> instance;
 
-    [SerializeField] T[] Objects;
+    public IEnumerable<T> All => Objects;
+
+    [SerializeField] protected T[] Objects;
     public T Item(int i)
     {
         if (i < 0 || i >= Objects.Length)
@@ -30,7 +32,7 @@ public abstract class ObjectAtlas<T> : MonoBehaviour where T : UnityEngine.Objec
 
 #if UNITY_EDITOR
     [Button]
-    void Populate()
+    protected virtual void Populate()
     {
         var objs = new List<T>();
         string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T).Name}");

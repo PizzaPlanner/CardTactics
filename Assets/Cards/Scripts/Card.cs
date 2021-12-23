@@ -62,18 +62,21 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         };
 
         if (skillsToPlay == null || skillsToPlay.Count() == 0)
+        {
+            State = newstate;
             yield break;
+        }
 
         NetworkServer.SendToAll(new PlayableMessage { context = this });
 
-        var previousContexts = new List<SkillContext>();
+        var previousContexts = new List<SkillPlanContext>();
 
         var map = Map.FindObjectOfType<Map>();
         var playables = RoomNetworkManager.Playables;
         for (int i = 0; i < skillsToPlay.Count(); i++)
         {
             var skill = skillsToPlay.ToArray()[i];
-            var ctx = new SkillContext(skill, map, map.TileOf(Unit), previousContexts.ToArray());
+            var ctx = new SkillPlanContext(skill, map, map.TileOf(Unit), previousContexts.ToArray());
             playables.Enqueue(ctx);
             previousContexts.Add(ctx);
         }

@@ -31,14 +31,14 @@ public class ChangeResourceSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => true;
 
-    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
         return new GlobalPatternBuilder().Patterns(ctx.Map, ctx.SourceTile, SelectionFilters.Self);
     }
 
-    public IEnumerator ExecuteServer(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
         if (Convert)
         {
@@ -51,11 +51,6 @@ public class ChangeResourceSkill : ISkill
             ctx.Unit.Resources.Remove(Class, -Amount);
         else
             ctx.Unit.Resources.Add(Class, Amount);
-        yield return null;
-    }
-
-    public IEnumerator ExecuteClient(SkillContext ctx)
-    {
         yield return null;
     }
 

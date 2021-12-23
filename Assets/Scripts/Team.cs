@@ -32,7 +32,7 @@ public class Team
 
             var placeSkill = new PlaceSkill { reference = unit };
             var skillInfo = new SkillInfo { Skill = placeSkill };
-            queue.InsertFirst(new SkillContext(skillInfo, unit, map));
+            queue.InsertFirst(new SkillPlanContext(skillInfo, unit, map));
         }
     }
 

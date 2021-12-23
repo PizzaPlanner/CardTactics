@@ -28,15 +28,15 @@ public class PlayableQueue
         if (!context.Queueable)
         {
             if (context is IPlayableContextWithUnit ipcu && ipcu.Unit != null)
-                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {ipcu.Unit.Name}", ipcu.Unit);
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {ipcu.Unit.Name} on {(isClient ? "Client" : "Server")}", ipcu.Unit);
             else
-                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name}");
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} on {(isClient ? "Client" : "Server")}");
             return;
         }
         if (context is IPlayableContextWithUnit ipcu2 && ipcu2.Unit != null)
-            Debug.Log($"[Playable] Queue {context.Name} for {ipcu2.Unit.Name}", ipcu2.Unit);
+            Debug.Log($"[Playable] Queue {context.Name} for {ipcu2.Unit.Name} on {(isClient ? "Client" : "Server")}", ipcu2.Unit);
         else
-            Debug.Log($"[Playable] Queue {context.Name}");
+            Debug.Log($"[Playable] Queue {context.Name} on {(isClient ? "Client" : "Server")}");
 
         if (priorizeNext)
         {
@@ -74,10 +74,10 @@ public class PlayableQueue
         }
         else
         {
-            if (Current is IClientPlayable c && !c.ManualSending)
-                NetworkServer.SendToAll(new PlayableMessage { context = Current });
             if (Current is IServerPlayable s)
                 yield return s.PlayOnServer();
+            if (Current is IClientPlayable c && !c.ManualSending)
+                NetworkServer.SendToAll(new PlayableMessage { context = Current });
         }
         Current = null;
     }

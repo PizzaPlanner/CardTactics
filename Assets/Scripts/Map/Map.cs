@@ -101,7 +101,7 @@ public class Map : MonoBehaviour
                 {
                     var instance = Instantiate(uspawn.Prefab);
                     instance.Player.Team = -1;
-                    Debug.Log("[Board] Spawning prop " + instance.Name);
+                    Debug.Log("[Board] Creating prop " + instance.Name);
                     tile.Place(instance, uspawn.Facing);
                 }
                 else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
@@ -109,7 +109,7 @@ public class Map : MonoBehaviour
                     Unit instance = Teams[owner.Id].SpawnNew(this);
                     if (instance != null)
                     {
-                        Debug.Log("[Board] Spawning unit " + instance.Name);
+                        Debug.Log("[Board] Creating unit " + instance.Name);
                         tile.Place(instance, spawn.Facing);
                     }
                 }
@@ -118,6 +118,10 @@ public class Map : MonoBehaviour
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
+            else if (tile.Unit != null && NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
+            {
+                tile.Unit.Spawn();
+            }
         if (NetworkManager.singleton.mode != NetworkManagerMode.ServerOnly)
         {
             Camera.main.transform.position = Camera.main.transform.forward * -50;
@@ -152,7 +156,13 @@ public class Map : MonoBehaviour
     {
         foreach (var tile in Tiles)
             if (tile.TryGetComponent<Area>(out var area) && area.Id == areaId)
+            {
                 tile.gameObject.SetActive(true);
+                if (tile.Unit != null)
+                {
+                    tile.Unit.Spawn();
+                }
+            }
     }
 
     internal Tile TileOf(Unit unit)

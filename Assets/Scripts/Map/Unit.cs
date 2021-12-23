@@ -147,21 +147,6 @@ public class Unit : NetworkBehaviour
             bar.RemoveFromHierarchy();
     }
 
-    // TODO: This correctly spawns the unit. Calling spawn after instantiate like shown here doesnt work: https://mirror-networking.gitbook.io/docs/guides/gameobjects/spawning-gameobjects
-    // Only execute when isServer and isClient are not assigned yet to make sure it won't run on client.
-    // problably wouldn't do anything anyways because clients can't spawn?
-    public void Start()
-    {
-        if (isServer || isClient) return;
-
-        if (Owner == null)
-            NetworkServer.Spawn(gameObject);
-        else
-        {
-            NetworkServer.Spawn(gameObject, Owner.gameObject);
-        }
-    }
-
     public override void OnStartServer()
     {
         counter = spawnCounter++;
@@ -182,6 +167,14 @@ public class Unit : NetworkBehaviour
             bar.Unit = this;
             bar.FollowUnit = true;
         }
+        Debug.Log("Started on Client: " + Name);
+    }
+
+    internal void Spawn()
+    {
+        gameObject.SetActive(true);
+        NetworkServer.Spawn(gameObject, Owner?.connectionToClient);
+        Debug.Log("Spawning " + Name);
     }
 
     UnitStatusBar bar;

@@ -18,7 +18,7 @@ public class AttackSkill : ISkill
     public string Description => $"Attack {Damage} {(MaxRange > 1 ? $"(Range {MaxRange})" : "")}";
     public bool AutoSelectOnOnePossibleTile => !confirmOnePossibleTile;
 
-    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         return new RangePatternBuilder
         {
@@ -27,13 +27,13 @@ public class AttackSkill : ISkill
         }.Patterns(ctx.Map, ctx.SourceTile, Filter);
     }
 
-    public IEnumerator ExecuteServer(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
         ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
         yield return null;
     }
 
-    public IEnumerator ExecuteClient(SkillContext ctx)
+    public IEnumerator ExecuteClient(SkillExecuteContext ctx)
     {
         Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
         Animator targetAnimator = ctx.OutTile.Unit.GetComponentInChildren<Animator>();

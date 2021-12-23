@@ -13,7 +13,7 @@ public class DashSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => false;
 
-    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
@@ -22,7 +22,7 @@ public class DashSkill : ISkill
         return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Map, ctx.SourceTile, filter);
     }
 
-    public Tile GetOutTile(SkillContext ctx)
+    public Tile GetOutTile(SkillPlanContext ctx)
     {
         var tilesByDistance = ((LinePattern)ctx.SkillTarget).TilesByDistance;
         var prevTile = ctx.SourceTile;
@@ -35,14 +35,9 @@ public class DashSkill : ISkill
         return prevTile;
     }
 
-    public IEnumerator ExecuteServer(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
         yield return ctx.Unit.Move(ctx.SourceTile, new EmptyPattern(), ctx.OutTile, RangeType);
-    }
-
-    public IEnumerator ExecuteClient(SkillContext ctx)
-    {
-        yield return null;
     }
 
     public void Serialize(Mirror.NetworkWriter writer) { }

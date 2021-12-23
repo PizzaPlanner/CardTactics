@@ -79,7 +79,7 @@ public class PlanningPanel : MonoBehaviour
             var firstSkill = ctx.Target.skills.FirstOrDefault();
             if (firstSkill != null)
             {
-                new SkillContext(firstSkill, unit, map, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
+                new SkillPlanContext(firstSkill, unit, map, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);

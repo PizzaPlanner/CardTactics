@@ -13,20 +13,16 @@ public class PlaceSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => true;
 
-    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         return new SpawnPatternBuilder { UnitToSpawn = reference }.Patterns(ctx.Map, ctx.SourceTile, SelectionFilters.Empty);
     }
 
-    public IEnumerator ExecuteServer(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
         var facing = ctx.OutTile.TryGetComponent<SpawnLocation>(out var sl) ? sl.Facing : 0;
         ctx.OutTile.Place(reference, facing);
-        yield return null;
-    }
-
-    public IEnumerator ExecuteClient(SkillContext ctx)
-    {
+        reference.Spawn();
         yield return null;
     }
 

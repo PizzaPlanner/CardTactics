@@ -27,7 +27,6 @@ public static class ContextSerializationHelper
 
     public static void WriteSkillInfo(this NetworkWriter writer, SkillInfo info)
     {
-
         writer.Write((byte)info.SourceTileInput);
         writer.Write((byte)info.TileOutput);
         writer.Write((byte)info.Trigger);

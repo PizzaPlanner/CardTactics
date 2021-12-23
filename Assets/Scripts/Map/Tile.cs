@@ -325,7 +325,6 @@ public class Tile : MonoBehaviour
 
         PlaceUnitNoCheck(unit, facing);
         Unit = unit;
-        unit.gameObject.SetActive(true);
         return true;
     }
 

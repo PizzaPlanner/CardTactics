@@ -135,9 +135,10 @@ GameObject:
   - component: {fileID: 1818055811}
   - component: {fileID: 1818055810}
   - component: {fileID: 1818055813}
-  - component: {fileID: 1818055814}
   - component: {fileID: 1818055815}
   - component: {fileID: 1818055816}
+  - component: {fileID: 1818055818}
+  - component: {fileID: 1818055817}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -196,14 +197,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 7684022313020701077, guid: 3b8ef672a8476464abe2d273d436155c, type: 3}
   autoCreatePlayer: 0
   playerSpawnMethod: 1
-  spawnPrefabs:
-  - {fileID: 563312192517643092, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
-  - {fileID: 563312192517643092, guid: bf58a55d02772324e827aee1e28eaa17, type: 3}
-  - {fileID: 6485420451507662470, guid: d39b3b200556355409427645b5da3b2c, type: 3}
-  - {fileID: 563312192517643092, guid: c17ec6991b75bf4408808625cbdea8bc, type: 3}
-  - {fileID: 6485420451507662470, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
-  - {fileID: 563312192517643092, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
-  - {fileID: 5495453133545694608, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+  spawnPrefabs: []
   lobbyUIPrefab: {fileID: 9197481963319205126, guid: 801e85466d40710478276a8bfcb54de3, type: 3}
   loadingScreenPrefab: {fileID: 9197481963319205126, guid: 481dc223f89a06e4986294f7432b31a5, type: 3}
 --- !u!4 &1818055812
@@ -237,21 +231,6 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 0}
   m_SortingOrder: 0
---- !u!114 &1818055814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1818055809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32a56d19a22f1f24f99f8cc207e500e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Maps:
-  - {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}
-  - {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
 --- !u!114 &1818055815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,3 +303,41 @@ MonoBehaviour:
   - {fileID: 11400000, guid: deafccf3d0c90a5418c787a2f743b885, type: 2}
   - {fileID: 11400000, guid: ce485af286435b54a8af90b6416c9993, type: 2}
   - {fileID: 11400000, guid: 61a8b587a1c22e943b7f599380909948, type: 2}
+--- !u!114 &1818055817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818055809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306b71a084584014f85caec6782863b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Objects:
+  - {fileID: 5882492422521109190, guid: b280c27f7c53e6940a19fb9bf28d8a6e, type: 3}
+  - {fileID: 5882492422521109190, guid: bf58a55d02772324e827aee1e28eaa17, type: 3}
+  - {fileID: 7360946247754838574, guid: d39b3b200556355409427645b5da3b2c, type: 3}
+  - {fileID: 7360946247754838574, guid: 69ce436636c712443b6fd69a2bddc5bb, type: 3}
+  - {fileID: 7360946247754838574, guid: 104babd9520f36f438233a470f3404a2, type: 3}
+  - {fileID: 5882492422521109190, guid: c17ec6991b75bf4408808625cbdea8bc, type: 3}
+  - {fileID: 7360946247754838574, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
+  - {fileID: 7360946247754838574, guid: 287174d8621f2bd48af698af65251721, type: 3}
+  - {fileID: 5882492422521109190, guid: 7ef1c401f826c2346af3a90d94da21f2, type: 3}
+  - {fileID: 1887082216528888834, guid: b23f1efa7e184f849b45ccfcf282a579, type: 3}
+--- !u!114 &1818055818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818055809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d649b239f7241864a9b9f53a16fda887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Objects:
+  - {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
+  - {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}

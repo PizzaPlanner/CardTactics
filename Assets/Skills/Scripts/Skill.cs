@@ -61,26 +61,66 @@ public enum RangeFilter
     All = int.MaxValue
 }
 
-[System.Serializable]
-public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
+
+public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
+{
+    public ITilePattern SkillTarget { get; set; }
+    public SkillInfo Target { get; set; }
+    public Unit Unit { get; set; }
+    public Tile OutTile, OriginTile, SourceTile;
+
+    public bool Queueable => true;
+
+    public string Name => Target.Skill.GetType().Name + " (Execute)";
+
+    public IEnumerator PlayOnClient()
+    {
+        // Received only when Server already played this and Skill execution was successful
+        Debug.Log("Playing " + Name + " on Client");
+        yield return Target.Skill.ExecuteClient(this);
+    }
+
+    public IEnumerator PlayOnServer()
+    {
+        yield return Target.Skill.ExecuteServer(this);
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.WriteSkillInfo(Target);
+        writer.WriteTile(OriginTile);
+        writer.WriteTile(SourceTile);
+        writer.WriteTile(OutTile);
+        writer.WriteNetworkBehaviour(Unit);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        Target = reader.ReadSkillInfo();
+        OriginTile = reader.ReadTile();
+        SourceTile = reader.ReadTile();
+        OutTile = reader.ReadTile();
+        Unit = reader.ReadNetworkBehaviour<Unit>();
+        return this;
+    }
+}
+
+public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable
 {
     public SkillInfo Target { get; set; }
-    public ITilePattern SkillTarget { get; private set; }
     public Tile OutTile;
     public Tile SourceTile;
     public Tile OriginTile { get; private set; }
     public Map Map { get; private set; }
-    public bool WantSkillSkip { get; private set; }
     public Progress PlayProgress;
+    public ITilePattern SkillTarget { get; set; }
     public Unit Unit { get; private set; }
     public NetworkConnection Owner => Unit.Owner.connectionToClient;
-    IEnumerable<SkillContext> previousContexts;
-
-    public bool ManualSending => true;
-    public string Name => Target.Skill.GetType().Name;
+    IEnumerable<SkillPlanContext> previousContexts;
+    public string Name => Target.Skill.GetType().Name + " (Prepare)";
     public bool Queueable => true;
 
-    public SkillContext(SkillInfo target, Map map, Tile sourceTile, IEnumerable<SkillContext> previousContexts)
+    public SkillPlanContext(SkillInfo target, Map map, Tile sourceTile, IEnumerable<SkillPlanContext> previousContexts)
     {
         Target = target;
         OriginTile = sourceTile;
@@ -89,31 +129,24 @@ public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPl
         Map = map;
     }
 
-    public SkillContext(SkillInfo target, Unit unit, Map map, Tile sourceTile = null)
+    public SkillPlanContext(SkillInfo target, Unit unit, Map map, Tile sourceTile = null)
     {
         Target = target;
         OriginTile = sourceTile;
         Unit = unit;
-        previousContexts = new SkillContext[0];
+        previousContexts = new SkillPlanContext[0];
         Map = map;
     }
 
     public bool Preview(out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
-        if (Target.CanUse(OriginTile, new SkillContext[0], out SourceTile)
+        if (Target.CanUse(OriginTile, new SkillPlanContext[0], out SourceTile)
             && Target.Skill.Activate(this, out validPatterns, out invalidPatterns))
             return true;
 
         validPatterns = new ITilePattern[0];
         invalidPatterns = new ITilePattern[0];
         return false;
-    }
-
-    public IEnumerator PlayOnClient()
-    {
-        // Received only when Server already played this and Skill execution was successful
-        Map = Map.FindObjectOfType<Map>();
-        yield return Target.Skill.ExecuteClient(this);
     }
 
     public IEnumerator PlayOnServer()
@@ -137,15 +170,22 @@ public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPl
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
             }
 
-            yield return new WaitUntil(() => SkillTarget != null || (WantSkillSkip && Target.Skill.IsOptional));
+            yield return new WaitUntil(() => SkillTarget != null);
 
             if (SkillTarget != null)
             {
                 OutTile = Target.Skill.GetOutTile(this);
                 Debug.Assert(OutTile != null);
-                yield return Target.Skill.ExecuteServer(this);
                 PlayProgress = Progress.Queued;
-                NetworkServer.SendToAll(new PlayableMessage { context = this });
+                RoomNetworkManager.Playables.InsertFirst(new SkillExecuteContext
+                {
+                    SkillTarget = SkillTarget,
+                    Unit = Unit,
+                    Target = Target,
+                    OutTile = OutTile,
+                    SourceTile = SourceTile,
+                    OriginTile = OriginTile
+                });
             }
             else
             {
@@ -157,7 +197,7 @@ public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPl
         map.HideTileSelectionPreview();
     }
 
-    public SkillContext() { }
+    public SkillPlanContext() { }
 
     public void Serialize(NetworkWriter writer)
     {
@@ -180,9 +220,9 @@ public class SkillContext : IPlayableContextWithUnit, IClientPlayable, IServerPl
         OutTile = reader.ReadTile();
         PlayProgress = (Progress)reader.ReadByte();
         Unit = reader.ReadNetworkBehaviour<Unit>();
-        var arr = new SkillContext[reader.ReadInt()];
+        var arr = new SkillPlanContext[reader.ReadInt()];
         for (int i = 0; i < arr.Length; i++)
-            arr[i] = (SkillContext)reader.ReadPlayable();
+            arr[i] = (SkillPlanContext)reader.ReadPlayable();
         previousContexts = arr;
         return this;
     }
@@ -238,7 +278,7 @@ public class SkillInfo : IPlayable
     public ISkill Skill;
 
 
-    Tile GetInputTile(Tile origin, IEnumerable<SkillContext> previousContexts)
+    Tile GetInputTile(Tile origin, IEnumerable<SkillPlanContext> previousContexts)
     {
         var previous = previousContexts;
         if (SourceTileInput == SkillChain._) return null;
@@ -249,7 +289,7 @@ public class SkillInfo : IPlayable
         return inputInfo?.OutTile;
     }
 
-    public bool CanUse(Tile origin, IEnumerable<SkillContext> previousContexts, out Tile inputTile)
+    public bool CanUse(Tile origin, IEnumerable<SkillPlanContext> previousContexts, out Tile inputTile)
     {
         inputTile = null;
         if (previousContexts.Any(x => x.Target == this))
@@ -276,7 +316,7 @@ public interface ISkill
     bool IsOptional => false;
     bool AutoSelectOnOnePossibleTile { get; }
 
-    bool Activate(SkillContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
+    bool Activate(SkillPlanContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
         validPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && x.Selectable);
         invalidPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
@@ -284,10 +324,10 @@ public interface ISkill
         return hasAny;
     }
 
-    Tile GetOutTile(SkillContext ctx) => ctx.SkillTarget.Tiles.First();
-    IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx);
-    IEnumerator ExecuteServer(SkillContext ctx);
-    IEnumerator ExecuteClient(SkillContext ctx);
+    Tile GetOutTile(SkillPlanContext ctx) => ctx.SkillTarget.Tiles.First();
+    IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx);
+    IEnumerator ExecuteServer(SkillExecuteContext ctx) { yield return null; }
+    IEnumerator ExecuteClient(SkillExecuteContext ctx) { yield return null; }
     void Serialize(NetworkWriter writer);
 
     ISkill Deserialize(NetworkReader reader);

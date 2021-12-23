@@ -52,11 +52,6 @@ public class RoomNetworkManager : NetworkManager
         SetConnectionUI(NetworkManagerMode.Host);
     }
 
-    public override void OnStartServer()
-    {
-
-    }
-
     void SetConnectionUI(NetworkManagerMode m)
     {
         var players = lobbyUI.Q("PlayerList");
@@ -108,6 +103,8 @@ public class RoomNetworkManager : NetworkManager
         if (SceneManager.GetActiveScene().name == "Entrypoint")
             LoadingScreen.GoToMenu();
 
+        spawnPrefabs.AddRange(UnitAtlas.Instance.All.Select(x => x.gameObject));
+
         StartHost();
     }
 
@@ -132,6 +129,7 @@ public class RoomNetworkManager : NetworkManager
     public static Action OnSceneChangedServer;
     public override void OnServerSceneChanged(string newSceneName)
     {
+        PlayablesServer = new PlayableQueue(false);
         OnSceneChangedServer?.Invoke();
         OnSceneChangedServer = null;
     }
@@ -149,6 +147,7 @@ public class RoomNetworkManager : NetworkManager
         else
             Debug.Log("Skipped Applying SceneInfo in Host Mode");
 
+        PlayablesClient = new PlayableQueue(true);
         NetworkClient.ready = true;
         NetworkClient.AddPlayer();
     }
@@ -169,8 +168,8 @@ public class RoomNetworkManager : NetworkManager
         FindObjectOfType<Map>().ShowPatterns(msg.Patterns, true);
     }
 
-    PlayableQueue PlayablesClient { get; } = new(true);
-    PlayableQueue PlayablesServer { get; } = new(false);
+    PlayableQueue PlayablesClient;
+    PlayableQueue PlayablesServer;
     public static PlayableQueue Playables => (singleton as RoomNetworkManager).PlayablesServer;
 
     void Update()
@@ -179,11 +178,11 @@ public class RoomNetworkManager : NetworkManager
             StartCoroutine(coroutine);
     }
 
-    // void OnGUI()
-    // {
-    //     if (PlayablesServer.Current != null)
-    //         GUILayout.Label("S: " + PlayablesServer.Current.Name);
-    //     if (PlayablesClient.Current != null)
-    //         GUILayout.Label("C: " + PlayablesClient.Current.Name);
-    // }
+    void OnGUI()
+    {
+        if (PlayablesServer.Current != null)
+            GUILayout.Label("S: " + PlayablesServer.Current.Name);
+        if (PlayablesClient.Current != null)
+            GUILayout.Label("C: " + PlayablesClient.Current.Name);
+    }
 }

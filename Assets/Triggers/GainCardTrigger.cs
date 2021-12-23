@@ -11,7 +11,7 @@ public class GainCardTrigger : Trigger
     public override IEnumerator Execute(Unit unit)
     {
         var map = FindObjectOfType<Map>();
-        var ctx = new SkillContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, unit, map, map.TileOf(unit));
+        var ctx = new SkillPlanContext(new SkillInfo { Skill = Skill, SourceTileInput = SkillChain.A }, unit, map, map.TileOf(unit));
         yield return ctx.PlayOnServer();
     }
 }

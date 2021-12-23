@@ -16,7 +16,7 @@ public struct SceneInfo : NetworkMessage
     public void Apply()
     {
         if (Type == LoadType.Map)
-            GameObject.Instantiate(GameObject.FindObjectOfType<MapAtlas>().Prefab(MapId));
+            GameObject.Instantiate(MapAtlas.Instance.Item(MapId));
     }
 }
 
@@ -40,7 +40,7 @@ public static class LoadingScreen
 
     public static void PlayMap(Map mapPrefab)
     {
-        if (!GameObject.FindObjectOfType<MapAtlas>().Has(mapPrefab, out var idx))
+        if (!MapAtlas.Instance.TryGet(mapPrefab, out var idx))
         {
             Debug.LogError($"Map {mapPrefab.name} is not registered!");
             return;
@@ -52,7 +52,7 @@ public static class LoadingScreen
 
     static void CreateGame(int i, int numPlayers)
     {
-        var mapPrefab = MapAtlas.FindObjectOfType<MapAtlas>().Prefab(i);
+        var mapPrefab = MapAtlas.Instance.Item(i);
 
         if (numPlayers < mapPrefab.MinPartySize || numPlayers > mapPrefab.MaxPartySize)
         {

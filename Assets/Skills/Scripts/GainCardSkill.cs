@@ -14,19 +14,19 @@ public class GainCardSkill : ISkill
 
     public bool AutoSelectOnOnePossibleTile => true;
 
-    public IEnumerable<ITilePattern> CreatePatterns(SkillContext ctx)
+    public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    public IEnumerator ExecuteServer(SkillContext ctx)
+    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
         if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
         deck.Contexts.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
         yield return null;
     }
 
-    public IEnumerator ExecuteClient(SkillContext ctx)
+    public IEnumerator ExecuteClient(SkillExecuteContext ctx)
     {
         yield return ShowGetAnimation(NewCardPrefab);
     }
