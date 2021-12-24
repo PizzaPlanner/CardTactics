@@ -75,8 +75,6 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
 
     public IEnumerator PlayOnClient()
     {
-        // Received only when Server already played this and Skill execution was successful
-        Debug.Log("Playing " + Name + " on Client");
         yield return Target.Skill.ExecuteClient(this);
     }
 
@@ -91,6 +89,7 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
         writer.WriteTile(OriginTile);
         writer.WriteTile(SourceTile);
         writer.WriteTile(OutTile);
+        writer.WritePattern(SkillTarget);
         writer.WriteNetworkBehaviour(Unit);
     }
 
@@ -100,6 +99,7 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
         OriginTile = reader.ReadTile();
         SourceTile = reader.ReadTile();
         OutTile = reader.ReadTile();
+        SkillTarget = reader.ReadPattern();
         Unit = reader.ReadNetworkBehaviour<Unit>();
         return this;
     }

@@ -40,6 +40,15 @@ public class DashSkill : ISkill
         yield return ctx.Unit.Move(ctx.SourceTile, new EmptyPattern(), ctx.OutTile, RangeType);
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.Write((int)RangeType);
+        writer.Write(MaxRange);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        RangeType = (RangeFilter)reader.Read<int>();
+        MaxRange = reader.Read<int>();
+        return this;
+    }
 }

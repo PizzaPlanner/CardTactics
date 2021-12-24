@@ -63,11 +63,24 @@ public class AttackSkill : ISkill
     {
         writer.Write(Damage);
         writer.WriteObject(Sound);
+        writer.Write(MinRange);
+        writer.Write(MaxRange);
+        writer.Write((int)Filter.Unit);
+        writer.Write((int)Filter.Tile);
+        writer.Write((int)Filter.Range);
     }
     public ISkill Deserialize(Mirror.NetworkReader reader)
     {
         Damage = reader.Read<float>();
         Sound = reader.ReadObject<AudioClip>();
+        MinRange = reader.Read<int>();
+        MaxRange = reader.Read<int>();
+        Filter = new SelectionFilter
+        {
+            Unit = (UnitFilter)reader.Read<int>(),
+            Tile = (TileFilter)reader.Read<int>(),
+            Range = (RangeFilter)reader.Read<int>()
+        };
         return this;
     }
 }

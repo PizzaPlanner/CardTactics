@@ -13,7 +13,7 @@ public class PlanContext : IPlayableContextWithUnit, IClientPlayable
 
     public IEnumerator PlayOnClient()
     {
-        var localOwner = Unit.Owner == PlayerController.Local;
+        var localOwner = Unit.hasAuthority;
 
         GameObject.FindObjectOfType<PlanningPanel>(true).Show(Unit,
         onPlay: localOwner ? ((cardId) => PlayerController.Local.SetPlayerReady(cardId)) : null,

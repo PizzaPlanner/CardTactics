@@ -253,8 +253,8 @@ public class Unit : NetworkBehaviour
                     }
                 }
             }
-            MoveInstant(from, to);
             yield return new WaitForEndOfFrame();
         }
+        MoveInstant(source, target);
     }
 }

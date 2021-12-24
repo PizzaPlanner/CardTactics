@@ -57,10 +57,11 @@ public class PlanningPanel : MonoBehaviour
         var board = FindObjectOfType<Board>();
 
         var isCurrent = GameStateMachine.FindObjectOfType<GameStateMachine>().CurrentUnit == unit;
-        var playable = isCurrent && unit.Owner == PlayerController.Local;
+        Debug.Log("Showing Panel for " + unit.Name + " (is Current: " + isCurrent + ")");
+        var playable = isCurrent && unit.hasAuthority;
         if (playable && onPlay != null)
             onPlayWrapper = onPlay;
-        var confirmable = isCurrent && unit.Owner == PlayerController.Local;
+        var confirmable = isCurrent && unit.hasAuthority;
         if (confirmable && onEndTurn != null)
             onEndTurnWrapper = onEndTurn;
         planningPanel.Q<Button>("Confirm").SetEnabled(confirmable);

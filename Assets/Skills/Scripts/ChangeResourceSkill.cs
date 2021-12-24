@@ -54,6 +54,19 @@ public class ChangeResourceSkill : ISkill
         yield return null;
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.Write(this.Convert);
+        writer.Write(this.Amount);
+        writer.Write(this.Class);
+        writer.Write(this.FromClass);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        Convert = reader.Read<bool>();
+        Amount = reader.Read<int>();
+        Class = reader.Read<CardClass>();
+        FromClass = reader.Read<CardClass>();
+        return this;
+    }
 }

@@ -172,11 +172,12 @@ public class RoomNetworkManager : NetworkManager
             StartCoroutine(coroutine);
     }
 
-    void OnGUI()
-    {
-        if (PlayablesServer.Current != null)
-            GUILayout.Label("S: " + PlayablesServer.Current.Name);
-        if (PlayablesClient.Current != null)
-            GUILayout.Label("C: " + PlayablesClient.Current.Name);
-    }
+    // void OnGUI()
+
+    // {
+    //     if (PlayablesServer.Current != null)
+    //         GUILayout.Label("S: " + PlayablesServer.Current.Name);
+    //     if (PlayablesClient.Current != null)
+    //         GUILayout.Label("C: " + PlayablesClient.Current.Name);
+    // }
 }

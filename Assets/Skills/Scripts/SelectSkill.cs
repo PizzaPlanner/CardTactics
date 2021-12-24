@@ -33,6 +33,28 @@ public class SelectSkill : ISkill
             return patterns;
     }
 
-    public void Serialize(NetworkWriter writer) { }
-    public ISkill Deserialize(NetworkReader reader) { return this; }
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.Write(confirmOnePossibleTile);
+        writer.Write(selectAtRandom);
+        writer.Write(randomOnlySelectableTiles);
+        writer.Write(maxRange);
+        writer.Write((int)TargetFilter.Unit);
+        writer.Write((int)TargetFilter.Tile);
+        writer.Write((int)TargetFilter.Range);
+    }
+    public ISkill Deserialize(NetworkReader reader)
+    {
+        confirmOnePossibleTile = reader.Read<bool>();
+        selectAtRandom = reader.Read<bool>();
+        randomOnlySelectableTiles = reader.Read<bool>();
+        maxRange = reader.Read<int>();
+        TargetFilter = new SelectionFilter
+        {
+            Unit = (UnitFilter)reader.Read<int>(),
+            Tile = (TileFilter)reader.Read<int>(),
+            Range = (RangeFilter)reader.Read<int>()
+        };
+        return this;
+    }
 }

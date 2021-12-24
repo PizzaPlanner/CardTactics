@@ -40,7 +40,26 @@ public class HealSkill : ISkill
             yield return new WaitForSeconds(0.5f);
         }
     }
-
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.Write(Heal);
+        writer.Write(MinRange);
+        writer.Write(MaxRange);
+        writer.Write((int)Filter.Unit);
+        writer.Write((int)Filter.Tile);
+        writer.Write((int)Filter.Range);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        Heal = reader.Read<float>();
+        MinRange = reader.Read<int>();
+        MaxRange = reader.Read<int>();
+        Filter = new SelectionFilter
+        {
+            Unit = (UnitFilter)reader.Read<int>(),
+            Tile = (TileFilter)reader.Read<int>(),
+            Range = (RangeFilter)reader.Read<int>()
+        };
+        return this;
+    }
 }
