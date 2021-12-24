@@ -105,37 +105,40 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
     }
 }
 
-public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable
+public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable, IClientPlayable
 {
+    public struct CancelContextMessage : NetworkMessage
+    {
+        public static bool CancelCurrentContext;
+    }
+
     public SkillInfo Target { get; set; }
     public Tile OutTile;
     public Tile SourceTile;
     public Tile OriginTile { get; private set; }
-    public Map Map { get; private set; }
     public Progress PlayProgress;
     public ITilePattern SkillTarget { get; set; }
+    public bool ManualSending => true;
     public Unit Unit { get; private set; }
     public NetworkConnection Owner => Unit.Owner.connectionToClient;
     IEnumerable<SkillPlanContext> previousContexts;
     public string Name => Target.Skill.GetType().Name + " (Prepare)";
     public bool Queueable => true;
 
-    public SkillPlanContext(SkillInfo target, Map map, Tile sourceTile, IEnumerable<SkillPlanContext> previousContexts)
+    public SkillPlanContext(SkillInfo target, Tile sourceTile, IEnumerable<SkillPlanContext> previousContexts)
     {
         Target = target;
         OriginTile = sourceTile;
         Unit = sourceTile.Unit;
         this.previousContexts = previousContexts;
-        Map = map;
     }
 
-    public SkillPlanContext(SkillInfo target, Unit unit, Map map, Tile sourceTile = null)
+    public SkillPlanContext(SkillInfo target, Unit unit, Tile sourceTile = null)
     {
         Target = target;
         OriginTile = sourceTile;
         Unit = unit;
         previousContexts = new SkillPlanContext[0];
-        Map = map;
     }
 
     public bool Preview(out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
@@ -149,9 +152,18 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable
         return false;
     }
 
+    public IEnumerator PlayOnClient()
+    {
+        if (Target.Skill.Activate(this, out var validPatterns, out var _))
+            Map.Instance.ShowPatterns(validPatterns, Unit.hasAuthority);
+        yield return new WaitUntil(() => CancelContextMessage.CancelCurrentContext);
+        CancelContextMessage.CancelCurrentContext = false;
+        yield return GameSettings.Instance.SkillPrepareDelay.Yield();
+        Map.Instance.HideTileSelectionPreview();
+    }
+
     public IEnumerator PlayOnServer()
     {
-        var map = Map;
         PlayProgress = Progress.Failed;
         if (Target.CanUse(OriginTile, previousContexts, out SourceTile)
             && Target.Skill.Activate(this, out var validPatterns, out var _))
@@ -164,13 +176,17 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable
                 SkillTarget = validPatterns.ToArray()[UnityEngine.Random.Range(0, validPatterns.Count())];
             else
             {
-                map.ShowTileIndicators(validPatterns,
+                Map.Instance.AssignPatterns(validPatterns,
                 (pattern) => TargetIndicator.Valid,
                 (itp) => SkillTarget = itp);
                 Debug.Log("[Board] Waiting for remote Player to use Skill...");
             }
 
+            NetworkServer.SendToAll(new PlayableMessage { context = this });
+
             yield return new WaitUntil(() => SkillTarget != null);
+
+            NetworkServer.SendToAll(new CancelContextMessage());
 
             if (SkillTarget != null)
             {
@@ -194,7 +210,7 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable
         }
         else
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=red>Condition Failed</color>");
-        map.HideTileSelectionPreview();
+        Map.Instance.HideTileSelectionPreview();
     }
 
     public SkillPlanContext() { }
@@ -318,8 +334,9 @@ public interface ISkill
 
     bool Activate(SkillPlanContext ctx, out IEnumerable<ITilePattern> validPatterns, out IEnumerable<ITilePattern> invalidPatterns)
     {
-        validPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && x.Selectable);
-        invalidPatterns = CreatePatterns(ctx).Where(x => x.Tiles.Any() && !x.Selectable);
+        var patterns = CreatePatterns(ctx);
+        validPatterns = patterns.Where(x => x.Tiles.Any() && x.Selectable);
+        invalidPatterns = patterns.Where(x => x.Tiles.Any() && !x.Selectable);
         var hasAny = validPatterns.Any();
         return hasAny;
     }
