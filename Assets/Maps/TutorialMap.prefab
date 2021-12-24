@@ -383,8 +383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc219b622db00b14aadd275cee821f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
   Teams:
   - CopyPerSpawn: 0
     PlayerTemplate: {fileID: 0}
@@ -392,8 +390,8 @@ MonoBehaviour:
     - {fileID: 2523956740781278979}
     Color: {r: 0.12967247, g: 0.5671415, b: 0.8867924, a: 1}
     Conditions:
-    - rid: 1776283599535079775
-    - rid: 1776283599535079776
+    - rid: 325904595723486121
+    - rid: 325904595723486122
   - CopyPerSpawn: 1
     PlayerTemplate: {fileID: 6819496489638353001}
     Players:
@@ -414,12 +412,12 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1776283599535079775
-      type: {class: TeamConditionOnlyTeamAlive, ns: , asm: Assembly-CSharp}
+    - rid: 325904595723486121
+      type: {class: OnlyTeamAliveAndAllAreasUncovered, ns: TeamConditions, asm: Assembly-CSharp}
       data:
         OnConditionMet: {fileID: 3678247853456033456}
-    - rid: 1776283599535079776
-      type: {class: TeamConditionEveryoneDead, ns: , asm: Assembly-CSharp}
+    - rid: 325904595723486122
+      type: {class: EveryoneDead, ns: TeamConditions, asm: Assembly-CSharp}
       data:
         OnConditionMet: {fileID: 8549433142310552816}
 --- !u!114 &188897203071287732

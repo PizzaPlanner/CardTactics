@@ -9,7 +9,7 @@ public class RevealAreaTrigger : Trigger
     public override IEnumerator Execute(Unit _)
     {
         yield return GameSettings.Instance.RevealAreaPreDelay.Yield();
-        FindObjectOfType<Map>().RevealArea(Area);
+        Map.Instance.RevealArea(Area);
         yield return GameSettings.Instance.RevealAreaPostDelay.Yield();
     }
 }

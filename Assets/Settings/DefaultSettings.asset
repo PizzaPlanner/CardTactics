@@ -17,7 +17,7 @@ MonoBehaviour:
     valueData:
     - {r: 0.0036044943, g: 0.21367273, b: 0.764151, a: 0.47058824}
     - {r: 0.74509805, g: 0.07450981, b: 0.07450981, a: 0.39215687}
-    - {r: 0.003921569, g: 0.21176472, b: 0.76470596, a: 0.19215687}
+    - {r: 0.003921569, g: 0.21176472, b: 0.76470596, a: 0.019607844}
   TileIndicatorHighlightColors:
     keyData: 000000000100000003000000
     valueData:
@@ -43,6 +43,7 @@ MonoBehaviour:
   TurnAnnouncerTime: 0.75
   PlanningPanelPopupTime: 1
   CardGainAnnouncerTime: 2
+  SkillPrepareDelay: 0
   MarkerDelayTime: 1
   RevealAreaPreDelay: 0.2
   RevealAreaPostDelay: 0.4

@@ -35,7 +35,7 @@ public class ChangeResourceSkill : ISkill
     {
         if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new GlobalPatternBuilder().Patterns(ctx.Map, ctx.SourceTile, SelectionFilters.Self);
+        return new GlobalPatternBuilder().Patterns(Map.Instance, ctx.SourceTile, SelectionFilters.Self);
     }
 
     public IEnumerator ExecuteServer(SkillExecuteContext ctx)

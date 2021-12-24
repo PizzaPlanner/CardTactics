@@ -170,8 +170,10 @@ public class Unit : NetworkBehaviour
         Debug.Log("Started on Client: " + Name);
     }
 
+    [Server]
     internal void Spawn()
     {
+        transform.position = new Vector3(-9999, -9999, -9999);
         gameObject.SetActive(true);
         NetworkServer.Spawn(gameObject, Owner?.connectionToClient);
         Debug.Log("Spawning " + Name);
@@ -200,8 +202,8 @@ public class Unit : NetworkBehaviour
         var facing = to.GetPathFacing();
         if (facing == Facing.Preserve)
             facing = Tile.GetFacing(from, to);
-        if (to.Place(this, facing))
-            from.Unit = null;
+        if (isServer)
+            RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = this, Source = from, Target = to, Facing = facing });
     }
 
     public IEnumerator Move(Tile source, ITilePattern pattern, Tile target, RangeFilter type)

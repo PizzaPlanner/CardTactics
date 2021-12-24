@@ -9,7 +9,7 @@ public class MarkerTrigger : Trigger
 
     public override IEnumerator Execute(Unit _)
     {
-        var map = FindObjectOfType<Map>();
+        var map = Map.Instance;
         if (Revealed)
             map.ShowMarker(Marker);
         else

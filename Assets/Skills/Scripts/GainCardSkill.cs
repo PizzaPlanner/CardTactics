@@ -16,7 +16,7 @@ public class GainCardSkill : ISkill
 
     public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
-        return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(ctx.Map, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
+        return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(Map.Instance, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
     public IEnumerator ExecuteServer(SkillExecuteContext ctx)

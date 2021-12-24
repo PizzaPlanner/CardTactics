@@ -17,8 +17,11 @@ public class Map : MonoBehaviour
 
     List<Tile> Tiles;
     public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
+    public IEnumerable<Tile> InvisibleTiles => Tiles.Where(x => !x.gameObject.activeSelf);
 
     public Team[] Teams;
+
+    public static Map Instance { get; private set; }
 
     public void AddTriggers(Board board)
     {
@@ -75,6 +78,7 @@ public class Map : MonoBehaviour
 
     void Start()
     {
+        Instance = this;
         var allGridThings = GetComponentsInChildren<GridPosition>(true);
         Tiles = new List<Tile>();
         foreach (var thing in allGridThings)
@@ -94,33 +98,13 @@ public class Map : MonoBehaviour
                 neighbour.Neighbours.Add(tile);
                 tile.Neighbours.Add(neighbour);
             }
-
-            if (NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
-            {
-                if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
-                {
-                    var instance = Instantiate(uspawn.Prefab);
-                    instance.Player.Team = -1;
-                    Debug.Log("[Board] Creating prop " + instance.Name);
-                    tile.Place(instance, uspawn.Facing);
-                }
-                else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
-                {
-                    Unit instance = Teams[owner.Id].SpawnNew(this);
-                    if (instance != null)
-                    {
-                        Debug.Log("[Board] Creating unit " + instance.Name);
-                        tile.Place(instance, spawn.Facing);
-                    }
-                }
-            }
         }
         foreach (var tile in Tiles)
             if (tile.GetComponent<Area>() != null)
                 tile.gameObject.SetActive(false);
-            else if (tile.Unit != null && NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
+            else if (NetworkManager.singleton.mode != NetworkManagerMode.ClientOnly)
             {
-                tile.Unit.Spawn();
+                TrySpawnOnTile(tile);
             }
         if (NetworkManager.singleton.mode != NetworkManagerMode.ServerOnly)
         {
@@ -134,6 +118,30 @@ public class Map : MonoBehaviour
         }
     }
 
+    [Server]
+    void TrySpawnOnTile(Tile tile)
+    {
+        if (tile.TryGetComponent<UnitSpawn>(out var uspawn))
+        {
+            var instance = Instantiate(uspawn.Prefab);
+            instance.Player.Team = -1;
+            Debug.Log("[Board] Creating prop " + instance.Name);
+            instance.Spawn();
+            RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = instance, Target = tile, Facing = uspawn.Facing });
+        }
+        else if (tile.TryGetComponent<SpawnLocation>(out var spawn) && tile.TryGetComponent<Owner>(out var owner))
+        {
+            Unit instance = Teams[owner.Id].SpawnNew(this);
+            if (instance != null)
+            {
+                Debug.Log("[Board] Creating unit " + instance.Name);
+                instance.Spawn();
+                RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = instance, Target = tile, Facing = spawn.Facing });
+            }
+        }
+    }
+
+    [Server]
     void OnSelectTileMessage(NetworkConnection conn, SelectTileMessage message)
     {
         if (RoomNetworkManager.Playables.Current is not IServerPlayable s || s.Owner != conn)
@@ -158,10 +166,7 @@ public class Map : MonoBehaviour
             if (tile.TryGetComponent<Area>(out var area) && area.Id == areaId)
             {
                 tile.gameObject.SetActive(true);
-                if (tile.Unit != null)
-                {
-                    tile.Unit.Spawn();
-                }
+                TrySpawnOnTile(tile);
             }
     }
 
@@ -173,7 +178,7 @@ public class Map : MonoBehaviour
     public Action<ITilePattern> OnTileSelection;
 
     [Server]
-    public void ShowTileIndicators(IEnumerable<ITilePattern> patterns, Func<ITilePattern, TargetIndicator> indicatorFunc, Action<ITilePattern> onSelectPattern = null)
+    public void AssignPatterns(IEnumerable<ITilePattern> patterns, Func<ITilePattern, TargetIndicator> indicatorFunc, Action<ITilePattern> onSelectPattern = null)
     {
         OnTileSelection = onSelectPattern;
         foreach (var tile in Tiles)
@@ -193,11 +198,11 @@ public class Map : MonoBehaviour
                 }
             }
         }
-        NetworkServer.SendToAll(new TilePatternMessage { Patterns = patterns.ToArray() });
     }
 
     public void ShowPatterns(IEnumerable<ITilePattern> patterns, bool hasAuthority)
     {
+        Debug.Log("Patterns to show: " + patterns.Count());
         foreach (var tile in Tiles)
         {
             // TODO: This is a workaround for Host mode
@@ -237,6 +242,7 @@ public class Map : MonoBehaviour
 
     public void HideTileSelectionPreview()
     {
+        Debug.Log("Hide patterns");
         OnTileSelection = null;
         foreach (var tile in Tiles)
         {

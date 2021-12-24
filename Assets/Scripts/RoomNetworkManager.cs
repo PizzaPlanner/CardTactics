@@ -26,8 +26,8 @@ public class RoomNetworkManager : NetworkManager
 
     public override void OnStartClient()
     {
-        NetworkClient.RegisterHandler<TilePatternMessage>(OnGetPatterns);
-        NetworkClient.RegisterHandler<PlayableMessage>(OnGetPlayable);
+        NetworkClient.RegisterHandler<PlayableMessage>((msg) => PlayablesClient.Enqueue(msg.context));
+        NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext = true);
         NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
     }
 
@@ -105,7 +105,11 @@ public class RoomNetworkManager : NetworkManager
 
         spawnPrefabs.AddRange(UnitAtlas.Instance.All.Select(x => x.gameObject));
 
-        StartHost();
+        try
+        {
+            StartHost();
+        }
+        catch { }
     }
 
     void Host()
@@ -158,18 +162,8 @@ public class RoomNetworkManager : NetworkManager
         loadingScreen.style.display = DisplayStyle.Flex;
     }
 
-    void OnGetPlayable(PlayableMessage msg)
-    {
-        PlayablesClient.Enqueue(msg.context);
-    }
-
-    void OnGetPatterns(TilePatternMessage msg)
-    {
-        FindObjectOfType<Map>().ShowPatterns(msg.Patterns, true);
-    }
-
-    PlayableQueue PlayablesClient;
-    PlayableQueue PlayablesServer;
+    PlayableQueue PlayablesClient = new(true);
+    PlayableQueue PlayablesServer = new(false);
     public static PlayableQueue Playables => (singleton as RoomNetworkManager).PlayablesServer;
 
     void Update()

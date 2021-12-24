@@ -6,8 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(Unit))]
 public class IngameDeck : NetworkBehaviour
 {
-    [ShowInInspector]
-    public List<CardContext> Contexts;
+    public readonly SyncList<CardContext> Contexts = new();
+
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        var unit = GetComponent<Unit>();
+        base.OnDeserialize(reader, initialState);
+        foreach (var ctx in Contexts)
+            ctx.Unit = unit;
+    }
 
     [Server]
     public void OnRoundStart()

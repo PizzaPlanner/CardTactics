@@ -19,7 +19,7 @@ public class DashSkill : ISkill
         filter.Range = RangeType;
         if (ctx.SourceTile.Unit == null)
             return new ITilePattern[0];
-        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(ctx.Map, ctx.SourceTile, filter);
+        return new CrosshairPatternBuilder { Length = MaxRange, Offset = 1 }.Patterns(Map.Instance, ctx.SourceTile, filter);
     }
 
     public Tile GetOutTile(SkillPlanContext ctx)

@@ -25,9 +25,9 @@ public class MoveSkill : ISkill
             {
                 MinRange = 1,
                 MaxRange = Range
-            }.Patterns(ctx.Map, ctx.SourceTile, filter);
+            }.Patterns(Map.Instance, ctx.SourceTile, filter);
         else
-            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(ctx.Map, ctx.SourceTile, filter);
+            return new RangePatternBuilder { MinRange = 1, MaxRange = Range }.Patterns(Map.Instance, ctx.SourceTile, filter);
     }
 
     public Tile GetOutTile(SkillPlanContext ctx)
@@ -49,11 +49,20 @@ public class MoveSkill : ISkill
         Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
         if (sourceAnimator == null) yield break;
         sourceAnimator.SetBool("Moving", true);
-        yield return new WaitForSeconds(1);
+        yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);
         sourceAnimator.SetBool("Moving", false);
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(Mirror.NetworkWriter writer)
+    {
+        writer.Write(Range);
+        writer.Write((int)RangeType);
+    }
+    public ISkill Deserialize(Mirror.NetworkReader reader)
+    {
+        Range = reader.Read<int>();
+        RangeType = (RangeFilter)reader.Read<int>();
+        return this;
+    }
 
 }

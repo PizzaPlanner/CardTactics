@@ -14,7 +14,7 @@ public class Team
     [SerializeField] PlayerSlot[] Players;
 
     public Color Color;
-    [SerializeReference] public List<TeamCondition> Conditions;
+    [SerializeReference] public List<TeamConditions.TeamCondition> Conditions;
 
     public int MinPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired);
     public int MaxPlayers => CopyPerSpawn || Players == null ? 0 : Players.Count(x => x.Slot == PlayerSlot.SlotType.PlayerRequired || x.Slot == PlayerSlot.SlotType.PlayerOptional);
@@ -32,7 +32,7 @@ public class Team
 
             var placeSkill = new PlaceSkill { reference = unit };
             var skillInfo = new SkillInfo { Skill = placeSkill };
-            queue.InsertFirst(new SkillPlanContext(skillInfo, unit, map));
+            queue.Enqueue(new SkillPlanContext(skillInfo, unit));
         }
     }
 

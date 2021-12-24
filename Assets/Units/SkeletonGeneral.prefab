@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5882492422521109190}
   - component: {fileID: 1222922040391292849}
   - component: {fileID: 3688285339245641316}
+  - component: {fileID: -6363674124614892143}
   m_Layer: 0
   m_Name: SkeletonGeneral
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+  Owner: {fileID: 0}
   Life: 0
   Player:
     IsAI: 0
@@ -179,6 +181,20 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 7ef1c401f826c2346af3a90d94da21f2
   hasSpawned: 0
+--- !u!114 &-6363674124614892143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563312192517643092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dbfa4c3c2f8a9241a726e88537e01f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.5
 --- !u!1001 &6091342729191664367
 PrefabInstance:
   m_ObjectHideFlags: 0

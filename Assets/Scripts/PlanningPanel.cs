@@ -67,7 +67,7 @@ public class PlanningPanel : MonoBehaviour
 
         var doc = uiRoot;
         cardPanel.Clear();
-        var map = FindObjectOfType<Map>();
+        var map = Map.Instance;
         var unplayed = deck.Unplayed.ToList();
         unplayed.Sort((x, y) => x.Target.Name.CompareTo(y.Target.Name));
         foreach (var ctx in unplayed)
@@ -79,7 +79,7 @@ public class PlanningPanel : MonoBehaviour
             var firstSkill = ctx.Target.skills.FirstOrDefault();
             if (firstSkill != null)
             {
-                new SkillPlanContext(firstSkill, unit, map, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
+                new SkillPlanContext(firstSkill, unit, map.TileOf(unit)).Preview(out var validPatterns, out var invalidPatterns);
                 item.OnMouseEnter = () =>
                 {
                     CardTooltip.Show(ctx.Target);

@@ -17,7 +17,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     [Sirenix.OdinInspector.ShowInInspector]
     public CardState State;
 
-    public Unit Unit { get; private set; }
+    public Unit Unit { get; set; }
     public NetworkConnection Owner => Unit.Owner.connectionToClient;
 
     public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
@@ -71,12 +71,11 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
 
         var previousContexts = new List<SkillPlanContext>();
 
-        var map = Map.FindObjectOfType<Map>();
         var playables = RoomNetworkManager.Playables;
         for (int i = 0; i < skillsToPlay.Count(); i++)
         {
             var skill = skillsToPlay.ToArray()[i];
-            var ctx = new SkillPlanContext(skill, map, map.TileOf(Unit), previousContexts.ToArray());
+            var ctx = new SkillPlanContext(skill, Map.Instance.TileOf(Unit), previousContexts.ToArray());
             playables.Enqueue(ctx);
             previousContexts.Add(ctx);
         }
@@ -85,20 +84,32 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         yield return null;
     }
 
-    public void Serialize(NetworkWriter writer)
+    public void SerializeWithoutUnit(NetworkWriter writer)
     {
         writer.WriteObject(Target);
         writer.Write((byte)State);
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        SerializeWithoutUnit(writer);
         writer.WriteNetworkBehaviour(Unit);
+    }
+
+    public IPlayableContext DeserializeWithoutUnit(NetworkReader reader)
+    {
+        Target = reader.ReadObject<Card>();
+        State = (CardState)reader.ReadByte();
+        return this;
     }
 
     public IPlayableContext Deserialize(NetworkReader reader)
     {
-        Target = reader.ReadObject<Card>();
-        State = (CardState)reader.ReadByte();
+        DeserializeWithoutUnit(reader);
         Unit = reader.ReadNetworkBehaviour<Unit>();
         return this;
     }
+
 }
 
 public class FinishCardContext : IPlayableContext, IClientPlayable

@@ -41,10 +41,11 @@ public class UnitStatusBar : VisualElement
         life.text = unit.Life.ToString();
 
         // Update Buffbar. Only once per 0.5s if FollowUnit is true
-        if (deck == null || (FollowUnit && Time.timeSinceLevelLoad - lastBuffUpdate > 0.5f))
+        if (deck == null || (FollowUnit && Time.timeSinceLevelLoad - lastBuffUpdate < 0.5f))
             return;
 
         lastBuffUpdate = Time.timeSinceLevelLoad;
+
         var hasNot = deck.Unplayable.ToArray();
         foreach (var item in this.Query<CardItem>().ToList())
         {

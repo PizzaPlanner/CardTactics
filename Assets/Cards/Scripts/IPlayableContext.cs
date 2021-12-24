@@ -56,6 +56,9 @@ public static class ContextSerializationHelper
         return info;
     }
 
+    public static void WriteCardContext(this NetworkWriter writer, CardContext context) => context.SerializeWithoutUnit(writer);
+    public static CardContext ReadCardContext(this NetworkReader reader) => (CardContext)new CardContext().DeserializeWithoutUnit(reader);
+
     public static void WritePlayable(this NetworkWriter writer, IPlayableContext context)
     {
         writer.WriteString(context.GetType().Name);

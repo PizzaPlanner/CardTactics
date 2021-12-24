@@ -24,7 +24,8 @@ public class GameStateMachine : NetworkBehaviour
         instance = this;
         playableUnits = new Queue<Unit>();
         waitingForAction = true;
-        CurrentStage = Stage.Events;
+        if (isServer)
+            CurrentStage = Stage.Events;
     }
 
     public static Stage CurrentStage { get => instance.currentStage; set { instance.currentStage = value; instance.Resume(); } }
@@ -69,7 +70,7 @@ public class GameStateMachine : NetworkBehaviour
     [Server]
     void OnEvents()
     {
-        var map = FindObjectOfType<Map>();
+        var map = Map.Instance;
         map.AddTriggers(board);
 
         if (!RoomNetworkManager.Playables.Empty)

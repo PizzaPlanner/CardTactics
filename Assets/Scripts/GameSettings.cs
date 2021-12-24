@@ -73,6 +73,9 @@ public class GameSettings : ScriptableObject
     public float CardGainAnnouncerTime;
     [HideIf("SkipTimings")]
     [BoxGroup("Timings/Times")]
+    public float SkillPrepareDelay;
+    [HideIf("SkipTimings")]
+    [BoxGroup("Timings/Times")]
     public float MarkerDelayTime;
     [HideIf("SkipTimings")]
     [BoxGroup("Timings/Times")]

@@ -24,7 +24,7 @@ public class AttackSkill : ISkill
         {
             MinRange = MinRange,
             MaxRange = MaxRange
-        }.Patterns(ctx.Map, ctx.SourceTile, Filter);
+        }.Patterns(Map.Instance, ctx.SourceTile, Filter);
     }
 
     public IEnumerator ExecuteServer(SkillExecuteContext ctx)

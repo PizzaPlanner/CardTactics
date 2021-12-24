@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5882492422521109190}
   - component: {fileID: 8942890046518652142}
   - component: {fileID: 7573763126583650501}
+  - component: {fileID: -7911847607973587043}
   m_Layer: 0
   m_Name: Apparition
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
+  Owner: {fileID: 0}
   Life: 0
   Player:
     IsAI: 0
@@ -179,6 +181,20 @@ MonoBehaviour:
   visible: 0
   m_AssetId: b280c27f7c53e6940a19fb9bf28d8a6e
   hasSpawned: 0
+--- !u!114 &-7911847607973587043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563312192517643092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dbfa4c3c2f8a9241a726e88537e01f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.5
 --- !u!1001 &7637769073818113468
 PrefabInstance:
   m_ObjectHideFlags: 0

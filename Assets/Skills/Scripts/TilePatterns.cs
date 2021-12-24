@@ -27,12 +27,12 @@ public struct GlobalPatternBuilder : ITilePatternBuilder
 
 public struct SpawnPatternBuilder : ITilePatternBuilder
 {
-    public Unit UnitToSpawn;
+    public int Team;
     public IEnumerable<ITilePattern> Patterns(Map map, Tile origin, SelectionFilter filter)
     {
-        if (UnitToSpawn.Player.Team == -1)
+        if (Team == -1)
             return new ITilePattern[0];
-        return map.GetSpawnTiles(filter, UnitToSpawn.Player.Team).Select(x => new SingleTilePattern { Target = x }.Build(map, x, filter));
+        return map.GetSpawnTiles(filter, Team).Select(x => new SingleTilePattern { Target = x }.Build(map, x, filter));
     }
 }
 
@@ -283,7 +283,7 @@ public static class TilePatternSerializeHelper
         var pos = reader.Read<Vector3Int>();
         if (pos.z == int.MaxValue)
             return null;
-        return Map.FindObjectOfType<Map>().VisibleTiles.First(x => x.Position == pos);
+        return Map.Instance.VisibleTiles.First(x => x.Position == pos);
     }
 
     public static void WriteTileArray(this NetworkWriter writer, Tile[] tiles)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -22,6 +23,46 @@ public enum Facing
     Up,
     Down,
     Preserve
+}
+
+public struct PlaceUnitContext : IPlayableContext, IClientPlayable, IServerPlayable
+{
+    public Unit Unit;
+    public Tile Target, Source;
+    public Facing Facing;
+
+    public bool Queueable => true;
+
+    public string Name => "Place " + Unit.Name + " at " + Target.Position;
+
+    public IEnumerator PlayOnClient()
+    {
+        if (Target.Place(Unit, Facing) && Source != null)
+            Source.Unit = null;
+        yield return null;
+    }
+
+    public IEnumerator PlayOnServer()
+    {
+        if (Target.Place(Unit, Facing) && Source != null)
+            Source.Unit = null;
+        yield return null;
+    }
+
+    public void Serialize(NetworkWriter writer)
+    {
+        writer.WriteNetworkBehaviour(Unit);
+        writer.WriteTile(Target);
+        writer.WriteByte((byte)Facing);
+    }
+
+    public IPlayableContext Deserialize(NetworkReader reader)
+    {
+        Unit = reader.ReadNetworkBehaviour<Unit>();
+        Target = reader.ReadTile();
+        Facing = (Facing)reader.ReadByte();
+        return this;
+    }
 }
 
 [RequireComponent(typeof(GridPosition))]
@@ -86,8 +127,6 @@ public class Tile : MonoBehaviour
     {
         Position = GetComponent<GridPosition>().Position;
         var unit = GetComponentInChildren<Unit>();
-        if (unit != null)
-            Place(unit, Facing.Preserve);
     }
 
     void Start()
@@ -317,7 +356,6 @@ public class Tile : MonoBehaviour
         }
     }
 
-    [Server]
     public bool Place(Unit unit, Facing facing)
     {
         if ((Unit != null && !Unit.IsDead) || unit == null)
@@ -362,7 +400,6 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
-    [Server]
     public void Face(Facing targetFacing)
     {
         if (Unit == null) return;
@@ -373,7 +410,6 @@ public class Tile : MonoBehaviour
 
     public Vector3 UnitAnchor => transform.position;
 
-    [Server]
     void PlaceUnitNoCheck(Unit unit, Facing facing)
     {
         unit.transform.position = UnitAnchor;

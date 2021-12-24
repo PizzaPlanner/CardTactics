@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7360946247754838574}
   - component: {fileID: -6365503231613347078}
   - component: {fileID: 8483953200346308832}
+  - component: {fileID: -1134100326035541292}
   m_Layer: 0
   m_Name: Deceptive
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
+  Owner: {fileID: 0}
   Life: 0
   Player:
     IsAI: 0
@@ -179,6 +181,20 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 104babd9520f36f438233a470f3404a2
   hasSpawned: 0
+--- !u!114 &-1134100326035541292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485420451507662470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dbfa4c3c2f8a9241a726e88537e01f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.5
 --- !u!1001 &1781458912278749991
 PrefabInstance:
   m_ObjectHideFlags: 0

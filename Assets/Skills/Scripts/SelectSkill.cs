@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ public class SelectSkill : ISkill
     public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
         var patterns = ((ITilePatternBuilder)(maxRange == 0 ? new GlobalPatternBuilder() : new RangePatternBuilder { MinRange = 0, MaxRange = maxRange }))
-            .Patterns(ctx.Map, ctx.SourceTile, TargetFilter);
+            .Patterns(Map.Instance, ctx.SourceTile, TargetFilter);
         if (selectAtRandom)
         {
             if (randomOnlySelectableTiles)
@@ -32,6 +33,6 @@ public class SelectSkill : ISkill
             return patterns;
     }
 
-    public void Serialize(Mirror.NetworkWriter writer) { }
-    public ISkill Deserialize(Mirror.NetworkReader reader) { return this; }
+    public void Serialize(NetworkWriter writer) { }
+    public ISkill Deserialize(NetworkReader reader) { return this; }
 }
