@@ -51,12 +51,12 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   Icon: {fileID: 21300000, guid: d54af698fe02b8e428a76bd3f1a34136, type: 3}
-  Speed: 60
-  MaxLife: 7
+  Speed: 64
+  MaxLife: 9
   Type: 1
   Resources:
     Resources:
-    - Total: 3
+    - Total: 2
       Type: {fileID: 11400000, guid: a735495544485164dbbead9c475c18d2, type: 2}
     - Total: 1
       Type: {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
@@ -179,7 +179,7 @@ MonoBehaviour:
   sceneId: 0
   serverOnly: 0
   visible: 0
-  m_AssetId: 19e9019c12d92654c91f234579e1b8a8
+  m_AssetId: 9e44f11c15bfcbe4787e5a691f2db5fd
   hasSpawned: 0
 --- !u!114 &-1581986385627233339
 MonoBehaviour:

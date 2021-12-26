@@ -125,7 +125,7 @@ public class Map : MonoBehaviour
         {
             var instance = Instantiate(uspawn.Prefab);
             instance.Player.Team = -1;
-            Debug.Log("[Board] Creating prop " + instance.Name);
+            Debug.Log("[Map] Creating prop " + instance.Name);
             instance.Spawn();
             RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = instance, Target = tile, Facing = uspawn.Facing });
         }
@@ -134,7 +134,7 @@ public class Map : MonoBehaviour
             Unit instance = Teams[owner.Id].SpawnNew(this);
             if (instance != null)
             {
-                Debug.Log("[Board] Creating unit " + instance.Name);
+                Debug.Log("[Map] Creating unit " + instance.Name);
                 instance.Spawn();
                 RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = instance, Target = tile, Facing = spawn.Facing });
             }
@@ -146,7 +146,7 @@ public class Map : MonoBehaviour
     {
         if (RoomNetworkManager.Playables.Current is not IServerPlayable s || s.Owner != conn)
         {
-            Debug.LogWarning($"Ignored invalid selection request from {conn.identity.gameObject.name}");
+            Debug.LogWarning($"[Map] Ignored invalid selection request from {conn.identity.gameObject.name}");
             return;
         }
 
@@ -155,7 +155,7 @@ public class Map : MonoBehaviour
             return;
         if (tile.PrimaryPattern != null)
         {
-            Debug.Log("Selected Tile " + tile.Position);
+            Debug.Log("[Map] Selected Tile " + tile.Position);
             OnTileSelection?.Invoke(tile.PrimaryPattern);
         }
     }
@@ -202,7 +202,7 @@ public class Map : MonoBehaviour
 
     public void ShowPatterns(IEnumerable<ITilePattern> patterns, bool hasAuthority)
     {
-        Debug.Log("Patterns to show: " + patterns.Count());
+        Debug.Log("[Map] showing " + patterns.Count() + " patterns with authority: " + hasAuthority);
         foreach (var tile in Tiles)
         {
             // TODO: This is a workaround for Host mode
@@ -242,7 +242,7 @@ public class Map : MonoBehaviour
 
     public void HideTileSelectionPreview()
     {
-        Debug.Log("Hide patterns");
+        Debug.Log("[Map] Hide patterns");
         OnTileSelection = null;
         foreach (var tile in Tiles)
         {

@@ -12,5 +12,7 @@ public class CardClass : ScriptableObject
     [Sirenix.OdinInspector.AssetSelector(Paths = "Assets/3rdParty/64 flat icons/png/64px", FlattenTreeView = true)]
     public Sprite Icon;
 
+    public bool OneTimeUse;
+
     public override string ToString() => $"<sprite=\"classicons\" name=\"{Name}\">";
 }

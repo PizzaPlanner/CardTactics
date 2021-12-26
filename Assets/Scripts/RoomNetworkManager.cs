@@ -27,7 +27,7 @@ public class RoomNetworkManager : NetworkManager
     public override void OnStartClient()
     {
         NetworkClient.RegisterHandler<PlayableMessage>((msg) => PlayablesClient.Enqueue(msg.context));
-        NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext = true);
+        NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext++);
         NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
     }
 

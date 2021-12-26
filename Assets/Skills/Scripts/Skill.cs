@@ -109,7 +109,7 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable, IClie
 {
     public struct CancelContextMessage : NetworkMessage
     {
-        public static bool CancelCurrentContext;
+        public static int CancelCurrentContext;
     }
 
     public SkillInfo Target { get; set; }
@@ -156,8 +156,8 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable, IClie
     {
         if (Target.Skill.Activate(this, out var validPatterns, out var _))
             Map.Instance.ShowPatterns(validPatterns, Unit.hasAuthority);
-        yield return new WaitUntil(() => CancelContextMessage.CancelCurrentContext);
-        CancelContextMessage.CancelCurrentContext = false;
+        yield return new WaitUntil(() => CancelContextMessage.CancelCurrentContext > 0);
+        CancelContextMessage.CancelCurrentContext--;
         yield return GameSettings.Instance.SkillPrepareDelay.Yield();
         Map.Instance.HideTileSelectionPreview();
     }
@@ -169,7 +169,7 @@ public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable, IClie
             && Target.Skill.Activate(this, out var validPatterns, out var _))
         {
             PlayProgress = Progress.Now;
-            Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color>");
+            Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=green>OK</color> ({validPatterns.Count()} patterns)");
             if (Target.Skill.AutoSelectOnOnePossibleTile && validPatterns.Count() == 1)
                 SkillTarget = validPatterns.First();
             else if (Unit.Player.IsAI)

@@ -41,13 +41,17 @@ public class ResourceInfo
         foreach (var otherRes in other.Resources)
             for (int i = 0; i < Resources.Count; i++)
                 if (Resources[i].Type == otherRes.Type)
+                {
                     Resources[i] = new Resource
                     {
                         Type = Resources[i].Type,
-                        Total = Resources[i].Total,
-                        Used = Resources[i].Used + otherRes.Available,
-                        // NonRefreshable = Resources[i].NonRefreshable
+                        Total = otherRes.Type.OneTimeUse ? Resources[i].Total - otherRes.Available : Resources[i].Total,
+                        Used = otherRes.Type.OneTimeUse ? 0 : Resources[i].Used + otherRes.Available,
                     };
+
+                    if (Resources[i].Total <= 0 && Resources[i].Type.OneTimeUse)
+                        Resources.RemoveAt(i--);
+                }
     }
 
     public void Refresh()
@@ -203,7 +207,7 @@ public class Unit : NetworkBehaviour
         if (facing == Facing.Preserve)
             facing = Tile.GetFacing(from, to);
         if (isServer)
-            RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = this, Source = from, Target = to, Facing = facing });
+            RoomNetworkManager.Playables.Enqueue(new PlaceUnitContext { Unit = this, Source = from, Target = to, Facing = facing });
     }
 
     public IEnumerator Move(Tile source, ITilePattern pattern, Tile target, RangeFilter type)
@@ -255,6 +259,5 @@ public class Unit : NetworkBehaviour
             }
             yield return new WaitForEndOfFrame();
         }
-        MoveInstant(source, target);
     }
 }

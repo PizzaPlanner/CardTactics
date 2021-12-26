@@ -16,7 +16,6 @@ public class MoveSkill : ISkill
 
     public IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx)
     {
-        Debug.Log("CP for MoveSkill with SourceTile " + ctx.SourceTile.Position);
         var filter = SelectionFilters.Empty;
         filter.Range = RangeType;
         if (ctx.SourceTile?.Unit == null)
@@ -42,7 +41,8 @@ public class MoveSkill : ISkill
 
     public IEnumerator ExecuteServer(SkillExecuteContext ctx)
     {
-        yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);
+        ctx.SourceTile.Unit.MoveInstant(ctx.SourceTile, ctx.OutTile);
+        yield return null;
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)

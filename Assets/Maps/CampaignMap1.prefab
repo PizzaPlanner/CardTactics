@@ -377,7 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976c9d8368584394ca07650135d86a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: {fileID: 11400000, guid: 72674ffae81d89c44af0894b943d1ada, type: 2}
+  deck: {fileID: 11400000, guid: 0852ba29886d4cd488214786e6ef4124, type: 2}
   slot: 1
   OnDeadSelf: {fileID: 0}
   OnDeadKiller: {fileID: 0}

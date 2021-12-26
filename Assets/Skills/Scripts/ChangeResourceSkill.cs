@@ -58,15 +58,15 @@ public class ChangeResourceSkill : ISkill
     {
         writer.Write(this.Convert);
         writer.Write(this.Amount);
-        writer.Write(this.Class);
-        writer.Write(this.FromClass);
+        writer.WriteObject(this.Class);
+        writer.WriteObject(this.FromClass);
     }
     public ISkill Deserialize(Mirror.NetworkReader reader)
     {
         Convert = reader.Read<bool>();
         Amount = reader.Read<int>();
-        Class = reader.Read<CardClass>();
-        FromClass = reader.Read<CardClass>();
+        Class = reader.ReadObject<CardClass>();
+        FromClass = reader.ReadObject<CardClass>();
         return this;
     }
 }
