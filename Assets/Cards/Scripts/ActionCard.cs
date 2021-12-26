@@ -25,6 +25,14 @@ public class ActionCard : Card
     [BoxGroup("Action")]
     [HorizontalGroup("Action/Base")]
     [VerticalGroup("Action/Base/Right")]
+    [HorizontalGroup("Action/Base/Right/Top", Width = 50)]
+    [BoxGroup("Action/Base/Right/Top/Charges")]
+    [HideLabel]
+    [SerializeField] public int charges;
+
+    [BoxGroup("Action")]
+    [HorizontalGroup("Action/Base")]
+    [VerticalGroup("Action/Base/Right")]
     [HorizontalGroup("Action/Base/Right/Top", Width = 100)]
     [BoxGroup("Action/Base/Right/Top/Final State")]
     [HideLabel]
@@ -37,6 +45,7 @@ public class ActionCard : Card
     [HorizontalGroup("Action/Base/Right/Sub")]
     [HideLabel]
     [SerializeField] ResourceInfo cost;
+
 
     public ResourceInfo Cost => cost;
     public override Sprite Icon => icon;

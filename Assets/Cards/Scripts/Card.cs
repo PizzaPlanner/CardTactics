@@ -23,6 +23,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
     public string Name => Target.Name;
     public bool ManualSending => true;
+    public int ChargesUsed;
 
     public CardContext(Card card, Unit unit, CardState initialState)
     {
@@ -67,6 +68,9 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
             yield break;
         }
 
+        if (Target is ActionCard ac && ac.charges > 0 && ++ChargesUsed >= ac.charges)
+            newstate = CardState.Destroyed;
+
         NetworkServer.SendToAll(new PlayableMessage { context = this });
 
         var previousContexts = new List<SkillPlanContext>();
@@ -88,6 +92,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     {
         writer.WriteObject(Target);
         writer.Write((byte)State);
+        writer.Write(ChargesUsed);
     }
 
     public void Serialize(NetworkWriter writer)
@@ -100,6 +105,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     {
         Target = reader.ReadObject<Card>();
         State = (CardState)reader.ReadByte();
+        ChargesUsed = reader.ReadInt();
         return this;
     }
 
