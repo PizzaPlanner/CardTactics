@@ -89,7 +89,12 @@ public interface IClientPlayable
 
 public interface IServerPlayable
 {
-    NetworkConnection Owner => null;
+    void PlayOnServer();
+}
+
+public interface IServerWaitPlayable
+{
+    NetworkConnection Owner { get; }
     IEnumerator PlayOnServer();
 }
 

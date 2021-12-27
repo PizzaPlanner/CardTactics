@@ -19,11 +19,13 @@ public class GainCardSkill : ISkill
         return new[] { new SingleTilePattern { Target = ctx.SourceTile }.Build(Map.Instance, ctx.SourceTile, new SelectionFilter { Range = RangeFilter.Any }) };
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
-        if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
-        deck.Contexts.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
-        yield return null;
+        if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) return;
+        if (NewCardPrefab is ActionCard ac && ac.charges > 0 && deck.All.Any(x => x.Target == ac))
+            deck.All.First(x => x.Target == ac).ChargesUsed += ac.charges;
+        else
+            deck.Contexts.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)

@@ -18,8 +18,8 @@ public class UnitItem : VisualElement
             this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter());
             this.RegisterCallback<MouseLeaveEvent>(_ => OnMouseLeave());
 
-            this.Query<Label>("Life").ForEach(x => x.text = unit.Life.ToString());
-            this.Query<VisualElement>("Lifebar-Bar").ForEach(x => x.style.width = new StyleLength(new Length(unit.Life / unit.MaxLife * 100, LengthUnit.Percent)));
+            this.Query<Label>("Life").ForEach(x => x.text = unit.DisplayLife.ToString());
+            this.Query<VisualElement>("Lifebar-Bar").ForEach(x => x.style.width = new StyleLength(new Length(unit.DisplayLife / unit.MaxLife * 100, LengthUnit.Percent)));
         }
     }
     Unit unit;

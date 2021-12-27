@@ -194,7 +194,7 @@ public class GameStateMachine : NetworkBehaviour
 
     void Update()
     {
-        if (!waitingForAction && isServer)
+        if (!waitingForAction && isServer && RoomNetworkManager.Playables.Current == null)
         {
             Debug.Log("[Board] -- " + CurrentStage + " --");
             switch (CurrentStage)

@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
 public class PlayableQueue
 {
-    bool isClient;
-    public PlayableQueue(bool client)
+    const bool DO_LOG = true;
+    public NetworkManagerMode Mode { get; private set; }
+    public PlayableQueue(NetworkManagerMode mode)
     {
-        isClient = client;
+        Mode = mode;
         queue = new();
     }
 
@@ -25,18 +27,8 @@ public class PlayableQueue
 
     void Enqueue(IPlayableContext context, bool priorizeNext)
     {
-        if (!context.Queueable)
-        {
-            if (context is IPlayableContextWithUnit ipcu && ipcu.Unit != null)
-                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {ipcu.Unit.Name} on {(isClient ? "Client" : "Server")}", ipcu.Unit);
-            else
-                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} on {(isClient ? "Client" : "Server")}");
-            return;
-        }
-        if (context is IPlayableContextWithUnit ipcu2 && ipcu2.Unit != null)
-            Debug.Log($"[Playable] Queue {context.Name} for {ipcu2.Unit.Name} on {(isClient ? "Client" : "Server")}", ipcu2.Unit);
-        else
-            Debug.Log($"[Playable] Queue {context.Name} on {(isClient ? "Client" : "Server")}");
+        if (DO_LOG)
+            PrintLogs(context);
 
         if (priorizeNext)
         {
@@ -50,6 +42,31 @@ public class PlayableQueue
             queue.Enqueue(context);
     }
 
+    private void PrintLogs(IPlayableContext context)
+    {
+        var mode = Mode switch
+        {
+            NetworkManagerMode.Offline => "Offline",
+            NetworkManagerMode.ServerOnly => "Host",
+            NetworkManagerMode.ClientOnly => "Client",
+            NetworkManagerMode.Host => "Host",
+            _ => "?"
+        };
+
+        if (!context.Queueable)
+        {
+            if (context is IPlayableContextWithUnit ipcu && ipcu.Unit != null)
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} for {ipcu.Unit.Name} on {mode}", ipcu.Unit);
+            else
+                Debug.LogError($"[Playable] Cannot queue unqueueable {context.Name} on {mode}");
+            return;
+        }
+        if (context is IPlayableContextWithUnit ipcu2 && ipcu2.Unit != null)
+            Debug.Log($"[Playable] Queue {context.Name} for {ipcu2.Unit.Name} on {mode}", ipcu2.Unit);
+        else
+            Debug.Log($"[Playable] Queue {context.Name} on {mode}");
+    }
+
     public bool TryGetNext(out IEnumerator coroutine)
     {
         coroutine = null;
@@ -57,27 +74,46 @@ public class PlayableQueue
 
         Current = Next();
 
-        if (Current is IPlayableContextWithUnit ipcu && ipcu.Unit != null)
-            Debug.Log($"[Playable] [{(isClient ? "Client" : "Server")}] Play {Current.Name} for {ipcu.Unit.Name}", ipcu.Unit);
-        else
-            Debug.Log($"[Playable] [{(isClient ? "Client" : "Server")}] Play {Current.Name}");
+        if (DO_LOG)
+        {
+            var mode = Mode switch
+            {
+                NetworkManagerMode.Offline => "Offline",
+                NetworkManagerMode.ServerOnly => "Host",
+                NetworkManagerMode.ClientOnly => "Client",
+                NetworkManagerMode.Host => "Host",
+                _ => "?"
+            };
+            if (Current is IPlayableContextWithUnit ipcu && ipcu.Unit != null)
+                Debug.Log($"[Playable] [{mode}] Play {Current.Name} for {ipcu.Unit.Name}", ipcu.Unit);
+            else
+                Debug.Log($"[Playable] [{mode}] Play {Current.Name}");
+        }
         coroutine = PlayAndResume();
         return true;
     }
 
     IEnumerator PlayAndResume()
     {
-        if (isClient)
+        if (Mode == NetworkManagerMode.ClientOnly)
         {
             if (Current is IClientPlayable c)
                 yield return c.PlayOnClient();
         }
         else
         {
-            if (Current is IServerPlayable s)
-                yield return s.PlayOnServer();
-            if (Current is IClientPlayable c && !c.ManualSending)
-                NetworkServer.SendToAll(new PlayableMessage { context = Current });
+            if (Current is IServerWaitPlayable sw)
+                yield return sw.PlayOnServer();
+            else if (Current is IServerPlayable s)
+                s.PlayOnServer();
+
+            if (Current is IClientPlayable c)
+            {
+                if (!c.ManualSending)
+                    NetworkServer.SendToAll(new PlayableMessage { context = Current });
+                if (Mode == NetworkManagerMode.Host)
+                    yield return c.PlayOnClient();
+            }
         }
         Current = null;
     }

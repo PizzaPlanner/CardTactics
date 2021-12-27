@@ -26,7 +26,7 @@ public class RoomNetworkManager : NetworkManager
 
     public override void OnStartClient()
     {
-        NetworkClient.RegisterHandler<PlayableMessage>((msg) => PlayablesClient.Enqueue(msg.context));
+        NetworkClient.RegisterHandler<PlayableMessage>((msg) => { if (Playables.Mode == NetworkManagerMode.ClientOnly) Playables.Enqueue(msg.context); });
         NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext++);
         NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
     }
@@ -133,7 +133,7 @@ public class RoomNetworkManager : NetworkManager
     public static Action OnSceneChangedServer;
     public override void OnServerSceneChanged(string newSceneName)
     {
-        PlayablesServer = new PlayableQueue(false);
+        Playables = new PlayableQueue(mode);
         OnSceneChangedServer?.Invoke();
         OnSceneChangedServer = null;
     }
@@ -141,7 +141,6 @@ public class RoomNetworkManager : NetworkManager
     public override void OnClientSceneChanged(NetworkConnection conn)
     {
         base.OnClientSceneChanged(conn);
-        loadingScreen.style.display = DisplayStyle.None;
         lobbyUI.style.display = SceneManager.GetActiveScene().name == "Menu" ? DisplayStyle.Flex : DisplayStyle.None;
 
         Debug.Log("Player added");
@@ -151,9 +150,11 @@ public class RoomNetworkManager : NetworkManager
         else
             Debug.Log("Skipped Applying SceneInfo in Host Mode");
 
-        PlayablesClient = new PlayableQueue(true);
+        if (mode == NetworkManagerMode.ClientOnly)
+            Playables = new PlayableQueue(mode);
         NetworkClient.ready = true;
         NetworkClient.AddPlayer();
+        loadingScreen.style.display = DisplayStyle.None;
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
@@ -162,22 +163,11 @@ public class RoomNetworkManager : NetworkManager
         loadingScreen.style.display = DisplayStyle.Flex;
     }
 
-    PlayableQueue PlayablesClient = new(true);
-    PlayableQueue PlayablesServer = new(false);
-    public static PlayableQueue Playables => (singleton as RoomNetworkManager).PlayablesServer;
+    public static PlayableQueue Playables { get; private set; } = new(NetworkManagerMode.Offline);
 
     void Update()
     {
-        if (PlayablesClient.TryGetNext(out var coroutine))
+        if (Playables.Mode == NetworkManagerMode.ClientOnly && Playables.TryGetNext(out var coroutine))
             StartCoroutine(coroutine);
     }
-
-    // void OnGUI()
-
-    // {
-    //     if (PlayablesServer.Current != null)
-    //         GUILayout.Label("S: " + PlayablesServer.Current.Name);
-    //     if (PlayablesClient.Current != null)
-    //         GUILayout.Label("C: " + PlayablesClient.Current.Name);
-    // }
 }

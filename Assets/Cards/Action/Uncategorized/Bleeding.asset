@@ -21,16 +21,17 @@ MonoBehaviour:
     TileOutput: 0
     Conditions: 
     Skill:
-      rid: 325904334296187493
+      rid: 325904640846070092
   icon: {fileID: 21300000, guid: f48fc4005574a5945b73f062dd620664, type: 3}
   name: Bleeding
+  charges: 1
   FinalState: 3
   cost:
     Resources: []
   references:
     version: 2
     RefIds:
-    - rid: 325904334296187493
+    - rid: 325904640846070092
       type: {class: AttackSkill, ns: , asm: Assembly-CSharp}
       data:
         Filter:

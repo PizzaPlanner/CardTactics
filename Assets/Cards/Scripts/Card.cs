@@ -18,7 +18,6 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     public CardState State;
 
     public Unit Unit { get; set; }
-    public NetworkConnection Owner => Unit.Owner.connectionToClient;
 
     public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
     public string Name => Target.Name;
@@ -39,9 +38,9 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         yield return GameSettings.Instance.BeforePlayDelay.Yield();
     }
 
-    public IEnumerator PlayOnServer()
+    public void PlayOnServer()
     {
-        if (Unit == null || Unit.IsDead) yield break;
+        if (Unit == null || Unit.IsDead) return;
 
         IEnumerable<SkillInfo> skillsToPlay = State switch
         {
@@ -61,11 +60,14 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
             CardState.TurnEnd => CardState.Shuffle,
             _ => CardState.Destroyed
         };
+        // Special case to allow "Final State: Played" instead of misleading "Final State: Unplayed"
+        if (newstate == CardState.Played && Target.DestroyedOn == CardState.Played)
+            newstate = CardState.Destroyed;
 
         if (skillsToPlay == null || skillsToPlay.Count() == 0)
         {
             State = newstate;
-            yield break;
+            return;
         }
 
         if (Target is ActionCard ac && ac.charges > 0 && ++ChargesUsed >= ac.charges)
@@ -85,7 +87,6 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         }
         State = newstate;
         playables.Enqueue(new FinishCardContext(this));
-        yield return null;
     }
 
     public void SerializeWithoutUnit(NetworkWriter writer)
@@ -161,7 +162,7 @@ public enum CardState
     TurnEnd
 }
 
-public abstract class Card : ScriptableObject, IPlayable
+public abstract class Card : ScriptableObject
 {
     public virtual void OnPlay(CardContext context) { }
     public abstract Sprite Icon { get; }

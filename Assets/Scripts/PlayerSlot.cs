@@ -59,7 +59,6 @@ public class PlayerSlot : MonoBehaviour
         unit.Owner = player;
         unit.OnDeadSelf = OnDeadSelf;
         unit.OnDeadKiller = OnDeadKiller;
-        unit.Life = unit.MaxLife; // We have to set it here to not immediately trigger win conditions
         if (player != null)
         {
             player.ControlledUnits.Add(unit);

@@ -3,11 +3,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 
-public interface IPlayable
-{
-}
-
-public class TriggerContext : IPlayableContextWithUnit, IServerPlayable
+public class TriggerContext : IPlayableContextWithUnit, IServerWaitPlayable
 {
     public Trigger Target { get; private set; }
     public Unit Unit { get; private set; }
@@ -20,6 +16,8 @@ public class TriggerContext : IPlayableContextWithUnit, IServerPlayable
 
     public string Name => Target.GetType().Name;
     public bool Queueable => Unit != null && (Target.CanTriggerMultipleTimes || !Target.Executed);
+
+    public NetworkConnection Owner => Unit.connectionToClient;
 
     public IEnumerator PlayOnServer()
     {
@@ -42,7 +40,7 @@ public class TriggerContext : IPlayableContextWithUnit, IServerPlayable
 }
 
 [System.Serializable]
-public abstract class Trigger : MonoBehaviour, IPlayable
+public abstract class Trigger : MonoBehaviour
 {
     [SerializeField] public bool CanTriggerMultipleTimes;
 

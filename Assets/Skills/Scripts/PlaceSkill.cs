@@ -25,11 +25,10 @@ public class PlaceSkill : ISkill
         return new SpawnPatternBuilder { Team = Team }.Patterns(Map.Instance, ctx.SourceTile, SelectionFilters.Empty);
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
         var facing = ctx.OutTile.TryGetComponent<SpawnLocation>(out var sl) ? sl.Facing : 0;
         RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = reference, Target = ctx.OutTile, Facing = facing });
-        yield return null;
     }
 
     public void Serialize(NetworkWriter writer)

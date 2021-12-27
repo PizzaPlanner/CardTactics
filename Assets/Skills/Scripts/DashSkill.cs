@@ -35,9 +35,18 @@ public class DashSkill : ISkill
         return prevTile;
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
-        yield return ctx.Unit.Move(ctx.SourceTile, new EmptyPattern(), ctx.OutTile, RangeType);
+        ctx.SourceTile.Unit.MoveInstant(ctx.SourceTile, ctx.OutTile);
+    }
+
+    public IEnumerator ExecuteClient(SkillExecuteContext ctx)
+    {
+        Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
+        if (sourceAnimator == null) yield break;
+        sourceAnimator.SetBool("Moving", true);
+        yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, new EmptyPattern(), ctx.OutTile, RangeType);
+        sourceAnimator.SetBool("Moving", false);
     }
 
     public void Serialize(Mirror.NetworkWriter writer)

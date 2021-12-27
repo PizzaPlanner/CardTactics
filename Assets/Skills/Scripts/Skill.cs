@@ -78,9 +78,9 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
         yield return Target.Skill.ExecuteClient(this);
     }
 
-    public IEnumerator PlayOnServer()
+    public void PlayOnServer()
     {
-        yield return Target.Skill.ExecuteServer(this);
+        Target.Skill.ExecuteServer(this);
     }
 
     public void Serialize(NetworkWriter writer)
@@ -105,7 +105,7 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
     }
 }
 
-public class SkillPlanContext : IPlayableContextWithUnit, IServerPlayable, IClientPlayable
+public class SkillPlanContext : IPlayableContextWithUnit, IClientPlayable, IServerWaitPlayable
 {
     public struct CancelContextMessage : NetworkMessage
     {
@@ -265,7 +265,7 @@ public enum SkillTrigger
 }
 
 [Serializable]
-public class SkillInfo : IPlayable
+public class SkillInfo
 {
     [VerticalGroup("Skill")]
     [HideLabel]
@@ -343,9 +343,14 @@ public interface ISkill
 
     Tile GetOutTile(SkillPlanContext ctx) => ctx.SkillTarget.Tiles.First();
     IEnumerable<ITilePattern> CreatePatterns(SkillPlanContext ctx);
-    IEnumerator ExecuteServer(SkillExecuteContext ctx) { yield return null; }
+    void ExecuteServer(SkillExecuteContext ctx) { return; }
     IEnumerator ExecuteClient(SkillExecuteContext ctx) { yield return null; }
     void Serialize(NetworkWriter writer);
 
     ISkill Deserialize(NetworkReader reader);
+}
+
+public interface IHostPlayable
+{
+    IEnumerator ExecuteHost(SkillExecuteContext ctx);
 }

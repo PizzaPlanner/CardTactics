@@ -144,7 +144,7 @@ public class Map : MonoBehaviour
     [Server]
     void OnSelectTileMessage(NetworkConnection conn, SelectTileMessage message)
     {
-        if (RoomNetworkManager.Playables.Current is not IServerPlayable s || s.Owner != conn)
+        if (RoomNetworkManager.Playables.Current is not IServerWaitPlayable s || s.Owner != conn)
         {
             Debug.LogWarning($"[Map] Ignored invalid selection request from {conn.identity.gameObject.name}");
             return;

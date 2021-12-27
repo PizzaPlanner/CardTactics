@@ -26,10 +26,9 @@ public class HealSkill : ISkill
         }.Patterns(Map.Instance, ctx.SourceTile, Filter);
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
         ctx.OutTile.Unit.Damage(-Heal, ctx.OriginTile.Unit);
-        yield return null;
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)
@@ -38,6 +37,7 @@ public class HealSkill : ISkill
         {
             ctx.SourceTile.Unit.GetComponentInChildren<Animator>().SetTrigger("Cast");
             yield return new WaitForSeconds(0.5f);
+            ctx.OutTile.Unit.UpdateDisplayLife = true;
         }
     }
     public void Serialize(Mirror.NetworkWriter writer)

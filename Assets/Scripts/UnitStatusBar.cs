@@ -35,10 +35,10 @@ public class UnitStatusBar : VisualElement
         {
             Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(panel, unit.transform.position, Camera.main);
             transform.position = newPosition - new Vector2(layout.width / 2, 0);
-            bar.style.width = new StyleLength(new Length(unit.Life / unit.MaxLife * 100, LengthUnit.Percent));
+            bar.style.width = new StyleLength(new Length(unit.DisplayLife / unit.MaxLife * 100, LengthUnit.Percent));
         }
 
-        life.text = unit.Life.ToString();
+        life.text = unit.DisplayLife.ToString("N0");
 
         // Update Buffbar. Only once per 0.5s if FollowUnit is true
         if (deck == null || (FollowUnit && Time.timeSinceLevelLoad - lastBuffUpdate < 0.5f))

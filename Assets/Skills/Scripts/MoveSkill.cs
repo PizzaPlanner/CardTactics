@@ -39,15 +39,14 @@ public class MoveSkill : ISkill
         return null;
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
         ctx.SourceTile.Unit.MoveInstant(ctx.SourceTile, ctx.OutTile);
-        yield return null;
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)
     {
-        Animator sourceAnimator = ctx.Unit.GetComponentInChildren<Animator>();
+        Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
         if (sourceAnimator == null) yield break;
         sourceAnimator.SetBool("Moving", true);
         yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);

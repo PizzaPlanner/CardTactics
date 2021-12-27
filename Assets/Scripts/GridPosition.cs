@@ -16,6 +16,9 @@ public class GridPosition : MonoBehaviour
     {
         var parent = GetComponentInParent<Grid>();
         transform.localPosition = parent.CellToLocal(Position) + offset;
+#if UNITY_EDITOR
+        gameObject.name = transform.localPosition.ToString();
+#endif
     }
 
     void OnDrawGizmosSelected()

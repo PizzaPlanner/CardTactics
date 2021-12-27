@@ -27,10 +27,9 @@ public class AttackSkill : ISkill
         }.Patterns(Map.Instance, ctx.SourceTile, Filter);
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
         ctx.OutTile.Unit.Damage(Damage, ctx.OriginTile.Unit);
-        yield return null;
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)
@@ -53,6 +52,7 @@ public class AttackSkill : ISkill
             yield return new WaitForSeconds(0.3f);
             if (targetAnimator != null)
             {
+                ctx.OutTile.Unit.UpdateDisplayLife = true;
                 targetAnimator.SetInteger("Action", 1);
                 targetAnimator.SetTrigger("GetHitTrigger");
             }

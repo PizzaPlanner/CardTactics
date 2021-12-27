@@ -38,7 +38,7 @@ public class ChangeResourceSkill : ISkill
         return new GlobalPatternBuilder().Patterns(Map.Instance, ctx.SourceTile, SelectionFilters.Self);
     }
 
-    public IEnumerator ExecuteServer(SkillExecuteContext ctx)
+    public void ExecuteServer(SkillExecuteContext ctx)
     {
         if (Convert)
         {
@@ -51,7 +51,6 @@ public class ChangeResourceSkill : ISkill
             ctx.Unit.Resources.Remove(Class, -Amount);
         else
             ctx.Unit.Resources.Add(Class, Amount);
-        yield return null;
     }
 
     public void Serialize(Mirror.NetworkWriter writer)

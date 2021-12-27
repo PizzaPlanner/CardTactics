@@ -34,8 +34,10 @@ public class CardItem : VisualElement
             if (card is ActionCard acard)
             {
                 this.Query<ResourcePanel>().ForEach(x => x.Resources = acard.Cost);
+                this.Query<Label>("Charges").ForEach(x => x.text = acard.charges.ToString());
                 this.Query(null, "filter-playable").ForEach(x => x.style.display = card.Playable ? DisplayStyle.Flex : DisplayStyle.None);
                 this.Query(null, "filter-unplayable").ForEach(x => x.style.display = card.Playable ? DisplayStyle.None : DisplayStyle.Flex);
+                this.Query(null, "filter-charges").ForEach(x => x.style.display = acard.charges == 0 ? DisplayStyle.None : DisplayStyle.Flex);
             }
             else if (card is UnitCard ucard)
             {

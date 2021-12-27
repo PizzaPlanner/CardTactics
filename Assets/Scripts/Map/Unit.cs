@@ -115,8 +115,13 @@ public class Unit : NetworkBehaviour
     public PlayerController Owner;
 
     public bool IsDead => Life <= 0 || Player.Team == -1;
-    [SyncVar] public float Life;
+    float Life => MaxLife - MissingLife;
+
+    [SyncVar] float MissingLife;
     [SyncVar] public PlayerInfo Player;
+
+    public float DisplayLife;
+    public bool UpdateDisplayLife { set; private get; }
 
     static int spawnCounter;
     [SyncVar] int counter;
@@ -126,9 +131,9 @@ public class Unit : NetworkBehaviour
     public void Damage(float dmg, Unit source)
     {
 
-        Life -= dmg;
-        if (Life > MaxLife)
-            Life = MaxLife;
+        MissingLife += dmg;
+        if (MissingLife > MaxLife)
+            MissingLife = MaxLife;
         if (IsDead)
         {
             OnDeath(source);
@@ -158,6 +163,8 @@ public class Unit : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        UpdateDisplayLife = true;
+
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
@@ -186,6 +193,15 @@ public class Unit : NetworkBehaviour
     UnitStatusBar bar;
     void LateUpdate()
     {
+        if (UpdateDisplayLife)
+        {
+            if (DisplayLife < Life)
+                DisplayLife += Mathf.Min(Time.deltaTime * (MaxLife - MissingLife * 0.5f), Life - DisplayLife);
+            else if (DisplayLife > Life)
+                DisplayLife -= Mathf.Min(Time.deltaTime * (MaxLife - MissingLife * 0.5f), DisplayLife - Life);
+            else
+                UpdateDisplayLife = false;
+        }
         if (bar != null)
             bar.UpdateValues();
     }
@@ -207,7 +223,7 @@ public class Unit : NetworkBehaviour
         if (facing == Facing.Preserve)
             facing = Tile.GetFacing(from, to);
         if (isServer)
-            RoomNetworkManager.Playables.Enqueue(new PlaceUnitContext { Unit = this, Source = from, Target = to, Facing = facing });
+            RoomNetworkManager.Playables.InsertFirst(new PlaceUnitContext { Unit = this, Source = from, Target = to, Facing = facing });
     }
 
     public IEnumerator Move(Tile source, ITilePattern pattern, Tile target, RangeFilter type)
@@ -257,6 +273,7 @@ public class Unit : NetworkBehaviour
                     }
                 }
             }
+            transform.position = to.UnitAnchor;
             yield return new WaitForEndOfFrame();
         }
     }
