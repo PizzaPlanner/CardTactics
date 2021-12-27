@@ -78,9 +78,10 @@ public class SkillExecuteContext : IPlayableContextWithUnit, IClientPlayable, IS
         yield return Target.Skill.ExecuteClient(this);
     }
 
-    public void PlayOnServer()
+    public bool PlayOnServer()
     {
         Target.Skill.ExecuteServer(this);
+        return true;
     }
 
     public void Serialize(NetworkWriter writer)
@@ -183,9 +184,12 @@ public class SkillPlanContext : IPlayableContextWithUnit, IClientPlayable, IServ
             }
 
             NetworkServer.SendToAll(new PlayableMessage { context = this });
+            Map.Instance.ShowPatterns(validPatterns, Unit.hasAuthority);
 
             yield return new WaitUntil(() => SkillTarget != null);
+            yield return GameSettings.Instance.SkillPrepareDelay.Yield();
 
+            Map.Instance.HideTileSelectionPreview();
             NetworkServer.SendToAll(new CancelContextMessage());
 
             if (SkillTarget != null)
@@ -210,7 +214,6 @@ public class SkillPlanContext : IPlayableContextWithUnit, IClientPlayable, IServ
         }
         else
             Debug.Log($"[Card] Use Skill {Target.Skill.GetType().Name}: <color=red>Condition Failed</color>");
-        Map.Instance.HideTileSelectionPreview();
     }
 
     public SkillPlanContext() { }

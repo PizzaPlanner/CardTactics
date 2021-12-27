@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class PlanContext : IPlayableContextWithUnit, IClientPlayable
+public class PlanContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
 {
     public bool Queueable => true;
     public string Name => $"Planning of {Unit.Name}";
@@ -10,6 +11,17 @@ public class PlanContext : IPlayableContextWithUnit, IClientPlayable
 
     public PlanContext(Unit unit) => Unit = unit;
     public PlanContext() { }
+
+    public bool PlayOnServer()
+    {
+        if (Unit.Player.IsAI)
+        {
+            var deck = Unit.GetComponent<IngameDeck>();
+            var rnd = Random.Range(0, deck.Playable.Count());
+            Board.FindObjectOfType<Board>().SetPlayerReady(deck.Playable.ToArray()[rnd]);
+        }
+        return true;
+    }
 
     public IEnumerator PlayOnClient()
     {
@@ -32,4 +44,5 @@ public class PlanContext : IPlayableContextWithUnit, IClientPlayable
         Unit = reader.ReadNetworkBehaviour<Unit>();
         return this;
     }
+
 }

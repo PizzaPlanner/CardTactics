@@ -21,12 +21,13 @@ public struct PlaceUnitContext : IPlayableContext, IClientPlayable, IServerPlaya
         yield return null;
     }
 
-    public void PlayOnServer()
+    public bool PlayOnServer()
     {
         if (!Target.Place(Unit, Facing, false))
             Debug.LogError("Failed to place Unit");
         else if (Source != null)
             Source.Unit = null;
+        return true;
     }
 
     public void Serialize(NetworkWriter writer)

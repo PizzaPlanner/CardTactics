@@ -10,43 +10,6 @@ public class Board : NetworkBehaviour
     public Card OnNoCardsPlayed;
 
     [Server]
-    public void AIPlan(Unit unit)
-    {
-        var deck = unit.GetComponent<IngameDeck>();
-        if (deck == null)
-        {
-            SetPlayerDone();
-            return;
-        }
-
-        if (deck.Playable.Count() > 0)
-        {
-            NetworkServer.SendToAll(new PlayableMessage { context = new PlanContext(unit) });
-            var rnd = Random.Range(0, deck.Playable.Count());
-            SetPlayerReady(deck.Playable.ToArray()[rnd]);
-        }
-        else
-            SetPlayerDone();
-    }
-
-    [Server]
-    public void PlayerPlan(Unit unit)
-    {
-        var deck = unit.GetComponent<IngameDeck>();
-        if (deck == null)
-        {
-            SetPlayerDone();
-            return;
-        }
-        if (deck.Playable.Count() > 0)
-        {
-            NetworkServer.SendToAll(new PlayableMessage { context = new PlanContext(unit) });
-        }
-        else
-            SetPlayerDone();
-    }
-
-    [Server]
     public void SetPlayerDone()
     {
         GameStateMachine.CurrentStage = GameStateMachine.Stage.EndTurn;

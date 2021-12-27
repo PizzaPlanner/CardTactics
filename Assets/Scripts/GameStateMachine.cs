@@ -156,22 +156,26 @@ public class GameStateMachine : NetworkBehaviour
         Debug.Log($"[Board] Start Turn of {CurrentUnit.Name}");
         cardsPlayedForCurrentUnit = 0;
         RoomNetworkManager.Playables.Enqueue(new TurnStartContext { Unit = CurrentUnit });
-        if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
-            deck.OnTurnStart();
-        if (RoomNetworkManager.Playables.Empty)
-            CurrentStage = Stage.Plan;
-        else
-            CurrentStage = Stage.Play;
+        CurrentStage = Stage.Play;
     }
 
     [Server]
     void OnPlan()
     {
         waitingForAction = true;
-        if (CurrentUnit.Player.IsAI)
-            board.AIPlan(CurrentUnit);
+        var deck = CurrentUnit.GetComponent<IngameDeck>();
+        if (deck == null)
+        {
+            CurrentStage = Stage.EndTurn;
+            return;
+        }
+
+        if (deck.Playable.Count() > 0)
+        {
+            RoomNetworkManager.Playables.Enqueue(new PlanContext(CurrentUnit));
+        }
         else
-            board.PlayerPlan(CurrentUnit);
+            CurrentStage = Stage.EndTurn;
     }
 
     [Server]
@@ -192,29 +196,29 @@ public class GameStateMachine : NetworkBehaviour
         board = FindObjectOfType<Board>();
     }
 
-    void Update()
+    [Server]
+    public void OnEmptyQueue()
     {
-        if (!waitingForAction && isServer && RoomNetworkManager.Playables.Current == null)
+        if (waitingForAction)
+            return;
+
+        Debug.Log("[Board] -- " + CurrentStage + " --");
+        switch (CurrentStage)
         {
-            Debug.Log("[Board] -- " + CurrentStage + " --");
-            switch (CurrentStage)
-            {
-                case Stage.StartTurn:
-                    OnStartTurn(); break;
-                case Stage.Plan:
-                    OnPlan(); break;
-                case Stage.Play:
-                    OnPlay(); break;
-                case Stage.EndTurn:
-                    OnEndTurn(); break;
-                case Stage.StartRound:
-                    OnStartRound(); break;
-                case Stage.Events:
-                    OnEvents(); break;
-                case Stage.End:
-                    OnEnd(); break;
-            }
+            case Stage.StartTurn:
+                OnStartTurn(); break;
+            case Stage.Plan:
+                OnPlan(); break;
+            case Stage.Play:
+                OnPlay(); break;
+            case Stage.EndTurn:
+                OnEndTurn(); break;
+            case Stage.StartRound:
+                OnStartRound(); break;
+            case Stage.Events:
+                OnEvents(); break;
+            case Stage.End:
+                OnEnd(); break;
         }
     }
-
 }

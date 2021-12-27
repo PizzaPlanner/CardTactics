@@ -143,7 +143,7 @@ public class Tile : MonoBehaviour
     void Update()
     {
         if (Hovered != this) return;
-        if (Input.GetMouseButtonDown(0) && CurrentIndicator == TargetIndicator.Valid && PrimaryPattern != null && GameStateMachine.CurrentStage == GameStateMachine.Stage.Play)
+        if (Input.GetMouseButtonDown(0) && CurrentIndicator == TargetIndicator.Valid && PrimaryPattern != null)
         {
             NetworkClient.Send(new SelectTileMessage { Position = Position });
             Debug.Log("Sending selection message");

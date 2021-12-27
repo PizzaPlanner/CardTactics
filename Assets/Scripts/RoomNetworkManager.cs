@@ -167,7 +167,9 @@ public class RoomNetworkManager : NetworkManager
 
     void Update()
     {
-        if (Playables.Mode == NetworkManagerMode.ClientOnly && Playables.TryGetNext(out var coroutine))
+        if (Playables.TryGetNext(out var coroutine))
             StartCoroutine(coroutine);
+        else if (Playables.Current == null && (Playables.Mode == NetworkManagerMode.Host || Playables.Mode == NetworkManagerMode.ServerOnly))
+            FindObjectOfType<GameStateMachine>()?.OnEmptyQueue();
     }
 }

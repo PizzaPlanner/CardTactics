@@ -102,16 +102,18 @@ public class PlayableQueue
         }
         else
         {
+            bool sendToClient = Current is IClientPlayable;
             if (Current is IServerWaitPlayable sw)
                 yield return sw.PlayOnServer();
             else if (Current is IServerPlayable s)
-                s.PlayOnServer();
+                sendToClient &= s.PlayOnServer();
 
-            if (Current is IClientPlayable c)
+            if (sendToClient)
             {
+                var c = Current as IClientPlayable;
                 if (!c.ManualSending)
                     NetworkServer.SendToAll(new PlayableMessage { context = Current });
-                if (Mode == NetworkManagerMode.Host)
+                if (Mode == NetworkManagerMode.Host && Current is not IServerWaitPlayable)
                     yield return c.PlayOnClient();
             }
         }

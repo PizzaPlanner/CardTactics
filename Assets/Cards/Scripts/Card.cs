@@ -38,9 +38,9 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         yield return GameSettings.Instance.BeforePlayDelay.Yield();
     }
 
-    public void PlayOnServer()
+    public bool PlayOnServer()
     {
-        if (Unit == null || Unit.IsDead) return;
+        if (Unit == null || Unit.IsDead) return false;
 
         IEnumerable<SkillInfo> skillsToPlay = State switch
         {
@@ -67,7 +67,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         if (skillsToPlay == null || skillsToPlay.Count() == 0)
         {
             State = newstate;
-            return;
+            return false;
         }
 
         if (Target is ActionCard ac && ac.charges > 0 && ++ChargesUsed >= ac.charges)
@@ -87,6 +87,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         }
         State = newstate;
         playables.Enqueue(new FinishCardContext(this));
+        return true;
     }
 
     public void SerializeWithoutUnit(NetworkWriter writer)

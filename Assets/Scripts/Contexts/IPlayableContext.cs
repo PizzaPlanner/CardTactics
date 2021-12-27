@@ -89,7 +89,7 @@ public interface IClientPlayable
 
 public interface IServerPlayable
 {
-    void PlayOnServer();
+    bool PlayOnServer();
 }
 
 public interface IServerWaitPlayable

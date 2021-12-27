@@ -1,7 +1,7 @@
 using System.Collections;
 using Mirror;
 
-public class TurnStartContext : IPlayableContextWithUnit, IClientPlayable
+public class TurnStartContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
 {
     public bool Queueable => true;
     public string Name => $"Turn of {Unit.Name}";
@@ -17,6 +17,16 @@ public class TurnStartContext : IPlayableContextWithUnit, IClientPlayable
         tp.StartCoroutine(tp.OnTurnStart(Unit, null));
         yield return null;
     }
+    public bool PlayOnServer()
+    {
+        if (Unit.TryGetComponent<IngameDeck>(out var deck))
+            deck.OnTurnStart();
+        if (RoomNetworkManager.Playables.Empty)
+            GameStateMachine.CurrentStage = GameStateMachine.Stage.Plan;
+        else
+            GameStateMachine.CurrentStage = GameStateMachine.Stage.Play;
+        return true;
+    }
 
     public void Serialize(NetworkWriter writer)
     {
@@ -28,4 +38,5 @@ public class TurnStartContext : IPlayableContextWithUnit, IClientPlayable
         Unit = reader.ReadNetworkBehaviour<Unit>();
         return this;
     }
+
 }
