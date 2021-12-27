@@ -160,26 +160,6 @@
     transition-duration: 200ms;
 }
 
-.skillitem-background--pending {
-    background-image: url('project://database/Assets/SkillPreviewProgress_Pending.png?fileID=2800000&guid=efd660008a70e804085a9a6fa1e8328d&type=3#SkillPreviewProgress_Pending');
-}
-
-.skillitem-background--now {
-    background-image: url('project://database/Assets/SkillPreviewProgress_Now.png?fileID=2800000&guid=d375d1ad889ba244abf046559b12f798&type=3#SkillPreviewProgress_Now');
-}
-
-.skillitem-background--skipped {
-    background-image: url('project://database/Assets/SkillPreviewProgress_Skipped.png?fileID=2800000&guid=b7e7ee72d9e08fb4abfe485febff67f8&type=3#SkillPreviewProgress_Skipped');
-}
-
-.skillitem-background--failed {
-    background-image: url('project://database/Assets/SkillPreviewProgress_Failed.png?fileID=2800000&guid=a548f80dede56a1488a0c1e01ccaf7fa&type=3#SkillPreviewProgress_Failed');
-}
-
-.skillitem-background--done {
-    background-image: url('project://database/Assets/SkillPreviewProgress_Done.png?fileID=2800000&guid=47761a728805bc7438646507fa78a043&type=3#SkillPreviewProgress_Done');
-}
-
 #SkillDisplay #SpeedBackground {
     display: none;
 }

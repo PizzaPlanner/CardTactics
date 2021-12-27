@@ -15,14 +15,14 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
     [Sirenix.OdinInspector.ShowInInspector]
     public Card Target { get; private set; }
     [Sirenix.OdinInspector.ShowInInspector]
-    public CardState State;
+    [SyncVar] public CardState State;
 
     public Unit Unit { get; set; }
 
     public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
     public string Name => Target.Name;
     public bool ManualSending => true;
-    public int ChargesUsed;
+    [SyncVar] public int ChargesUsed;
 
     public CardContext(Card card, Unit unit, CardState initialState)
     {
@@ -50,9 +50,6 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
             _ => null,
         };
 
-        if (State == CardState.Unplayed)
-            Target.OnPlay(this);
-
         var newstate = State == Target.DestroyedOn ? CardState.Destroyed : State switch
         {
             CardState.Unplayed => CardState.Played,
@@ -69,6 +66,9 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
             State = newstate;
             return false;
         }
+
+        if (State == CardState.Unplayed)
+            Target.OnPlay(this);
 
         if (Target is ActionCard ac && ac.charges > 0 && ++ChargesUsed >= ac.charges)
             newstate = CardState.Destroyed;
@@ -149,7 +149,8 @@ public class FinishCardContext : IPlayableContext, IClientPlayable
 
     public IPlayableContext Deserialize(NetworkReader reader)
     {
-        return new FinishCardContext((CardContext)reader.ReadPlayable());
+        context = (CardContext)reader.ReadPlayable();
+        return this;
     }
 }
 

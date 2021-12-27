@@ -3,23 +3,6 @@ using System.Collections;
 using System.Linq;
 using Mirror;
 using UnityEngine;
-using UnityEngine.UIElements;
-
-public enum ResourceState
-{
-    Available,
-    Used,
-    Destroyed
-}
-
-[System.Serializable]
-public struct Resource
-{
-    public int Total;
-    public CardClass Type;
-    public int Available => Total - Used;
-    [NonSerialized] public int Used;
-}
 
 public class Unit : NetworkBehaviour
 {
@@ -29,8 +12,8 @@ public class Unit : NetworkBehaviour
     public Sprite Icon;
     [SyncVar] public int Speed;
     [SyncVar] public float MaxLife;
+    [SyncVar] public ResourceInfo Resources;
     public UnitFilter Type;
-    public ResourceInfo Resources;
 
     public PlayerController Owner;
 

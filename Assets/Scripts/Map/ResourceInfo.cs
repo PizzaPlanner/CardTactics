@@ -1,7 +1,39 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
+
+
+[System.Serializable]
+public struct Resource
+{
+    public int Total;
+    public CardClass Type;
+    public int Available => Total - Used;
+    [NonSerialized] public int Used;
+}
+
+public static class ResourceWriter
+{
+    public static void WriteResource(this NetworkWriter writer, Resource res)
+    {
+        writer.Write(res.Total);
+        writer.Write(res.Used);
+        writer.WriteObject(res.Type);
+    }
+
+    public static Resource ReadResource(this NetworkReader reader)
+    {
+        return new Resource
+        {
+            Total = reader.ReadInt(),
+            Used = reader.ReadInt(),
+            Type = reader.ReadObject<CardClass>()
+        };
+    }
+}
 
 [System.Serializable]
 public class ResourceInfo

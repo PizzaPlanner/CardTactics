@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <ui:VisualElement name="Background" class="skillitem-background skillitem-background--pending" style="width: 70px; height: 48px; align-items: center; margin-right: -18px; justify-content: center;">
-        <ui:VisualElement name="Icon" style="width: 42px; height: 42px; background-image: url(&apos;project://database/Assets/3rdParty/64%20flat%20icons/png/64px/Modifiers_Silence.png?fileID=21300000&amp;guid=1fdbff7b3e0de574892e45d1afa6012c&amp;type=3#Modifiers_Silence&apos;); left: -3px;" />
-    </ui:VisualElement>
-</ui:UXML>

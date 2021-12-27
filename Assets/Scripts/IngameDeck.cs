@@ -10,10 +10,14 @@ public class IngameDeck : NetworkBehaviour
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
+        Debug.Log("Deserialize IngameDeck");
         var unit = GetComponent<Unit>();
         base.OnDeserialize(reader, initialState);
         foreach (var ctx in Contexts)
+        {
             ctx.Unit = unit;
+            Debug.Log(ctx.Name + " -> " + ctx.State);
+        }
     }
 
     [Server]
