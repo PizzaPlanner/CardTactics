@@ -84,14 +84,14 @@ public class TurnPanel : MonoBehaviour
         turnAnnouncer.style.display = DisplayStyle.Flex;
         yield return GameSettings.Instance.TurnAnnouncerTime.Yield();
         turnAnnouncer.style.display = DisplayStyle.None;
-        unit.GetComponentInChildren<StatusBar>().Focus = true;
+        unit.GetComponentInChildren<StatusBar>().Current = true;
         onComplete?.Invoke();
     }
 
     internal void OnTurnEnd(Unit unit)
     {
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.RemoveFromClassList("unit-badge--current"));
-        unit.GetComponentInChildren<StatusBar>().Focus = false;
+        unit.GetComponentInChildren<StatusBar>().Current = false;
     }
 
     internal void OnHover(Unit unit, bool hover)

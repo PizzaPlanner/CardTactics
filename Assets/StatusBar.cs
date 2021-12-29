@@ -7,7 +7,7 @@ public class StatusBar : MonoBehaviour
     Unit Unit;
     Material Mat;
 
-    public bool Focus;
+    public bool Focus, Current;
 
     // Start is called before the first frame update
     void Start()
@@ -24,9 +24,15 @@ public class StatusBar : MonoBehaviour
         transform.rotation = Quaternion.identity;
 
         var highlight = Mat.GetFloat("_highlight");
-        if (Focus && highlight < 1)
-            Mat.SetFloat("_highlight", highlight + Time.deltaTime * 5);
-        else if (!Focus && highlight > 0)
-            Mat.SetFloat("_highlight", highlight - Time.deltaTime * 5);
+        if ((Focus || Current) && highlight < 1)
+            Mat.SetFloat("_highlight", highlight + Time.deltaTime * 10);
+        else if (!(Focus || Current) && highlight > 0)
+            Mat.SetFloat("_highlight", highlight - Time.deltaTime * 10);
+
+        var current = Mat.GetFloat("_current");
+        if (Current && current < 1)
+            Mat.SetFloat("_current", current + Time.deltaTime * 10);
+        else if (!Current && current > 0)
+            Mat.SetFloat("_current", current - Time.deltaTime * 10);
     }
 }

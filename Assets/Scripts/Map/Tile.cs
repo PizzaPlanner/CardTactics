@@ -72,15 +72,11 @@ public class Tile : MonoBehaviour
 
     [SerializeField]
     [ChildGameObjectsOnly]
-    GameObject PathingIndicator, PIBorderLeft, PIBorderRight, PIBorderTop, PIBorderBottom;
-
-    [SerializeField]
-    [ChildGameObjectsOnly]
-    GameObject MovementIndicators, MICenter, MILeft, MIRight, MITop, MIBottom;
-
-    [SerializeField]
-    [ChildGameObjectsOnly]
     GameObject SelectionIndicator;
+
+    [SerializeField]
+    [ChildGameObjectsOnly]
+    MeshRenderer Visuals;
 
     void Awake()
     {
@@ -112,7 +108,7 @@ public class Tile : MonoBehaviour
             var tiles = PrimaryPattern.Tiles.ToArray();
             for (int i = 0; i < tiles.Length; i++)
             {
-                tiles[i].PaintIndicator(true);
+                tiles[i].PaintIndicator(true, true);
                 if (isPath)
                     tiles[i].ShowPath(i > 0 ? tiles[i - 1] : null, i < tiles.Length - 1 ? tiles[i + 1] : null);
             }
@@ -133,7 +129,7 @@ public class Tile : MonoBehaviour
             var tiles = PrimaryPattern.Tiles.ToArray();
             for (int i = 0; i < tiles.Length; i++)
             {
-                tiles[i].PaintIndicator(false);
+                tiles[i].PaintIndicator(true, false);
                 if (isPath)
                     tiles[i].HidePath();
             }
@@ -152,39 +148,38 @@ public class Tile : MonoBehaviour
 
     void ShowPath(Tile from, Tile to)
     {
-        MovementIndicators.SetActive(true);
-        if (to == null)
-            MICenter.SetActive(true);
-        if (from != null)
-        {
-            if (from.Position.x > Position.x)
-            {
-                from.MILeft.SetActive(true);
-                MIRight.SetActive(true);
-            }
-            else if (from.Position.x < Position.x)
-            {
-                from.MIRight.SetActive(true);
-                MILeft.SetActive(true);
-            }
-            else if (from.Position.y > Position.y)
-            {
-                from.MIBottom.SetActive(true);
-                MITop.SetActive(true);
-            }
-            else if (from.Position.y < Position.y)
-            {
-                from.MITop.SetActive(true);
-                MIBottom.SetActive(true);
-            }
-        }
+        // if (to == null)
+        //     MICenter.SetActive(true);
+        // if (from != null)
+        // {
+        //     if (from.Position.x > Position.x)
+        //     {
+        //         from.MILeft.SetActive(true);
+        //         MIRight.SetActive(true);
+        //     }
+        //     else if (from.Position.x < Position.x)
+        //     {
+        //         from.MIRight.SetActive(true);
+        //         MILeft.SetActive(true);
+        //     }
+        //     else if (from.Position.y > Position.y)
+        //     {
+        //         from.MIBottom.SetActive(true);
+        //         MITop.SetActive(true);
+        //     }
+        //     else if (from.Position.y < Position.y)
+        //     {
+        //         from.MITop.SetActive(true);
+        //         MIBottom.SetActive(true);
+        //     }
+        // }
     }
 
     void HidePath()
     {
-        MovementIndicators.SetActive(false);
-        foreach (Transform t in MovementIndicators.transform)
-            t.gameObject.SetActive(false);
+        // MovementIndicators.SetActive(false);
+        // foreach (Transform t in MovementIndicators.transform)
+        //     t.gameObject.SetActive(false);
     }
 
     public void SetMarker(bool active)
@@ -254,63 +249,60 @@ public class Tile : MonoBehaviour
 
     public TargetIndicator CurrentIndicator { get; set; }
 
+    Vector4 NeighbourState;
     public void SetIndicatorVisible(bool visible, bool highlightPattern)
     {
-        PathingIndicator.gameObject.SetActive(visible);
+        var myst = visible ? Vector4.one : Vector4.zero;
         if (visible)
-        {
-            PIBorderLeft.gameObject.SetActive(true);
-            PIBorderRight.gameObject.SetActive(true);
-            PIBorderTop.gameObject.SetActive(true);
-            PIBorderBottom.gameObject.SetActive(true);
             foreach (var nb in Neighbours)
             {
                 if (nb.CurrentIndicator != CurrentIndicator || nb.CurrentIndicator == TargetIndicator.Hidden) continue;
+                var nbst = nb.NeighbourState;
                 if (nb.Position.x > Position.x)
                 {
-                    PIBorderRight.gameObject.SetActive(false);
-                    nb.PIBorderLeft.gameObject.SetActive(false);
+                    myst.x = 0;
+                    nbst.y = 0;
                 }
                 else if (nb.Position.x < Position.x)
                 {
-                    PIBorderLeft.gameObject.SetActive(false);
-                    nb.PIBorderRight.gameObject.SetActive(false);
+                    myst.y = 0;
+                    nbst.x = 0;
                 }
                 if (nb.Position.y < Position.y)
                 {
-                    PIBorderBottom.gameObject.SetActive(false);
-                    nb.PIBorderTop.gameObject.SetActive(false);
+                    myst.w = 0;
+                    nbst.z = 0;
                 }
                 else if (nb.Position.y > Position.y)
                 {
-                    PIBorderTop.gameObject.SetActive(false);
-                    nb.PIBorderBottom.gameObject.SetActive(false);
+                    myst.z = 0;
+                    nbst.w = 0;
                 }
+                nb.NeighbourState = nbst;
+                nb.Visuals.material.SetVector("_edgeState", nb.NeighbourState);
             }
-            PaintIndicator(highlightPattern);
-        }
+        NeighbourState = myst;
+        Visuals.material.SetVector("_edgeState", NeighbourState);
+        PaintIndicator(visible, highlightPattern);
     }
-
-    void PaintIndicator(bool highlightPattern)
+    void PaintIndicator(bool visible, bool highlightPattern)
     {
-        var pirender = PathingIndicator.GetComponent<Renderer>();
-
+        var material = Visuals.material;
         // Plane
         var dict = highlightPattern ? GameSettings.Instance.TileIndicatorHighlightColors : GameSettings.Instance.TileIndicatorColors;
-        if (dict.ContainsKey(CurrentIndicator))
-            pirender.material.color = dict[CurrentIndicator];
+        if (dict.ContainsKey(CurrentIndicator) && visible)
+            material.SetColor("_centerColor", dict[CurrentIndicator]);
         else
-            pirender.material.color = Color.black;
+            material.SetColor("_centerColor", Color.clear);
 
         // Borders
         dict = highlightPattern ? GameSettings.Instance.BorderIndicatorHighlightColors : GameSettings.Instance.BorderIndicatorColors;
-        foreach (var border in PathingIndicator.GetComponentsInChildren<Renderer>(true))
+        if (visible)
         {
-            if (border == pirender) continue;
             if (dict.ContainsKey(CurrentIndicator))
-                border.material.color = dict[CurrentIndicator];
+                material.SetColor("_highlightColor", dict[CurrentIndicator]);
             else
-                pirender.material.color = Color.black;
+                material.SetColor("_highlightColor", Color.clear);
         }
     }
 

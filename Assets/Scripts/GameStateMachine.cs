@@ -124,8 +124,6 @@ public class GameStateMachine : NetworkBehaviour
     void OnEndTurn()
     {
         Debug.Log($"[Board] End Turn of {CurrentUnit.Name}");
-        if (CurrentUnit.TryGetComponent<IngameDeck>(out var deck))
-            deck.OnTurnEnd();
         if (cardsPlayedForCurrentUnit == 0)
         {
             var board = FindObjectOfType<Board>();
@@ -133,11 +131,9 @@ public class GameStateMachine : NetworkBehaviour
             var oncp = new CardContext(board.OnNoCardsPlayed, CurrentUnit, CardState.Unplayed);
             RoomNetworkManager.Playables.InsertFirst(oncp);
         }
+        RoomNetworkManager.Playables.Enqueue(new TurnEndContext { Unit = CurrentUnit });
+        CurrentStage = Stage.Play;
         CurrentUnit = null;
-        if (RoomNetworkManager.Playables.Empty)
-            CurrentStage = Stage.Events;
-        else
-            CurrentStage = Stage.Play;
     }
 
     [Server]
