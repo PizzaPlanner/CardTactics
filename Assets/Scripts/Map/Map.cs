@@ -220,10 +220,12 @@ public class Map : MonoBehaviour
 
                     tile.PrimaryPattern = pattern;
                     tile.CurrentIndicator = hasAuthority ? TargetIndicator.Valid : TargetIndicator.Preview;
-
-                    tile.SetIndicatorVisible(true, pattern.Tiles.Contains(Tile.Hovered));
                 }
             }
+            if (tile.PrimaryPattern != null)
+                tile.SetIndicatorVisible(true, tile.PrimaryPattern.Tiles.Contains(Tile.Hovered));
+            else
+                tile.SetIndicatorVisible(false, false);
         }
     }
 

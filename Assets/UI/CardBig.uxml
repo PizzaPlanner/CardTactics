@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Cards/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
     <CardItem style="width: 260px; height: 400px; align-items: center; flex-shrink: 0;">
         <ui:VisualElement name="PlayText" class="helper-playcard" style="position: absolute; top: -40px; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: center;">
             <ui:VisualElement style="background-image: url(&apos;project://database/Assets/3rdParty/Controller%20Icons%20Pack%20(by%20NullSave)/Textures/Filled/64/mouse_left.png?fileID=2800000&amp;guid=99015ae45bcdf27439bf40af93a1d817&amp;type=3#mouse_left&apos;); width: 24px; height: 24px;" />
@@ -44,6 +44,9 @@
         </ui:VisualElement>
         <ui:VisualElement name="Border" style="background-image: url(&apos;project://database/Assets/Card_Border.png?fileID=21300000&amp;guid=248332c67d33f494ea5c899d68baa89e&amp;type=3#Card_Border&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center;">
             <ui:VisualElement name="UnplayableMarker" class="filter-unplayable" style="background-image: url(&apos;project://database/Assets/Card_Border_Unplayable.png?fileID=2800000&amp;guid=245126403b8a7ec4ea9894075073dcd6&amp;type=3#Card_Border_Unplayable&apos;); position: absolute; right: 0; top: 0; bottom: 0; left: 0;" />
+            <ui:VisualElement name="Charges" class="filter-charges" style="flex-direction: row; align-items: center; justify-content: center; background-image: url(&apos;project://database/Assets/Charges_BG.png?fileID=2800000&amp;guid=9f6b36bea9e6d9e489fddeae6b1e298f&amp;type=3#Charges_BG&apos;); height: 48px; width: 48px; position: absolute; top: -16px; right: -16px;">
+                <ui:Label text="8" name="Charges" class="color-default-text" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; font-size: 32px; -unity-text-align: middle-center; padding-left: 1px; padding-right: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold;" />
+            </ui:VisualElement>
             <ResourcePanel class="filter-actioncard resource-panel--card" style="position: absolute; left: -22px; top: -22px; flex-direction: column;">
                 <ui:VisualElement class="resource-panel-group">
                     <CostIcon />

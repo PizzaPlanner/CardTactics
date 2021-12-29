@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
   m_Name: Scout_Base
   m_EditorClassIdentifier: 
-  commanderPrefab: {fileID: 7360946247754838574, guid: 287174d8621f2bd48af698af65251721, type: 3}
+  commanderPrefab: {fileID: 4441227467106658347, guid: 48cd8ec72a111ca41a66e8333be89a97, type: 3}
   Cards:
   - {fileID: 11400000, guid: 96ddc092a6441cc479f15607c27a2368, type: 2}
   - {fileID: 11400000, guid: beea0e6eb8b1f6543bb948e270ab1e59, type: 2}

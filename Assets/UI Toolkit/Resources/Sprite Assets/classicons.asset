@@ -87,12 +87,6 @@ MonoBehaviour:
     m_HashCode: 224863450
   - m_ElementType: 2
     m_Unicode: 65534
-    m_GlyphIndex: 2
-    m_Scale: 1
-    m_Name: classicons_4
-    m_HashCode: 224863453
-  - m_ElementType: 2
-    m_Unicode: 65534
     m_GlyphIndex: 3
     m_Scale: 1
     m_Name: classicons_7
@@ -1609,6 +1603,12 @@ MonoBehaviour:
     m_Scale: 1
     m_Name: event_turnstart
     m_HashCode: 1499612814
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 2
+    m_Scale: 1
+    m_Name: Arrow
+    m_HashCode: 74159225
   m_SpriteGlyphTable:
   - m_Index: 0
     m_Metrics:
@@ -1644,7 +1644,7 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 64
       m_Height: 64
-      m_HorizontalBearingX: 0
+      m_HorizontalBearingX: -32
       m_HorizontalBearingY: 52
       m_HorizontalAdvance: 64
     m_GlyphRect:

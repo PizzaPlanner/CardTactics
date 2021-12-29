@@ -33,6 +33,7 @@ public class UnitStatusBar : VisualElement
     {
         if (FollowUnit)
         {
+            style.position = Position.Absolute;
             Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(panel, unit.transform.position, Camera.main);
             transform.position = newPosition - new Vector2(layout.width / 2, 0);
             bar.style.width = new StyleLength(new Length(unit.DisplayLife / unit.MaxLife * 100, LengthUnit.Percent));
@@ -67,7 +68,7 @@ public class UnitStatusBar : VisualElement
             if (ctx != null)
             {
                 CardPrefab.CloneTree(this.Q("BuffBar"), out var idx, out var _);
-                this.Q("BuffBar")[idx].Q<CardItem>().Card = ctx.Target;
+                this.Q("BuffBar")[idx].Q<CardItem>().Context = ctx;
             }
     }
 

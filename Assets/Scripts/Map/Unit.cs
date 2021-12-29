@@ -46,7 +46,6 @@ public class Unit : NetworkBehaviour
     void OnDeath(Unit killer)
     {
         Debug.Log($"[Unit] {name} died!");
-        // gameObject.SetActive(false);
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.RemoveUnit(this);
@@ -56,8 +55,12 @@ public class Unit : NetworkBehaviour
                 RoomNetworkManager.Playables.InsertFirst(new TriggerContext(this, OnDeadSelf));
         }
         if (bar != null)
+        {
             bar.RemoveFromHierarchy();
-        NetworkServer.UnSpawn(gameObject);
+            bar = null;
+        }
+        // NetworkServer.UnSpawn(gameObject);
+        gameObject.SetActive(false);
     }
 
     public override void OnStartServer()

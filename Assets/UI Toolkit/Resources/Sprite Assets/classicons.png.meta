@@ -212,7 +212,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: classicons_4
+      name: Arrow
       rect:
         serializedVersion: 2
         x: 0
@@ -5574,7 +5574,6 @@ TextureImporter:
       classicons_157: -497907141
       classicons_153: 1580657540
       classicons_175: -505263560
-      classicons_4: 1069854000
       classicons_186: -82405935
       classicons_112: 127606440
       classicons_62: 1068267593
@@ -5612,6 +5611,7 @@ TextureImporter:
       classicons_6: 1991516188
       classicons_184: -313187761
       classicons_51: -1039868046
+      Arrow: 1069854000
       classicons_230: 1069198458
       classicons_126: 74166145
       classicons_140: 1329778018
@@ -5632,12 +5632,12 @@ TextureImporter:
       classicons_139: 515259080
       classicons_124: 1742135505
       classicons_221: -809626902
-      classicons_38: 2084355124
       classicons_15: -1188942678
       classicons_151: 2051043770
+      classicons_161: 1611528143
       Armor: 1610912203
       classicons_32: -1393012979
-      classicons_161: 1611528143
+      classicons_38: 2084355124
       classicons_123: -1883568169
       classicons_149: -382770826
       classicons_240: -1346664771

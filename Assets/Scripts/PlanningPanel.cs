@@ -76,7 +76,7 @@ public class PlanningPanel : MonoBehaviour
             cardAsset.CloneTree(cardPanel, out int idx, out int _);
             var item = cardPanel[idx].Q<CardItem>();
             item.AddToClassList("carditem-selectable");
-            item.Card = ctx.Target;
+            item.Context = ctx;
             var firstSkill = ctx.Target.skills.FirstOrDefault();
             if (firstSkill != null)
             {

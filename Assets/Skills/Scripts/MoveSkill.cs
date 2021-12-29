@@ -49,8 +49,10 @@ public class MoveSkill : ISkill
         Animator sourceAnimator = ctx.SourceTile.Unit.GetComponentInChildren<Animator>();
         if (sourceAnimator == null) yield break;
         sourceAnimator.SetBool("Moving", true);
+        sourceAnimator.SetBool("Sprint", true);
         yield return ctx.SourceTile.Unit.Move(ctx.SourceTile, ctx.SkillTarget, ctx.OutTile, RangeType);
         sourceAnimator.SetBool("Moving", false);
+        sourceAnimator.SetBool("Sprint", false);
     }
 
     public void Serialize(Mirror.NetworkWriter writer)

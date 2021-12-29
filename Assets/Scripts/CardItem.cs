@@ -49,6 +49,26 @@ public class CardItem : VisualElement
     }
     Card card;
 
+    public CardContext Context
+    {
+        set
+        {
+            Card = value.Target;
+            if (card is ActionCard acard)
+            {
+                var charges = acard.charges - value.ChargesUsed;
+                this.Query<Label>("Charges").ForEach(x => x.text = charges.ToString());
+            }
+            else if (card is UnitCard ucard)
+            {
+                var isFullLife = ucard.UnitReference.DisplayLife >= ucard.UnitReference.MaxLife;
+                var lifetext = isFullLife ? ucard.UnitReference.DisplayLife.ToString() : $"<color=#aa3344>{ucard.UnitReference.DisplayLife}</color>";
+                this.Query<Label>("Life").ForEach(x => x.text = lifetext);
+                this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
+            }
+        }
+    }
+
     public CardItem()
     {
         this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter?.Invoke());
