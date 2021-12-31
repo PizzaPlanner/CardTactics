@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
   m_Name: Mage_Base
   m_EditorClassIdentifier: 
-  commanderPrefab: {fileID: 7360946247754838574, guid: 9e44f11c15bfcbe4787e5a691f2db5fd, type: 3}
+  commanderPrefab: {fileID: 4441227467106658347, guid: 0272d1a496f4c144abf60c035102d2b5, type: 3}
   Cards:
   - {fileID: 11400000, guid: e43eaf1f595530d4a9fd4f0453e8d7b6, type: 2}
   - {fileID: 11400000, guid: 3e2cb5718c712dc4f94b324418f1331d, type: 2}

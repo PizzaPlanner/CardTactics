@@ -25,6 +25,7 @@ public class PlayerSlot : MonoBehaviour
         AI
     }
 
+    [ShowIf("IsAI")]
     [SerializeField] Deck deck;
 
     public bool IsAI => slot == SlotType.AI;
@@ -34,21 +35,40 @@ public class PlayerSlot : MonoBehaviour
 
     public Trigger OnDeadSelf, OnDeadKiller;
 
+    public static List<int> decksAssigned;
+
     public bool GetUnit(Team team, Map map, out Unit unit)
     {
         unit = null;
-        var allPlayers = FindObjectsOfType<PlayerController>().ToList();
-        allPlayers.Sort((x, y) => x.ControlledUnits.Count.CompareTo(y.ControlledUnits.Count));
-        var player = slot == SlotType.AI ? null : allPlayers.FirstOrDefault();
-        if (slot != SlotType.AI && player == null)
+        var player = new JourneyData.PlayerWithDeck { PlayerId = -1 };
+        if (slot != SlotType.AI)
         {
-            Debug.LogError("Incompatible Player Slot assignment");
+            for (int i = 0; i < JourneyData.Current.SelectedDecks.Count; i++)
+                if (!decksAssigned.Contains(i))
+                {
+                    decksAssigned.Add(i);
+                    player = JourneyData.Current.SelectedDecks[i];
+                    Debug.Log("Assigned Deck " + i + " to " + slot);
+                    break;
+                }
+
+            if (player.PlayerId == -1)
+            {
+                if (slot == SlotType.PlayerRequired)
+                    Debug.LogError("No Deck assigned for Required Player");
+                else
+                    Debug.Log("No Deck assigned for Optional Player");
+                return false;
+            }
+        }
+        else if (deck == null)
+        {
+            Debug.LogError("No Deck assigned for AI Player");
             return false;
         }
 
-        if (deck == null && (player == null || player.Deck == null)) return false;
         if (deck == null)
-            unit = player.Deck.Create();
+            unit = JourneyData.Current.AvailableDecks[player.DeckId].Create();
         else
             unit = deck.Create();
         var teamId = -1;
@@ -56,14 +76,9 @@ public class PlayerSlot : MonoBehaviour
             if (map.Teams[t] == team)
                 teamId = t;
         unit.Player = new PlayerInfo { IsAI = IsAI, TeamColor = team.Color, Team = teamId };
-        unit.Owner = player;
+        unit.Owner = player.PlayerId >= 0 ? PlayerController.FromLobby(player.PlayerId) : null;
         unit.OnDeadSelf = OnDeadSelf;
         unit.OnDeadKiller = OnDeadKiller;
-        if (player != null)
-        {
-            player.ControlledUnits.Add(unit);
-            Debug.Log($"Assigned {unit.Name} to {player.gameObject.name}");
-        }
         unit.gameObject.SetActive(false);
         return true;
     }

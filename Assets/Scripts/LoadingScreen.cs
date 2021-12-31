@@ -9,7 +9,8 @@ public struct SceneInfo : NetworkMessage
     public enum LoadType
     {
         None,
-        Map
+        Map,
+        Hub
     }
     public LoadType Type;
 
@@ -17,8 +18,12 @@ public struct SceneInfo : NetworkMessage
     {
         if (Type == LoadType.Map)
             GameObject.Instantiate(MapAtlas.Instance.Item(MapId));
+        else if (Type == LoadType.Hub)
+            GameObject.Instantiate(HubAtlas.Instance.Item(MapId));
     }
 }
+
+public struct LoadingCompleteMessage : NetworkMessage { }
 
 public static class LoadingScreen
 {
@@ -27,10 +32,19 @@ public static class LoadingScreen
 
     public static void LoadHub(Hubworld hubPrefab)
     {
-    }
+        if (!HubAtlas.Instance.TryGet(hubPrefab, out var idx))
+        {
+            Debug.LogError($"Hub {hubPrefab.name} is not registered!");
+            return;
+        }
 
-    public static void GoToHub(Hubworld hub)
-    {
+        NetworkServer.SendToAll(new SceneInfo { MapId = idx, Type = SceneInfo.LoadType.Hub });
+        RoomNetworkManager.OnSceneChangedServer = () =>
+        {
+            Debug.Log("Loaded Hub on Server");
+            var map = GameObject.Instantiate(hubPrefab);
+        };
+        NetworkManager.singleton.ServerChangeScene("Empty");
     }
 
     public static void GoToMenu()
@@ -46,13 +60,7 @@ public static class LoadingScreen
             return;
         }
 
-        CreateGame(idx, NetworkManager.singleton.numPlayers);
-    }
-
-
-    static void CreateGame(int i, int numPlayers)
-    {
-        var mapPrefab = MapAtlas.Instance.Item(i);
+        var numPlayers = JourneyData.Current.SelectedDecks.Count();
 
         if (numPlayers < mapPrefab.MinPartySize || numPlayers > mapPrefab.MaxPartySize)
         {
@@ -60,19 +68,12 @@ public static class LoadingScreen
             return;
         }
 
-        NetworkServer.SendToAll(new SceneInfo { MapId = i, Type = SceneInfo.LoadType.Map });
+        NetworkServer.SendToAll(new SceneInfo { MapId = idx, Type = SceneInfo.LoadType.Map });
         RoomNetworkManager.OnSceneChangedServer = () =>
         {
-            IEnumerator coroutine()
-            {
-                Debug.Log("Waiting for all players to be ready...");
-                yield return new WaitUntil(() => NetworkServer.connections.Values.All(x => x.isReady));
-                var map = GameObject.Instantiate(mapPrefab);
-                Debug.Log("Loaded Map on Server");
-            }
-            RoomNetworkManager.singleton.StartCoroutine(coroutine());
+            Debug.Log("Loaded Map on Server");
+            var map = GameObject.Instantiate(mapPrefab);
         };
         NetworkManager.singleton.ServerChangeScene("Board");
     }
-
 }

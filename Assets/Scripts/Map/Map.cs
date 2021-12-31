@@ -91,6 +91,7 @@ public class Map : MonoBehaviour
         TileByPosition = new();
         TileByUnit = new();
         UnitByTile = new();
+        PlayerSlot.decksAssigned = new();
         foreach (var thing in allGridThings)
         {
             if (!thing.TryGetComponent<Tile>(out var tile)) continue;

@@ -1,8 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class Hubworld : NetworkBehaviour
+public interface IJourneyProvider
+{
+    Deck[] StartingDecks { get; }
+}
+
+public class Hubworld : MonoBehaviour, IJourneyProvider
 {
     [System.Serializable]
     class MapWithRequirements
@@ -13,7 +19,11 @@ public class Hubworld : NetworkBehaviour
         public bool Playable => true;
     }
 
+    [SerializeField] public int TeamSize;
     [SerializeField] MapWithRequirements[] Maps;
+    [SerializeField] public Deck[] AvailableDecks;
+
+    public Deck[] StartingDecks => AvailableDecks;
 
     public void PlayMap(int i)
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -9,13 +10,17 @@ public class PlayerController : NetworkBehaviour
     public List<Unit> ControlledUnits;
     public static PlayerController Local;
 
-    [SyncVar] public Deck Deck;
     [SerializeField] GameSettings settings;
 
-    [Command(requiresAuthority = true)]
-    public void SelectDeck(Deck deck)
+
+    static PlayerController[] lobby = new PlayerController[4];
+    public static PlayerController FromLobby(int id) => lobby[id];
+    public int LobbyId => lobby.ToList().IndexOf(this);
+    public override void OnStartServer()
     {
-        Deck = Instantiate(deck);
+        for (int i = 0; i < lobby.Length; i++)
+            if (lobby[i] == null)
+                lobby[i] = this;
     }
 
     public override void OnStartLocalPlayer()

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bfd73ea553079449ef28f2d2c630e0, type: 3}
   m_Name: Stormcaller_Base
   m_EditorClassIdentifier: 
-  commanderPrefab: {fileID: 7360946247754838574, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
+  commanderPrefab: {fileID: 4441227467106658347, guid: c0fd6c5449adf0c40b86149edee6cc4c, type: 3}
   Cards:
   - {fileID: 11400000, guid: b7c933e46f821774788f1283dd52ccbe, type: 2}
   - {fileID: 11400000, guid: 5b91c8826f9284847b5b63d023f7a8ef, type: 2}

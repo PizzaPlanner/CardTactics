@@ -154,7 +154,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Tutorial: {fileID: 1285172813067429327, guid: c76533d3327057a48964642868abc445, type: 3}
-  Campaign: {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
+  TutorialDecks:
+  - {fileID: 11400000, guid: 00576620d4b687b4a880abe846a1523b, type: 2}
+  Quickmatch: {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
+  QuickmatchDecks:
+  - {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
+  - {fileID: 11400000, guid: 0852ba29886d4cd488214786e6ef4124, type: 2}
+  Campaign: {fileID: 5134339028818186798, guid: d73e69eec1d3ca6489f10807891c0050, type: 3}
 --- !u!114 &504611495
 MonoBehaviour:
   m_ObjectHideFlags: 0

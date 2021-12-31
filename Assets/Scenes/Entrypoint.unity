@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 1818055818}
   - component: {fileID: 1818055817}
   - component: {fileID: 1818055819}
+  - component: {fileID: 1818055820}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -329,13 +330,10 @@ MonoBehaviour:
   - {fileID: 4441227467106658347, guid: 9d2d88f6a7d884041a03e3859276bd9c, type: 3}
   - {fileID: 5882492422521109190, guid: 7b09a7856b7992f47b2d547c0044fb4a, type: 3}
   - {fileID: 4441227467106658347, guid: 6a9c588ac33cb5f4ba814bca00027289, type: 3}
-  - {fileID: 7360946247754838574, guid: 69ce436636c712443b6fd69a2bddc5bb, type: 3}
-  - {fileID: 7360946247754838574, guid: 104babd9520f36f438233a470f3404a2, type: 3}
-  - {fileID: 5882492422521109190, guid: c17ec6991b75bf4408808625cbdea8bc, type: 3}
-  - {fileID: 7360946247754838574, guid: 9e44f11c15bfcbe4787e5a691f2db5fd, type: 3}
+  - {fileID: 4441227467106658347, guid: 0272d1a496f4c144abf60c035102d2b5, type: 3}
   - {fileID: 4441227467106658347, guid: 48cd8ec72a111ca41a66e8333be89a97, type: 3}
   - {fileID: 4441227467106658347, guid: aa1dddefa98489b428bf236870a9706c, type: 3}
-  - {fileID: 7360946247754838574, guid: 19e9019c12d92654c91f234579e1b8a8, type: 3}
+  - {fileID: 4441227467106658347, guid: c0fd6c5449adf0c40b86149edee6cc4c, type: 3}
   - {fileID: 4441227467106658347, guid: ecea4467c7796b5428d55dc4b4d03843, type: 3}
 --- !u!114 &1818055818
 MonoBehaviour:
@@ -375,3 +373,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f5885692cb3bd304bb34fbdb4906bb24, type: 2}
   - {fileID: 11400000, guid: 254b3ed523f44cb45a2f70653570d882, type: 2}
   - {fileID: 11400000, guid: dc1b0ed67bd30b447abfeffba289d02a, type: 2}
+--- !u!114 &1818055820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818055809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19b6c0a5c12ea64e816099959094e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Objects:
+  - {fileID: 5134339028818186798, guid: d73e69eec1d3ca6489f10807891c0050, type: 3}

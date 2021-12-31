@@ -4,6 +4,7 @@
         <ui:VisualElement name="Menu" style="background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/mid_background.png?fileID=2800000&amp;guid=f203f165ae401fe46ada0ed50d07149c&amp;type=3#mid_background&apos;); -unity-background-scale-mode: stretch-to-fill; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
             <ui:Button text="Tutorial" display-tooltip-when-elided="true" name="Tutorial" class="button-menu" />
             <ui:Button text="Campaign" display-tooltip-when-elided="true" name="Campaign" class="button-menu" />
+            <ui:Button text="Quickmatch" display-tooltip-when-elided="true" name="Quickmatch" class="button-menu" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

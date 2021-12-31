@@ -632,15 +632,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db99d0b3548719347b8fb15cf23b2183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TeamSize: 4
   Maps:
-  - MapPrefab: {fileID: 1285172813067429327, guid: 0706e2210d18729429029807cbf06883, type: 3}
+  - MapPrefab: {fileID: 3982529199181044179, guid: 0706e2210d18729429029807cbf06883, type: 3}
     RequiredAchievements: []
     PreventingAchievements:
     - Played:CampaignMap1
-  - MapPrefab: {fileID: 1285172813067429327, guid: e542e2fe85d9a3a409405c5b187d80c8, type: 3}
-    RequiredAchievements:
-    - Played:CampaignMap2
-    PreventingAchievements: []
+  AvailableDecks:
+  - {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
+  - {fileID: 11400000, guid: e8872150a9525e5468bdf5ba6cba3189, type: 2}
+  - {fileID: 11400000, guid: 0852ba29886d4cd488214786e6ef4124, type: 2}
 --- !u!1 &1623341086115261648
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,9 +703,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9888432015a1f4a428555a1dfd0b78e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Decks:
-  - {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
-  - {fileID: 11400000, guid: 72674ffae81d89c44af0894b943d1ada, type: 2}
   CardItem: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
   uiRoot: {fileID: 7540563857837773768}
 --- !u!1 &3896609403382642947
