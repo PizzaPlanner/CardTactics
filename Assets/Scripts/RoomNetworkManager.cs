@@ -30,6 +30,7 @@ public class RoomNetworkManager : NetworkManager
         NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext++);
         NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
         NetworkClient.RegisterHandler<SendDeckInfo>(IngameDeck.Update);
+        NetworkClient.RegisterHandler<LoadingCompleteMessage>((_) => HideLoadingScreen());
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -135,8 +136,15 @@ public class RoomNetworkManager : NetworkManager
     public override void OnServerSceneChanged(string newSceneName)
     {
         Playables = new PlayableQueue(mode);
-        OnSceneChangedServer?.Invoke();
-        OnSceneChangedServer = null;
+        IEnumerator coroutine()
+        {
+            Debug.Log("Waiting for all players to be ready...");
+            yield return new WaitUntil(() => NetworkServer.connections.Values.All(x => x.isReady));
+            OnSceneChangedServer?.Invoke();
+            OnSceneChangedServer = null;
+            NetworkServer.SendToAll(new LoadingCompleteMessage());
+        }
+        RoomNetworkManager.singleton.StartCoroutine(coroutine());
     }
 
     public override void OnClientSceneChanged(NetworkConnection conn)
@@ -155,6 +163,10 @@ public class RoomNetworkManager : NetworkManager
             Playables = new PlayableQueue(mode);
         NetworkClient.ready = true;
         NetworkClient.AddPlayer();
+    }
+
+    void HideLoadingScreen()
+    {
         loadingScreen.style.display = DisplayStyle.None;
     }
 
