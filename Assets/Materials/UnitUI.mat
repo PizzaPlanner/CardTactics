@@ -127,6 +127,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 360782854d25b2341aa0ab354fecf4fc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f25d036e58fc4f8191755e349a3b0a31_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 7c2e59774ab825a4fbbedcee007ea463, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -201,6 +205,7 @@ Material:
     - _ZWriteControl: 2
     - __dirty: 1
     - _clip: 0.81
+    - _current: 1
     - _highlight: 1
     - _power: 1
     m_Colors:

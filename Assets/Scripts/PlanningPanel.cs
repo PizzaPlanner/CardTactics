@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UIElements;
-// using UnityEngine.UIElements;
 
 [RequireComponent(typeof(AudioSource))]
 public class PlanningPanel : MonoBehaviour
@@ -64,7 +61,7 @@ public class PlanningPanel : MonoBehaviour
         var confirmable = isCurrent && unit.hasAuthority;
         if (confirmable && onEndTurn != null)
             onEndTurnWrapper = onEndTurn;
-        planningPanel.Q<Button>("Confirm").SetEnabled(confirmable);
+        planningPanel.Q<Button>("Confirm").style.display = confirmable ? DisplayStyle.Flex : DisplayStyle.None;
 
         var doc = uiRoot;
         cardPanel.Clear();

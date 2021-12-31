@@ -1,23 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(Unit))]
-public class IngameDeck : NetworkBehaviour
+public class IngameDeck : MonoBehaviour
 {
-    public readonly SyncList<CardContext> Contexts = new();
+    List<CardContext> Contexts = new();
 
-    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    public CardContext this[int id] => Contexts[id];
+
+    public void Add(CardContext ctx)
     {
-        Debug.Log("Deserialize IngameDeck");
-        var unit = GetComponent<Unit>();
-        base.OnDeserialize(reader, initialState);
-        foreach (var ctx in Contexts)
-        {
-            ctx.Unit = unit;
-            Debug.Log(ctx.Name + " -> " + ctx.State);
-        }
+        ctx.idInDeck = Contexts.Count;
+        ctx.Unit = GetComponent<Unit>();
+        Contexts.Insert(ctx.idInDeck, ctx);
+    }
+
+    public void Set(int id, CardContext ctx)
+    {
+        Contexts.RemoveAt(id);
+        ctx.idInDeck = id;
+        ctx.Unit = GetComponent<Unit>();
+        Contexts.Insert(id, ctx);
     }
 
     [Server]
@@ -57,6 +63,16 @@ public class IngameDeck : NetworkBehaviour
                 RoomNetworkManager.Playables.Enqueue(card);
             }
         }
+    }
+
+    public static void Update(SendDeckInfo msg)
+    {
+        var igd = msg.Unit.GetComponent<IngameDeck>();
+        igd.Contexts.Clear();
+        igd.Contexts.AddRange(msg.Contexts);
+        foreach (var ctx in igd.Contexts)
+            ctx.Unit = msg.Unit;
+        Debug.Log($"Updating Deck of {msg.Unit.Name} with {msg.Contexts.Length} cards");
     }
 
     public IEnumerable<CardContext> All => Contexts;

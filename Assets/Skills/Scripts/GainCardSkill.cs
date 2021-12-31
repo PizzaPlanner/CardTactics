@@ -25,11 +25,13 @@ public class GainCardSkill : ISkill
         if (NewCardPrefab is ActionCard ac && ac.charges > 0 && deck.All.Any(x => x.Target == ac))
             deck.All.First(x => x.Target == ac).ChargesUsed += ac.charges;
         else
-            deck.Contexts.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
+            deck.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
     }
 
     public IEnumerator ExecuteClient(SkillExecuteContext ctx)
     {
+        if (ctx.OutTile.Unit == null || !ctx.OutTile.Unit.TryGetComponent<IngameDeck>(out var deck)) yield break;
+        deck.Add(new CardContext(NewCardPrefab, ctx.OutTile.Unit, NewCardInitialState));
         yield return ShowGetAnimation(NewCardPrefab);
     }
 
@@ -44,10 +46,12 @@ public class GainCardSkill : ISkill
     public void Serialize(Mirror.NetworkWriter writer)
     {
         writer.WriteObject(NewCardPrefab);
+        writer.Write((int)NewCardInitialState);
     }
     public ISkill Deserialize(Mirror.NetworkReader reader)
     {
         NewCardPrefab = reader.ReadObject<Card>();
+        NewCardInitialState = (CardState)reader.Read<int>();
         return this;
     }
 }

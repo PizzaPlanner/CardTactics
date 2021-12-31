@@ -67,8 +67,8 @@ public static class LoadingScreen
             {
                 Debug.Log("Waiting for all players to be ready...");
                 yield return new WaitUntil(() => NetworkServer.connections.Values.All(x => x.isReady));
-                Debug.Log("Loading Map on Server");
                 var map = GameObject.Instantiate(mapPrefab);
+                Debug.Log("Loaded Map on Server");
             }
             RoomNetworkManager.singleton.StartCoroutine(coroutine());
         };

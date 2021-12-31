@@ -28,7 +28,7 @@ public class PlayerController : NetworkBehaviour
     public void SetPlayerReady(int cardId)
     {
         var unit = FindObjectOfType<GameStateMachine>().CurrentUnit;
-        FindObjectOfType<Board>().SetPlayerReady(unit.GetComponent<IngameDeck>().Contexts[cardId]);
+        FindObjectOfType<Board>().SetPlayerReady(unit.GetComponent<IngameDeck>()[cardId]);
     }
 
     [Command]

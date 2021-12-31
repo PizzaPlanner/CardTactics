@@ -15,7 +15,15 @@ public class Map : MonoBehaviour
     public int MinPartySize => Teams.Sum(x => x.MinPlayers);
     public int MaxPartySize => Teams.Sum(x => x.MaxPlayers);
 
-    List<Tile> Tiles;
+    IEnumerable<Tile> Tiles => TileByPosition.Values;
+
+    public Unit UnitOf(Tile tile) => UnitByTile.TryGetValue(tile, out var unit) ? unit : null;
+    Dictionary<Tile, Unit> UnitByTile;
+    public Tile TileOf(Unit unit) => TileByUnit.TryGetValue(unit, out var tile) ? tile : null;
+    Dictionary<Unit, Tile> TileByUnit;
+
+    Dictionary<Vector3Int, Tile> TileByPosition;
+
     public IEnumerable<Tile> VisibleTiles => Tiles.Where(x => x.gameObject.activeSelf);
     public IEnumerable<Tile> InvisibleTiles => Tiles.Where(x => !x.gameObject.activeSelf);
 
@@ -80,11 +88,13 @@ public class Map : MonoBehaviour
     {
         Instance = this;
         var allGridThings = GetComponentsInChildren<GridPosition>(true);
-        Tiles = new List<Tile>();
+        TileByPosition = new();
+        TileByUnit = new();
+        UnitByTile = new();
         foreach (var thing in allGridThings)
         {
             if (!thing.TryGetComponent<Tile>(out var tile)) continue;
-            Tiles.Add(tile);
+            TileByPosition[thing.Position] = tile;
             var pos = thing.Position;
             foreach (var neighbour in Get<Tile>(pos.x - 1, pos.y, pos.z - 1, pos.z + 1).Union(Get<Tile>(pos.x, pos.y - 1, pos.z - 1, pos.z + 1)))
             {
@@ -150,8 +160,7 @@ public class Map : MonoBehaviour
             return;
         }
 
-        var tile = Tiles.FirstOrDefault(x => x.Position == message.Position);
-        if (tile == null)
+        if (!TileByPosition.TryGetValue(message.Position, out var tile))
             return;
         if (tile.PrimaryPattern != null)
         {
@@ -168,11 +177,6 @@ public class Map : MonoBehaviour
                 tile.gameObject.SetActive(true);
                 TrySpawnOnTile(tile);
             }
-    }
-
-    internal Tile TileOf(Unit unit)
-    {
-        return Tiles.FirstOrDefault(x => x.Unit == unit);
     }
 
     public Action<ITilePattern> OnTileSelection;
@@ -272,6 +276,15 @@ public class Map : MonoBehaviour
             validTarget &= (filter.Unit & tile.Unit.Type) > 0;
         }
         return validTarget;
+    }
+
+    internal void Place(Unit unit, Tile tile)
+    {
+        if (TileByUnit.ContainsKey(unit))
+            UnitByTile.Remove(TileByUnit[unit]);
+
+        UnitByTile[tile] = unit;
+        TileByUnit[unit] = tile;
     }
 
     void Update()

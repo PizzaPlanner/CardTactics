@@ -12,7 +12,8 @@ public class Deck : ScriptableObject
     public Unit Create()
     {
         var unit = Card.Instantiate(commanderPrefab);
-        unit.GetComponent<IngameDeck>().Contexts.AddRange(Cards.Select(x => new CardContext(x, unit, CardState.Shuffle)));
+        foreach (var card in Cards)
+            unit.GetComponent<IngameDeck>().Add(new CardContext(card, unit, CardState.Shuffle));
         return unit;
     }
 }

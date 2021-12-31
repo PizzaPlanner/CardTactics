@@ -52,11 +52,11 @@ public class AttackSkill : ISkill
             yield return new WaitForSeconds(0.3f);
             if (targetAnimator != null)
             {
-                ctx.OutTile.Unit.UpdateDisplayLife = true;
                 targetAnimator.SetInteger("Action", 1);
                 targetAnimator.SetTrigger("GetHitTrigger");
             }
         }
+        ctx.OutTile.Unit.UpdateDisplayLife = true;
     }
 
     public void Serialize(Mirror.NetworkWriter writer)

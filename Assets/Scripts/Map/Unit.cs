@@ -94,6 +94,7 @@ public class Unit : NetworkBehaviour
         transform.position = new Vector3(-9999, -9999, -9999);
         gameObject.SetActive(true);
         NetworkServer.Spawn(gameObject, Owner?.connectionToClient);
+        NetworkServer.SendToAll(new SendDeckInfo { Unit = this, Contexts = GetComponent<IngameDeck>().All.ToArray() });
         Debug.Log("Spawning " + Name);
     }
 

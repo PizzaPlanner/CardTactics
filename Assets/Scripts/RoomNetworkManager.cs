@@ -29,6 +29,7 @@ public class RoomNetworkManager : NetworkManager
         NetworkClient.RegisterHandler<PlayableMessage>((msg) => { if (Playables.Mode == NetworkManagerMode.ClientOnly) Playables.Enqueue(msg.context); });
         NetworkClient.RegisterHandler<SkillPlanContext.CancelContextMessage>((_) => SkillPlanContext.CancelContextMessage.CancelCurrentContext++);
         NetworkClient.RegisterHandler<SceneInfo>((msg) => LoadingScreen.SceneInfo = msg);
+        NetworkClient.RegisterHandler<SendDeckInfo>(IngameDeck.Update);
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)

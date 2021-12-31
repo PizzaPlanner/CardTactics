@@ -45,10 +45,7 @@ public class TurnPanel : MonoBehaviour
 
         badge.UnitItem.Unit = unit;
         var border = badge.UnitItem.Q("Border");
-        border.style.borderTopColor = player.TeamColor;
-        border.style.borderLeftColor = player.TeamColor;
-        border.style.borderRightColor = player.TeamColor;
-        border.style.borderBottomColor = player.TeamColor;
+        border.style.unityBackgroundImageTintColor = player.TeamColor;
         badge.SetEnabled(false);
         OnTurnEnd(unit);
     }
@@ -82,9 +79,9 @@ public class TurnPanel : MonoBehaviour
         readyPanel.Query<PlayerInfoBadge>().Where(x => x.UnitItem.Unit == unit).ForEach(x => x.AddToClassList("unit-badge--current"));
         turnAnnouncer.Q<Label>().text = $"Turn of {unit.Name}";
         turnAnnouncer.style.display = DisplayStyle.Flex;
+        unit.GetComponentInChildren<StatusBar>().Current = true;
         yield return GameSettings.Instance.TurnAnnouncerTime.Yield();
         turnAnnouncer.style.display = DisplayStyle.None;
-        unit.GetComponentInChildren<StatusBar>().Current = true;
         onComplete?.Invoke();
     }
 

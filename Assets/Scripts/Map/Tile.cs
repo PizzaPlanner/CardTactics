@@ -55,7 +55,7 @@ public class Tile : MonoBehaviour
         return Facing.Preserve;
     }
 
-    public Unit Unit;
+    public Unit Unit => Map.Instance.UnitOf(this);
 
     public ITilePattern PrimaryPattern { get; set; }
 
@@ -86,6 +86,7 @@ public class Tile : MonoBehaviour
     void Start()
     {
         CurrentIndicator = TargetIndicator.Hidden;
+        SetIndicatorVisible(false, false);
     }
 
     public void OnMouseEnter()
@@ -253,34 +254,34 @@ public class Tile : MonoBehaviour
     public void SetIndicatorVisible(bool visible, bool highlightPattern)
     {
         var myst = visible ? Vector4.one : Vector4.zero;
-        if (visible)
-            foreach (var nb in Neighbours)
+        foreach (var nb in Neighbours)
+        {
+            var gradient = nb.CurrentIndicator != CurrentIndicator && CurrentIndicator != TargetIndicator.Hidden ? 1 : 0.5f;
+            var otherGradient = nb.CurrentIndicator != CurrentIndicator && nb.CurrentIndicator != TargetIndicator.Hidden ? 1 : 0.5f;
+            var nbst = nb.NeighbourState;
+            if (nb.Position.x > Position.x)
             {
-                if (nb.CurrentIndicator != CurrentIndicator || nb.CurrentIndicator == TargetIndicator.Hidden) continue;
-                var nbst = nb.NeighbourState;
-                if (nb.Position.x > Position.x)
-                {
-                    myst.x = 0;
-                    nbst.y = 0;
-                }
-                else if (nb.Position.x < Position.x)
-                {
-                    myst.y = 0;
-                    nbst.x = 0;
-                }
-                if (nb.Position.y < Position.y)
-                {
-                    myst.w = 0;
-                    nbst.z = 0;
-                }
-                else if (nb.Position.y > Position.y)
-                {
-                    myst.z = 0;
-                    nbst.w = 0;
-                }
-                nb.NeighbourState = nbst;
-                nb.Visuals.material.SetVector("_edgeState", nb.NeighbourState);
+                myst.x = gradient;
+                nbst.y = otherGradient;
             }
+            else if (nb.Position.x < Position.x)
+            {
+                myst.y = gradient;
+                nbst.x = otherGradient;
+            }
+            if (nb.Position.y < Position.y)
+            {
+                myst.w = gradient;
+                nbst.z = otherGradient;
+            }
+            else if (nb.Position.y > Position.y)
+            {
+                myst.z = gradient;
+                nbst.w = otherGradient;
+            }
+            nb.NeighbourState = nbst;
+            nb.Visuals.material.SetVector("_edgeState", nb.NeighbourState);
+        }
         NeighbourState = myst;
         Visuals.material.SetVector("_edgeState", NeighbourState);
         PaintIndicator(visible, highlightPattern);
@@ -313,7 +314,8 @@ public class Tile : MonoBehaviour
 
         if (updatePosition)
             PlaceUnitNoCheck(unit, facing);
-        Unit = unit;
+
+        Map.Instance.Place(unit, this);
         return true;
     }
 

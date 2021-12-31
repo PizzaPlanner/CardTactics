@@ -139,20 +139,11 @@
 }
 
 .unit-border {
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    opacity: 0.75;
+    background-image: url('project://database/Assets/Materials/UnitItem_Border.png?fileID=2800000&guid=a5fccf8732b6e114c9a1c1a6f73d26f0&type=3#UnitItem_Border');
 }
 
 .unit-badge--current .unit-border {
-    display: flex;
-    border-left-width: 3px;
-    border-right-width: 3px;
-    border-top-width: 3px;
-    border-bottom-width: 3px;
-    opacity: 1;
+    background-image: url('project://database/Assets/Materials/UnitItem_Border_Current.png?fileID=2800000&guid=e9ff12f99fa7cc7408b4297987cc1049&type=3#UnitItem_Border_Current');
 }
 
 .unit-badge--hovered {

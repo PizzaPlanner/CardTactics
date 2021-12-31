@@ -4,31 +4,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+public struct SendDeckInfo : NetworkMessage
+{
+    public Unit Unit;
+    public CardContext[] Contexts;
+}
 
 public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPlayable
 {
-    [Sirenix.OdinInspector.ShowInInspector]
     public Card Target { get; private set; }
-    [Sirenix.OdinInspector.ShowInInspector]
-    [SyncVar] public CardState State;
+    public CardState State;
 
     public Unit Unit { get; set; }
 
-    public bool Queueable => State == CardState.Unplayed || State == CardState.TurnStart || State == CardState.TurnEnd;
+    public bool Queueable =>
+        (State == CardState.Unplayed && Unit.Resources.CanAfford((Target as ActionCard).Cost))
+        || State == CardState.TurnStart
+        || State == CardState.TurnEnd;
+
     public string Name => Target.Name;
     public bool ManualSending => true;
-    [SyncVar] public int ChargesUsed;
+    public int ChargesUsed;
 
     public CardContext(Card card, Unit unit, CardState initialState)
     {
         Target = card;
         Unit = unit;
         State = initialState;
+        idInDeck = -1;
     }
     public CardContext() { }
 
@@ -38,10 +45,11 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         yield return GameSettings.Instance.BeforePlayDelay.Yield();
     }
 
+    public int idInDeck;
+
     public bool PlayOnServer()
     {
         if (Unit == null || Unit.IsDead) return false;
-
         IEnumerable<SkillInfo> skillsToPlay = State switch
         {
             CardState.TurnStart => Target.skills.Where(x => x.Trigger == SkillTrigger.TurnStart),
@@ -95,6 +103,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         writer.WriteObject(Target);
         writer.Write((byte)State);
         writer.Write(ChargesUsed);
+        writer.Write(idInDeck);
     }
 
     public void Serialize(NetworkWriter writer)
@@ -108,6 +117,7 @@ public class CardContext : IPlayableContextWithUnit, IClientPlayable, IServerPla
         Target = reader.ReadObject<Card>();
         State = (CardState)reader.ReadByte();
         ChargesUsed = reader.ReadInt();
+        idInDeck = reader.ReadInt();
         return this;
     }
 
@@ -133,22 +143,27 @@ public class FinishCardContext : IPlayableContext, IClientPlayable
     public string Name => "Finish " + context.Name;
 
     public Unit Unit => context.Unit;
+    public int CtxId;
 
     CardContext context;
 
     public IEnumerator PlayOnClient()
     {
         CardTooltip.Hide();
+        if (context.idInDeck > -1)
+            Unit.GetComponent<IngameDeck>().Set(context.idInDeck, context);
         yield return GameSettings.Instance.AfterPlayDelay.Yield();
     }
 
     public void Serialize(NetworkWriter writer)
     {
+        writer.WriteInt(CtxId);
         writer.WritePlayable(context);
     }
 
     public IPlayableContext Deserialize(NetworkReader reader)
     {
+        CtxId = reader.ReadInt();
         context = (CardContext)reader.ReadPlayable();
         return this;
     }

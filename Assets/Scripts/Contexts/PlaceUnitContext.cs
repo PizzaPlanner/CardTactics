@@ -16,8 +16,6 @@ public struct PlaceUnitContext : IPlayableContext, IClientPlayable, IServerPlaya
     {
         if (!Target.Place(Unit, Facing, true))
             Debug.LogError("Failed to place Unit");
-        else if (Source != null)
-            Source.Unit = null;
         yield return null;
     }
 
@@ -25,8 +23,6 @@ public struct PlaceUnitContext : IPlayableContext, IClientPlayable, IServerPlaya
     {
         if (!Target.Place(Unit, Facing, false))
             Debug.LogError("Failed to place Unit");
-        else if (Source != null)
-            Source.Unit = null;
         return true;
     }
 
