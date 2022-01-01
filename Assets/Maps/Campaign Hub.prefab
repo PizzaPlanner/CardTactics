@@ -704,6 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardItem: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
+  UnitItem: {fileID: 9197481963319205126, guid: 26805b5f1c472734bbd37880d504ef40, type: 3}
   uiRoot: {fileID: 7540563857837773768}
 --- !u!1 &3896609403382642947
 GameObject:

@@ -165,9 +165,13 @@
 
 .decklist {
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     flex-wrap: wrap;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 40px;
+    margin-bottom: 40px;
 }
 
 TextField > * {
