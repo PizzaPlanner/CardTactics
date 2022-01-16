@@ -201,3 +201,23 @@ TextField > * {
 UnitItem .statusbar {
     flex-direction: column-reverse;
 }
+
+.characterselect-cardlist #unity-content-container {
+    flex-direction: row;
+    align-items: auto;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.characterselect-cardlist #CardBig {
+    margin-bottom: -128px;
+}
+
+.character-select-taken .filter-taken {
+    background-image: url('project://database/Assets/Materials/UnitItem_Border_Current.png?fileID=2800000&guid=e9ff12f99fa7cc7408b4297987cc1049&type=3#UnitItem_Border_Current');
+}

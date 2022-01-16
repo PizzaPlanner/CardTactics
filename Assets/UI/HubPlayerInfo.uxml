@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="UnitItemCharacterSelection" src="project://database/Assets/UI/UnitItemCharacterSelection.uxml?fileID=9197481963319205126&amp;guid=894df114b984129419270752dc847715&amp;type=3#UnitItemCharacterSelection" />
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <HubPlayerInfo>
+        <ui:Label text="PlayerName" display-tooltip-when-elided="true" name="Label" class="color-default-text" style="font-size: 18px;" />
+        <ui:VisualElement style="flex-direction: row; justify-content: center;">
+            <ui:VisualElement name="characters" style="flex-direction: row;">
+                <ui:Instance template="UnitItemCharacterSelection" name="UnitItemCharacterSelection" />
+                <ui:Instance template="UnitItemCharacterSelection" name="UnitItemCharacterSelection" />
+                <ui:Instance template="UnitItemCharacterSelection" name="UnitItemCharacterSelection" />
+            </ui:VisualElement>
+            <ui:Button text="+" display-tooltip-when-elided="true" name="Add" style="width: 80px; height: 80px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 5px; background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/Mini_background.png?fileID=2800000&amp;guid=4f033cdd2b09f9a43b139729d09d002c&amp;type=3#Mini_background&apos;); font-size: 48px; color: rgb(195, 192, 181);" />
+        </ui:VisualElement>
+    </HubPlayerInfo>
+</ui:UXML>

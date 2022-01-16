@@ -16,8 +16,8 @@ public class CharacterSelection : MonoBehaviour
         var player = FindObjectsOfType<PlayerController>().FirstOrDefault(x => x.isLocalPlayer);
         var hub = FindObjectOfType<Hubworld>();
         if (!player || hub == null) return;
-        selector.style.display = hub.TeamSize > JourneyData.Current.SelectedDecks.Count() ? DisplayStyle.Flex : DisplayStyle.None;
-        var charList = selector.Q("Selectors").Q<ScrollView>().contentContainer;
+        selector.style.display = DisplayStyle.None;
+        var charList = selector.Q("Selectors");
         charList.Clear();
         var decks = hub.AvailableDecks;
         foreach (var deck in decks)
@@ -27,47 +27,40 @@ public class CharacterSelection : MonoBehaviour
             charList[idx].Q<UnitItem>().RegisterCallback<MouseDownEvent>(_ => { currentDeck = idx; ShowDeck(); });
             ShowDeck();
         }
-        selector.Q<Button>("ChooseDeck").clicked += (() =>
+        selector.Q<Button>("ChooseDeck").clicked += () =>
         {
             JourneyData.Current.SelectedDecks.Add(new JourneyData.PlayerWithDeck { PlayerId = player.LobbyId, DeckId = currentDeck });
             selector.style.display = hub.TeamSize > JourneyData.Current.SelectedDecks.Count() ? DisplayStyle.Flex : DisplayStyle.None;
             Debug.Log("Selected Deck " + JourneyData.Current.AvailableDecks[currentDeck].commanderPrefab.Name);
             UpdateSelectedDecks();
-        });
+        };
+        selector.Q<Button>("Close").clicked += () =>
+        {
+            selector.style.display = DisplayStyle.None;
+        };
         UpdateSelectedDecks();
     }
 
     void UpdateSelectedDecks()
     {
-        var root = uiRoot.rootVisualElement.Q("PlayerInfo");
-        root.Clear();
-        Dictionary<int, List<Deck>> rearrangedDecks = new();
-        foreach (var deck in JourneyData.Current.SelectedDecks)
+        var decks = uiRoot.rootVisualElement.Q("DeckSelect");
+        uiRoot.rootVisualElement.Query<HubPlayerInfo>().ForEach(x => x.UpdateCharacters());
+        decks.Q<Button>("ChooseDeck").SetEnabled(!JourneyData.Current.SelectedDecks.Any(x => x.DeckId == currentDeck));
+        decks.Query<UnitItem>()
+        .ForEach(x =>
         {
-            if (!rearrangedDecks.ContainsKey(deck.PlayerId))
-                rearrangedDecks[deck.PlayerId] = new();
-            rearrangedDecks[deck.PlayerId].Add(JourneyData.Current.AvailableDecks[deck.DeckId]);
-        }
 
-        foreach (var player in rearrangedDecks.Keys)
-        {
-            var velm = new VisualElement();
-            var label = new Label { text = "Player " + player };
-            label.AddToClassList("color-default-text");
-            velm.Add(label);
-            foreach (var deck in rearrangedDecks[player])
-            {
-                UnitItem.CloneTree(velm, out var idx, out int _);
-                velm[idx].Q<UnitItem>().Unit = deck.commanderPrefab;
-            }
-            root.Add(velm);
-        }
+            if (JourneyData.Current.SelectedDecks.Any(y => JourneyData.Current.AvailableDecks[y.DeckId].commanderPrefab == x.Unit))
+                x.AddToClassList("character-select-taken");
+            else
+                x.RemoveFromClassList("character-select-taken");
+        });
     }
 
     void ShowDeck()
     {
         Debug.Log("Showing Deck " + currentDeck);
-        var cardList = uiRoot.rootVisualElement.Q("DeckSelect").Q(null, "decklist");
+        var cardList = uiRoot.rootVisualElement.Q("DeckSelect").Q<ScrollView>(null, "characterselect-cardlist").contentContainer;
         cardList.Clear();
         var deck = FindObjectOfType<Hubworld>().AvailableDecks[currentDeck];
 
@@ -76,5 +69,7 @@ public class CharacterSelection : MonoBehaviour
             CardItem.CloneTree(cardList, out var idx, out int _);
             cardList[idx].Q<CardItem>().Card = card;
         }
+
+        uiRoot.rootVisualElement.Q("DeckSelect").Q<Button>("ChooseDeck").SetEnabled(!JourneyData.Current.SelectedDecks.Any(x => x.DeckId == currentDeck));
     }
 }

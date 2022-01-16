@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
+    <UnitItem class="unit-item" style="width: 80px; height: 80px; align-items: center;">
+        <ui:VisualElement name="Background" style="background-image: url(&apos;project://database/Assets/3rdParty/GUI_Parts/Gui_parts/Mini_background.png?fileID=21300000&amp;guid=4f033cdd2b09f9a43b139729d09d002c&amp;type=3#Mini_background&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+        <ui:VisualElement name="Icon" style="background-image: url(&apos;project://database/Assets/3rdParty/2000_Icons/Update_icons/skill_b_Standart/09_magic_bolt.png?fileID=21300000&amp;guid=aff477b2fab2d0542be64d8ea903698a&amp;type=3#09_magic_bolt&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+        <ui:VisualElement name="Border" class="unit-border" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-image: url(&apos;project://database/Assets/Card_Border.png?fileID=2800000&amp;guid=248332c67d33f494ea5c899d68baa89e&amp;type=3#Card_Border&apos;);" />
+        <ui:VisualElement name="TakenBorder" class="filter-taken" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    </UnitItem>
+</ui:UXML>

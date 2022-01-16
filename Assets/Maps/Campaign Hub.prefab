@@ -459,7 +459,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5134339028818186798}
         m_TargetAssemblyTypeName: Hubworld, Assembly-CSharp
-        m_MethodName: PlayMap
+        m_MethodName: SelectMap
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -642,6 +642,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c92f411862d5b247908b25c653e54f6, type: 2}
   - {fileID: 11400000, guid: e8872150a9525e5468bdf5ba6cba3189, type: 2}
   - {fileID: 11400000, guid: 0852ba29886d4cd488214786e6ef4124, type: 2}
+  UnitItem: {fileID: 9197481963319205126, guid: 894df114b984129419270752dc847715, type: 3}
+  PlayerInfo: {fileID: 9197481963319205126, guid: 00c96a331071cd3458cea425935fe024, type: 3}
 --- !u!1 &1623341086115261648
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,7 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardItem: {fileID: 9197481963319205126, guid: 29a9371bab04ae14aa88f1bec4eb9fbc, type: 3}
-  UnitItem: {fileID: 9197481963319205126, guid: 26805b5f1c472734bbd37880d504ef40, type: 3}
+  UnitItem: {fileID: 9197481963319205126, guid: 894df114b984129419270752dc847715, type: 3}
   uiRoot: {fileID: 7540563857837773768}
 --- !u!1 &3896609403382642947
 GameObject:
@@ -910,7 +912,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5134339028818186798}
         m_TargetAssemblyTypeName: Hubworld, Assembly-CSharp
-        m_MethodName: PlayMap
+        m_MethodName: SelectMap
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

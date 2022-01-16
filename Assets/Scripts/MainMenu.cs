@@ -14,14 +14,30 @@ public class MainMenu : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
         root.Q<Button>("Tutorial").clicked += () =>
         {
-            JourneyData.PrepareNew(TutorialDecks);
+            if (!JourneyData.PrepareNew(TutorialDecks))
+            {
+                Debug.LogWarning("Only Host can start new Journeys");
+                return;
+            }
             JourneyData.Current.SelectedDecks.Add(new JourneyData.PlayerWithDeck { PlayerId = 0, DeckId = 0 });
             LoadingScreen.PlayMap(Tutorial);
         };
-        root.Q<Button>("Campaign").clicked += () => { JourneyData.PrepareNew(Campaign.StartingDecks); LoadingScreen.LoadHub(Campaign); };
+        root.Q<Button>("Campaign").clicked += () =>
+        {
+            if (!JourneyData.PrepareNew(Campaign.StartingDecks))
+            {
+                Debug.LogWarning("Only Host can start new Journeys");
+                return;
+            };
+            LoadingScreen.LoadHub(Campaign);
+        };
         root.Q<Button>("Quickmatch").clicked += () =>
         {
-            JourneyData.PrepareNew(QuickmatchDecks);
+            if (!JourneyData.PrepareNew(QuickmatchDecks))
+            {
+                Debug.LogWarning("Only Host can start new Journeys");
+                return;
+            };
             JourneyData.Current.SelectedDecks.Add(new JourneyData.PlayerWithDeck { PlayerId = 0, DeckId = 0 });
             LoadingScreen.PlayMap(Quickmatch);
         };

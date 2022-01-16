@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/card.uss?fileID=7433441132597879392&amp;guid=01a2327da0d399347b2ae61c1337875e&amp;type=3#card" />
-    <CardItem style="width: 260px; height: 400px; align-items: center; flex-shrink: 0;">
+    <CardItem style="width: 195px; height: 300px; align-items: center; flex-shrink: 0;">
         <ui:VisualElement name="PlayText" class="helper-playcard" style="position: absolute; top: -40px; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: center;">
             <ui:VisualElement style="background-image: url(&apos;project://database/Assets/3rdParty/Controller%20Icons%20Pack%20(by%20NullSave)/Textures/Filled/64/mouse_left.png?fileID=2800000&amp;guid=99015ae45bcdf27439bf40af93a1d817&amp;type=3#mouse_left&apos;); width: 24px; height: 24px;" />
             <ui:Label text="Play it" class="text-shadow color-default-text" style="-unity-font-style: bold; font-size: 18px;" />
@@ -36,10 +36,10 @@
                 </ui:VisualElement>
             </ResourcePanel>
             <ui:VisualElement name="NamePanel" style="background-image: url(&apos;project://database/Assets/background_fade.png?fileID=2800000&amp;guid=28eba2104e378a34badf867d0376f5ac&amp;type=3#background_fade&apos;); margin-top: -35px; padding-top: 35px;">
-                <ui:Label text="This is some Name" display-tooltip-when-elided="true" name="Name" class="color-default-text" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 25px; -unity-font-style: bold;" />
+                <ui:Label text="This is some Name" display-tooltip-when-elided="true" name="Name" class="color-default-text" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 18px; -unity-font-style: bold;" />
             </ui:VisualElement>
             <ui:VisualElement style="justify-content: flex-end; padding-top: 6px; padding-bottom: 20px; background-image: url(&apos;project://database/Assets/background_dark.png?fileID=2800000&amp;guid=a67a2b2981449ab4ea3d9499ae3731bf&amp;type=3#background_dark&apos;); padding-right: 5px; padding-left: 5px;">
-                <ui:Label text="This text kind of describes what&apos;s going on. Potentially verry long." display-tooltip-when-elided="true" name="Description" class="color-default-text" style="-unity-text-align: lower-center; white-space: normal; font-size: 18px; -unity-font-style: normal;" />
+                <ui:Label text="This text kind of describes what&apos;s going on. Potentially verry long." display-tooltip-when-elided="true" name="Description" class="color-default-text" style="-unity-text-align: lower-center; white-space: normal; font-size: 14px; -unity-font-style: normal;" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Border" style="background-image: url(&apos;project://database/Assets/Card_Border.png?fileID=21300000&amp;guid=248332c67d33f494ea5c899d68baa89e&amp;type=3#Card_Border&apos;); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center;">

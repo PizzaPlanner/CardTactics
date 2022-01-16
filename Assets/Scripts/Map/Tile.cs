@@ -253,11 +253,11 @@ public class Tile : MonoBehaviour
     Vector4 NeighbourState;
     public void SetIndicatorVisible(bool visible, bool highlightPattern)
     {
-        var myst = visible ? Vector4.one : Vector4.zero;
+        var myst = visible ? Vector4.one : Vector4.one * 0.5f;
         foreach (var nb in Neighbours)
         {
-            var gradient = nb.CurrentIndicator != CurrentIndicator && CurrentIndicator != TargetIndicator.Hidden ? 1 : 0.5f;
-            var otherGradient = nb.CurrentIndicator != CurrentIndicator && nb.CurrentIndicator != TargetIndicator.Hidden ? 1 : 0.5f;
+            var gradient = nb.CurrentIndicator != CurrentIndicator && CurrentIndicator != TargetIndicator.Hidden ? 1 : 0;
+            var otherGradient = nb.CurrentIndicator != CurrentIndicator && nb.CurrentIndicator != TargetIndicator.Hidden ? 1 : 0;
             var nbst = nb.NeighbourState;
             if (nb.Position.x > Position.x)
             {
