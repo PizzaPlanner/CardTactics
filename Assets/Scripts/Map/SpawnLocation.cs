@@ -4,12 +4,11 @@
 public class SpawnLocation : MonoBehaviour
 {
     public Facing Facing;
-    public bool InstantCommanderSpawn;
 
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
-        UnityEditor.Handles.color = InstantCommanderSpawn ? Color.cyan : Color.white;
+        UnityEditor.Handles.color = Color.white;
 
         var origin = transform.position;
 

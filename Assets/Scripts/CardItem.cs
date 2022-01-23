@@ -42,7 +42,7 @@ public class CardItem : VisualElement
             else if (card is UnitCard ucard)
             {
                 this.Query<Label>("Life").ForEach(x => x.text = ucard.UnitReference.MaxLife.ToString());
-                this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
+                this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.TryGetComponent<Actor>(out var actor) ? actor.Speed.ToString() : "0");
                 this.Query<ResourcePanel>().ForEach(x => x.Resources = ucard.UnitReference.Resources);
             }
         }
@@ -64,7 +64,7 @@ public class CardItem : VisualElement
                 var isFullLife = ucard.UnitReference.DisplayLife >= ucard.UnitReference.MaxLife;
                 var lifetext = isFullLife ? ucard.UnitReference.DisplayLife.ToString() : $"<color=#aa3344>{ucard.UnitReference.DisplayLife}</color>";
                 this.Query<Label>("Life").ForEach(x => x.text = lifetext);
-                this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.Speed.ToString());
+                this.Query<Label>("Speed").ForEach(x => x.text = ucard.UnitReference.TryGetComponent<Actor>(out var actor) ? actor.Speed.ToString() : "0");
             }
         }
     }

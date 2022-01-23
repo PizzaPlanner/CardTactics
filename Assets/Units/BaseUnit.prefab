@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5814881731473810615}
   - component: {fileID: 5882492422521109190}
   - component: {fileID: 8942890046518652142}
+  - component: {fileID: 2566690964159058785}
   - component: {fileID: 7573763126583650501}
   - component: {fileID: -7911847607973587043}
   m_Layer: 0
@@ -51,7 +52,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   Icon: {fileID: 21300000, guid: 0c8eef87aabccf445bae2928488c639e, type: 3}
-  Speed: 1
   MaxLife: 1
   Resources:
     Resources: []
@@ -160,6 +160,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2566690964159058785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563312192517643092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b4ae8adccc01dd44ab98c3a499c0f9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  Speed: 0
 --- !u!114 &7573763126583650501
 MonoBehaviour:
   m_ObjectHideFlags: 0

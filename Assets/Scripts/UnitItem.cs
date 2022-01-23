@@ -12,7 +12,7 @@ public class UnitItem : VisualElement
         {
             unit = value;
             this.Q("Icon").style.backgroundImage = new StyleBackground(unit.Icon);
-            this.Query<Label>("Speed").ForEach(x => x.text = unit.Speed.ToString());
+            this.Query<Label>("Speed").ForEach(x => x.text = unit.TryGetComponent<Actor>(out var actor) ? actor.Speed.ToString() : "0");
             this.Query<Label>("Name").ForEach(x => x.text = unit.Name);
 
             this.RegisterCallback<MouseEnterEvent>(_ => OnMouseEnter());

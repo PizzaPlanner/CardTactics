@@ -35,6 +35,9 @@ public class TurnPanel : MonoBehaviour
 
     public void AddUnit(Unit unit)
     {
+        if (!unit.TryGetComponent<Actor>(out var actor))
+            return;
+
         readyBadgeAsset.CloneTree(readyPanel, out int idx, out int _);
         var badge = readyPanel[idx].Q<PlayerInfoBadge>();
         var player = unit.Player;
@@ -52,7 +55,7 @@ public class TurnPanel : MonoBehaviour
 
     internal void SortBadges()
     {
-        readyPanel.Sort((x, y) => Unit.CompareSpeed(x.Q<UnitItem>().Unit, y.Q<UnitItem>().Unit));
+        readyPanel.Sort((x, y) => Actor.CompareSpeed(x.Q<UnitItem>().Unit.GetComponent<Actor>(), y.Q<UnitItem>().Unit.GetComponent<Actor>()));
     }
 
     internal void RemoveUnit(Unit unit)
@@ -102,6 +105,7 @@ public class TurnPanel : MonoBehaviour
                 else
                     x.RemoveFromClassList("unit-badge--hovered");
             });
-        unit.GetComponentInChildren<StatusBar>().Focus = hover;
+        if (unit.TryGetComponent<StatusBar>(out var bar))
+            bar.Focus = hover;
     }
 }

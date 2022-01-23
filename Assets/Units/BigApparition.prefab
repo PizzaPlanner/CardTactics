@@ -88,6 +88,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigApparition
       objectReference: {fileID: 0}
+    - target: {fileID: 2566690964159058785, guid: 7b09a7856b7992f47b2d547c0044fb4a, type: 3}
+      propertyPath: Speed
+      value: 42
+      objectReference: {fileID: 0}
     - target: {fileID: 5814881731473810615, guid: 7b09a7856b7992f47b2d547c0044fb4a, type: 3}
       propertyPath: m_RootOrder
       value: 0

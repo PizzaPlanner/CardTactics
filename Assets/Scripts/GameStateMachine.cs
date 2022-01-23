@@ -97,7 +97,7 @@ public class GameStateMachine : NetworkBehaviour
     {
         playableUnits.Clear();
         var unitsToPlay = new List<Unit>();
-        foreach (var unit in FindObjectsOfType<Unit>().Where(x => !x.IsDead))
+        foreach (var unit in FindObjectsOfType<Unit>().Where(x => !x.IsDead && x.TryGetComponent<Actor>(out var _)))
             if (unit.TryGetComponent<IngameDeck>(out var deck))
             {
                 deck.OnRoundEnd();
@@ -105,7 +105,7 @@ public class GameStateMachine : NetworkBehaviour
                 unitsToPlay.Add(unit);
                 deck.OnRoundStart();
             }
-        unitsToPlay.Sort((x, y) => Unit.CompareSpeed(x, y));
+        unitsToPlay.Sort((x, y) => Actor.CompareSpeed(x.GetComponent<Actor>(), y.GetComponent<Actor>()));
         foreach (var item in unitsToPlay)
         {
             playableUnits.Enqueue(item);

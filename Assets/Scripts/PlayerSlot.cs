@@ -27,6 +27,8 @@ public class PlayerSlot : MonoBehaviour
 
     [ShowIf("IsAI")]
     [SerializeField] Deck deck;
+    [ShowIf("IsAI")]
+    [SerializeField] Unit Unit;
 
     public bool IsAI => slot == SlotType.AI;
 
@@ -61,13 +63,15 @@ public class PlayerSlot : MonoBehaviour
                 return false;
             }
         }
-        else if (deck == null)
+        else if (deck == null && Unit == null)
         {
             Debug.LogError("No Deck assigned for AI Player");
             return false;
         }
 
-        if (deck == null)
+        if (Unit != null)
+            unit = Instantiate(Unit);
+        else if (deck == null)
             unit = JourneyData.Current.AvailableDecks[player.DeckId].Create();
         else
             unit = deck.Create();

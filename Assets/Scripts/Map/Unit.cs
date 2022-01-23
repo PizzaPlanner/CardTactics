@@ -10,7 +10,6 @@ public class Unit : NetworkBehaviour
 
     public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Player.TeamColor)}>{name}</color>";
     public Sprite Icon;
-    [SyncVar] public int Speed;
     [SyncVar] public float MaxLife;
     [SyncVar] public ResourceInfo Resources;
     public UnitFilter Type;
@@ -25,9 +24,6 @@ public class Unit : NetworkBehaviour
 
     public float DisplayLife;
     public bool UpdateDisplayLife { set; private get; }
-
-    static int spawnCounter;
-    [SyncVar] int counter;
 
     public Trigger OnDeadSelf, OnDeadKiller;
 
@@ -63,15 +59,10 @@ public class Unit : NetworkBehaviour
         gameObject.SetActive(false);
     }
 
-    public override void OnStartServer()
-    {
-        counter = spawnCounter++;
-    }
-
     public override void OnStartClient()
     {
-        UpdateDisplayLife = true;
 
+        UpdateDisplayLife = true;
         if (Player.Team != -1)
         {
             FindObjectOfType<TurnPanel>()?.AddUnit(this);
@@ -94,7 +85,8 @@ public class Unit : NetworkBehaviour
         transform.position = new Vector3(-9999, -9999, -9999);
         gameObject.SetActive(true);
         NetworkServer.Spawn(gameObject, Owner?.connectionToClient);
-        NetworkServer.SendToAll(new SendDeckInfo { Unit = this, Contexts = GetComponent<IngameDeck>().All.ToArray() });
+        if (TryGetComponent<IngameDeck>(out var deck))
+            NetworkServer.SendToAll(new SendDeckInfo { Unit = this, Contexts = deck.All.ToArray() });
         Debug.Log("Spawning " + Name);
     }
 
@@ -112,15 +104,6 @@ public class Unit : NetworkBehaviour
         }
         if (bar != null)
             bar.UpdateValues();
-    }
-
-    public static int CompareSpeed(Unit u1, Unit u2)
-    {
-        var x = u1.Speed.CompareTo(u2.Speed);
-        if (x == 0)
-            return u1.counter.CompareTo(u2.counter);
-        else
-            return x;
     }
 
     public void MoveInstant(Tile from, Tile to)
